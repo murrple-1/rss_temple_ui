@@ -1,10 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-import { SocialLoginModule, AuthServiceConfig, LoginOpt } from "angularx-social-login";
-import { FacebookLoginProvider } from "angularx-social-login";
+import { SocialLoginModule, AuthServiceConfig, LoginOpt, FacebookLoginProvider } from "angularx-social-login";
 
-
+import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 
 const fbLoginOptions: LoginOpt = {
@@ -14,7 +13,7 @@ const fbLoginOptions: LoginOpt = {
 let config = new AuthServiceConfig([
   {
     id: FacebookLoginProvider.PROVIDER_ID,
-    provider: new FacebookLoginProvider("Facebook-App-Id", fbLoginOptions)
+    provider: new FacebookLoginProvider(environment.facebookAppId, fbLoginOptions)
   }
 ]);
 
