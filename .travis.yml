@@ -1,19 +1,19 @@
 language: node_js
 node_js:
-    - 8
+  - 8
 sudo: required
 addons:
-    chrome: stable
+  chrome: stable
 cache:
-    directories:
-        - rss-temple/node_modules
+  directories:
+    - rss-temple/node_modules
 before_install:
-    - npm install -g @angular/cli
+  - npm install -g @angular/cli
 install:
-    - cd rss-temple/
-    - npm install
+  - cd rss-temple/
+  - npm install
 script:
-    - npm run test-ci
-    - npm run e2e-ci
+  - npm run test-ci
+  - npm run e2e-ci
 after_script:
-    - cat coverage/lcov.info | node_modules/coveralls/bin/coveralls.js
+  - cat coverage/lcov.info | node_modules/coveralls/bin/coveralls.js
