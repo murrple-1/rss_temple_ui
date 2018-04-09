@@ -1,13 +1,18 @@
 language: node_js
 node_js:
-    - "8"
+    - 8
+sudo: required
+addons:
+    chrome: stable
 cache:
     directories:
         - rss-temple/node_modules
-before_script:
+before_install:
     - npm install -g @angular/cli
-script:
+install:
     - cd rss-temple/
     - npm install
+script:
     - npm run build
-
+    - npm run test-ci
+    - npm run e2e-ci

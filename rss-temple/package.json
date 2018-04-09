@@ -9,7 +9,10 @@
     "build": "npm run config -- --environment=prod && ng build --prod --aot",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+
+    "test-ci": "npm run config -- --environment=dev && ng test --single-run",
+    "e2e-ci": "npm run config -- --environment=dev && ng e2e"
   },
   "private": true,
   "dependencies": {
