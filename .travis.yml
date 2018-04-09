@@ -13,6 +13,5 @@ install:
     - cd rss-temple/
     - npm install
 script:
-    - npm run build
     - npm run test-ci
     - npm run e2e-ci
