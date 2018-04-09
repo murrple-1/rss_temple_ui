@@ -10,8 +10,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-
-    "test-ci": "npm run config -- --environment=dev && ng test --single-run",
+    "test-ci": "npm run config -- --environment=dev && ng test --single-run --code-coverage",
     "e2e-ci": "npm run config -- --environment=dev && ng e2e"
   },
   "private": true,
@@ -38,6 +37,7 @@
     "@types/jasminewd2": "~2.0.2",
     "@types/node": "~6.0.60",
     "codelyzer": "^4.0.1",
+    "coveralls": "^3.0.0",
     "dotenv": "^5.0.1",
     "jasmine-core": "~2.8.0",
     "jasmine-spec-reporter": "~4.2.1",
