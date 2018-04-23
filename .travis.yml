@@ -11,7 +11,7 @@ before_install:
   - npm install -g @angular/cli
 install:
   - cd rss-temple/
-  - npm install
+  - npm ci
 script:
   - npm run test-ci
   - npm run e2e-ci
