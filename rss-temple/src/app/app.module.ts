@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
+import { SessionService } from './services/session.service';
 
 @NgModule({
   declarations: [
@@ -10,7 +11,9 @@ import { AppComponent } from './app.component';
   imports: [
     BrowserModule
   ],
-  providers: [],
+  providers: [
+    SessionService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
