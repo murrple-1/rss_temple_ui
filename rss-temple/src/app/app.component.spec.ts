@@ -1,21 +1,11 @@
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-
-import { SocialLoginModule, AuthServiceConfig } from "angularx-social-login";
-
-let config = new AuthServiceConfig([
-  // TODO
-]);
-
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
         AppComponent
       ],
-      imports: [
-        SocialLoginModule.initialize(config)
-      ]
     }).compileComponents();
   }));
   it('should create the app', async(() => {
