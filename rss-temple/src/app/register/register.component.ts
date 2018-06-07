@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
 import { AlertService } from '../_services/alert.service';
-import { UserService } from '../_services/user.service';
+import { LoginService } from '../_services/login.service';
 
 @Component({templateUrl: 'register.component.html'})
 export class RegisterComponent implements OnInit {
@@ -15,13 +15,11 @@ export class RegisterComponent implements OnInit {
     constructor(
         private formBuilder: FormBuilder,
         private router: Router,
-        private userService: UserService,
+        private loginService: LoginService,
         private alertService: AlertService) { }
 
     ngOnInit() {
         this.registerForm = this.formBuilder.group({
-            firstName: ['', Validators.required],
-            lastName: ['', Validators.required],
             username: ['', Validators.required],
             password: ['', [Validators.required, Validators.minLength(6)]]
         });
@@ -39,7 +37,7 @@ export class RegisterComponent implements OnInit {
         }
 
         this.loading = true;
-        this.userService.create(this.registerForm.value)
+        this.loginService.createMyLogin(this.f.username.value, this.f.password.value)
             .pipe(first())
             .subscribe(
                 data => {

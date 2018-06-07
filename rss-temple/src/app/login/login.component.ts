@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
 import { AlertService } from '../_services/alert.service';
-import { AuthenticationService } from '../_services/authentication.service';
+import { LoginService } from '../_services/login.service';
 
 @Component({templateUrl: 'login.component.html'})
 export class LoginComponent implements OnInit {
@@ -17,7 +17,7 @@ export class LoginComponent implements OnInit {
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private router: Router,
-        private authenticationService: AuthenticationService,
+        private loginService: LoginService,
         private alertService: AlertService) {}
 
     ngOnInit() {
@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
         });
 
         // reset login status
-        this.authenticationService.logout();
+        this.loginService.logout();
 
         // get return url from route parameters or default to '/'
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit {
         }
 
         this.loading = true;
-        this.authenticationService.login(this.f.username.value, this.f.password.value)
+        this.loginService.getMyLoginSession(this.f.username.value, this.f.password.value)
             .pipe(first())
             .subscribe(
                 data => {
