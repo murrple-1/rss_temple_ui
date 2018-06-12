@@ -20,33 +20,39 @@ export class RegisterComponent implements OnInit {
 
     ngOnInit() {
         this.registerForm = this.formBuilder.group({
-            username: ['', Validators.required],
+            email: ['', [Validators.required, Validators.email]],
             password: ['', [Validators.required, Validators.minLength(6)]]
         });
     }
 
-    // convenience getter for easy access to form fields
-    get f() { return this.registerForm.controls; }
-
     onSubmit() {
         this.submitted = true;
-
-        // stop here if form is invalid
         if (this.registerForm.invalid) {
             return;
         }
 
         this.loading = true;
-        this.loginService.createMyLogin(this.f.username.value, this.f.password.value)
-            .pipe(first())
-            .subscribe(
-                data => {
-                    this.alertService.success('Registration successful', true);
-                    this.router.navigate(['/login']);
-                },
-                error => {
-                    this.alertService.error(error);
-                    this.loading = false;
-                });
+        this.loginService.createMyLogin(this.registerForm.controls.email.value, this.registerForm.controls.password.value).pipe(first()).subscribe(
+            data => {
+                this.alertService.success('Registration successful', true);
+                this.router.navigate(['/login']);
+            },
+            error => {
+                let errorMessage = 'Unknown Error';
+                if('status' in error) {
+                    switch(error.status) {
+                        case 0:
+                            errorMessage = 'Unable to connect to server';
+                            break;
+                        case 409:
+                            errorMessage = 'Email already in use';
+                            break;
+                    }
+                }
+                this.alertService.error(errorMessage);
+
+                this.loading = false;
+            }
+        );
     }
 }

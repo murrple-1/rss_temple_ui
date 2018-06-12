@@ -9,11 +9,13 @@ import { environment } from '../../environments/environment';
 export class LoginService {
     constructor(private http: HttpClient) { }
 
-    createMyLogin(username: string, password: string) {
-        return this.http.post(environment.apiHost + '/api/login/my', { username: username, password: password });
+    createMyLogin(email: string, password: string) {
+        return this.http.post(environment.apiHost + '/api/login/my', { email: email, password: password });
     }
 
-    getMyLoginSession(username: string, password: string) {
-        return this.http.post(environment.apiHost + '/api/login/my/session', { username: username, password: password });
+    getMyLoginSession(email: string, password: string) {
+        return this.http.post(environment.apiHost + '/api/login/my/session', { email: email, password: password }, {
+            responseType: 'text'
+        });
     }
 }
