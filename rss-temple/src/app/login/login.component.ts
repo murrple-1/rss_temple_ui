@@ -2,6 +2,8 @@
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
+import { first } from 'rxjs/operators';
+
 import { AlertService } from '../_services/alert.service';
 import { LoginService } from '../_services/login.service';
 
@@ -19,7 +21,7 @@ export class LoginComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private loginService: LoginService,
-        private alertService: AlertService) {}
+        private alertService: AlertService) { }
 
     ngOnInit() {
         this.loginForm = this.formBuilder.group({
@@ -40,7 +42,7 @@ export class LoginComponent implements OnInit {
         }
 
         this.loading = true;
-        this.loginService.getMyLoginSession(this.loginForm.controls.email.value, this.loginForm.controls.password.value).subscribe(
+        this.loginService.getMyLoginSession(this.loginForm.controls.email.value, this.loginForm.controls.password.value).pipe(first()).subscribe(
             data => {
                 localStorage.setItem('sessionToken', data);
 
