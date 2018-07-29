@@ -1,12 +1,13 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { first } from 'rxjs/operators';
 
 import { AlertService } from '../_services/alert.service';
 import { LoginService } from '../_services/login.service';
 
-@Component({templateUrl: 'register.component.html'})
+@Component({
+    templateUrl: 'register.component.html'
+})
 export class RegisterComponent implements OnInit {
     registerForm: FormGroup;
     loading = false;
@@ -32,8 +33,8 @@ export class RegisterComponent implements OnInit {
         }
 
         this.loading = true;
-        this.loginService.createMyLogin(this.registerForm.controls.email.value, this.registerForm.controls.password.value).pipe(first()).subscribe(
-            data => {
+        this.loginService.createMyLogin(this.registerForm.controls.email.value, this.registerForm.controls.password.value).subscribe(
+            _ => {
                 this.alertService.success('Registration successful', true);
                 this.router.navigate(['/login']);
             },
