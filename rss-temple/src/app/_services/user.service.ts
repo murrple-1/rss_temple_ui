@@ -20,21 +20,21 @@ export class UserService {
             }
         }).pipe<User>(
             map(value => {
-                let user: User = {};
+                const user: User = {};
 
-                if('uuid' in value) {
-                    if(typeof value['uuid'] === 'string') {
+                if ('uuid' in value) {
+                    if (typeof value['uuid'] === 'string') {
                         user.uuid = value['uuid'];
                     } else {
                         throw new Error('\'uuid\' must be string');
                     }
                 }
 
-                if('email' in value) {
-                    if(typeof value['email'] === 'string') {
+                if ('email' in value) {
+                    if (typeof value['email'] === 'string') {
                         user.email = value['email'];
                     } else {
-                        throw new Error('\'email\' must be string')
+                        throw new Error('\'email\' must be string');
                     }
                 }
 

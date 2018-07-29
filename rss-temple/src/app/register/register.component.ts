@@ -40,8 +40,8 @@ export class RegisterComponent implements OnInit {
             },
             error => {
                 let errorMessage = 'Unknown Error';
-                if('status' in error) {
-                    switch(error.status) {
+                if ('status' in error) {
+                    switch (error.status) {
                         case 0:
                             errorMessage = 'Unable to connect to server';
                             break;
