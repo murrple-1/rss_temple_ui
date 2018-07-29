@@ -7,8 +7,8 @@ describe('workspace-project App', () => {
     page = new AppPage();
   });
 
-  it('should display welcome message', () => {
+  it('should display login page', () => {
     page.navigateTo();
-    expect(page.getParagraphText()).toEqual('Tour of Heroes');
+    expect(page.getParagraphText()).toEqual('Login');
   });
 });
