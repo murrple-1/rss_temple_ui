@@ -42,7 +42,9 @@ export class LoginComponent implements OnInit {
         }
 
         this.loading = true;
-        this.loginService.getMyLoginSession(this.loginForm.controls.email.value, this.loginForm.controls.password.value).pipe(first()).subscribe(
+        this.loginService.getMyLoginSession(this.loginForm.controls.email.value, this.loginForm.controls.password.value).pipe(
+            first()
+        ).subscribe(
             data => {
                 localStorage.setItem('sessionToken', data);
 
