@@ -46,7 +46,9 @@ function toUser(value: Object) {
 
 @Injectable()
 export class UserService {
-    constructor(private http: HttpClient) { }
+    constructor(
+        private http: HttpClient,
+    ) { }
 
     get(fields?: Field[], sessionToken?: string) {
         return this.http.get(environment.apiHost + '/api/user', {

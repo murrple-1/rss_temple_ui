@@ -78,7 +78,9 @@ function toFeed(value: Object) {
 
 @Injectable()
 export class FeedService {
-    constructor(private http: HttpClient) { }
+    constructor(
+        private http: HttpClient,
+    ) { }
 
     get(feedUrl: string, fields?: Field[], sessionToken?: string) {
         return this.http.get(environment.apiHost + '/api/feed', {

@@ -8,7 +8,8 @@ import { AlertService } from '../_services/alert.service';
 import { LoginService } from '../_services/login.service';
 
 @Component({
-    templateUrl: 'register.component.html'
+    templateUrl: 'register.component.html',
+    styleUrls: ['register.component.scss'],
 })
 export class RegisterComponent implements OnInit {
     registerForm: FormGroup;
@@ -19,7 +20,8 @@ export class RegisterComponent implements OnInit {
         private formBuilder: FormBuilder,
         private router: Router,
         private loginService: LoginService,
-        private alertService: AlertService) { }
+        private alertService: AlertService,
+    ) { }
 
     ngOnInit() {
         this.registerForm = this.formBuilder.group({

@@ -8,7 +8,8 @@ import { AlertService } from '../_services/alert.service';
 import { LoginService } from '../_services/login.service';
 
 @Component({
-    templateUrl: 'login.component.html'
+    templateUrl: 'login.component.html',
+    styleUrls: ['login.component.scss'],
 })
 export class LoginComponent implements OnInit {
     loginForm: FormGroup;
@@ -21,7 +22,8 @@ export class LoginComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private loginService: LoginService,
-        private alertService: AlertService) { }
+        private alertService: AlertService,
+    ) { }
 
     ngOnInit() {
         this.loginForm = this.formBuilder.group({
