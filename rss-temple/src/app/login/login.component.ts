@@ -6,6 +6,7 @@ import { first } from 'rxjs/operators';
 
 import { AlertService } from '../_services/alert.service';
 import { LoginService } from '../_services/login.service';
+import { GAuthService } from '../_services/gauth.service';
 
 @Component({
     templateUrl: 'login.component.html',
@@ -23,6 +24,7 @@ export class LoginComponent implements OnInit {
         private router: Router,
         private loginService: LoginService,
         private alertService: AlertService,
+        private gAuthService: GAuthService,
     ) { }
 
     ngOnInit() {
@@ -34,6 +36,8 @@ export class LoginComponent implements OnInit {
         localStorage.removeItem('sessionToken');
 
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+
+        this.gAuthService.loadAuth2();
     }
 
     onSubmit() {

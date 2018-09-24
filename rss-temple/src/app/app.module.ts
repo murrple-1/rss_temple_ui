@@ -12,6 +12,7 @@ import { AuthGuard } from './_guards/auth.guard';
 import { LoginService } from './_services/login.service';
 import { AlertService } from './_services/alert.service';
 import { UserService } from './_services/user.service';
+import { GAuthService } from './_services/gauth.service';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 
@@ -36,6 +37,7 @@ import { RegisterComponent } from './register/register.component';
         AlertService,
         LoginService,
         UserService,
+        GAuthService,
     ],
     bootstrap: [
         AppComponent,
