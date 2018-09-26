@@ -7,6 +7,7 @@ import { first } from 'rxjs/operators';
 import { AlertService } from '../_services/alert.service';
 import { LoginService } from '../_services/login.service';
 import { GAuthService } from '../_services/gauth.service';
+import { FBAuthService } from '../_services/fbauth.service';
 
 @Component({
     templateUrl: 'login.component.html',
@@ -25,6 +26,7 @@ export class LoginComponent implements OnInit {
         private loginService: LoginService,
         private alertService: AlertService,
         private gAuthService: GAuthService,
+        private fbAuthService: FBAuthService,
     ) { }
 
     ngOnInit() {
@@ -37,7 +39,13 @@ export class LoginComponent implements OnInit {
 
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
 
-        this.gAuthService.loadAuth2();
+        if (!this.gAuthService.isLoaded$.getValue()) {
+            this.gAuthService.load();
+        }
+
+        if (!this.fbAuthService.isLoaded$.getValue()) {
+            this.fbAuthService.load();
+        }
     }
 
     onSubmit() {
