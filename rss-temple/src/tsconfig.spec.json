@@ -5,7 +5,10 @@
     "module": "commonjs",
     "types": [
       "jasmine",
-      "node"
+      "node",
+      "gapi",
+      "gapi.auth2",
+      "facebook-js-sdk"
     ]
   },
   "files": [
