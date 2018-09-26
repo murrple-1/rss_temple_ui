@@ -82,4 +82,12 @@ export class LoginComponent implements OnInit {
             }
         );
     }
+
+    onGoogleLogin() {
+        console.log('Google');
+    }
+
+    onFacebookLogin() {
+        console.log('Facebook');
+    }
 }
