@@ -16,6 +16,7 @@ import { GAuthService } from './_services/gauth.service';
 import { FBAuthService } from './_services/fbauth.service';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
+import { MainComponent } from './main/main.component';
 
 @NgModule({
     imports: [
@@ -32,6 +33,7 @@ import { RegisterComponent } from './register/register.component';
         AlertComponent,
         LoginComponent,
         RegisterComponent,
+        MainComponent,
     ],
     providers: [
         AuthGuard,

@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -8,16 +8,26 @@ import { AlertService } from '../_services/alert.service';
 import { LoginService } from '../_services/login.service';
 import { GAuthService } from '../_services/gauth.service';
 import { FBAuthService } from '../_services/fbauth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
     templateUrl: 'login.component.html',
     styleUrls: ['login.component.scss'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
     loginForm: FormGroup;
-    loading = false;
     submitted = false;
     returnUrl: string;
+
+    isLoggingIn = false;
+
+    gLoaded = false;
+    private gLoadedSubscription: Subscription;
+    private gUserSubscription: Subscription;
+
+    fbLoaded = false;
+    private fbLoadedSubscription: Subscription;
+    private fbUserSubscription: Subscription;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -27,6 +37,7 @@ export class LoginComponent implements OnInit {
         private alertService: AlertService,
         private gAuthService: GAuthService,
         private fbAuthService: FBAuthService,
+        private changeDetectorRef: ChangeDetectorRef,
     ) { }
 
     ngOnInit() {
@@ -37,14 +48,64 @@ export class LoginComponent implements OnInit {
 
         localStorage.removeItem('sessionToken');
 
-        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/main';
 
-        if (!this.gAuthService.isLoaded$.getValue()) {
-            this.gAuthService.load();
+        this.gAuthService.isLoaded$.subscribe(isLoaded => {
+            if (isLoaded !== this.gLoaded) {
+                this.gLoaded = isLoaded;
+                this.changeDetectorRef.detectChanges();
+            }
+
+            if (!isLoaded) {
+                this.gAuthService.load();
+            }
+        });
+
+        this.gUserSubscription = this.gAuthService.user$.subscribe(user => {
+            this.isLoggingIn = false;
+            this.changeDetectorRef.detectChanges();
+
+            if (user) {
+                this.handleGoogleUser(user);
+            }
+        });
+
+        this.fbLoadedSubscription = this.fbAuthService.isLoaded$.subscribe(isLoaded => {
+            if (isLoaded !== this.fbLoaded) {
+                this.fbLoaded = isLoaded;
+                this.changeDetectorRef.detectChanges();
+            }
+
+            if (!isLoaded) {
+                this.fbAuthService.load();
+            }
+        });
+
+        this.fbUserSubscription = this.fbAuthService.user$.subscribe(user => {
+            this.isLoggingIn = false;
+            this.changeDetectorRef.detectChanges();
+
+            if (user) {
+                this.handleFacebookUser(user);
+            }
+        });
+    }
+
+    ngOnDestroy() {
+        if (this.gLoadedSubscription) {
+            this.gLoadedSubscription.unsubscribe();
         }
 
-        if (!this.fbAuthService.isLoaded$.getValue()) {
-            this.fbAuthService.load();
+        if (this.gUserSubscription) {
+            this.gUserSubscription.unsubscribe();
+        }
+
+        if (this.fbLoadedSubscription) {
+            this.fbLoadedSubscription.unsubscribe();
+        }
+
+        if (this.fbUserSubscription) {
+            this.fbUserSubscription.unsubscribe();
         }
     }
 
@@ -55,7 +116,7 @@ export class LoginComponent implements OnInit {
             return;
         }
 
-        this.loading = true;
+        this.isLoggingIn = true;
         this.loginService.getMyLoginSession(this.loginForm.controls.email.value, this.loginForm.controls.password.value).pipe(
             first()
         ).subscribe(
@@ -78,16 +139,38 @@ export class LoginComponent implements OnInit {
                 }
                 this.alertService.error(errorMessage);
 
-                this.loading = false;
+                this.isLoggingIn = false;
             }
         );
     }
 
     onGoogleLogin() {
-        console.log('Google');
+        const user = this.gAuthService.user$.getValue();
+        if (!user) {
+            this.isLoggingIn = true;
+            this.gAuthService.signIn();
+        } else {
+            this.handleGoogleUser(user);
+        }
+    }
+
+    handleGoogleUser(user: gapi.auth2.GoogleUser) {
+        console.log(user);
+        this.router.navigate([this.returnUrl]);
     }
 
     onFacebookLogin() {
-        console.log('Facebook');
+        const user = this.fbAuthService.user$.getValue();
+        if (!user) {
+            this.isLoggingIn = true;
+            this.fbAuthService.signIn();
+        } else {
+            this.handleFacebookUser(user);
+        }
+    }
+
+    handleFacebookUser(user: fb.AuthResponse) {
+        console.log(user);
+        this.router.navigate([this.returnUrl]);
     }
 }

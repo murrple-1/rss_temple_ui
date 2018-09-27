@@ -20,7 +20,7 @@ export class FBAuthService {
     }
 
     signOut() {
-        FB.logout(response => {
+        FB.logout(_ => {
             this.user$.next(null);
         });
     }
