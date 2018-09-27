@@ -13,6 +13,7 @@ import { AlertService } from './_services/alert.service';
 import { UserService } from './_services/user.service';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
+import { MainComponent } from './main/main.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -28,6 +29,7 @@ describe('AppComponent', () => {
         AlertComponent,
         LoginComponent,
         RegisterComponent,
+        MainComponent,
     ],
     providers: [
         {
