@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, OnInit, OnDestroy, ChangeDetectorRef, NgZone } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -38,6 +38,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         private gAuthService: GAuthService,
         private fbAuthService: FBAuthService,
         private changeDetectorRef: ChangeDetectorRef,
+        private zone: NgZone,
     ) { }
 
     ngOnInit() {
@@ -120,28 +121,34 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.loginService.getMyLoginSession(this.loginForm.controls.email.value, this.loginForm.controls.password.value).pipe(
             first()
         ).subscribe(
-            data => {
-                localStorage.setItem('sessionToken', data);
-
-                this.router.navigate([this.returnUrl]);
-            },
+            this.handleLoginSuccess.bind(this),
             error => {
                 let errorMessage = 'Unknown Error';
-                if ('status' in error) {
-                    switch (error.status) {
-                        case 0:
-                            errorMessage = 'Unable to connect to server';
-                            break;
-                        case 403:
-                            errorMessage = 'Email or password wrong';
-                            break;
-                    }
+                switch (error.status) {
+                    case 0:
+                        errorMessage = 'Unable to connect to server';
+                        break;
+                    case 403:
+                        errorMessage = 'Email or password wrong';
+                        break;
                 }
                 this.alertService.error(errorMessage);
 
                 this.isLoggingIn = false;
             }
         );
+    }
+
+    private handleLoginSuccess(data: string | Object) {
+        if (typeof data === 'string') {
+            this.zone.run(() => {
+                localStorage.setItem('sessionToken', data);
+
+                this.router.navigate([this.returnUrl]);
+            });
+        } else {
+            throw new Error('data is not a string');
+        }
     }
 
     onGoogleLogin() {
@@ -157,22 +164,21 @@ export class LoginComponent implements OnInit, OnDestroy {
     private handleGoogleUser(user: gapi.auth2.GoogleUser) {
         this.loginService.getGoogleLoginSession(user).pipe(
             first()
-        ).subscribe(data => {
-            localStorage.setItem('sessionToken', data);
-
-            this.router.navigate([this.returnUrl]);
-        }, error => {
+        ).subscribe(
+            this.handleLoginSuccess.bind(this),
+            error => {
             let errorMessage = 'Unknown Error';
-            if ('status' in error) {
-                switch (error.status) {
-                    case 0:
-                        errorMessage = 'Unable to connect to server';
-                        break;
-                }
+            switch (error.status) {
+                case 0:
+                    errorMessage = 'Unable to connect to server';
+                    break;
             }
-            this.alertService.error(errorMessage);
 
-            this.isLoggingIn = false;
+            this.zone.run(() => {
+                this.alertService.error(errorMessage);
+
+                this.isLoggingIn = false;
+            });
         });
     }
 
@@ -189,26 +195,28 @@ export class LoginComponent implements OnInit, OnDestroy {
     private handleFacebookUser(user: fb.AuthResponse) {
         this.loginService.getFacebookLoginSession(user).pipe(
             first()
-        ).subscribe(data => {
-            localStorage.setItem('sessionToken', data);
+        ).subscribe(
+            this.handleLoginSuccess.bind(this),
+            error => {
+                if (error.status === 422) {
+                    this.zone.run(() => {
+                        this.router.navigate(['/register', { fb_id: error.error.profile_id, email: error.error.email }]);
+                    });
+                } else {
+                    let errorMessage = 'Unknown Error';
+                    switch (error.status) {
+                        case 0:
+                            errorMessage = 'Unable to connect to server';
+                            break;
+                    }
 
-            this.router.navigate([this.returnUrl]);
-        }, error => {
-            // TODO cleanup
-            let errorMessage = 'Unknown Error';
-            if ('status' in error) {
-                switch (error.status) {
-                    case 0:
-                        errorMessage = 'Unable to connect to server';
-                        break;
-                    case 422:
-                        this.router.navigate(['/register', { fb_id: user.userID }]);
-                        return;
+                    this.zone.run(() => {
+                        this.alertService.error(errorMessage);
+
+                        this.isLoggingIn = false;
+                    });
                 }
             }
-            this.alertService.error(errorMessage);
-
-            this.isLoggingIn = false;
-        });
+        );
     }
 }

@@ -9,14 +9,16 @@ export class FBAuthService {
     public user$ = new BehaviorSubject<facebook.AuthResponse>(null);
     public isLoaded$ = new BehaviorSubject<boolean>(false);
 
-    signIn() {
+    signIn(options: fb.LoginOptions = {
+        scope: 'email',
+    }) {
         FB.login(response => {
             if (response.status === 'connected') {
                 this.user$.next(response.authResponse);
             } else {
                 this.user$.next(null);
             }
-        });
+        }, options);
     }
 
     signOut() {

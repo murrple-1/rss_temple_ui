@@ -58,27 +58,27 @@ export class LoginService {
     }
 
     getMyLoginSession(email: string, password: string) {
-        return this.http.post(environment.apiHost + '/api/login/my/session', {
+        return this.http.post<string | Object>(environment.apiHost + '/api/login/my/session', {
             email: email,
             password: password,
         }, {
-            responseType: 'text'
+            responseType: 'json'
         });
     }
 
     getGoogleLoginSession(user: gapi.auth2.GoogleUser) {
-        return this.http.post(environment.apiHost + '/api/login/google/session', {
+        return this.http.post<string | Object>(environment.apiHost + '/api/login/google/session', {
             token: user.getAuthResponse().access_token,
         }, {
-            responseType: 'text'
+            responseType: 'json'
         });
     }
 
     getFacebookLoginSession(user: facebook.AuthResponse) {
-        return this.http.post(environment.apiHost + '/api/login/facebook/session', {
+        return this.http.post<string | Object>(environment.apiHost + '/api/login/facebook/session', {
             token: user.accessToken,
         }, {
-            responseType: 'text'
+            responseType: 'json'
         });
     }
 }

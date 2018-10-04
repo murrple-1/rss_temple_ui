@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit, NgZone } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -24,11 +24,12 @@ export class RegisterComponent implements OnInit {
         private route: ActivatedRoute,
         private loginService: LoginService,
         private alertService: AlertService,
+        private zone: NgZone,
     ) { }
 
     ngOnInit() {
         this.registerForm = this.formBuilder.group({
-            email: ['', [Validators.required, Validators.email]],
+            email: [this.route.snapshot.paramMap.get('email') || '', [Validators.required, Validators.email]],
             password: ['', [Validators.required, Validators.minLength(6)]]
         });
 
@@ -43,55 +44,45 @@ export class RegisterComponent implements OnInit {
 
         this.loading = true;
 
-        // TODO cleanup
         if (this.fb_id !== null) {
-            this.loginService.createFacebookLogin(this.registerForm.controls.email.value, this.registerForm.controls.password.value, this.fb_id).pipe(
+            this.loginService.createFacebookLogin(
+                this.registerForm.controls.email.value,
+                this.registerForm.controls.password.value,
+                this.fb_id
+            ).pipe(
                 first()
-            ).subscribe(
-                _ => {
-                    this.router.navigate(['/login']);
-                },
-                error => {
-                    let errorMessage = 'Unknown Error';
-                    if ('status' in error) {
-                        switch (error.status) {
-                            case 0:
-                                errorMessage = 'Unable to connect to server';
-                                break;
-                            case 409:
-                                errorMessage = 'Email already in use';
-                                break;
-                        }
-                    }
-                    this.alertService.error(errorMessage);
-
-                    this.loading = false;
-                }
-            );
+            ).subscribe(this.handleRegisterSuccess.bind(this), this.handleRegisterError);
         } else {
-            this.loginService.createMyLogin(this.registerForm.controls.email.value, this.registerForm.controls.password.value).pipe(
+            this.loginService.createMyLogin(
+                this.registerForm.controls.email.value,
+                this.registerForm.controls.password.value
+            ).pipe(
                 first()
-            ).subscribe(
-                _ => {
-                    this.router.navigate(['/login']);
-                },
-                error => {
-                    let errorMessage = 'Unknown Error';
-                    if ('status' in error) {
-                        switch (error.status) {
-                            case 0:
-                                errorMessage = 'Unable to connect to server';
-                                break;
-                            case 409:
-                                errorMessage = 'Email already in use';
-                                break;
-                        }
-                    }
-                    this.alertService.error(errorMessage);
-
-                    this.loading = false;
-                }
-            );
+            ).subscribe(this.handleRegisterSuccess.bind(this), this.handleRegisterError);
         }
+    }
+
+    private handleRegisterSuccess(_: boolean) {
+        this.zone.run(() => {
+            this.router.navigate(['/login']);
+        });
+    }
+
+    private handleRegisterError(error: any) {
+        let errorMessage = 'Unknown Error';
+        switch (error.status) {
+            case 0:
+                errorMessage = 'Unable to connect to server';
+                break;
+            case 409:
+                errorMessage = 'Email already in use';
+                break;
+        }
+
+        this.zone.run(() => {
+            this.alertService.error(errorMessage);
+
+            this.loading = false;
+        });
     }
 }
