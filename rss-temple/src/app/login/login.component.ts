@@ -154,9 +154,26 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
     }
 
-    handleGoogleUser(user: gapi.auth2.GoogleUser) {
-        console.log(user);
-        this.router.navigate([this.returnUrl]);
+    private handleGoogleUser(user: gapi.auth2.GoogleUser) {
+        this.loginService.getGoogleLoginSession(user).pipe(
+            first()
+        ).subscribe(data => {
+            localStorage.setItem('sessionToken', data);
+
+            this.router.navigate([this.returnUrl]);
+        }, error => {
+            let errorMessage = 'Unknown Error';
+            if ('status' in error) {
+                switch (error.status) {
+                    case 0:
+                        errorMessage = 'Unable to connect to server';
+                        break;
+                }
+            }
+            this.alertService.error(errorMessage);
+
+            this.isLoggingIn = false;
+        });
     }
 
     onFacebookLogin() {
@@ -169,8 +186,29 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
     }
 
-    handleFacebookUser(user: fb.AuthResponse) {
-        console.log(user);
-        this.router.navigate([this.returnUrl]);
+    private handleFacebookUser(user: fb.AuthResponse) {
+        this.loginService.getFacebookLoginSession(user).pipe(
+            first()
+        ).subscribe(data => {
+            localStorage.setItem('sessionToken', data);
+
+            this.router.navigate([this.returnUrl]);
+        }, error => {
+            // TODO cleanup
+            let errorMessage = 'Unknown Error';
+            if ('status' in error) {
+                switch (error.status) {
+                    case 0:
+                        errorMessage = 'Unable to connect to server';
+                        break;
+                    case 422:
+                        this.router.navigate(['/register', { fb_id: user.userID }]);
+                        return;
+                }
+            }
+            this.alertService.error(errorMessage);
+
+            this.isLoggingIn = false;
+        });
     }
 }

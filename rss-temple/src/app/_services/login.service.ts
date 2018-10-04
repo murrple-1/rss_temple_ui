@@ -14,7 +14,38 @@ export class LoginService {
     createMyLogin(email: string, password: string) {
         return this.http.post(environment.apiHost + '/api/login/my', {
             email: email,
-            password: password
+            password: password,
+        }, {
+            responseType: 'text'
+        }).pipe(
+            map(
+                _ => {
+                    return true;
+                }
+            )
+        );
+    }
+
+    createGoogleLogin(email: string, password: string) {
+        return this.http.post(environment.apiHost + '/api/login/google', {
+            email: email,
+            password: password,
+        }, {
+            responseType: 'text'
+        }).pipe(
+            map(
+                _ => {
+                    return true;
+                }
+            )
+        );
+    }
+
+    createFacebookLogin(email: string, password: string, profile_id: string) {
+        return this.http.post(environment.apiHost + '/api/login/facebook', {
+            email: email,
+            password: password,
+            profile_id: profile_id,
         }, {
             responseType: 'text'
         }).pipe(
@@ -29,7 +60,23 @@ export class LoginService {
     getMyLoginSession(email: string, password: string) {
         return this.http.post(environment.apiHost + '/api/login/my/session', {
             email: email,
-            password: password
+            password: password,
+        }, {
+            responseType: 'text'
+        });
+    }
+
+    getGoogleLoginSession(user: gapi.auth2.GoogleUser) {
+        return this.http.post(environment.apiHost + '/api/login/google/session', {
+            token: user.getAuthResponse().access_token,
+        }, {
+            responseType: 'text'
+        });
+    }
+
+    getFacebookLoginSession(user: facebook.AuthResponse) {
+        return this.http.post(environment.apiHost + '/api/login/facebook/session', {
+            token: user.accessToken,
         }, {
             responseType: 'text'
         });
