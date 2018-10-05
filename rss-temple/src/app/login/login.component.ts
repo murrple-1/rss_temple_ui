@@ -200,7 +200,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             error => {
                 if (error.status === 422) {
                     this.zone.run(() => {
-                        this.router.navigate(['/register', { fb_id: error.error.profile_id, email: error.error.email }]);
+                        this.router.navigate(['/register', { fb_token: error.error.token, email: error.error.email }]);
                     });
                 } else {
                     let errorMessage = 'Unknown Error';

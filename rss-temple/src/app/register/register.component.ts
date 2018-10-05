@@ -16,7 +16,7 @@ export class RegisterComponent implements OnInit {
     loading = false;
     submitted = false;
 
-    private fb_id: string;
+    private fb_token: string;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -33,7 +33,7 @@ export class RegisterComponent implements OnInit {
             password: ['', [Validators.required, Validators.minLength(6)]]
         });
 
-        this.fb_id = this.route.snapshot.paramMap.get('fb_id');
+        this.fb_token = this.route.snapshot.paramMap.get('fb_token');
     }
 
     onSubmit() {
@@ -44,11 +44,11 @@ export class RegisterComponent implements OnInit {
 
         this.loading = true;
 
-        if (this.fb_id !== null) {
+        if (this.fb_token !== null) {
             this.loginService.createFacebookLogin(
                 this.registerForm.controls.email.value,
                 this.registerForm.controls.password.value,
-                this.fb_id
+                this.fb_token
             ).pipe(
                 first()
             ).subscribe(this.handleRegisterSuccess.bind(this), this.handleRegisterError);

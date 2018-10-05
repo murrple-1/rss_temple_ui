@@ -41,11 +41,11 @@ export class LoginService {
         );
     }
 
-    createFacebookLogin(email: string, password: string, profile_id: string) {
+    createFacebookLogin(email: string, password: string, token: string) {
         return this.http.post(environment.apiHost + '/api/login/facebook', {
             email: email,
             password: password,
-            profile_id: profile_id,
+            token: token,
         }, {
             responseType: 'text'
         }).pipe(
