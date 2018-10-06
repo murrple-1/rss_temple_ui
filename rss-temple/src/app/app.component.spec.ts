@@ -7,7 +7,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import { AppComponent } from './app.component';
 import { routing } from './app.routing';
 import { AlertComponent } from './_directives/alert.component';
-import { AuthGuard } from './_guards/auth.guard';
+import { AuthGuard, NoAuthGuard } from './_guards/auth.guard';
 import { LoginService } from './_services/login.service';
 import { AlertService } from './_services/alert.service';
 import { UserService } from './_services/user.service';
@@ -37,6 +37,7 @@ describe('AppComponent', () => {
           useValue : '/'
         },
         AuthGuard,
+        NoAuthGuard,
         AlertService,
         LoginService,
         UserService,

@@ -16,3 +16,19 @@ export class AuthGuard implements CanActivate {
         return false;
     }
 }
+
+@Injectable()
+export class NoAuthGuard implements CanActivate {
+    constructor(
+        private router: Router,
+    ) { }
+
+    canActivate(_: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+        if (!localStorage.getItem('sessionToken')) {
+            return true;
+        }
+
+        this.router.navigate(['/main']);
+        return false;
+    }
+}
