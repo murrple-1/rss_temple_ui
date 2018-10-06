@@ -3,8 +3,9 @@ import { HttpClient } from '@angular/common/http';
 
 import { map } from 'rxjs/operators';
 
-import { environment } from '../../environments/environment';
-import { User } from '../_models/user';
+import { User } from '@app/_models/user';
+
+import { environment } from '@environments/environment';
 
 export type Field = 'uuid' | 'email' | 'subscribedFeedUuids';
 

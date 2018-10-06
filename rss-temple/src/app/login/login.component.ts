@@ -2,13 +2,13 @@
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
+import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 
-import { AlertService } from '../_services/alert.service';
-import { LoginService } from '../_services/login.service';
-import { GAuthService } from '../_services/gauth.service';
-import { FBAuthService } from '../_services/fbauth.service';
-import { Subscription } from 'rxjs';
+import { AlertService } from '@app/_services/alert.service';
+import { LoginService } from '@app/_services/login.service';
+import { GAuthService } from '@app/_services/gauth.service';
+import { FBAuthService } from '@app/_services/fbauth.service';
 
 @Component({
     templateUrl: 'login.component.html',

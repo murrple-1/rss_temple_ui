@@ -4,8 +4,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { first } from 'rxjs/operators';
 
-import { AlertService } from '../_services/alert.service';
-import { LoginService } from '../_services/login.service';
+import { AlertService } from '@app/_services/alert.service';
+import { LoginService } from '@app/_services/login.service';
 
 @Component({
     templateUrl: 'register.component.html',

@@ -47,5 +47,4 @@ import { MainComponent } from './main/main.component';
         AppComponent,
     ],
 })
-
 export class AppModule { }

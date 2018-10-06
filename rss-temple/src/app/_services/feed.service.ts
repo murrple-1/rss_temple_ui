@@ -5,8 +5,9 @@ import { map } from 'rxjs/operators';
 
 import { utc } from 'moment';
 
-import { environment } from '../../environments/environment';
-import { Feed } from '../_models/feed';
+import { Feed } from '@app/_models/feed';
+
+import { environment } from '@environments/environment';
 
 export type Field = 'uuid' | 'title' | 'feedUrl' | 'homeUrl' | 'publishedAt' | 'updatedAt';
 

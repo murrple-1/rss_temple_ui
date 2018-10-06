@@ -2,7 +2,7 @@
 
 import { Subscription } from 'rxjs';
 
-import { AlertService, Message } from '../_services/alert.service';
+import { AlertService, Message } from '@app/_services/alert.service';
 
 @Component({
     selector: 'app-alert',
