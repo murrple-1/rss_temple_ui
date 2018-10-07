@@ -26,10 +26,11 @@ export class LoginService {
         );
     }
 
-    createGoogleLogin(email: string, password: string) {
+    createGoogleLogin(email: string, password: string, token: string) {
         return this.http.post(environment.apiHost + '/api/login/google', {
             email: email,
             password: password,
+            token: token,
         }, {
             responseType: 'text'
         }).pipe(
@@ -68,7 +69,7 @@ export class LoginService {
 
     getGoogleLoginSession(user: gapi.auth2.GoogleUser) {
         return this.http.post<string | Object>(environment.apiHost + '/api/login/google/session', {
-            token: user.getAuthResponse().access_token,
+            token: user.getAuthResponse().id_token,
         }, {
             responseType: 'json'
         });

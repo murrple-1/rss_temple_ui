@@ -47,8 +47,6 @@ export class LoginComponent implements OnInit, OnDestroy {
             password: ['', Validators.required]
         });
 
-        localStorage.removeItem('sessionToken');
-
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/main';
 
         this.gAuthService.isLoaded$.subscribe(isLoaded => {
@@ -152,13 +150,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     onGoogleLogin() {
-        const user = this.gAuthService.user$.getValue();
-        if (!user) {
-            this.isLoggingIn = true;
-            this.gAuthService.signIn();
-        } else {
-            this.handleGoogleUser(user);
-        }
+        this.isLoggingIn = true;
+        this.gAuthService.signIn();
     }
 
     private handleGoogleUser(user: gapi.auth2.GoogleUser) {
@@ -167,29 +160,31 @@ export class LoginComponent implements OnInit, OnDestroy {
         ).subscribe(
             this.handleLoginSuccess.bind(this),
             error => {
-            let errorMessage = 'Unknown Error';
-            switch (error.status) {
-                case 0:
-                    errorMessage = 'Unable to connect to server';
-                    break;
+                if (error.status === 422) {
+                    this.zone.run(() => {
+                        this.router.navigate(['/register', { g_token: error.error.token, email: error.error.email }]);
+                    });
+                } else {
+                    let errorMessage = 'Unknown Error';
+                    switch (error.status) {
+                        case 0:
+                            errorMessage = 'Unable to connect to server';
+                            break;
+                    }
+
+                    this.zone.run(() => {
+                        this.alertService.error(errorMessage);
+
+                        this.isLoggingIn = false;
+                    });
+                }
             }
-
-            this.zone.run(() => {
-                this.alertService.error(errorMessage);
-
-                this.isLoggingIn = false;
-            });
-        });
+        );
     }
 
     onFacebookLogin() {
-        const user = this.fbAuthService.user$.getValue();
-        if (!user) {
-            this.isLoggingIn = true;
-            this.fbAuthService.signIn();
-        } else {
-            this.handleFacebookUser(user);
-        }
+        this.isLoggingIn = true;
+        this.fbAuthService.signIn();
     }
 
     private handleFacebookUser(user: fb.AuthResponse) {

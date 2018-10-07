@@ -16,6 +16,7 @@ export class RegisterComponent implements OnInit {
     loading = false;
     submitted = false;
 
+    private g_token: string;
     private fb_token: string;
 
     constructor(
@@ -33,6 +34,7 @@ export class RegisterComponent implements OnInit {
             password: ['', [Validators.required, Validators.minLength(6)]]
         });
 
+        this.g_token = this.route.snapshot.paramMap.get('g_token');
         this.fb_token = this.route.snapshot.paramMap.get('fb_token');
     }
 
@@ -44,21 +46,29 @@ export class RegisterComponent implements OnInit {
 
         this.loading = true;
 
-        if (this.fb_token !== null) {
+        if (this.g_token !== null) {
+            this.loginService.createGoogleLogin(
+                this.registerForm.controls.email.value,
+                this.registerForm.controls.password.value,
+                this.g_token
+            ).pipe(
+                first()
+            ).subscribe(this.handleRegisterSuccess.bind(this), this.handleRegisterError.bind(this));
+        } else if (this.fb_token !== null) {
             this.loginService.createFacebookLogin(
                 this.registerForm.controls.email.value,
                 this.registerForm.controls.password.value,
                 this.fb_token
             ).pipe(
                 first()
-            ).subscribe(this.handleRegisterSuccess.bind(this), this.handleRegisterError);
+            ).subscribe(this.handleRegisterSuccess.bind(this), this.handleRegisterError.bind(this));
         } else {
             this.loginService.createMyLogin(
                 this.registerForm.controls.email.value,
                 this.registerForm.controls.password.value
             ).pipe(
                 first()
-            ).subscribe(this.handleRegisterSuccess.bind(this), this.handleRegisterError);
+            ).subscribe(this.handleRegisterSuccess.bind(this), this.handleRegisterError.bind(this));
         }
     }
 
