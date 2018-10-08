@@ -72,7 +72,7 @@ export class RegisterComponent implements OnInit {
         }
     }
 
-    private handleRegisterSuccess(_: boolean) {
+    private handleRegisterSuccess() {
         this.zone.run(() => {
             this.router.navigate(['/login']);
         });

@@ -1,8 +1,6 @@
 ﻿import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { map } from 'rxjs/operators';
-
 import { environment } from '@environments/environment';
 
 @Injectable()
@@ -12,50 +10,26 @@ export class LoginService {
     ) { }
 
     createMyLogin(email: string, password: string) {
-        return this.http.post(environment.apiHost + '/api/login/my', {
+        return this.http.post<void>(environment.apiHost + '/api/login/my', {
             email: email,
             password: password,
-        }, {
-            responseType: 'text'
-        }).pipe(
-            map(
-                _ => {
-                    return true;
-                }
-            )
-        );
+        });
     }
 
     createGoogleLogin(email: string, password: string, token: string) {
-        return this.http.post(environment.apiHost + '/api/login/google', {
+        return this.http.post<void>(environment.apiHost + '/api/login/google', {
             email: email,
             password: password,
             token: token,
-        }, {
-            responseType: 'text'
-        }).pipe(
-            map(
-                _ => {
-                    return true;
-                }
-            )
-        );
+        });
     }
 
     createFacebookLogin(email: string, password: string, token: string) {
-        return this.http.post(environment.apiHost + '/api/login/facebook', {
+        return this.http.post<void>(environment.apiHost + '/api/login/facebook', {
             email: email,
             password: password,
             token: token,
-        }, {
-            responseType: 'text'
-        }).pipe(
-            map(
-                _ => {
-                    return true;
-                }
-            )
-        );
+        });
     }
 
     getMyLoginSession(email: string, password: string) {
