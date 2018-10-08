@@ -12,44 +12,49 @@ import { environment } from '@environments/environment';
 
 export type Field = 'uuid' | 'title' | 'feedUrl' | 'homeUrl' | 'publishedAt' | 'updatedAt';
 
-function toFeed(value: Object) {
+function toFeed(value: Record<string, any>) {
     const feed: Feed = {};
 
     if ('uuid' in value) {
-        if (typeof value['uuid'] === 'string') {
-            feed.uuid = value['uuid'];
+        const uuid = value['uuid'];
+        if (typeof uuid === 'string') {
+            feed.uuid = uuid;
         } else {
             throw new Error('\'uuid\' must be string');
         }
     }
 
     if ('title' in value) {
-        if (typeof value['title'] === 'string') {
-            feed.title = value['title'];
+        const title = value['title'];
+        if (typeof title === 'string') {
+            feed.title = title;
         } else {
             throw new Error('\'title\' must be string');
         }
     }
 
     if ('feedUrl' in value) {
-        if (typeof value['feedUrl'] === 'string') {
-            feed.feedUrl = value['feedUrl'];
+        const feedUrl = value['feedUrl'];
+        if (typeof feedUrl === 'string') {
+            feed.feedUrl = feedUrl;
         } else {
             throw new Error('\'feedUrl\' must be string');
         }
     }
 
     if ('homeUrl' in value) {
-        if (value['homeUrl'] === null || typeof value['homeUrl'] === 'string') {
-            feed.homeUrl = value['feedUrl'];
+        const homeUrl = value['homeUrl'];
+        if (homeUrl === null || typeof homeUrl === 'string') {
+            feed.homeUrl = homeUrl;
         } else {
             throw new Error('\'homeUrl\' must be string or null');
         }
     }
 
     if ('publishedAt' in value) {
-        if (typeof value['publishedAt'] === 'string') {
-            const _moment = utc(value['publishedAt'], 'YYYY-MM-DD HH:mm:ss');
+        const publishedAt = value['publishedAt'];
+        if (typeof publishedAt === 'string') {
+            const _moment = utc(publishedAt, 'YYYY-MM-DD HH:mm:ss');
             if (_moment.isValid()) {
                 feed.publishedAt = _moment;
             } else {
@@ -61,10 +66,11 @@ function toFeed(value: Object) {
     }
 
     if ('updatedAt' in value) {
-        if (value['updatedAt'] === null) {
+        const updatedAt = value['updatedAt'];
+        if (updatedAt === null) {
             feed.updatedAt = null;
-        } else if (typeof value['updatedAt'] === 'string') {
-            const _moment = utc(value['updatedAt'], 'YYYY-MM-DD HH:mm:ss');
+        } else if (typeof updatedAt === 'string') {
+            const _moment = utc(updatedAt, 'YYYY-MM-DD HH:mm:ss');
             if (_moment.isValid()) {
                 feed.updatedAt = _moment;
             } else {

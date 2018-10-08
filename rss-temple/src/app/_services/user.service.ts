@@ -10,28 +10,31 @@ import { environment } from '@environments/environment';
 
 export type Field = 'uuid' | 'email' | 'subscribedFeedUuids';
 
-function toUser(value: Object) {
+function toUser(value: Record<string, any>) {
     const user: User = {};
 
     if ('uuid' in value) {
-        if (typeof value['uuid'] === 'string') {
-            user.uuid = value['uuid'];
+        const uuid = value['uuid'];
+        if (typeof uuid === 'string') {
+            user.uuid = uuid;
         } else {
             throw new Error('\'uuid\' must be string');
         }
     }
 
     if ('email' in value) {
-        if (typeof value['email'] === 'string') {
-            user.email = value['email'];
+        const email = value['email'];
+        if (typeof email === 'string') {
+            user.email = email;
         } else {
             throw new Error('\'email\' must be string');
         }
     }
 
     if ('subscribedFeedUuids' in value) {
-        if (value['subscribedFeedUuids'] instanceof Array) {
-            value['subscribedFeedUuids'].forEach(element => {
+        const subscribedFeedUuids = value['subscribedFeedUuids'];
+        if (subscribedFeedUuids instanceof Array) {
+            subscribedFeedUuids.forEach(element => {
                 if (typeof element !== 'string') {
                     throw new Error('\'subscribedFeedUuids\' element must be string');
                 }
