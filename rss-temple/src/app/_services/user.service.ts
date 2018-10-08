@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 
 import { User } from '@app/_models/user';
+import { sessionToken } from '@app/_modules/session.module';
 
 import { environment } from '@environments/environment';
 
@@ -51,10 +52,10 @@ export class UserService {
         private http: HttpClient,
     ) { }
 
-    get(fields?: Field[], sessionToken?: string) {
+    get(fields?: Field[], _sessionToken?: string) {
         return this.http.get(environment.apiHost + '/api/user', {
             headers: {
-                'X-Session-Token': sessionToken || localStorage.getItem('sessionToken')
+                'X-Session-Token': _sessionToken || sessionToken()
             },
             params: {
                 'fields': (fields || ['uuid']).join(',')

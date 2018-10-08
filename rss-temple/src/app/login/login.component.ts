@@ -9,6 +9,7 @@ import { AlertService } from '@app/_services/alert.service';
 import { LoginService } from '@app/_services/login.service';
 import { GAuthService } from '@app/_services/gauth.service';
 import { FBAuthService } from '@app/_services/fbauth.service';
+import { setSessionToken } from '@app/_modules/session.module';
 
 @Component({
     templateUrl: 'login.component.html',
@@ -140,7 +141,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private handleLoginSuccess(data: string | Object) {
         if (typeof data === 'string') {
             this.zone.run(() => {
-                localStorage.setItem('sessionToken', data);
+                setSessionToken(data);
 
                 this.router.navigate([this.returnUrl]);
             });

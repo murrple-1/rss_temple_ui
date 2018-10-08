@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import { utc } from 'moment';
 
 import { Feed } from '@app/_models/feed';
+import { sessionToken } from '@app/_modules/session.module';
 
 import { environment } from '@environments/environment';
 
@@ -83,10 +84,10 @@ export class FeedService {
         private http: HttpClient,
     ) { }
 
-    get(feedUrl: string, fields?: Field[], sessionToken?: string) {
+    get(feedUrl: string, fields?: Field[], _sessionToken?: string) {
         return this.http.get(environment.apiHost + '/api/feed', {
             headers: {
-                'X-Session-Token': sessionToken || localStorage.getItem('sessionToken')
+                'X-Session-Token': _sessionToken || sessionToken()
             },
             params: {
                 'url': feedUrl,

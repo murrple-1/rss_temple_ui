@@ -1,6 +1,8 @@
 ﻿import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
+import { sessionToken } from '@app/_modules/session.module';
+
 @Injectable()
 export class AuthGuard implements CanActivate {
     constructor(
@@ -8,7 +10,7 @@ export class AuthGuard implements CanActivate {
     ) { }
 
     canActivate(_: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        if (localStorage.getItem('sessionToken')) {
+        if (sessionToken() !== null) {
             return true;
         }
 
@@ -24,7 +26,7 @@ export class NoAuthGuard implements CanActivate {
     ) { }
 
     canActivate(_: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        if (!localStorage.getItem('sessionToken')) {
+        if (sessionToken() === null) {
             return true;
         }
 
