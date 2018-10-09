@@ -1,1 +1,4 @@
-Hello
+<input [(ngModel)]="feedUrl">
+<button (click)="onSubscribe()">Subscribe</button>
+
+<span *ngIf="feed">{{feed.title}}</span>

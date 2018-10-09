@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, OnDestroy, ChangeDetectorRef, NgZone } from '@angular/core';
+﻿import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -38,7 +38,6 @@ export class LoginComponent implements OnInit, OnDestroy {
         private alertService: AlertService,
         private gAuthService: GAuthService,
         private fbAuthService: FBAuthService,
-        private changeDetectorRef: ChangeDetectorRef,
         private zone: NgZone,
     ) { }
 
@@ -52,8 +51,9 @@ export class LoginComponent implements OnInit, OnDestroy {
 
         this.gAuthService.isLoaded$.subscribe(isLoaded => {
             if (isLoaded !== this.gLoaded) {
-                this.gLoaded = isLoaded;
-                this.changeDetectorRef.detectChanges();
+                this.zone.run(() => {
+                    this.gLoaded = isLoaded;
+                });
             }
 
             if (!isLoaded) {
@@ -62,8 +62,9 @@ export class LoginComponent implements OnInit, OnDestroy {
         });
 
         this.gUserSubscription = this.gAuthService.user$.subscribe(user => {
-            this.isLoggingIn = false;
-            this.changeDetectorRef.detectChanges();
+            this.zone.run(() => {
+                this.isLoggingIn = false;
+            });
 
             if (user) {
                 this.handleGoogleUser(user);
@@ -72,8 +73,9 @@ export class LoginComponent implements OnInit, OnDestroy {
 
         this.fbLoadedSubscription = this.fbAuthService.isLoaded$.subscribe(isLoaded => {
             if (isLoaded !== this.fbLoaded) {
-                this.fbLoaded = isLoaded;
-                this.changeDetectorRef.detectChanges();
+                this.zone.run(() => {
+                    this.fbLoaded = isLoaded;
+                });
             }
 
             if (!isLoaded) {
@@ -82,8 +84,9 @@ export class LoginComponent implements OnInit, OnDestroy {
         });
 
         this.fbUserSubscription = this.fbAuthService.user$.subscribe(user => {
-            this.isLoggingIn = false;
-            this.changeDetectorRef.detectChanges();
+            this.zone.run(() => {
+                this.isLoggingIn = false;
+            });
 
             if (user) {
                 this.handleFacebookUser(user);

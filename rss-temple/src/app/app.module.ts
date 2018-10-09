@@ -1,6 +1,6 @@
 ﻿import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { ButtonModule } from 'primeng/button';
@@ -17,10 +17,13 @@ import { FBAuthService } from './_services/fbauth.service';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { MainComponent } from './main/main.component';
+import { FeedService } from './_services/feed.service';
+import { FeedEntryService } from './_services/feedentry.service';
 
 @NgModule({
     imports: [
         BrowserModule,
+        FormsModule,
         ReactiveFormsModule,
         HttpClientModule,
 
@@ -41,6 +44,8 @@ import { MainComponent } from './main/main.component';
         AlertService,
         LoginService,
         UserService,
+        FeedService,
+        FeedEntryService,
         GAuthService,
         FBAuthService,
     ],

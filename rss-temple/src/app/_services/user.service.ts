@@ -11,7 +11,7 @@ import { environment } from '@environments/environment';
 export type Field = 'uuid' | 'email' | 'subscribedFeedUuids';
 
 function toUser(value: Record<string, any>) {
-    const user: User = {};
+    const user = new User();
 
     if ('uuid' in value) {
         const uuid = value['uuid'];
@@ -56,13 +56,21 @@ export class UserService {
     ) { }
 
     get(fields?: Field[], _sessionToken?: string) {
+        const headers: {
+            [header: string]: string | string[]
+        } = {
+            'X-Session-Token': _sessionToken || sessionToken(),
+        };
+
+        const params: {
+            [param: string]: string | string[]
+        } = {
+            'fields': (fields || ['uuid']).join(','),
+        };
+
         return this.http.get(environment.apiHost + '/api/user', {
-            headers: {
-                'X-Session-Token': _sessionToken || sessionToken()
-            },
-            params: {
-                'fields': (fields || ['uuid']).join(',')
-            }
+            headers: headers,
+            params: params,
         }).pipe<User>(
             map(toUser)
         );

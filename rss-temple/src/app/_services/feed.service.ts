@@ -13,7 +13,7 @@ import { environment } from '@environments/environment';
 export type Field = 'uuid' | 'title' | 'feedUrl' | 'homeUrl' | 'publishedAt' | 'updatedAt';
 
 function toFeed(value: Record<string, any>) {
-    const feed: Feed = {};
+    const feed = new Feed();
 
     if ('uuid' in value) {
         const uuid = value['uuid'];
@@ -91,14 +91,22 @@ export class FeedService {
     ) { }
 
     get(feedUrl: string, fields?: Field[], _sessionToken?: string) {
+        const headers: {
+            [header: string]: string | string[]
+        } = {
+            'X-Session-Token': _sessionToken || sessionToken(),
+        };
+
+        const params: {
+            [param: string]: string | string[]
+        } = {
+            'url': feedUrl,
+            'fields': (fields || ['uuid']).join(','),
+        };
+
         return this.http.get(environment.apiHost + '/api/feed', {
-            headers: {
-                'X-Session-Token': _sessionToken || sessionToken()
-            },
-            params: {
-                'url': feedUrl,
-                'fields': (fields || ['uuid']).join(',')
-            }
+            headers: headers,
+            params: params,
         }).pipe<Feed>(
             map(toFeed)
         );
