@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { utc } from 'moment';
 
 import { FeedEntry } from '@app/_models/feedentry';
 import { sessionToken } from '@app/_modules/session.module';
+import { Objects, toObjects } from '@app/_classes/objects';
 
 import { environment } from '@environments/environment';
 
@@ -130,17 +132,21 @@ export class FeedEntryService {
         private http: HttpClient,
     ) { }
 
-    get(uuid: string, fields?: Field[], _sessionToken?: string) {
+    get(uuid: string, options: {
+        fields?: Field[],
+        sessionToken?: string,
+        } = {}
+    ) {
         const headers: {
             [header: string]: string | string[]
         } = {
-            'X-Session-Token': _sessionToken || sessionToken(),
+            'X-Session-Token': options.sessionToken || sessionToken(),
         };
 
         const params: {
             [param: string]: string | string[]
         } = {
-            'fields': (fields || ['uuid']).join(','),
+            'fields': (options.fields || ['uuid']).join(','),
         };
 
         return this.http.get(environment.apiHost + '/api/feedentry/' + uuid, {
@@ -151,31 +157,38 @@ export class FeedEntryService {
         );
     }
 
-    some(count?: number, fields?: Field[], _sessionToken?: string) {
+    some(options: {
+            count?: number,
+            fields?: Field[],
+            search?: string,
+            sessionToken?: string,
+        } = {}
+    ): Observable<Objects<FeedEntry>> {
         const headers: {
             [param: string]: string | string[]
         } = {
-            'X-Session-Token': _sessionToken || sessionToken(),
+            'X-Session-Token': options.sessionToken || sessionToken(),
         };
 
         const params: {
             [header: string]: string | string[]
         } = {
-            'fields': (fields || ['uuid']).join(','),
+            'fields': (options.fields || ['uuid']).join(','),
         };
 
-        if (typeof count !== 'undefined') {
-            params['count'] = count.toString();
+        if (typeof options.count !== 'undefined') {
+            params['count'] = options.count.toString();
         }
 
-        return this.http.get(environment.apiHost + '/api/feedentries', {
+        if (typeof options.search !== 'undefined') {
+            params['search'] = options.search;
+        }
+
+        return this.http.get<any[]>(environment.apiHost + '/api/feedentries', {
             headers: headers,
             params: params,
-        }).pipe<FeedEntry[]>(
-            // TODO
-            map(retObj => {
-                return [];
-            })
+        }).pipe<Objects<FeedEntry>>(
+            map(retObj => toObjects<FeedEntry>(retObj, toFeed))
         );
     }
 }

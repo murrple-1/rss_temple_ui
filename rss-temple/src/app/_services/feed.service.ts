@@ -90,18 +90,22 @@ export class FeedService {
         private http: HttpClient,
     ) { }
 
-    get(feedUrl: string, fields?: Field[], _sessionToken?: string) {
+    get(feedUrl: string, options: {
+            fields?: Field[],
+            sessionToken?: string,
+        } = {}
+    ) {
         const headers: {
             [header: string]: string | string[]
         } = {
-            'X-Session-Token': _sessionToken || sessionToken(),
+            'X-Session-Token': options.sessionToken || sessionToken(),
         };
 
         const params: {
             [param: string]: string | string[]
         } = {
             'url': feedUrl,
-            'fields': (fields || ['uuid']).join(','),
+            'fields': (options.fields || ['uuid']).join(','),
         };
 
         return this.http.get(environment.apiHost + '/api/feed', {

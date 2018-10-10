@@ -1,4 +1,4 @@
 <input [(ngModel)]="feedUrl">
 <button (click)="onSubscribe()">Subscribe</button>
 
-<span *ngIf="feed">{{feed.title}}</span>
+<div *ngFor="let feedEntry of feedEntries">{{feedEntry.title}}</div>

@@ -3,7 +3,7 @@ import { Component, NgZone } from '@angular/core';
 import { first } from 'rxjs/operators';
 
 import { FeedService } from '@app/_services/feed.service';
-import { Feed } from '@app/_models/feed';
+import { FeedEntry } from '@app/_models/feedentry';
 import { FeedEntryService } from '@app/_services/feedentry.service';
 
 @Component({
@@ -12,7 +12,7 @@ import { FeedEntryService } from '@app/_services/feedentry.service';
 })
 export class MainComponent {
     feedUrl: string;
-    feed: Feed;
+    feedEntries: FeedEntry[];
 
     constructor(
         private feedService: FeedService,
@@ -21,11 +21,22 @@ export class MainComponent {
     ) { }
 
     onSubscribe() {
-        this.feedService.get(this.feedUrl, ['uuid', 'title', 'feedUrl', 'homeUrl', 'publishedAt', 'updatedAt']).pipe(
+        this.feedService.get(this.feedUrl, {
+            fields: ['uuid'],
+        }).pipe(
             first()
         ).subscribe(feed => {
-            this.zone.run(() => {
-                this.feed = feed;
+            this.feedEntryService.some({
+                fields: ['title'],
+                search: 'feedUuid:"' + feed.uuid + '"',
+            }).pipe(
+                first()
+            ).subscribe(feedEntriesObj => {
+                this.zone.run(() => {
+                    this.feedEntries = feedEntriesObj.objects;
+                });
+            }, error => {
+                console.log(error);
             });
         }, error => {
             console.log(error);
