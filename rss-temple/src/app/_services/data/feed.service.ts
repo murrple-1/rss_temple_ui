@@ -7,6 +7,11 @@ import { utc } from 'moment';
 
 import { Feed } from '@app/_models/feed';
 import { sessionToken } from '@app/_modules/session.module';
+import {
+    GetOptions,
+    toHeader as getToHeader,
+    toParams as getToParams,
+} from '@app/_services/data/get.interface';
 
 import { environment } from '@environments/environment';
 
@@ -90,23 +95,10 @@ export class FeedService {
         private http: HttpClient,
     ) { }
 
-    get(feedUrl: string, options: {
-            fields?: Field[],
-            sessionToken?: string,
-        } = {}
-    ) {
-        const headers: {
-            [header: string]: string | string[]
-        } = {
-            'X-Session-Token': options.sessionToken || sessionToken(),
-        };
-
-        const params: {
-            [param: string]: string | string[]
-        } = {
-            'url': feedUrl,
-            'fields': (options.fields || ['uuid']).join(','),
-        };
+    get(feedUrl: string, options: GetOptions<Field> = {}) {
+        const headers = getToHeader(options, sessionToken);
+        const params = getToParams(options, () => ['uuid']);
+        params['url'] = feedUrl;
 
         return this.http.get(environment.apiHost + '/api/feed', {
             headers: headers,

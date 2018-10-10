@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 
-import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { utc } from 'moment';
@@ -9,6 +8,21 @@ import { utc } from 'moment';
 import { FeedEntry } from '@app/_models/feedentry';
 import { sessionToken } from '@app/_modules/session.module';
 import { Objects, toObjects } from '@app/_services/data/objects';
+import {
+    GetOptions,
+    toHeader as getToHeader,
+    toParams as getToParams,
+} from '@app/_services/data/get.interface';
+import {
+    SomeOptions,
+    toHeader as someToHeader,
+    toParams as someToParams,
+} from '@app/_services/data/some.interface';
+import {
+    AllOptions,
+    toHeader as allToHeader,
+    toParams as allToParams,
+} from '@app/_services/data/all.interface';
 
 import { environment } from '@environments/environment';
 
@@ -132,22 +146,9 @@ export class FeedEntryService {
         private http: HttpClient,
     ) { }
 
-    get(uuid: string, options: {
-        fields?: Field[],
-        sessionToken?: string,
-        } = {}
-    ) {
-        const headers: {
-            [header: string]: string | string[]
-        } = {
-            'X-Session-Token': options.sessionToken || sessionToken(),
-        };
-
-        const params: {
-            [param: string]: string | string[]
-        } = {
-            'fields': (options.fields || ['uuid']).join(','),
-        };
+    get(uuid: string, options: GetOptions<Field> = {}) {
+        const headers = getToHeader(options, sessionToken);
+        const params = getToParams(options, () => ['uuid']);
 
         return this.http.get(environment.apiHost + '/api/feedentry/' + uuid, {
             headers: headers,
@@ -157,38 +158,23 @@ export class FeedEntryService {
         );
     }
 
-    some(options: {
-            count?: number,
-            fields?: Field[],
-            search?: string,
-            sessionToken?: string,
-        } = {}
-    ): Observable<Objects<FeedEntry>> {
-        const headers: {
-            [param: string]: string | string[]
-        } = {
-            'X-Session-Token': options.sessionToken || sessionToken(),
-        };
+    some(options: SomeOptions<Field> = {}) {
+        const headers = someToHeader(options, sessionToken);
+        const params = someToParams(options, () => ['uuid']);
 
-        const params: {
-            [header: string]: string | string[]
-        } = {
-            'fields': (options.fields || ['uuid']).join(','),
-        };
-
-        if (typeof options.count !== 'undefined') {
-            params['count'] = options.count.toString();
-        }
-
-        if (typeof options.search !== 'undefined') {
-            params['search'] = options.search;
-        }
-
-        return this.http.get<any[]>(environment.apiHost + '/api/feedentries', {
+        return this.http.get(environment.apiHost + '/api/feedentries', {
             headers: headers,
             params: params,
         }).pipe<Objects<FeedEntry>>(
             map(retObj => toObjects<FeedEntry>(retObj, toFeed))
         );
+    }
+
+    all(options: AllOptions<Field> = {}) {
+        const headers = allToHeader(options, sessionToken);
+        const params = allToParams(options, () => ['uuid']);
+
+        // TODO
+        this.http.get(environment.apiHost + '/api/feedentries');
     }
 }

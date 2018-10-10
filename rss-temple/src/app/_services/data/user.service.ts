@@ -5,6 +5,11 @@ import { map } from 'rxjs/operators';
 
 import { User } from '@app/_models/user';
 import { sessionToken } from '@app/_modules/session.module';
+import {
+    GetOptions,
+    toHeader as getToHeader,
+    toParams as getToParams,
+} from '@app/_services/data/get.interface';
 
 import { environment } from '@environments/environment';
 
@@ -55,22 +60,9 @@ export class UserService {
         private http: HttpClient,
     ) { }
 
-    get(options: {
-            fields?: Field[],
-            sessionToken?: string,
-        } = {}
-    ) {
-        const headers: {
-            [header: string]: string | string[]
-        } = {
-            'X-Session-Token': options.sessionToken || sessionToken(),
-        };
-
-        const params: {
-            [param: string]: string | string[]
-        } = {
-            'fields': (options.fields || ['uuid']).join(','),
-        };
+    get(options: GetOptions<Field> = {}) {
+        const headers = getToHeader(options, sessionToken);
+        const params = getToParams(options, () => ['uuid']);
 
         return this.http.get(environment.apiHost + '/api/user', {
             headers: headers,
