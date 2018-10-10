@@ -1,6 +1,6 @@
 export class Objects<T> {
     totalCount?: number;
-    objects: T[];
+    objects?: T[];
 }
 
 export function toObjects<T>(value: Record<string, any>, fn: (t: Record<string, any>) => T): Objects<T> {
@@ -19,7 +19,7 @@ export function toObjects<T>(value: Record<string, any>, fn: (t: Record<string, 
         const objects = value['objects'];
         if (Array.isArray(objects)) {
             const _objects: T[] = [];
-            for(const obj of objects) {
+            for (const obj of objects) {
                 _objects.push(fn(obj));
             }
             objs.objects = objects;

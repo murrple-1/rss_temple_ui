@@ -7,11 +7,17 @@ import { utc } from 'moment';
 
 import { Feed } from '@app/_models/feed';
 import { sessionToken } from '@app/_modules/session.module';
+import { Objects, toObjects } from '@app/_services/data/objects';
 import {
     GetOptions,
     toHeader as getToHeader,
     toParams as getToParams,
 } from '@app/_services/data/get.interface';
+import {
+    SomeOptions,
+    toHeader as someToHeader,
+    toParams as someToParams,
+} from '@app/_services/data/some.interface';
 
 import { environment } from '@environments/environment';
 
@@ -105,6 +111,18 @@ export class FeedService {
             params: params,
         }).pipe<Feed>(
             map(toFeed)
+        );
+    }
+
+    some(options: SomeOptions<Field> = {}) {
+        const headers = someToHeader(options, sessionToken);
+        const params = someToParams(options, () => ['uuid']);
+
+        return this.http.get(environment.apiHost + '/api/feeds', {
+            headers: headers,
+            params: params,
+        }).pipe<Objects<Feed>>(
+            map(retObj => toObjects<Feed>(retObj, toFeed))
         );
     }
 }

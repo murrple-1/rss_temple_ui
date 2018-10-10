@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 import { map } from 'rxjs/operators';
 
@@ -18,17 +18,14 @@ import {
     toHeader as someToHeader,
     toParams as someToParams,
 } from '@app/_services/data/some.interface';
-import {
-    AllOptions,
-    toHeader as allToHeader,
-    toParams as allToParams,
-} from '@app/_services/data/all.interface';
+import { AllOptions } from '@app/_services/data/all.interface';
+import { allFn } from '@app/_services/data/all.function';
 
 import { environment } from '@environments/environment';
 
 export type Field = 'uuid' | 'id' | 'createdAt' | 'publishedAt' | 'updatedAt' | 'title' | 'url' | 'content' | 'authorName';
 
-function toFeed(value: Record<string, any>) {
+function toFeedEntry(value: Record<string, any>) {
     const feedEntry = new FeedEntry();
 
     if ('uuid' in value) {
@@ -154,7 +151,7 @@ export class FeedEntryService {
             headers: headers,
             params: params,
         }).pipe<FeedEntry>(
-            map(toFeed)
+            map(toFeedEntry)
         );
     }
 
@@ -166,15 +163,11 @@ export class FeedEntryService {
             headers: headers,
             params: params,
         }).pipe<Objects<FeedEntry>>(
-            map(retObj => toObjects<FeedEntry>(retObj, toFeed))
+            map(retObj => toObjects<FeedEntry>(retObj, toFeedEntry))
         );
     }
 
-    all(options: AllOptions<Field> = {}) {
-        const headers = allToHeader(options, sessionToken);
-        const params = allToParams(options, () => ['uuid']);
-
-        // TODO
-        this.http.get(environment.apiHost + '/api/feedentries');
+    all(options: AllOptions<Field> = {}, pageSize = 1000) {
+        return allFn(options, this.some.bind(this), toFeedEntry, pageSize);
     }
 }
