@@ -8,7 +8,7 @@ import { utc } from 'moment';
 
 import { FeedEntry } from '@app/_models/feedentry';
 import { sessionToken } from '@app/_modules/session.module';
-import { Objects, toObjects } from '@app/_classes/objects';
+import { Objects, toObjects } from '@app/_services/data/objects';
 
 import { environment } from '@environments/environment';
 

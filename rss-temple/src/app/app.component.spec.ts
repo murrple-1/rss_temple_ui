@@ -12,14 +12,14 @@ import { AlertComponent } from '@app/_directives/alert.component';
 import { AuthGuard, NoAuthGuard } from '@app/_guards/auth.guard';
 import { LoginService } from '@app/_services/login.service';
 import { AlertService } from '@app/_services/alert.service';
-import { UserService } from '@app/_services/user.service';
+import { UserService } from '@app/_services/data/user.service';
 import { GAuthService } from '@app/_services/gauth.service';
 import { FBAuthService } from '@app/_services/fbauth.service';
 import { LoginComponent } from '@app/login/login.component';
 import { RegisterComponent } from '@app/register/register.component';
 import { MainComponent } from '@app/main/main.component';
-import { FeedService } from '@app/_services/feed.service';
-import { FeedEntryService } from '@app/_services/feedentry.service';
+import { FeedService } from '@app/_services/data/feed.service';
+import { FeedEntryService } from '@app/_services/data/feedentry.service';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {

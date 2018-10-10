@@ -2,9 +2,9 @@ import { Component, NgZone } from '@angular/core';
 
 import { first } from 'rxjs/operators';
 
-import { FeedService } from '@app/_services/feed.service';
+import { FeedService } from '@app/_services/data/feed.service';
 import { FeedEntry } from '@app/_models/feedentry';
-import { FeedEntryService } from '@app/_services/feedentry.service';
+import { FeedEntryService } from '@app/_services/data/feedentry.service';
 
 @Component({
     templateUrl: 'main.component.html',
