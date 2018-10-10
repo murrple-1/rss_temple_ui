@@ -5,20 +5,20 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { ButtonModule } from 'primeng/button';
 
-import { AppComponent } from './app.component';
-import { routing } from './app.routing';
-import { AlertComponent } from './_directives/alert.component';
-import { AuthGuard, NoAuthGuard } from './_guards/auth.guard';
-import { LoginService } from './_services/login.service';
-import { AlertService } from './_services/alert.service';
-import { UserService } from './_services/user.service';
-import { GAuthService } from './_services/gauth.service';
-import { FBAuthService } from './_services/fbauth.service';
-import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
-import { MainComponent } from './main/main.component';
-import { FeedService } from './_services/feed.service';
-import { FeedEntryService } from './_services/feedentry.service';
+import { AppComponent } from '@app/app.component';
+import { routing } from '@app/app.routing';
+import { AlertComponent } from '@app/_directives/alert.component';
+import { AuthGuard, NoAuthGuard } from '@app/_guards/auth.guard';
+import { LoginService } from '@app/_services/login.service';
+import { AlertService } from '@app/_services/alert.service';
+import { UserService } from '@app/_services/user.service';
+import { GAuthService } from '@app/_services/gauth.service';
+import { FBAuthService } from '@app/_services/fbauth.service';
+import { LoginComponent } from '@app/login/login.component';
+import { RegisterComponent } from '@app/register/register.component';
+import { MainComponent } from '@app/main/main.component';
+import { FeedService } from '@app/_services/feed.service';
+import { FeedEntryService } from '@app/_services/feedentry.service';
 
 @NgModule({
     imports: [
