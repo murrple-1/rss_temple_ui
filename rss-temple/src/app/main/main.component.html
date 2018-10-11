@@ -1,4 +1,8 @@
 <input [(ngModel)]="feedUrl">
 <button (click)="onSubscribe()">Subscribe</button>
 
-<div *ngFor="let feedEntry of feedEntries">{{feedEntry.title}}</div>
+<div *ngFor="let feedEntry of feedEntries">
+    <a href="{{feedEntry.url}}">{{feedEntry.title}}</a>
+    <div [innerHtml]="feedEntry.content"></div>
+    <hr>
+</div>

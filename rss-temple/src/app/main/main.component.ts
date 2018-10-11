@@ -27,7 +27,7 @@ export class MainComponent {
             first()
         ).subscribe(feed => {
             this.feedEntryService.some({
-                fields: ['title'],
+                fields: ['title', 'url', 'content'],
                 search: 'feedUuid:"' + feed.uuid + '"',
             }).pipe(
                 first()
