@@ -18,6 +18,8 @@ import {
     toHeader as someToHeader,
     toParams as someToParams,
 } from '@app/_services/data/some.interface';
+import { AllOptions } from '@app/_services/data/all.interface';
+import { allFn } from '@app/_services/data/all.function';
 
 import { environment } from '@environments/environment';
 
@@ -124,5 +126,21 @@ export class FeedService {
         }).pipe<Objects<Feed>>(
             map(retObj => toObjects<Feed>(retObj, toFeed))
         );
+    }
+
+    someSubscribed(options: SomeOptions<Field> = {}) {
+        const headers = someToHeader(options, sessionToken);
+        const params = someToParams(options, () => ['uuid']);
+
+        return this.http.get(environment.apiHost + '/api/feeds/subscribed', {
+            headers: headers,
+            params: params,
+        }).pipe<Objects<Feed>>(
+            map(retObj => toObjects<Feed>(retObj, toFeed))
+        );
+    }
+
+    allSubscribed(options: AllOptions<Field> = {}, pageSize = 1000) {
+        return allFn(options, this.someSubscribed.bind(this), toFeed, pageSize);
     }
 }

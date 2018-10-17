@@ -26,6 +26,11 @@ export function allFn<Field, T>(
 
             const allCalls: Observable<Objects<T>>[] = [];
 
+            allCalls.push(new Observable<Objects<T>>(observer => {
+                observer.next(firstObjs);
+                observer.complete();
+            }));
+
             let skip = pageSize;
 
             while (skip < firstObjs.totalCount) {
@@ -47,7 +52,7 @@ export function allFn<Field, T>(
                 map(allRetObjs => {
                     const objs = new Objects<T>();
 
-                    objs.objects = firstObjs.objects.slice();
+                    objs.objects = [];
 
                     for (const _retObj of allRetObjs) {
                         const obj = toObjects<T>(_retObj, toFn);
