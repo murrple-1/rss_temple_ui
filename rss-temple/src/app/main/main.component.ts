@@ -26,8 +26,9 @@ export class MainComponent implements OnInit {
     ngOnInit() {
         const count = parseInt(this.route.snapshot.paramMap.get('count') || '5', 10);
 
-        this.feedService.allSubscribed({
+        this.feedService.all({
             fields: ['uuid', 'title', 'feedUrl'],
+            search: 'subscribed:"true"',
             returnTotalCount: false,
         }).pipe(
             first()
@@ -36,21 +37,23 @@ export class MainComponent implements OnInit {
                 this.subscribedFeeds = feeds.objects;
             });
 
-            this.feedEntryService.some({
-                fields: ['url', 'title', 'content'],
-                returnTotalCount: false,
-                count: count,
-                search: 'feedUuid:"' + feeds.objects.map(feed => feed.uuid).join('|') + '"',
-                sort: 'createdAt:DESC,publishedAt:DESC,updatedAt:DESC',
-            }).pipe(
-                first()
-            ).subscribe(feedEntries => {
-                this.zone.run(() => {
-                    this.feedEntries = feedEntries.objects;
+            if (feeds.objects.length > 0) {
+                this.feedEntryService.some({
+                    fields: ['url', 'title', 'content'],
+                    returnTotalCount: false,
+                    count: count,
+                    search: 'feedUuid:"' + feeds.objects.map(feed => feed.uuid).join('|') + '"',
+                    sort: 'createdAt:DESC,publishedAt:DESC,updatedAt:DESC',
+                }).pipe(
+                    first()
+                ).subscribe(feedEntries => {
+                    this.zone.run(() => {
+                        this.feedEntries = feedEntries.objects;
+                    });
+                }, error => {
+                    console.log(error);
                 });
-            }, error => {
-                console.log(error);
-            });
+            }
         }, error => {
             console.log(error);
         });

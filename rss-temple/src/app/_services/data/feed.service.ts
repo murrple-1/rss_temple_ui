@@ -27,7 +27,7 @@ import {
 
 import { environment } from '@environments/environment';
 
-export type Field = 'uuid' | 'title' | 'feedUrl' | 'homeUrl' | 'publishedAt' | 'updatedAt';
+export type Field = 'uuid' | 'title' | 'feedUrl' | 'homeUrl' | 'publishedAt' | 'updatedAt' | 'subscribed';
 
 function toFeed(value: Record<string, any>) {
     const feed = new Feed();
@@ -98,6 +98,15 @@ function toFeed(value: Record<string, any>) {
         }
     }
 
+    if ('subscribed' in value) {
+        const subscribed = value['subscribed'];
+        if (typeof subscribed === 'boolean') {
+            feed.subscribed = subscribed;
+        } else {
+            throw new Error('\'subscribed\' must be boolean');
+        }
+    }
+
     return feed;
 }
 
@@ -132,20 +141,8 @@ export class FeedService {
         );
     }
 
-    someSubscribed(options: SomeOptions<Field> = {}) {
-        const headers = someToHeader(options, sessionToken);
-        const params = someToParams(options, () => ['uuid']);
-
-        return this.http.get(environment.apiHost + '/api/feeds/subscribed', {
-            headers: headers,
-            params: params,
-        }).pipe<Objects<Feed>>(
-            map(retObj => toObjects<Feed>(retObj, toFeed))
-        );
-    }
-
-    allSubscribed(options: AllOptions<Field> = {}, pageSize = 1000) {
-        return allFn(options, this.someSubscribed.bind(this), toFeed, pageSize);
+    all(options: AllOptions<Field> = {}, pageSize = 1000) {
+        return allFn(options, this.some.bind(this), toFeed, pageSize);
     }
 
     subscribe(url: string, options: CommonOptions = {}) {

@@ -7,4 +7,5 @@ export class Feed {
     homeUrl?: string | null;
     publishedAt?: Moment;
     updatedAt?: Moment | null;
+    subscribed?: boolean;
 }
