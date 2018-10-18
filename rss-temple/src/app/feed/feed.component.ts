@@ -32,6 +32,7 @@ export class FeedComponent implements OnInit {
         }).pipe(
             first()
         ).subscribe(feed => {
+            feed.feedUrl = url;
             this.zone.run(() => {
                 this.feed = feed;
             });
@@ -57,10 +58,22 @@ export class FeedComponent implements OnInit {
     }
 
     subscribe() {
-        console.log('Subscribed!');
+        this.feedService.subscribe(this.feed.feedUrl).subscribe(() => {
+            this.zone.run(() => {
+                this.feed.subscribed = true;
+            });
+        }, error => {
+            console.log(error);
+        });
     }
 
     unsubscribe() {
-        console.log('Unsubscribed!');
+        this.feedService.unsubscribe(this.feed.feedUrl).subscribe(() => {
+            this.zone.run(() => {
+                this.feed.subscribed = false;
+            });
+        }, error => {
+            console.log(error);
+        });
     }
 }

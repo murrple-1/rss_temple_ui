@@ -1,7 +1,7 @@
 <span *ngIf="!feed">No Feed</span>
 <span *ngIf="feed">{{feed.title}}</span>
 
-<button (click)="subscribed()" *ngIf="feed && !feed.subscribed">Subscribe</button>
+<button (click)="subscribe()" *ngIf="feed && !feed.subscribed">Subscribe</button>
 <button (click)="unsubscribe()" *ngIf="feed && feed.subscribed">Unsubscribe</button>
 <hr>
 

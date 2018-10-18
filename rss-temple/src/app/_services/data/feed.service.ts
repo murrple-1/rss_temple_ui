@@ -153,13 +153,13 @@ export class FeedService {
             'url': url,
         };
 
-        return this.http.post<void>(environment.apiHost + '/api/feed/subscribe', {
+        return this.http.post<void>(environment.apiHost + '/api/feed/subscribe', null, {
             headers: headers,
             params: params,
         });
     }
 
-    deleteSubscription(url: string, options: CommonOptions = {}) {
+    unsubscribe(url: string, options: CommonOptions = {}) {
         const headers = commonToHeader(options, sessionToken);
         const params: {
             [header: string]: string | string[]
