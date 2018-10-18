@@ -20,6 +20,10 @@ import {
 } from '@app/_services/data/some.interface';
 import { AllOptions } from '@app/_services/data/all.interface';
 import { allFn } from '@app/_services/data/all.function';
+import {
+    CommonOptions,
+    toHeader as commonToHeader,
+} from '@app/_services/data/common.interface';
 
 import { environment } from '@environments/environment';
 
@@ -142,5 +146,33 @@ export class FeedService {
 
     allSubscribed(options: AllOptions<Field> = {}, pageSize = 1000) {
         return allFn(options, this.someSubscribed.bind(this), toFeed, pageSize);
+    }
+
+    subscribe(url: string, options: CommonOptions = {}) {
+        const headers = commonToHeader(options, sessionToken);
+        const params: {
+            [header: string]: string | string[]
+        } = {
+            'url': url,
+        };
+
+        return this.http.post<void>(environment.apiHost + '/api/feed/subscribe', {
+            headers: headers,
+            params: params,
+        });
+    }
+
+    deleteSubscription(url: string, options: CommonOptions = {}) {
+        const headers = commonToHeader(options, sessionToken);
+        const params: {
+            [header: string]: string | string[]
+        } = {
+            'url': url,
+        };
+
+        return this.http.delete<void>(environment.apiHost + '/api/feed/subscribe', {
+            headers: headers,
+            params: params,
+        });
     }
 }

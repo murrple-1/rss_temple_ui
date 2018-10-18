@@ -1,7 +1,16 @@
-import { Observable, forkJoin } from 'rxjs';
-import { map, flatMap } from 'rxjs/operators';
+import {
+    Observable,
+    forkJoin,
+} from 'rxjs';
+import {
+    map,
+    flatMap,
+} from 'rxjs/operators';
 
-import { Objects, toObjects } from '@app/_services/data/objects';
+import {
+    Objects,
+    toObjects,
+} from '@app/_services/data/objects';
 import { AllOptions } from '@app/_services/data/all.interface';
 import { SomeOptions } from '@app/_services/data/some.interface';
 

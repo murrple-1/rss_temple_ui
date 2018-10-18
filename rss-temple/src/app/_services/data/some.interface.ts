@@ -1,4 +1,9 @@
-export interface SomeOptions<Field> {
+import {
+    CommonOptions,
+    toHeader as commonToHeader,
+} from '@app/_services/data/common.interface';
+
+export interface SomeOptions<Field> extends CommonOptions {
     count?: number;
     skip?: number;
     fields?: Field[];
@@ -6,16 +11,10 @@ export interface SomeOptions<Field> {
     sort?: string;
     returnObjects?: boolean;
     returnTotalCount?: boolean;
-    sessionToken?: string;
 }
 
 export function toHeader<Field>(options: SomeOptions<Field>, sessionTokenFn: () => string) {
-    const headers: {
-        [param: string]: string | string[]
-    } = {
-        'X-Session-Token': options.sessionToken || sessionTokenFn(),
-    };
-
+    const headers = commonToHeader(options, sessionTokenFn);
     return headers;
 }
 
@@ -36,6 +35,14 @@ export function toParams<Field>(options: SomeOptions<Field>, fieldsFn: () => Fie
 
     if (typeof options.sort !== 'undefined') {
         params['sort'] = options.sort;
+    }
+
+    if (typeof options.returnObjects !== 'undefined') {
+        params['objects'] = options.returnObjects ? 'true' : 'false';
+    }
+
+    if (typeof options.returnTotalCount !== 'undefined') {
+        params['totalcount'] = options.returnTotalCount ? 'true': 'false';
     }
 
     return params;
