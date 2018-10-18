@@ -1,6 +1,6 @@
 <h2>My Subscriptions</h2>
-<div *ngFor="let subscription of subscriptions">
-    <a [routerLink]="['/feed', subscription.url]">{{subscription.name}}</a>
+<div *ngFor="let feed of subscribedFeeds">
+    <a [routerLink]="['/feed', {url: feed.feedUrl}]">{{feed.title}}</a>
 </div>
 
 <hr>

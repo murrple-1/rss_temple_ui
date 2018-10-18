@@ -18,6 +18,7 @@ import { FBAuthService } from '@app/_services/fbauth.service';
 import { LoginComponent } from '@app/login/login.component';
 import { RegisterComponent } from '@app/register/register.component';
 import { MainComponent } from '@app/main/main.component';
+import { FeedComponent } from '@app/feed/feed.component';
 import { FeedService } from '@app/_services/data/feed.service';
 import { FeedEntryService } from '@app/_services/data/feedentry.service';
 
@@ -40,6 +41,7 @@ describe('AppComponent', () => {
         LoginComponent,
         RegisterComponent,
         MainComponent,
+        FeedComponent,
       ],
       providers: [
           {
