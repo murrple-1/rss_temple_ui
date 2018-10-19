@@ -6,6 +6,8 @@ import { APP_BASE_HREF } from '@angular/common';
 
 import { ButtonModule } from 'primeng/button';
 
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { AppComponent } from '@app/app.component';
 import { routing } from '@app/app.routing';
 import { AlertComponent } from '@app/_directives/alert.component';
@@ -21,6 +23,8 @@ import { MainComponent } from '@app/main/main.component';
 import { FeedComponent } from '@app/feed/feed.component';
 import { FeedService } from '@app/_services/data/feed.service';
 import { FeedEntryService } from '@app/_services/data/feedentry.service';
+import { NavBarComponent } from '@app/_components/nav-bar/nav-bar.component';
+import { MenuComponent } from '@app/_components/menu/menu.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -33,6 +37,8 @@ describe('AppComponent', () => {
 
         ButtonModule,
 
+        NgbModule,
+
         routing,
       ],
       declarations: [
@@ -42,6 +48,8 @@ describe('AppComponent', () => {
         RegisterComponent,
         MainComponent,
         FeedComponent,
+        NavBarComponent,
+        MenuComponent,
       ],
       providers: [
           {

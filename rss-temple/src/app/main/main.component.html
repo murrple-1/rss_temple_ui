@@ -1,3 +1,5 @@
+<rsst-nav-bar></rsst-nav-bar>
+
 <h2>My Subscriptions</h2>
 <div *ngFor="let feed of subscribedFeeds">
     <a [routerLink]="['/feed', {url: feed.feedUrl}]">{{feed.title}}</a>
