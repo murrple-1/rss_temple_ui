@@ -42,7 +42,7 @@ export class MainComponent implements OnInit {
                     fields: ['uuid', 'url', 'title', 'content', 'isRead'],
                     returnTotalCount: false,
                     count: count,
-                    search: 'feedUuid:"' + feeds.objects.map(feed => feed.uuid).join('|') + '"',
+                    search: 'feedUuid:"' + feeds.objects.map(feed => feed.uuid).join('|') + '" and isRead:"false"',
                     sort: 'createdAt:DESC,publishedAt:DESC,updatedAt:DESC',
                 }).pipe(
                     first()
