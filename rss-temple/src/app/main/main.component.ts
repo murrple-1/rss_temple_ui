@@ -39,7 +39,7 @@ export class MainComponent implements OnInit {
 
             if (feeds.objects.length > 0) {
                 this.feedEntryService.some({
-                    fields: ['url', 'title', 'content'],
+                    fields: ['uuid', 'url', 'title', 'content', 'isRead'],
                     returnTotalCount: false,
                     count: count,
                     search: 'feedUuid:"' + feeds.objects.map(feed => feed.uuid).join('|') + '"',
@@ -54,6 +54,30 @@ export class MainComponent implements OnInit {
                     console.log(error);
                 });
             }
+        }, error => {
+            console.log(error);
+        });
+    }
+
+    read(feedEntry: FeedEntry) {
+        this.feedEntryService.read(feedEntry).pipe(
+            first()
+        ).subscribe(() => {
+            this.zone.run(() => {
+                feedEntry.isRead = true;
+            });
+        }, error => {
+            console.log(error);
+        });
+    }
+
+    unread(feedEntry: FeedEntry) {
+        this.feedEntryService.unread(feedEntry).pipe(
+            first()
+        ).subscribe(() => {
+            this.zone.run(() => {
+                feedEntry.isRead = false;
+            });
         }, error => {
             console.log(error);
         });

@@ -10,4 +10,6 @@ export class FeedEntry {
     url?: string;
     content?: string | null;
     authorName?: string | null;
+    fromSubscription?: boolean;
+    isRead?: boolean;
 }

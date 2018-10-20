@@ -38,7 +38,7 @@ export class FeedComponent implements OnInit {
             });
 
             this.feedEntryService.some({
-                fields: ['url', 'title', 'content'],
+                fields: ['uuid', 'url', 'title', 'content', 'isRead'],
                 returnTotalCount: false,
                 count: count,
                 search: 'feedUuid:"' + feed.uuid + '"',
@@ -58,7 +58,9 @@ export class FeedComponent implements OnInit {
     }
 
     subscribe() {
-        this.feedService.subscribe(this.feed.feedUrl).subscribe(() => {
+        this.feedService.subscribe(this.feed.feedUrl).pipe(
+            first()
+        ).subscribe(() => {
             this.zone.run(() => {
                 this.feed.subscribed = true;
             });
@@ -68,9 +70,35 @@ export class FeedComponent implements OnInit {
     }
 
     unsubscribe() {
-        this.feedService.unsubscribe(this.feed.feedUrl).subscribe(() => {
+        this.feedService.unsubscribe(this.feed.feedUrl).pipe(
+            first()
+        ).subscribe(() => {
             this.zone.run(() => {
                 this.feed.subscribed = false;
+            });
+        }, error => {
+            console.log(error);
+        });
+    }
+
+    read(feedEntry: FeedEntry) {
+        this.feedEntryService.read(feedEntry).pipe(
+            first()
+        ).subscribe(() => {
+            this.zone.run(() => {
+                feedEntry.isRead = true;
+            });
+        }, error => {
+            console.log(error);
+        });
+    }
+
+    unread(feedEntry: FeedEntry) {
+        this.feedEntryService.unread(feedEntry).pipe(
+            first()
+        ).subscribe(() => {
+            this.zone.run(() => {
+                feedEntry.isRead = false;
             });
         }, error => {
             console.log(error);

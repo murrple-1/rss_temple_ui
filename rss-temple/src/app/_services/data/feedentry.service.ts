@@ -20,10 +20,14 @@ import {
 } from '@app/_services/data/some.interface';
 import { AllOptions } from '@app/_services/data/all.interface';
 import { allFn } from '@app/_services/data/all.function';
+import {
+    CommonOptions,
+    toHeader as commonToHeader
+} from './common.interface';
 
 import { environment } from '@environments/environment';
 
-export type Field = 'uuid' | 'id' | 'createdAt' | 'publishedAt' | 'updatedAt' | 'title' | 'url' | 'content' | 'authorName';
+export type Field = 'uuid' | 'id' | 'createdAt' | 'publishedAt' | 'updatedAt' | 'title' | 'url' | 'content' | 'authorName' | 'fromSubscrption' | 'isRead';
 
 function toFeedEntry(value: Record<string, any>) {
     const feedEntry = new FeedEntry();
@@ -119,7 +123,7 @@ function toFeedEntry(value: Record<string, any>) {
         } else if (typeof content === 'string') {
             feedEntry.content = content;
         } else {
-            throw new Error('\'uuid\' must be string');
+            throw new Error('\'content\' must be string');
         }
     }
 
@@ -130,7 +134,25 @@ function toFeedEntry(value: Record<string, any>) {
         } else if (typeof authorName === 'string') {
             feedEntry.authorName = authorName;
         } else {
-            throw new Error('\'uuid\' must be string');
+            throw new Error('\'authorName\' must be string');
+        }
+    }
+
+    if ('fromSubscription' in value) {
+        const fromSubscription = value['fromSubscription'];
+        if (typeof fromSubscription === 'boolean') {
+            feedEntry.fromSubscription = fromSubscription;
+        } else {
+            throw new Error('\'fromSubscription\' must be boolean');
+        }
+    }
+
+    if ('isRead' in value) {
+        const isRead = value['isRead'];
+        if (typeof isRead === 'boolean') {
+            feedEntry.fromSubscription = isRead;
+        } else {
+            throw new Error('\'isRead\' must be boolean');
         }
     }
 
@@ -169,5 +191,38 @@ export class FeedEntryService {
 
     all(options: AllOptions<Field> = {}, pageSize = 1000) {
         return allFn(options, this.some.bind(this), toFeedEntry, pageSize);
+    }
+
+    read(feedEntry: FeedEntry, options: CommonOptions = {}) {
+        const headers = commonToHeader(options, sessionToken);
+
+        return this.http.post<void>(environment.apiHost + '/api/feedentry/read/' + feedEntry.uuid, null, {
+            headers: headers,
+        });
+    }
+
+    unread(feedEntry: FeedEntry, options: CommonOptions = {}) {
+        const headers = commonToHeader(options, sessionToken);
+
+        return this.http.delete<void>(environment.apiHost + '/api/feedentry/read/' + feedEntry.uuid, {
+            headers: headers,
+        });
+    }
+
+    readSome(feedEntries: FeedEntry[], options: CommonOptions = {}) {
+        const headers = commonToHeader(options, sessionToken);
+
+        return this.http.post<void>(environment.apiHost + '/api/feedentries/read/', feedEntries.map(feedEntry => feedEntry.uuid), {
+            headers: headers,
+        });
+    }
+
+    unreadSome(feedEntries: FeedEntry[], options: CommonOptions = {}) {
+        const headers = commonToHeader(options, sessionToken);
+
+        return this.http.request<void>('DELETE', environment.apiHost + '/api/feedentries/read/', {
+            headers: headers,
+            body: feedEntries.map(feedEntry => feedEntry.uuid),
+        });
     }
 }
