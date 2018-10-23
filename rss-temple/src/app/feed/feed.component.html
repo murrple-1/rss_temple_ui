@@ -1,11 +1,9 @@
 <rsst-nav-bar></rsst-nav-bar>
 
-<span *ngIf="!feed">No Feed</span>
-<span *ngIf="feed">{{feed.title}}</span>
+<h1 *ngIf="!feed">No Feed</h1>
+<h1 *ngIf="feed">{{feed.title}}</h1>
 
 <button (click)="subscribe()" *ngIf="feed && !feed.subscribed">Subscribe</button>
 <button (click)="unsubscribe()" *ngIf="feed && feed.subscribed">Unsubscribe</button>
-<hr>
 
-<h2>All Entries</h2>
 <rsst-feed-entry-view *ngFor="let feedEntry of feedEntries" [feedEntry]="feedEntry"></rsst-feed-entry-view>
