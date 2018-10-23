@@ -8,10 +8,4 @@
 <hr>
 
 <h2>All Entries</h2>
-<div *ngFor="let feedEntry of feedEntries">
-    <a href="{{feedEntry.url}}">{{feedEntry.title}}</a>
-    <div [innerHtml]="feedEntry.content"></div>
-    <button (click)="read(feedEntry)" *ngIf="!feedEntry.isRead">Read</button>
-    <button (click)="unread(feedEntry)" *ngIf="feedEntry.isRead">Unread</button>
-    <hr>
-</div>
+<rsst-feed-entry-view *ngFor="let feedEntry of feedEntries" [feedEntry]="feedEntry"></rsst-feed-entry-view>
