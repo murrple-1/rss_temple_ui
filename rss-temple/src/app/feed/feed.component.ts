@@ -7,6 +7,7 @@ import { FeedService } from '@app/_services/data/feed.service';
 import { Feed } from '@app/_models/feed';
 import { FeedEntryService } from '@app/_services/data/feedentry.service';
 import { FeedEntry } from '@app/_models/feedentry';
+import { HttpErrorService } from '@app/_services/httperror.service';
 
 @Component({
     templateUrl: 'feed.component.html',
@@ -19,6 +20,7 @@ export class FeedComponent implements OnInit {
     constructor(
         private feedService: FeedService,
         private feedEntryService: FeedEntryService,
+        private httpErrorService: HttpErrorService,
         private route: ActivatedRoute,
         private zone: NgZone,
     ) { }
@@ -50,10 +52,10 @@ export class FeedComponent implements OnInit {
                     this.feedEntries = feedEntries.objects;
                 });
             }, error => {
-                console.log(error);
+                this.httpErrorService.handleError(error);
             });
         }, error => {
-            console.log(error);
+            this.httpErrorService.handleError(error);
         });
     }
 
@@ -65,7 +67,7 @@ export class FeedComponent implements OnInit {
                 this.feed.subscribed = true;
             });
         }, error => {
-            console.log(error);
+            this.httpErrorService.handleError(error);
         });
     }
 
@@ -77,7 +79,7 @@ export class FeedComponent implements OnInit {
                 this.feed.subscribed = false;
             });
         }, error => {
-            console.log(error);
+            this.httpErrorService.handleError(error);
         });
     }
 }

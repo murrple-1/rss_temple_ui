@@ -17,6 +17,7 @@ import { AlertService } from '@app/_services/alert.service';
 import { UserService } from '@app/_services/data/user.service';
 import { GAuthService } from '@app/_services/gauth.service';
 import { FBAuthService } from '@app/_services/fbauth.service';
+import { HttpErrorService } from './_services/httperror.service';
 import { LoginComponent } from '@app/login/login.component';
 import { RegisterComponent } from '@app/register/register.component';
 import { MainComponent } from '@app/main/main.component';
@@ -68,6 +69,7 @@ describe('AppComponent', () => {
           FeedEntryService,
           GAuthService,
           FBAuthService,
+          HttpErrorService,
       ],
     }).compileComponents();
   }));
