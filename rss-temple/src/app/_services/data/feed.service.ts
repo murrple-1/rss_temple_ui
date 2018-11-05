@@ -121,7 +121,7 @@ export class FeedService {
         const params = getToParams(options, () => ['uuid']);
         params['url'] = feedUrl;
 
-        return this.http.get(environment.apiHost + '/api/feed', {
+        return this.http.get(`${environment.apiHost}/api/feed`, {
             headers: headers,
             params: params,
         }).pipe<Feed>(
@@ -133,7 +133,7 @@ export class FeedService {
         const headers = someToHeader(options, sessionToken);
         const params = someToParams(options, () => ['uuid']);
 
-        return this.http.get(environment.apiHost + '/api/feeds', {
+        return this.http.get(`${environment.apiHost}/api/feeds`, {
             headers: headers,
             params: params,
         }).pipe<Objects<Feed>>(
@@ -153,7 +153,7 @@ export class FeedService {
             'url': url,
         };
 
-        return this.http.post<void>(environment.apiHost + '/api/feed/subscribe', null, {
+        return this.http.post<void>(`${environment.apiHost}/api/feed/subscribe`, null, {
             headers: headers,
             params: params,
         });
@@ -167,7 +167,7 @@ export class FeedService {
             'url': url,
         };
 
-        return this.http.delete<void>(environment.apiHost + '/api/feed/subscribe', {
+        return this.http.delete<void>(`${environment.apiHost}/api/feed/subscribe`, {
             headers: headers,
             params: params,
         });

@@ -57,7 +57,7 @@ export class UserCategoryService {
         const headers = getToHeader(options, sessionToken);
         const params = getToParams(options, () => ['uuid']);
 
-        return this.http.get(environment.apiHost + '/api/usercategory/' + uuid, {
+        return this.http.get(`${environment.apiHost}/api/usercategory/${uuid}`, {
             headers: headers,
             params: params,
         }).pipe<UserCategory>(
@@ -69,7 +69,7 @@ export class UserCategoryService {
         const headers = someToHeader(options, sessionToken);
         const params = someToParams(options, () => ['uuid']);
 
-        return this.http.get(environment.apiHost + '/api/usercategories', {
+        return this.http.get(`${environment.apiHost}/api/usercategories`, {
             headers: headers,
             params: params,
         }).pipe<Objects<UserCategory>>(

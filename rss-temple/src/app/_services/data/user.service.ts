@@ -64,7 +64,7 @@ export class UserService {
         const headers = getToHeader(options, sessionToken);
         const params = getToParams(options, () => ['uuid']);
 
-        return this.http.get(environment.apiHost + '/api/user', {
+        return this.http.get(`${environment.apiHost}/api/user`, {
             headers: headers,
             params: params,
         }).pipe<User>(

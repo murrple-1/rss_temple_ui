@@ -53,7 +53,7 @@ export class FBAuthService {
 
         const js = document.createElement('script');
         js.id = id;
-        js.src = '//connect.facebook.net/' + language + '/sdk.js';
+        js.src = `//connect.facebook.net/${language}/sdk.js`;
         document.head.appendChild(js);
     }
 }

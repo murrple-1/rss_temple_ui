@@ -10,14 +10,14 @@ export class LoginService {
     ) { }
 
     createMyLogin(email: string, password: string) {
-        return this.http.post<void>(environment.apiHost + '/api/login/my', {
+        return this.http.post<void>(`${environment.apiHost}/api/login/my`, {
             email: email,
             password: password,
         });
     }
 
     createGoogleLogin(email: string, password: string, token: string) {
-        return this.http.post<void>(environment.apiHost + '/api/login/google', {
+        return this.http.post<void>(`${environment.apiHost}/api/login/google`, {
             email: email,
             password: password,
             token: token,
@@ -25,7 +25,7 @@ export class LoginService {
     }
 
     createFacebookLogin(email: string, password: string, token: string) {
-        return this.http.post<void>(environment.apiHost + '/api/login/facebook', {
+        return this.http.post<void>(`${environment.apiHost}/api/login/facebook`, {
             email: email,
             password: password,
             token: token,
@@ -33,7 +33,7 @@ export class LoginService {
     }
 
     getMyLoginSession(email: string, password: string) {
-        return this.http.post<string | Object>(environment.apiHost + '/api/login/my/session', {
+        return this.http.post<string | Object>(`${environment.apiHost}/api/login/my/session`, {
             email: email,
             password: password,
         }, {
@@ -42,7 +42,7 @@ export class LoginService {
     }
 
     getGoogleLoginSession(user: gapi.auth2.GoogleUser) {
-        return this.http.post<string | Object>(environment.apiHost + '/api/login/google/session', {
+        return this.http.post<string | Object>(`${environment.apiHost}/api/login/google/session`, {
             token: user.getAuthResponse().id_token,
         }, {
             responseType: 'json'
@@ -50,7 +50,7 @@ export class LoginService {
     }
 
     getFacebookLoginSession(user: facebook.AuthResponse) {
-        return this.http.post<string | Object>(environment.apiHost + '/api/login/facebook/session', {
+        return this.http.post<string | Object>(`${environment.apiHost}/api/login/facebook/session`, {
             token: user.accessToken,
         }, {
             responseType: 'json'

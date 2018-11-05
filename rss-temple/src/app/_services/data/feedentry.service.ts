@@ -169,7 +169,7 @@ export class FeedEntryService {
         const headers = getToHeader(options, sessionToken);
         const params = getToParams(options, () => ['uuid']);
 
-        return this.http.get(environment.apiHost + '/api/feedentry/' + uuid, {
+        return this.http.get(`${environment.apiHost}/api/feedentry/${uuid}`, {
             headers: headers,
             params: params,
         }).pipe<FeedEntry>(
@@ -181,7 +181,7 @@ export class FeedEntryService {
         const headers = someToHeader(options, sessionToken);
         const params = someToParams(options, () => ['uuid']);
 
-        return this.http.get(environment.apiHost + '/api/feedentries', {
+        return this.http.get(`${environment.apiHost}/api/feedentries`, {
             headers: headers,
             params: params,
         }).pipe<Objects<FeedEntry>>(
@@ -196,7 +196,7 @@ export class FeedEntryService {
     read(feedEntry: FeedEntry, options: CommonOptions = {}) {
         const headers = commonToHeader(options, sessionToken);
 
-        return this.http.post<void>(environment.apiHost + '/api/feedentry/read/' + feedEntry.uuid, null, {
+        return this.http.post<void>(`${environment.apiHost}/api/feedentry/read/${feedEntry.uuid}`, null, {
             headers: headers,
         });
     }
@@ -204,7 +204,7 @@ export class FeedEntryService {
     unread(feedEntry: FeedEntry, options: CommonOptions = {}) {
         const headers = commonToHeader(options, sessionToken);
 
-        return this.http.delete<void>(environment.apiHost + '/api/feedentry/read/' + feedEntry.uuid, {
+        return this.http.delete<void>(`${environment.apiHost}/api/feedentry/read/${feedEntry.uuid}`, {
             headers: headers,
         });
     }
@@ -212,7 +212,7 @@ export class FeedEntryService {
     readSome(feedEntries: FeedEntry[], options: CommonOptions = {}) {
         const headers = commonToHeader(options, sessionToken);
 
-        return this.http.post<void>(environment.apiHost + '/api/feedentries/read/', feedEntries.map(feedEntry => feedEntry.uuid), {
+        return this.http.post<void>(`${environment.apiHost}/api/feedentries/read/`, feedEntries.map(feedEntry => feedEntry.uuid), {
             headers: headers,
         });
     }
@@ -220,7 +220,7 @@ export class FeedEntryService {
     unreadSome(feedEntries: FeedEntry[], options: CommonOptions = {}) {
         const headers = commonToHeader(options, sessionToken);
 
-        return this.http.request<void>('DELETE', environment.apiHost + '/api/feedentries/read/', {
+        return this.http.request<void>('DELETE', `${environment.apiHost}/api/feedentries/read/`, {
             headers: headers,
             body: feedEntries.map(feedEntry => feedEntry.uuid),
         });
