@@ -27,7 +27,9 @@ import {
 
 import { environment } from '@environments/environment';
 
-export type Field = 'uuid' | 'id' | 'createdAt' | 'publishedAt' | 'updatedAt' | 'title' | 'url' | 'content' | 'authorName' | 'fromSubscrption' | 'isRead';
+export type Field = 'uuid' | 'id' | 'createdAt' | 'publishedAt' |
+    'updatedAt' |'title' | 'url' | 'content' |
+    'authorName' | 'fromSubscrption' | 'isRead';
 
 function toFeedEntry(value: Record<string, any>) {
     const feedEntry = new FeedEntry();

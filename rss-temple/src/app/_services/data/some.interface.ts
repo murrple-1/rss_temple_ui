@@ -42,7 +42,7 @@ export function toParams<Field>(options: SomeOptions<Field>, fieldsFn: () => Fie
     }
 
     if (typeof options.returnTotalCount !== 'undefined') {
-        params['totalcount'] = options.returnTotalCount ? 'true': 'false';
+        params['totalcount'] = options.returnTotalCount ? 'true' : 'false';
     }
 
     return params;
