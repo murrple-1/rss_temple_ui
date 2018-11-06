@@ -3,7 +3,7 @@
 <h1 *ngIf="!feed">No Feed</h1>
 <h1 *ngIf="feed">{{feed.title}}</h1>
 
-<button (click)="subscribe()" *ngIf="feed && !feed.subscribed">Subscribe</button>
+<button (click)="startSubscribe()" *ngIf="feed && !feed.subscribed">Subscribe</button>
 <button (click)="unsubscribe()" *ngIf="feed && feed.subscribed">Unsubscribe</button>
 
 <rsst-feed-entry-view *ngFor="let feedEntry of feedEntries" [feedEntry]="feedEntry"></rsst-feed-entry-view>

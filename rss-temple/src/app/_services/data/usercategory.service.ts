@@ -18,6 +18,7 @@ import {
 } from '@app/_services/data/some.interface';
 import { AllOptions } from '@app/_services/data/all.interface';
 import { allFn } from '@app/_services/data/all.function';
+import { CommonOptions, toHeader as commonToHeader } from '@app/_services/data/common.interface';
 
 import { environment } from '@environments/environment';
 
@@ -79,5 +80,15 @@ export class UserCategoryService {
 
     all(options: AllOptions<Field> = {}, pageSize = 1000) {
         return allFn(options, this.some.bind(this), toUserCategory, pageSize);
+    }
+
+    create(userCategory: UserCategory, options?: CommonOptions) {
+        const headers = commonToHeader(options, sessionToken);
+
+        return this.http.post(`${environment.apiHost}/api/usercategory`, userCategory, {
+            headers: headers,
+        }).pipe<UserCategory>(
+            map(toUserCategory)
+        );
     }
 }

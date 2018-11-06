@@ -1,0 +1,10 @@
+<div class="modal-header">
+    <h4 class="modal-title">Subscribe</h4>
+    <button type="button" class="close" (click)="dismiss()">X</button>
+</div>
+<div class="modal-body">
+    <p-dropdown [options]="selectItems" [(ngModel)]="selectedItem" editable="true" placeholder="Select a Category"></p-dropdown>
+</div>
+<div class="modal-footer">
+    <button (click)="finish()">Finish</button>
+</div>

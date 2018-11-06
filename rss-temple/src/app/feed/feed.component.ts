@@ -1,5 +1,7 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { first } from 'rxjs/operators';
 
@@ -8,6 +10,9 @@ import { Feed } from '@app/_models/feed';
 import { FeedEntryService } from '@app/_services/data/feedentry.service';
 import { FeedEntry } from '@app/_models/feedentry';
 import { HttpErrorService } from '@app/_services/httperror.service';
+import { OptionsModalComponent, Options } from '@app/feed/optionsmodal/optionsmodal.component';
+import { UserCategoryService } from '@app/_services/data/usercategory.service';
+import { UserCategory } from '@app/_models/usercategory';
 
 @Component({
     templateUrl: 'feed.component.html',
@@ -20,7 +25,9 @@ export class FeedComponent implements OnInit {
     constructor(
         private feedService: FeedService,
         private feedEntryService: FeedEntryService,
+        private userCategoryService: UserCategoryService,
         private httpErrorService: HttpErrorService,
+        private modalService: NgbModal,
         private route: ActivatedRoute,
         private zone: NgZone,
     ) { }
@@ -59,15 +66,40 @@ export class FeedComponent implements OnInit {
         });
     }
 
-    subscribe() {
-        this.feedService.subscribe(this.feed.feedUrl).pipe(
-            first()
-        ).subscribe(() => {
-            this.zone.run(() => {
-                this.feed.subscribed = true;
-            });
+    startSubscribe() {
+        const modalRef =  this.modalService.open(OptionsModalComponent);
+
+        // TODO this doesn't work quite right yet
+        modalRef.result.then((result: Options) => {
+            if (result.isNewCategory) {
+                const userCategory = new UserCategory();
+                userCategory.text = result.categoryText;
+                this.userCategoryService.create(userCategory).pipe(
+                    first()
+                ).subscribe(_userCategory => {
+                    this.feedService.subscribe(this.feed.feedUrl, _userCategory.text).pipe(
+                        first()
+                    ).subscribe(() => {
+                        this.zone.run(() => {
+                            this.feed.subscribed = true;
+                        });
+                    }, error => {
+                        this.httpErrorService.handleError(error);
+                    });
+                });
+            } else {
+                this.feedService.subscribe(this.feed.feedUrl).pipe(
+                    first()
+                ).subscribe(() => {
+                    this.zone.run(() => {
+                        this.feed.subscribed = true;
+                    });
+                }, error => {
+                    this.httpErrorService.handleError(error);
+                });
+            }
         }, error => {
-            this.httpErrorService.handleError(error);
+            console.log(error);
         });
     }
 

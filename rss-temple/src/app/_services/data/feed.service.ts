@@ -145,7 +145,8 @@ export class FeedService {
         return allFn(options, this.some.bind(this), toFeed, pageSize);
     }
 
-    subscribe(url: string, options: CommonOptions = {}) {
+    // TODO
+    subscribe(url: string, category?: string, options: CommonOptions = {}) {
         const headers = commonToHeader(options, sessionToken);
         const params: {
             [header: string]: string | string[]

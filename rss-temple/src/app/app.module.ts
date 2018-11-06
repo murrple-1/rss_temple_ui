@@ -1,9 +1,11 @@
 ﻿import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { ButtonModule } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -23,18 +25,23 @@ import { MainComponent } from '@app/main/main.component';
 import { FeedComponent } from '@app/feed/feed.component';
 import { FeedService } from '@app/_services/data/feed.service';
 import { FeedEntryService } from '@app/_services/data/feedentry.service';
+import { UserCategoryService } from './_services/data/usercategory.service';
 import { NavBarComponent } from '@app/_components/nav-bar/nav-bar.component';
 import { MenuComponent } from '@app/_components/menu/menu.component';
 import { FeedEntryViewComponent } from '@app/_components/feed-entry-view/feed-entry-view.component';
+import { OptionsModalComponent as FeedOptionsModalComponent } from './feed/optionsmodal/optionsmodal.component';
+
 
 @NgModule({
     imports: [
         BrowserModule,
+        BrowserAnimationsModule,
         FormsModule,
         ReactiveFormsModule,
         HttpClientModule,
 
         ButtonModule,
+        DropdownModule,
 
         NgbModule,
 
@@ -47,6 +54,7 @@ import { FeedEntryViewComponent } from '@app/_components/feed-entry-view/feed-en
         RegisterComponent,
         MainComponent,
         FeedComponent,
+        FeedOptionsModalComponent,
         NavBarComponent,
         MenuComponent,
         FeedEntryViewComponent,
@@ -59,6 +67,7 @@ import { FeedEntryViewComponent } from '@app/_components/feed-entry-view/feed-en
         UserService,
         FeedService,
         FeedEntryService,
+        UserCategoryService,
         GAuthService,
         FBAuthService,
         HttpErrorService,
@@ -66,5 +75,8 @@ import { FeedEntryViewComponent } from '@app/_components/feed-entry-view/feed-en
     bootstrap: [
         AppComponent,
     ],
+    entryComponents: [
+        FeedOptionsModalComponent,
+    ]
 })
 export class AppModule { }
