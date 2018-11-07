@@ -69,12 +69,12 @@ export class FeedComponent implements OnInit {
     startSubscribe() {
         const modalRef =  this.modalService.open(OptionsModalComponent);
 
-        // TODO this doesn't work quite right yet
         modalRef.result.then((result: Options) => {
             if (result.isNewCategory) {
-                const userCategory = new UserCategory();
-                userCategory.text = result.categoryText;
-                this.userCategoryService.create(userCategory).pipe(
+                const userCategoryJson = {
+                    text: result.categoryText,
+                };
+                this.userCategoryService.create(userCategoryJson).pipe(
                     first()
                 ).subscribe(_userCategory => {
                     this.feedService.subscribe(this.feed.feedUrl, _userCategory.text).pipe(

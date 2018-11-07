@@ -48,6 +48,10 @@ function toUserCategory(value: Record<string, any>) {
     return userCategory;
 }
 
+export interface ICreate_UserCategory {
+    text: string;
+}
+
 @Injectable()
 export class UserCategoryService {
     constructor(
@@ -82,11 +86,12 @@ export class UserCategoryService {
         return allFn(options, this.some.bind(this), toUserCategory, pageSize);
     }
 
-    create(userCategory: UserCategory, options?: CommonOptions) {
+    create(userCategoryJson: ICreate_UserCategory, options: CommonOptions = {}) {
         const headers = commonToHeader(options, sessionToken);
 
-        return this.http.post(`${environment.apiHost}/api/usercategory`, userCategory, {
+        return this.http.post(`${environment.apiHost}/api/usercategory`, userCategoryJson, {
             headers: headers,
+            responseType: 'json'
         }).pipe<UserCategory>(
             map(toUserCategory)
         );

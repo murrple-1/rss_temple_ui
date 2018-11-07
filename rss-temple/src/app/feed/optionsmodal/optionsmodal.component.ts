@@ -31,7 +31,7 @@ export class OptionsModalComponent implements OnInit {
 
     ngOnInit(): void {
         this.userCategoryService.all({
-            fields: ['uuid', 'text'],
+            fields: ['text'],
             sort: 'text:ASC',
         }).pipe(
             first()
@@ -39,7 +39,7 @@ export class OptionsModalComponent implements OnInit {
             this.zone.run(() => {
                 this.selectItems = userCategoriesObj.objects.map(uc => {
                     const item: SelectItem = {
-                        value: uc.uuid,
+                        value: uc.text,
                         label: uc.text,
                     };
                     return item;
@@ -57,8 +57,8 @@ export class OptionsModalComponent implements OnInit {
     }
 
     finish() {
-        const categoryText: string = this.selectedItem.replace(/\s/g, '').length > 0 ? this.selectedItem : null;
-        const isNewCategory = categoryText !== null ? this.availableTexts.has(categoryText) : false;
+        const categoryText: string = (typeof this.selectedItem === 'string' && this.selectedItem.replace(/\s/g, '').length > 0) ? this.selectedItem : null;
+        const isNewCategory = categoryText !== null ? !this.availableTexts.has(categoryText) : false;
 
         const result: Options = {
             categoryText: categoryText,

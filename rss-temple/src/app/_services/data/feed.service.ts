@@ -145,7 +145,6 @@ export class FeedService {
         return allFn(options, this.some.bind(this), toFeed, pageSize);
     }
 
-    // TODO
     subscribe(url: string, category?: string, options: CommonOptions = {}) {
         const headers = commonToHeader(options, sessionToken);
         const params: {
@@ -153,6 +152,10 @@ export class FeedService {
         } = {
             'url': url,
         };
+
+        if (typeof category !== 'undefined') {
+            params['category'] = category;
+        }
 
         return this.http.post<void>(`${environment.apiHost}/api/feed/subscribe`, null, {
             headers: headers,
