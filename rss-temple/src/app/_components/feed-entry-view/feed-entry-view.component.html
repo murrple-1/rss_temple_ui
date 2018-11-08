@@ -1,6 +1,8 @@
 <div class="view">
   <h2><a href="{{feedEntry.url}}">{{feedEntry.title}}</a></h2>
   <div [innerHtml]="feedEntry.content"></div>
-  <button (click)="read(feedEntry)" *ngIf="!feedEntry.isRead">Read</button>
-  <button (click)="unread(feedEntry)" *ngIf="feedEntry.isRead">Unread</button>
+  <button (click)="read()" *ngIf="!feedEntry.isRead">Read</button>
+  <button (click)="unread()" *ngIf="feedEntry.isRead">Unread</button>
+  <button (click)="favorite()" *ngIf="!feedEntry.isFavorite">Favorite</button>
+  <button (click)="unfavorite()" *ngIf="feedEntry.isFavorite">Unfavorite</button>
 </div>

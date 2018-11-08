@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { Component, Input, NgZone } from '@angular/core';
 
 import { first } from 'rxjs/operators';
 
@@ -10,39 +10,60 @@ import { FeedEntryService } from '@app/_services/data/feedentry.service';
   templateUrl: './feed-entry-view.component.html',
   styleUrls: ['./feed-entry-view.component.scss']
 })
-export class FeedEntryViewComponent implements OnInit {
-  @Input()
-  feedEntry: FeedEntry;
+export class FeedEntryViewComponent {
+    @Input()
+    feedEntry: FeedEntry;
 
-  constructor(
-    private feedEntryService: FeedEntryService,
-    private zone: NgZone,
-  ) { }
+    constructor(
+        private feedEntryService: FeedEntryService,
+        private zone: NgZone,
+    ) { }
 
-  ngOnInit() {
-  }
-
-  read() {
-    this.feedEntryService.read(this.feedEntry).pipe(
-        first()
-    ).subscribe(() => {
-        this.zone.run(() => {
-          this.feedEntry.isRead = true;
+    read() {
+        this.feedEntryService.read(this.feedEntry).pipe(
+            first()
+        ).subscribe(() => {
+            this.zone.run(() => {
+            this.feedEntry.isRead = true;
+            });
+        }, error => {
+            console.log(error);
         });
-    }, error => {
-        console.log(error);
-    });
-}
+    }
 
-unread() {
-    this.feedEntryService.unread(this.feedEntry).pipe(
-        first()
-    ).subscribe(() => {
-        this.zone.run(() => {
-          this.feedEntry.isRead = false;
+    unread() {
+        this.feedEntryService.unread(this.feedEntry).pipe(
+            first()
+        ).subscribe(() => {
+            this.zone.run(() => {
+            this.feedEntry.isRead = false;
+            });
+        }, error => {
+            console.log(error);
         });
-    }, error => {
-        console.log(error);
-    });
-}
+    }
+
+    favorite() {
+        this.feedEntryService.favorite(this.feedEntry).pipe(
+            first()
+        ).subscribe(() => {
+            this.zone.run(() => {
+            this.feedEntry.isFavorite = true;
+            });
+        }, error => {
+            console.log(error);
+        });
+    }
+
+    unfavorite() {
+        this.feedEntryService.unfavorite(this.feedEntry).pipe(
+            first()
+        ).subscribe(() => {
+            this.zone.run(() => {
+            this.feedEntry.isFavorite = false;
+            });
+        }, error => {
+            console.log(error);
+        });
+    }
 }

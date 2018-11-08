@@ -12,4 +12,5 @@ export class FeedEntry {
     authorName?: string | null;
     fromSubscription?: boolean;
     isRead?: boolean;
+    isFavorite?: boolean;
 }

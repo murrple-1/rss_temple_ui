@@ -29,7 +29,7 @@ import { environment } from '@environments/environment';
 
 export type Field = 'uuid' | 'id' | 'createdAt' | 'publishedAt' |
     'updatedAt' |'title' | 'url' | 'content' |
-    'authorName' | 'fromSubscrption' | 'isRead';
+    'authorName' | 'fromSubscrption' | 'isRead' | 'isFavorite';
 
 function toFeedEntry(value: Record<string, any>) {
     const feedEntry = new FeedEntry();
@@ -158,6 +158,15 @@ function toFeedEntry(value: Record<string, any>) {
         }
     }
 
+    if ('isFavorite' in value) {
+        const isFavorite = value['isFavorite'];
+        if (typeof isFavorite === 'boolean') {
+            feedEntry.fromSubscription = isFavorite;
+        } else {
+            throw new Error('\'isFavorite\' must be boolean');
+        }
+    }
+
     return feedEntry;
 }
 
@@ -223,6 +232,39 @@ export class FeedEntryService {
         const headers = commonToHeader(options, sessionToken);
 
         return this.http.request<void>('DELETE', `${environment.apiHost}/api/feedentries/read/`, {
+            headers: headers,
+            body: feedEntries.map(feedEntry => feedEntry.uuid),
+        });
+    }
+
+    favorite(feedEntry: FeedEntry, options: CommonOptions = {}) {
+        const headers = commonToHeader(options, sessionToken);
+
+        return this.http.post<void>(`${environment.apiHost}/api/feedentry/favorite/${feedEntry.uuid}`, null, {
+            headers: headers,
+        });
+    }
+
+    unfavorite(feedEntry: FeedEntry, options: CommonOptions = {}) {
+        const headers = commonToHeader(options, sessionToken);
+
+        return this.http.delete<void>(`${environment.apiHost}/api/feedentry/favorite/${feedEntry.uuid}`, {
+            headers: headers,
+        });
+    }
+
+    favoriteSome(feedEntries: FeedEntry[], options: CommonOptions = {}) {
+        const headers = commonToHeader(options, sessionToken);
+
+        return this.http.post<void>(`${environment.apiHost}/api/feedentries/favorite/`, feedEntries.map(feedEntry => feedEntry.uuid), {
+            headers: headers,
+        });
+    }
+
+    unfavoriteSome(feedEntries: FeedEntry[], options: CommonOptions = {}) {
+        const headers = commonToHeader(options, sessionToken);
+
+        return this.http.request<void>('DELETE', `${environment.apiHost}/api/feedentries/favorite/`, {
             headers: headers,
             body: feedEntries.map(feedEntry => feedEntry.uuid),
         });

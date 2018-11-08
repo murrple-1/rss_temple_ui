@@ -47,7 +47,7 @@ export class FeedComponent implements OnInit {
             });
 
             this.feedEntryService.some({
-                fields: ['uuid', 'url', 'title', 'content', 'isRead'],
+                fields: ['uuid', 'url', 'title', 'content', 'isRead', 'isFavorite'],
                 returnTotalCount: false,
                 count: count,
                 search: `feedUuid:"${feed.uuid}"`,
