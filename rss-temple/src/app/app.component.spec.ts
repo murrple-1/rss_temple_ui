@@ -25,6 +25,7 @@ import { FeedComponent } from '@app/feed/feed.component';
 import { FeedService } from '@app/_services/data/feed.service';
 import { FeedEntryService } from '@app/_services/data/feedentry.service';
 import { NavBarComponent } from '@app/_components/nav-bar/nav-bar.component';
+import { SideBarComponent } from '@app/_components/side-bar/side-bar.component';
 import { MenuComponent } from '@app/_components/menu/menu.component';
 import { FeedEntryViewComponent } from '@app/_components/feed-entry-view/feed-entry-view.component';
 
@@ -51,6 +52,7 @@ describe('AppComponent', () => {
         MainComponent,
         FeedComponent,
         NavBarComponent,
+        SideBarComponent,
         MenuComponent,
         FeedEntryViewComponent,
       ],
