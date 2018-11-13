@@ -1,12 +1,17 @@
 <rsst-nav-bar></rsst-nav-bar>
-<rsst-side-bar></rsst-side-bar>
+<div class="container-fluid">
+    <div class="row">
+        <rsst-side-bar class="col-xs-6 col-sm-3 pl-0 flex-grow-1"></rsst-side-bar>
+        <div class="col-xs-12 col-sm-9">
+            <h2>My Subscriptions</h2>
+            <div *ngFor="let feed of subscribedFeeds">
+                <a [routerLink]="['/feed', {url: feed.feedUrl}]">{{feed.title}}</a>
+            </div>
 
-<h2>My Subscriptions</h2>
-<div *ngFor="let feed of subscribedFeeds">
-    <a [routerLink]="['/feed', {url: feed.feedUrl}]">{{feed.title}}</a>
+            <hr>
+
+            <h2>All Entries</h2>
+            <rsst-feed-entry-view *ngFor="let feedEntry of feedEntries" [feedEntry]="feedEntry"></rsst-feed-entry-view>
+        </div>
+    </div>
 </div>
-
-<hr>
-
-<h2>All Entries</h2>
-<rsst-feed-entry-view *ngFor="let feedEntry of feedEntries" [feedEntry]="feedEntry"></rsst-feed-entry-view>
