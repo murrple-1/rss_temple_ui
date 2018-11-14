@@ -12,7 +12,6 @@ import { FeedEntry } from '@app/_models/feedentry';
 import { HttpErrorService } from '@app/_services/httperror.service';
 import { OptionsModalComponent, Options } from '@app/feed/optionsmodal/optionsmodal.component';
 import { UserCategoryService } from '@app/_services/data/usercategory.service';
-import { UserCategory } from '@app/_models/usercategory';
 
 @Component({
     templateUrl: 'feed.component.html',

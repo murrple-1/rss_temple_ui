@@ -4,6 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
+import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 
@@ -29,7 +30,8 @@ import { UserCategoryService } from './_services/data/usercategory.service';
 import { NavBarComponent } from '@app/_components/nav-bar/nav-bar.component';
 import { SideBarComponent } from '@app/_components/side-bar/side-bar.component';
 import { FeedEntryViewComponent } from '@app/_components/feed-entry-view/feed-entry-view.component';
-import { OptionsModalComponent as FeedOptionsModalComponent } from './feed/optionsmodal/optionsmodal.component';
+import { OptionsModalComponent as FeedOptionsModalComponent } from '@app/feed/optionsmodal/optionsmodal.component';
+import { SubscribeModalComponent as SidebarSubscribeModalComponent } from '@app/_components/side-bar/subscribemodal/subscribemodal.component';
 
 
 @NgModule({
@@ -40,6 +42,7 @@ import { OptionsModalComponent as FeedOptionsModalComponent } from './feed/optio
         ReactiveFormsModule,
         HttpClientModule,
 
+        InputTextModule,
         ButtonModule,
         DropdownModule,
 
@@ -57,6 +60,7 @@ import { OptionsModalComponent as FeedOptionsModalComponent } from './feed/optio
         FeedOptionsModalComponent,
         NavBarComponent,
         SideBarComponent,
+        SidebarSubscribeModalComponent,
         FeedEntryViewComponent,
     ],
     providers: [
@@ -77,6 +81,7 @@ import { OptionsModalComponent as FeedOptionsModalComponent } from './feed/optio
     ],
     entryComponents: [
         FeedOptionsModalComponent,
+        SidebarSubscribeModalComponent,
     ]
 })
 export class AppModule { }
