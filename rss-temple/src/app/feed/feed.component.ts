@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
+import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
 
 import { FeedService } from '@app/_services/data/feed.service';
@@ -12,6 +13,7 @@ import { FeedEntry } from '@app/_models/feedentry';
 import { HttpErrorService } from '@app/_services/httperror.service';
 import { OptionsModalComponent, Options } from '@app/feed/optionsmodal/optionsmodal.component';
 import { UserCategoryService } from '@app/_services/data/usercategory.service';
+import { UserCategory } from '@app/_models/usercategory';
 
 @Component({
     templateUrl: 'feed.component.html',
@@ -66,28 +68,26 @@ export class FeedComponent implements OnInit {
     }
 
     startSubscribe() {
-        const modalRef =  this.modalService.open(OptionsModalComponent);
+        const modalRef = this.modalService.open(OptionsModalComponent);
 
         modalRef.result.then((result: Options) => {
+            let userCategoryObservable: Observable<UserCategory>;
             if (result.isNewCategory) {
                 const userCategoryJson = {
                     text: result.categoryText,
                 };
-                this.userCategoryService.create(userCategoryJson).pipe(
-                    first()
-                ).subscribe(_userCategory => {
-                    this.feedService.subscribe(this.feed.feedUrl, _userCategory.text).pipe(
-                        first()
-                    ).subscribe(() => {
-                        this.zone.run(() => {
-                            this.feed.subscribed = true;
-                        });
-                    }, error => {
-                        this.httpErrorService.handleError(error);
-                    });
-                });
+                userCategoryObservable = this.userCategoryService.create(userCategoryJson);
             } else {
-                this.feedService.subscribe(this.feed.feedUrl).pipe(
+                userCategoryObservable = new Observable<UserCategory>(subscriber => {
+                    subscriber.next(undefined);
+                    subscriber.complete();
+                });
+            }
+
+            userCategoryObservable.pipe(
+                first()
+            ).subscribe(_userCategory => {
+                this.feedService.subscribe(this.feed.feedUrl, (_userCategory ? _userCategory.text : undefined)).pipe(
                     first()
                 ).subscribe(() => {
                     this.zone.run(() => {
@@ -96,7 +96,7 @@ export class FeedComponent implements OnInit {
                 }, error => {
                     this.httpErrorService.handleError(error);
                 });
-            }
+            });
         }, error => {
             console.log(error);
         });
