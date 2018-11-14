@@ -1,6 +1,5 @@
 <div class="sidenav">
-  <a href="#">About</a>
-  <a href="#">Services</a>
-  <a href="#">Clients</a>
-  <a href="#">Contact</a>
+  <h2>Your Feeds</h2>
+  <span *ngIf="!subscribedFeeds || subscribedFeeds.length < 1">No Feeds</span>
+  <a *ngFor="let feed of subscribedFeeds" [routerLink]="['/feed', {url: feed.feedUrl}]">{{feed.title}}</a>
 </div>

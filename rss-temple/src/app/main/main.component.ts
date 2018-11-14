@@ -6,7 +6,6 @@ import { first } from 'rxjs/operators';
 import { FeedService } from '@app/_services/data/feed.service';
 import { FeedEntry } from '@app/_models/feedentry';
 import { FeedEntryService } from '@app/_services/data/feedentry.service';
-import { Feed } from '@app/_models/feed';
 import { HttpErrorService } from '@app/_services/httperror.service';
 
 @Component({
@@ -14,7 +13,6 @@ import { HttpErrorService } from '@app/_services/httperror.service';
     styleUrls: ['main.component.scss'],
 })
 export class MainComponent implements OnInit {
-    subscribedFeeds: Feed[];
     feedEntries: FeedEntry[];
 
     constructor(
@@ -29,16 +27,12 @@ export class MainComponent implements OnInit {
         const count = parseInt(this.route.snapshot.paramMap.get('count') || '5', 10);
 
         this.feedService.all({
-            fields: ['uuid', 'title', 'feedUrl'],
+            fields: ['uuid'],
             search: 'subscribed:"true"',
             returnTotalCount: false,
         }).pipe(
             first()
         ).subscribe(feeds => {
-            this.zone.run(() => {
-                this.subscribedFeeds = feeds.objects;
-            });
-
             if (feeds.objects.length > 0) {
                 this.feedEntryService.some({
                     fields: ['uuid', 'url', 'title', 'content', 'isRead'],
