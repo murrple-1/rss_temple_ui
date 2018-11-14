@@ -48,7 +48,7 @@ function toUserCategory(value: Record<string, any>) {
     return userCategory;
 }
 
-export interface ICreate_UserCategory {
+export interface ICreateUserCategory {
     text: string;
 }
 
@@ -86,7 +86,7 @@ export class UserCategoryService {
         return allFn(options, this.some.bind(this), toUserCategory, pageSize);
     }
 
-    create(userCategoryJson: ICreate_UserCategory, options: CommonOptions = {}) {
+    create(userCategoryJson: ICreateUserCategory, options: CommonOptions = {}) {
         const headers = commonToHeader(options, sessionToken);
 
         return this.http.post(`${environment.apiHost}/api/usercategory`, userCategoryJson, {
