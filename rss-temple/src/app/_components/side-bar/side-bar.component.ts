@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, Output, EventEmitter } from '@angular/core';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -19,6 +19,9 @@ import { UserCategory } from '@app/_models/usercategory';
 })
 export class SideBarComponent implements OnInit {
   subscribedFeeds: Feed[];
+
+  @Output()
+  feedAdded = new EventEmitter<Feed>();
 
   constructor(
     private feedService: FeedService,
@@ -63,7 +66,7 @@ export class SideBarComponent implements OnInit {
         first()
       ).subscribe(_userCategory => {
         this.feedService.get(result.feedUrl, {
-          fields: ['title', 'subscribed'],
+          fields: ['uuid', 'title', 'subscribed'],
         }).pipe(
           first()
         ).subscribe(feed => {
@@ -80,7 +83,9 @@ export class SideBarComponent implements OnInit {
               first()
             ).subscribe(() => {
               this.zone.run(() => {
-                this.subscribedFeeds = this.subscribedFeeds.concat([feed]);
+                this.feedAdded.emit(feed);
+
+                this.subscribedFeeds = this.subscribedFeeds.concat(feed);
               });
             }, error => {
               this.httpErrorService.handleError(error);
