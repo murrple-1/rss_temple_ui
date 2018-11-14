@@ -14,7 +14,7 @@
                             <input type="text" id="email" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && loginForm.controls.email.errors }" pInputText />
                             <label for="email">Email</label>
                         </span>
-                        <div *ngIf="submitted && loginForm.controls.email.errors" class="invalid-feedback">
+                        <div *ngIf="submitted && loginForm.controls.email.errors" class="invalid">
                             <div *ngIf="loginForm.controls.email.errors.required">Email is required</div>
                         </div>
                     </div>
@@ -23,7 +23,7 @@
                             <input type="password" id="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && loginForm.controls.password.errors }" pInputText />
                             <label for="password">Password</label>
                         </span>
-                        <div *ngIf="submitted && loginForm.controls.password.errors" class="invalid-feedback">
+                        <div *ngIf="submitted && loginForm.controls.password.errors" class="invalid">
                             <div *ngIf="loginForm.controls.password.errors.required">Password is required</div>
                         </div>
                     </div>

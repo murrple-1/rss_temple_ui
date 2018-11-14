@@ -29,7 +29,7 @@ export class OptionsModalComponent implements OnInit {
         private zone: NgZone,
     ) { }
 
-    ngOnInit(): void {
+    ngOnInit() {
         this.userCategoryService.all({
             fields: ['text'],
             sort: 'text:ASC',

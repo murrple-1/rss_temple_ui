@@ -1,4 +1,5 @@
 import { Component, OnInit, NgZone } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -19,19 +20,26 @@ export interface SubscriptionDetails {
     styleUrls: ['subscribemodal.component.scss'],
 })
 export class SubscribeModalComponent implements OnInit {
-    feedUrl: string;
+    subscribeForm: FormGroup;
+    submitted = false;
+
     selectItems: SelectItem[];
     selectedItem: string;
 
     private availableTexts: Set<string>;
 
     constructor(
+        private formBuilder: FormBuilder,
         private userCategoryService: UserCategoryService,
         private activeModal: NgbActiveModal,
         private zone: NgZone,
     ) { }
 
-    ngOnInit(): void {
+    ngOnInit() {
+        this.subscribeForm = this.formBuilder.group({
+            feedUrl: ['', [Validators.required]],
+        });
+
         this.userCategoryService.all({
             fields: ['text'],
             sort: 'text:ASC',
@@ -59,11 +67,16 @@ export class SubscribeModalComponent implements OnInit {
     }
 
     finish() {
+        this.submitted = true;
+        if (this.subscribeForm.invalid) {
+            return;
+        }
+
         const categoryText: string = (typeof this.selectedItem === 'string' && this.selectedItem.replace(/\s/g, '').length > 0) ? this.selectedItem : null;
         const isNewCategory = categoryText !== null ? !this.availableTexts.has(categoryText) : false;
 
         const result: SubscriptionDetails = {
-            feedUrl: this.feedUrl,
+            feedUrl: this.subscribeForm.controls.feedUrl.value,
             categoryText: categoryText,
             isNewCategory: isNewCategory,
         };

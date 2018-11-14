@@ -3,13 +3,17 @@
     <button type="button" class="close" (click)="dismiss()">X</button>
 </div>
 <div class="modal-body">
-    <div class="form-group">
-        <!-- TODO realized that I use different input paradigms between login page and here, should consolidate -->
-        <span class="ui-float-label">
-            <input id="feed-url-input" type="text" class="form-control" pInputText [(ngModel)]="feedUrl">
-            <label for="feed-url-input">Feed URL</label>
-        </span>
-    </div>
+    <form [formGroup]="subscribeForm">
+        <div class="form-group">
+            <span class="ui-float-label">
+                <input id="feed-url" formControlName="feedUrl" type="text" class="form-control" pInputText>
+                <label for="feed-url">Feed URL</label>
+            </span>
+            <div *ngIf="submitted && subscribeForm.controls.feedUrl.errors" class="invalid">
+                <div *ngIf="subscribeForm.controls.feedUrl.errors.required">Feed URL is required</div>
+            </div>
+        </div>
+    </form>
     <div class="form-group">
         <p-dropdown [options]="selectItems" [(ngModel)]="selectedItem" editable="true" placeholder="Select a Category"></p-dropdown>
     </div>
