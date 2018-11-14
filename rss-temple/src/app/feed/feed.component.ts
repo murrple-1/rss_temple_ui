@@ -79,7 +79,7 @@ export class FeedComponent implements OnInit {
                 userCategoryObservable = this.userCategoryService.create(userCategoryJson);
             } else {
                 userCategoryObservable = new Observable<UserCategory>(subscriber => {
-                    subscriber.next(undefined);
+                    subscriber.next(null);
                     subscriber.complete();
                 });
             }
@@ -87,7 +87,14 @@ export class FeedComponent implements OnInit {
             userCategoryObservable.pipe(
                 first()
             ).subscribe(_userCategory => {
-                this.feedService.subscribe(this.feed.feedUrl, (_userCategory ? _userCategory.text : undefined)).pipe(
+                let feedSubscribeObservable: Observable<void>;
+                if (_userCategory) {
+                    feedSubscribeObservable = this.feedService.subscribe(this.feed.feedUrl, _userCategory.text);
+                } else {
+                    feedSubscribeObservable = this.feedService.subscribe(this.feed.feedUrl);
+                }
+
+                feedSubscribeObservable.pipe(
                     first()
                 ).subscribe(() => {
                     this.zone.run(() => {

@@ -54,7 +54,7 @@ export class SideBarComponent implements OnInit {
         userCategoryObservable = this.userCategoryService.create(userCategoryJson);
       } else {
         userCategoryObservable = new Observable<UserCategory>(subscriber => {
-          subscriber.next(undefined);
+          subscriber.next(null);
           subscriber.complete();
         });
       }
@@ -69,7 +69,14 @@ export class SideBarComponent implements OnInit {
         ).subscribe(feed => {
           feed.feedUrl = result.feedUrl;
           if (!feed.subscribed) {
-            this.feedService.subscribe(result.feedUrl, (_userCategory ? _userCategory.text : undefined)).pipe(
+            let feedSubscribeObservable: Observable<void>;
+            if (_userCategory) {
+              feedSubscribeObservable = this.feedService.subscribe(result.feedUrl, _userCategory.text);
+            } else {
+              feedSubscribeObservable = this.feedService.subscribe(result.feedUrl);
+            }
+
+            feedSubscribeObservable.pipe(
               first()
             ).subscribe(() => {
               this.zone.run(() => {
@@ -84,6 +91,8 @@ export class SideBarComponent implements OnInit {
         }, error => {
           this.httpErrorService.handleError(error);
         });
+      }, error => {
+        this.httpErrorService.handleError(error);
       });
     }, error => {
       console.log(error);
