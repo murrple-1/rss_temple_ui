@@ -8,4 +8,6 @@ export class Feed {
     publishedAt?: Moment;
     updatedAt?: Moment | null;
     subscribed?: boolean;
+    customTitle?: string;
+    calculatedTitle?: string;
 }

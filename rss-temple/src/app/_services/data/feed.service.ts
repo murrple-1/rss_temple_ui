@@ -27,7 +27,8 @@ import {
 
 import { environment } from '@environments/environment';
 
-export type Field = 'uuid' | 'title' | 'feedUrl' | 'homeUrl' | 'publishedAt' | 'updatedAt' | 'subscribed';
+export type Field = 'uuid' | 'title' | 'feedUrl' | 'homeUrl' |
+'publishedAt' | 'updatedAt' | 'subscribed' | 'customTitle' | 'calculatedTitle';
 
 function toFeed(value: Record<string, any>) {
     const feed = new Feed();
@@ -104,6 +105,24 @@ function toFeed(value: Record<string, any>) {
             feed.subscribed = subscribed;
         } else {
             throw new Error('\'subscribed\' must be boolean');
+        }
+    }
+
+    if ('customTitle' in value) {
+        const customTitle = value['customTitle'];
+        if (typeof customTitle === 'string') {
+            feed.customTitle = customTitle;
+        } else {
+            throw new Error('\'customTitle\' must be string');
+        }
+    }
+
+    if ('calculatedTitle' in value) {
+        const calculatedTitle = value['calculatedTitle'];
+        if (typeof calculatedTitle === 'string') {
+            feed.calculatedTitle = calculatedTitle;
+        } else {
+            throw new Error('\'calculatedTitle\' must be string');
         }
     }
 
