@@ -12,7 +12,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from '@app/app.component';
 import { routing } from '@app/app.routing';
-import { AlertComponent } from '@app/_directives/alert.component';
+import { AlertComponent } from '@app/_components/alert/alert.component';
 import { AuthGuard, NoAuthGuard } from '@app/_guards/auth.guard';
 import { LoginService } from '@app/_services/login.service';
 import { AlertService } from '@app/_services/alert.service';
