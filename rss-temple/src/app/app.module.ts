@@ -32,6 +32,7 @@ import { SideBarComponent } from '@app/_components/side-bar/side-bar.component';
 import { FeedEntryViewComponent } from '@app/_components/feed-entry-view/feed-entry-view.component';
 import { OptionsModalComponent as FeedOptionsModalComponent } from '@app/feed/optionsmodal/optionsmodal.component';
 import { SubscribeModalComponent as SidebarSubscribeModalComponent } from '@app/_components/side-bar/subscribemodal/subscribemodal.component';
+import { OPMLModalComponent as SidebarOPMLModalComponent } from '@app/_components/side-bar/opmlmodal/opmlmodal.component';
 
 
 @NgModule({
@@ -61,6 +62,7 @@ import { SubscribeModalComponent as SidebarSubscribeModalComponent } from '@app/
         NavBarComponent,
         SideBarComponent,
         SidebarSubscribeModalComponent,
+        SidebarOPMLModalComponent,
         FeedEntryViewComponent,
     ],
     providers: [
@@ -82,6 +84,7 @@ import { SubscribeModalComponent as SidebarSubscribeModalComponent } from '@app/
     entryComponents: [
         FeedOptionsModalComponent,
         SidebarSubscribeModalComponent,
+        SidebarOPMLModalComponent,
     ]
 })
 export class AppModule { }

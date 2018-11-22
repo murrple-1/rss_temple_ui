@@ -1,0 +1,11 @@
+<div class="modal-header">
+    <h4 class="modal-title">Upload OPML</h4>
+    <button type="button" class="close" (click)="dismiss()">X</button>
+</div>
+<div class="modal-body">
+    <label for="opml-file">Choose an OPML file:</label>
+    <input #opmlFileInput type="file" name="opml-file" accept=".xml,.opml,application/xml,text/xml" multiple="false">
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" (click)="finish()">Finish</button>
+</div>

@@ -8,6 +8,7 @@ import { first } from 'rxjs/operators';
 import { Feed } from '@app/_models/feed';
 import { FeedService } from '@app/_services/data/feed.service';
 import { SubscribeModalComponent, SubscriptionDetails } from '@app/_components/side-bar/subscribemodal/subscribemodal.component';
+import { OPMLModalComponent } from '@app/_components/side-bar/opmlmodal/opmlmodal.component';
 import { UserCategoryService } from '@app/_services/data/usercategory.service';
 import { HttpErrorService } from '@app/_services/httperror.service';
 import { UserCategory } from '@app/_models/usercategory';
@@ -99,8 +100,17 @@ export class SideBarComponent implements OnInit {
       }, error => {
         this.httpErrorService.handleError(error);
       });
-    }, error => {
-      console.log(error);
+    }, () => {
+      // dialog dismissed, no-op
+    });
+  }
+
+  uploadOPML() {
+    const modalRef = this.modalService.open(OPMLModalComponent);
+
+    modalRef.result.then(() => {
+    }, () => {
+      // dialog dismissed, no-op
     });
   }
 }
