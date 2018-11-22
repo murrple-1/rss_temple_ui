@@ -1,6 +1,11 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, NgZone } from '@angular/core';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+
+import { first } from 'rxjs/operators';
+
+import { OPMLService } from '@app/_services/data/opml.service';
+import { HttpErrorService } from '@app/_services/httperror.service';
 
 @Component({
     templateUrl: 'opmlmodal.component.html',
@@ -10,8 +15,13 @@ export class OPMLModalComponent {
     @ViewChild('opmlFileInput')
     opmlFileInput: ElementRef<HTMLInputElement>;
 
+    uploading = false;
+
     constructor(
+        private opmlService: OPMLService,
+        private httpErrorService: HttpErrorService,
         private activeModal: NgbActiveModal,
+        private zone: NgZone,
     ) { }
 
     dismiss() {
@@ -24,18 +34,31 @@ export class OPMLModalComponent {
             const file = nativeElement.files[0];
 
             const reader = new FileReader();
+
             reader.onload = () => {
-                // TODO
-                console.log(reader.result);
-                this.activeModal.close();
+                this.opmlService.upload(reader.result).pipe(
+                    first()
+                ).subscribe(() => {
+                    this.activeModal.close();
+                }, error => {
+                    this.zone.run(() => {
+                        this.uploading = false;
+                    });
+                    this.httpErrorService.handleError(error);
+                });
             };
+
             reader.onerror = () => {
-                // TODO
-                console.log('Error reading file');
+                // TODO show error?
+                this.zone.run(() => {
+                    this.uploading = false;
+                });
             };
+
+            this.uploading = true;
             reader.readAsText(file);
         } else {
-            this.activeModal.close();
+            this.activeModal.dismiss();
         }
     }
 }

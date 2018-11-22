@@ -4,8 +4,8 @@
 </div>
 <div class="modal-body">
     <label for="opml-file">Choose an OPML file:</label>
-    <input #opmlFileInput type="file" name="opml-file" accept=".xml,.opml,application/xml,text/xml" multiple="false">
+    <input #opmlFileInput type="file" name="opml-file" accept=".xml,.opml,application/xml,text/xml" multiple="false" [disabled]="uploading">
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" (click)="finish()">Finish</button>
+    <button class="btn btn-primary" (click)="finish()" [disabled]="uploading">Finish</button>
 </div>

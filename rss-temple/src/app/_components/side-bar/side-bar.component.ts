@@ -23,6 +23,8 @@ export class SideBarComponent implements OnInit {
 
   @Output()
   feedAdded = new EventEmitter<Feed>();
+  @Output()
+  opmlUploaded = new EventEmitter<void>();
 
   constructor(
     private feedService: FeedService,
@@ -109,6 +111,19 @@ export class SideBarComponent implements OnInit {
     const modalRef = this.modalService.open(OPMLModalComponent);
 
     modalRef.result.then(() => {
+      this.opmlUploaded.emit();
+
+      this.feedService.all({
+        fields: ['title', 'feedUrl'],
+        search: 'subscribed:"true"',
+        returnTotalCount: false,
+      }).pipe(
+        first()
+      ).subscribe(feeds => {
+        this.zone.run(() => {
+          this.subscribedFeeds = feeds.objects;
+        });
+      });
     }, () => {
       // dialog dismissed, no-op
     });

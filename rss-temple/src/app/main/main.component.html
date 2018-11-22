@@ -1,7 +1,7 @@
 <rsst-nav-bar></rsst-nav-bar>
 <div class="container-fluid">
     <div class="row">
-        <rsst-side-bar class="col-12 col-lg-2 pl-0 pr-0 pr-lg-3" (feedAdded)="feedAdded($event)"></rsst-side-bar>
+        <rsst-side-bar class="col-12 col-lg-2 pl-0 pr-0 pr-lg-3" (feedAdded)="feedAdded($event)" (opmlUploaded)="opmlUploaded()"></rsst-side-bar>
         <div class="col-12 col-lg-10">
             <h2>All Entries</h2>
             <span *ngIf="!feedEntries || feedEntries.length < 1">No Entries</span>

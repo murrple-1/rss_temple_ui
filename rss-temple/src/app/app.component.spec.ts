@@ -24,6 +24,7 @@ import { MainComponent } from '@app/main/main.component';
 import { FeedComponent } from '@app/feed/feed.component';
 import { FeedService } from '@app/_services/data/feed.service';
 import { FeedEntryService } from '@app/_services/data/feedentry.service';
+import { OPMLService } from '@app/_services/data/opml.service';
 import { NavBarComponent } from '@app/_components/nav-bar/nav-bar.component';
 import { SideBarComponent } from '@app/_components/side-bar/side-bar.component';
 import { FeedEntryViewComponent } from '@app/_components/feed-entry-view/feed-entry-view.component';
@@ -67,6 +68,7 @@ describe('AppComponent', () => {
           UserService,
           FeedService,
           FeedEntryService,
+          OPMLService,
           GAuthService,
           FBAuthService,
           HttpErrorService,
