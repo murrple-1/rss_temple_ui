@@ -22,7 +22,7 @@ import { CommonOptions, toHeader as commonToHeader } from '@app/_services/data/c
 
 import { environment } from '@environments/environment';
 
-export type Field = 'uuid' | 'text';
+export type Field = 'uuid' | 'text' | 'feedUuids';
 
 function toUserCategory(value: Record<string, any>) {
     const userCategory = new UserCategory();

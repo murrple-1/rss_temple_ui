@@ -1,9 +1,6 @@
-import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
-import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
 
 import { FeedService } from '@app/_services/data/feed.service';
@@ -11,9 +8,6 @@ import { Feed } from '@app/_models/feed';
 import { FeedEntryService } from '@app/_services/data/feedentry.service';
 import { FeedEntry } from '@app/_models/feedentry';
 import { HttpErrorService } from '@app/_services/httperror.service';
-import { OptionsModalComponent, Options } from '@app/feed/optionsmodal/optionsmodal.component';
-import { UserCategoryService } from '@app/_services/data/usercategory.service';
-import { UserCategory } from '@app/_models/usercategory';
 
 @Component({
     templateUrl: 'feed.component.html',
@@ -26,9 +20,7 @@ export class FeedComponent implements OnInit {
     constructor(
         private feedService: FeedService,
         private feedEntryService: FeedEntryService,
-        private userCategoryService: UserCategoryService,
         private httpErrorService: HttpErrorService,
-        private modalService: NgbModal,
         private route: ActivatedRoute,
         private zone: NgZone,
     ) { }
@@ -68,44 +60,14 @@ export class FeedComponent implements OnInit {
     }
 
     startSubscribe() {
-        const modalRef = this.modalService.open(OptionsModalComponent);
-
-        modalRef.result.then((result: Options) => {
-            let userCategoryObservable: Observable<UserCategory>;
-            if (result.isNewCategory) {
-                const userCategoryJson = {
-                    text: result.categoryText,
-                };
-                userCategoryObservable = this.userCategoryService.create(userCategoryJson);
-            } else {
-                userCategoryObservable = new Observable<UserCategory>(subscriber => {
-                    subscriber.next(null);
-                    subscriber.complete();
-                });
-            }
-
-            userCategoryObservable.pipe(
-                first()
-            ).subscribe(_userCategory => {
-                let feedSubscribeObservable: Observable<void>;
-                if (_userCategory) {
-                    feedSubscribeObservable = this.feedService.subscribe(this.feed.feedUrl, _userCategory.text);
-                } else {
-                    feedSubscribeObservable = this.feedService.subscribe(this.feed.feedUrl);
-                }
-
-                feedSubscribeObservable.pipe(
-                    first()
-                ).subscribe(() => {
-                    this.zone.run(() => {
-                        this.feed.subscribed = true;
-                    });
-                }, error => {
-                    this.httpErrorService.handleError(error);
-                });
+        this.feedService.subscribe(this.feed.feedUrl).pipe(
+            first()
+        ).subscribe(() => {
+            this.zone.run(() => {
+                this.feed.subscribed = true;
             });
         }, error => {
-            console.log(error);
+            this.httpErrorService.handleError(error);
         });
     }
 

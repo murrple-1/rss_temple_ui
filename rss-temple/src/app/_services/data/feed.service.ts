@@ -164,17 +164,13 @@ export class FeedService {
         return allFn(options, this.some.bind(this), toFeed, pageSize);
     }
 
-    subscribe(url: string, category?: string, options: CommonOptions = {}) {
+    subscribe(url: string, options: CommonOptions = {}) {
         const headers = commonToHeader(options, sessionToken);
         const params: {
             [header: string]: string | string[]
         } = {
             'url': url,
         };
-
-        if (typeof category !== 'undefined') {
-            params['category'] = category;
-        }
 
         return this.http.post<void>(`${environment.apiHost}/api/feed/subscribe`, null, {
             headers: headers,
