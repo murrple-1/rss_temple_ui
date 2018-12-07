@@ -17,4 +17,4 @@ script:
   - npm run test-ci
   - npm run e2e-ci
 after_script:
-  - node_modules/codecov/bin/codecov
+  - node_modules/codecov/bin/codecov --disable=gcov
