@@ -207,7 +207,7 @@ export class FeedEntryService {
     read(feedEntry: FeedEntry, options: CommonOptions = {}) {
         const headers = commonToHeader(options, sessionToken);
 
-        return this.http.post<void>(`${environment.apiHost}/api/feedentry/read/${feedEntry.uuid}`, null, {
+        return this.http.post<void>(`${environment.apiHost}/api/feedentry/${feedEntry.uuid}/read`, null, {
             headers: headers,
         });
     }
@@ -215,7 +215,7 @@ export class FeedEntryService {
     unread(feedEntry: FeedEntry, options: CommonOptions = {}) {
         const headers = commonToHeader(options, sessionToken);
 
-        return this.http.delete<void>(`${environment.apiHost}/api/feedentry/read/${feedEntry.uuid}`, {
+        return this.http.delete<void>(`${environment.apiHost}/api/feedentry/${feedEntry.uuid}/read`, {
             headers: headers,
         });
     }
@@ -240,7 +240,7 @@ export class FeedEntryService {
     favorite(feedEntry: FeedEntry, options: CommonOptions = {}) {
         const headers = commonToHeader(options, sessionToken);
 
-        return this.http.post<void>(`${environment.apiHost}/api/feedentry/favorite/${feedEntry.uuid}`, null, {
+        return this.http.post<void>(`${environment.apiHost}/api/feedentry/${feedEntry.uuid}/favorite`, null, {
             headers: headers,
         });
     }
@@ -248,7 +248,7 @@ export class FeedEntryService {
     unfavorite(feedEntry: FeedEntry, options: CommonOptions = {}) {
         const headers = commonToHeader(options, sessionToken);
 
-        return this.http.delete<void>(`${environment.apiHost}/api/feedentry/favorite/${feedEntry.uuid}`, {
+        return this.http.delete<void>(`${environment.apiHost}/api/feedentry/${feedEntry.uuid}/favorite`, {
             headers: headers,
         });
     }
