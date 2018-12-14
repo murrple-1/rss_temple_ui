@@ -24,10 +24,10 @@ import { environment } from '@environments/environment';
 
 export type Field = 'uuid' | 'text' | 'feedUuids';
 
-function toUserCategory(value: Record<string, any>) {
+function toUserCategory(value: Object) {
     const userCategory = new UserCategory();
 
-    if ('uuid' in value) {
+    if (value.hasOwnProperty('uuid')) {
         const uuid = value['uuid'];
         if (typeof uuid === 'string') {
             userCategory.uuid = uuid;
@@ -36,7 +36,7 @@ function toUserCategory(value: Record<string, any>) {
         }
     }
 
-    if ('text' in value) {
+    if (value.hasOwnProperty('text')) {
         const text = value['text'];
         if (typeof text === 'string') {
             userCategory.text = text;

@@ -30,10 +30,10 @@ import { environment } from '@environments/environment';
 export type Field = 'uuid' | 'title' | 'feedUrl' | 'homeUrl' |
 'publishedAt' | 'updatedAt' | 'subscribed' | 'customTitle' | 'calculatedTitle';
 
-function toFeed(value: Record<string, any>) {
+function toFeed(value: Object) {
     const feed = new Feed();
 
-    if ('uuid' in value) {
+    if (value.hasOwnProperty('uuid')) {
         const uuid = value['uuid'];
         if (typeof uuid === 'string') {
             feed.uuid = uuid;
@@ -42,7 +42,7 @@ function toFeed(value: Record<string, any>) {
         }
     }
 
-    if ('title' in value) {
+    if (value.hasOwnProperty('title')) {
         const title = value['title'];
         if (typeof title === 'string') {
             feed.title = title;
@@ -51,7 +51,7 @@ function toFeed(value: Record<string, any>) {
         }
     }
 
-    if ('feedUrl' in value) {
+    if (value.hasOwnProperty('feedUrl')) {
         const feedUrl = value['feedUrl'];
         if (typeof feedUrl === 'string') {
             feed.feedUrl = feedUrl;
@@ -60,7 +60,7 @@ function toFeed(value: Record<string, any>) {
         }
     }
 
-    if ('homeUrl' in value) {
+    if (value.hasOwnProperty('homeUrl')) {
         const homeUrl = value['homeUrl'];
         if (homeUrl === null || typeof homeUrl === 'string') {
             feed.homeUrl = homeUrl;
@@ -69,7 +69,7 @@ function toFeed(value: Record<string, any>) {
         }
     }
 
-    if ('publishedAt' in value) {
+    if (value.hasOwnProperty('publishedAt')) {
         const publishedAt = value['publishedAt'];
         if (typeof publishedAt === 'string') {
             const _moment = utc(publishedAt, 'YYYY-MM-DD HH:mm:ss');
@@ -83,7 +83,7 @@ function toFeed(value: Record<string, any>) {
         }
     }
 
-    if ('updatedAt' in value) {
+    if (value.hasOwnProperty('updatedAt')) {
         const updatedAt = value['updatedAt'];
         if (updatedAt === null) {
             feed.updatedAt = null;
@@ -99,7 +99,7 @@ function toFeed(value: Record<string, any>) {
         }
     }
 
-    if ('subscribed' in value) {
+    if (value.hasOwnProperty('subscribed')) {
         const subscribed = value['subscribed'];
         if (typeof subscribed === 'boolean') {
             feed.subscribed = subscribed;
@@ -108,7 +108,7 @@ function toFeed(value: Record<string, any>) {
         }
     }
 
-    if ('customTitle' in value) {
+    if (value.hasOwnProperty('customTitle')) {
         const customTitle = value['customTitle'];
         if (typeof customTitle === 'string') {
             feed.customTitle = customTitle;
@@ -117,7 +117,7 @@ function toFeed(value: Record<string, any>) {
         }
     }
 
-    if ('calculatedTitle' in value) {
+    if (value.hasOwnProperty('calculatedTitle')) {
         const calculatedTitle = value['calculatedTitle'];
         if (typeof calculatedTitle === 'string') {
             feed.calculatedTitle = calculatedTitle;

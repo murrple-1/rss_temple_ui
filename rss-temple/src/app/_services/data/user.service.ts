@@ -15,10 +15,10 @@ import { environment } from '@environments/environment';
 
 export type Field = 'uuid' | 'email' | 'subscribedFeedUuids';
 
-function toUser(value: Record<string, any>) {
+function toUser(value: Object) {
     const user = new User();
 
-    if ('uuid' in value) {
+    if (value.hasOwnProperty('uuid')) {
         const uuid = value['uuid'];
         if (typeof uuid === 'string') {
             user.uuid = uuid;
@@ -27,7 +27,7 @@ function toUser(value: Record<string, any>) {
         }
     }
 
-    if ('email' in value) {
+    if (value.hasOwnProperty('email')) {
         const email = value['email'];
         if (typeof email === 'string') {
             user.email = email;
@@ -36,9 +36,9 @@ function toUser(value: Record<string, any>) {
         }
     }
 
-    if ('subscribedFeedUuids' in value) {
+    if (value.hasOwnProperty('subscribedFeedUuids')) {
         const subscribedFeedUuids = value['subscribedFeedUuids'];
-        if (subscribedFeedUuids instanceof Array) {
+        if (Array.isArray(subscribedFeedUuids)) {
             subscribedFeedUuids.forEach(element => {
                 if (typeof element !== 'string') {
                     throw new Error('\'subscribedFeedUuids\' element must be string');

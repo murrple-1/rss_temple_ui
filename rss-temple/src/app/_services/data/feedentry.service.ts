@@ -31,10 +31,10 @@ export type Field = 'uuid' | 'id' | 'createdAt' | 'publishedAt' |
     'updatedAt' |'title' | 'url' | 'content' |
     'authorName' | 'fromSubscrption' | 'isRead' | 'isFavorite';
 
-function toFeedEntry(value: Record<string, any>) {
+function toFeedEntry(value: Object) {
     const feedEntry = new FeedEntry();
 
-    if ('uuid' in value) {
+    if (value.hasOwnProperty('uuid')) {
         const uuid = value['uuid'];
         if (typeof uuid === 'string') {
             feedEntry.uuid = uuid;
@@ -43,7 +43,7 @@ function toFeedEntry(value: Record<string, any>) {
         }
     }
 
-    if ('id' in value) {
+    if (value.hasOwnProperty('id')) {
         const id = value['id'];
         if (id === null) {
             feedEntry.id = null;
@@ -54,7 +54,7 @@ function toFeedEntry(value: Record<string, any>) {
         }
     }
 
-    if ('createdAt' in value) {
+    if (value.hasOwnProperty('createdAt')) {
         const createdAt = value['createdAt'];
         if (createdAt === null) {
             feedEntry.createdAt = null;
@@ -70,7 +70,7 @@ function toFeedEntry(value: Record<string, any>) {
         }
     }
 
-    if ('publishedAt' in value) {
+    if (value.hasOwnProperty('publishedAt')) {
         const publishedAt = value['publishedAt'];
         if (typeof publishedAt === 'string') {
             const _moment = utc(publishedAt, 'YYYY-MM-DD HH:mm:ss');
@@ -84,7 +84,7 @@ function toFeedEntry(value: Record<string, any>) {
         }
     }
 
-    if ('updatedAt' in value) {
+    if (value.hasOwnProperty('updatedAt')) {
         const updatedAt = value['updatedAt'];
         if (updatedAt === null) {
             feedEntry.updatedAt = null;
@@ -100,7 +100,7 @@ function toFeedEntry(value: Record<string, any>) {
         }
     }
 
-    if ('title' in value) {
+    if (value.hasOwnProperty('title')) {
         const title = value['title'];
         if (typeof title === 'string') {
             feedEntry.title = title;
@@ -109,7 +109,7 @@ function toFeedEntry(value: Record<string, any>) {
         }
     }
 
-    if ('url' in value) {
+    if (value.hasOwnProperty('url')) {
         const url = value['url'];
         if (typeof url === 'string') {
             feedEntry.url = url;
@@ -118,7 +118,7 @@ function toFeedEntry(value: Record<string, any>) {
         }
     }
 
-    if ('content' in value) {
+    if (value.hasOwnProperty('content')) {
         const content = value['content'];
         if (content === null) {
             feedEntry.content = null;
@@ -129,7 +129,7 @@ function toFeedEntry(value: Record<string, any>) {
         }
     }
 
-    if ('authorName' in value) {
+    if (value.hasOwnProperty('authorName')) {
         const authorName = value['authorName'];
         if (authorName === null) {
             feedEntry.authorName = null;
@@ -140,7 +140,7 @@ function toFeedEntry(value: Record<string, any>) {
         }
     }
 
-    if ('fromSubscription' in value) {
+    if (value.hasOwnProperty('fromSubscription')) {
         const fromSubscription = value['fromSubscription'];
         if (typeof fromSubscription === 'boolean') {
             feedEntry.fromSubscription = fromSubscription;
@@ -149,7 +149,7 @@ function toFeedEntry(value: Record<string, any>) {
         }
     }
 
-    if ('isRead' in value) {
+    if (value.hasOwnProperty('isRead')) {
         const isRead = value['isRead'];
         if (typeof isRead === 'boolean') {
             feedEntry.fromSubscription = isRead;
@@ -158,7 +158,7 @@ function toFeedEntry(value: Record<string, any>) {
         }
     }
 
-    if ('isFavorite' in value) {
+    if (value.hasOwnProperty('isFavorite')) {
         const isFavorite = value['isFavorite'];
         if (typeof isFavorite === 'boolean') {
             feedEntry.fromSubscription = isFavorite;

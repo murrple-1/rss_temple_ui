@@ -17,7 +17,7 @@ import { SomeOptions } from '@app/_services/data/some.interface';
 export function allFn<Field, T>(
         options: AllOptions<Field>,
         someFn: (options: SomeOptions<Field>) => Observable<Objects<T>>,
-        toFn: (t: Record<string, any>) => T,
+        toFn: (t: Object) => T,
         pageSize: number
     ) {
     return someFn({
