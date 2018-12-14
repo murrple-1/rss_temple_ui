@@ -2,8 +2,6 @@ import { Component, OnInit, NgZone, Output, EventEmitter } from '@angular/core';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { first } from 'rxjs/operators';
-
 import { Feed } from '@app/_models/feed';
 import { FeedService } from '@app/_services/data/feed.service';
 import { SubscribeModalComponent, SubscriptionDetails } from '@app/_components/side-bar/subscribemodal/subscribemodal.component';
@@ -35,9 +33,7 @@ export class SideBarComponent implements OnInit {
       fields: ['title', 'feedUrl'],
       search: 'subscribed:"true"',
       returnTotalCount: false,
-    }).pipe(
-      first()
-    ).subscribe(feeds => {
+    }).subscribe(feeds => {
       this.zone.run(() => {
         this.subscribedFeeds = feeds.objects;
       });
@@ -50,14 +46,10 @@ export class SideBarComponent implements OnInit {
     modalRef.result.then((result: SubscriptionDetails) => {
       this.feedService.get(result.feedUrl, {
         fields: ['uuid', 'title', 'subscribed'],
-      }).pipe(
-        first()
-      ).subscribe(feed => {
+      }).subscribe(feed => {
         feed.feedUrl = result.feedUrl;
         if (!feed.subscribed) {
-          this.feedService.subscribe(result.feedUrl).pipe(
-            first()
-          ).subscribe(() => {
+          this.feedService.subscribe(result.feedUrl).subscribe(() => {
             this.zone.run(() => {
               this.feedAdded.emit(feed);
 
@@ -87,9 +79,7 @@ export class SideBarComponent implements OnInit {
         fields: ['title', 'feedUrl'],
         search: 'subscribed:"true"',
         returnTotalCount: false,
-      }).pipe(
-        first()
-      ).subscribe(feeds => {
+      }).subscribe(feeds => {
         this.zone.run(() => {
           this.subscribedFeeds = feeds.objects;
         });

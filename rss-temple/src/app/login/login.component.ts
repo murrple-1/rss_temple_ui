@@ -3,7 +3,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { Subscription } from 'rxjs';
-import { first } from 'rxjs/operators';
 
 import { AlertService } from '@app/_services/alert.service';
 import { LoginService } from '@app/_services/login.service';
@@ -120,9 +119,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
 
         this.isLoggingIn = true;
-        this.loginService.getMyLoginSession(this.loginForm.controls.email.value, this.loginForm.controls.password.value).pipe(
-            first()
-        ).subscribe(
+        this.loginService.getMyLoginSession(this.loginForm.controls.email.value, this.loginForm.controls.password.value).subscribe(
             this.handleLoginSuccess.bind(this),
             error => {
                 let errorMessage = 'Unknown Error';
@@ -159,9 +156,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     private handleGoogleUser(user: gapi.auth2.GoogleUser) {
-        this.loginService.getGoogleLoginSession(user).pipe(
-            first()
-        ).subscribe(
+        this.loginService.getGoogleLoginSession(user).subscribe(
             this.handleLoginSuccess.bind(this),
             error => {
                 if (error.status === 422) {
@@ -192,9 +187,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     private handleFacebookUser(user: fb.AuthResponse) {
-        this.loginService.getFacebookLoginSession(user).pipe(
-            first()
-        ).subscribe(
+        this.loginService.getFacebookLoginSession(user).subscribe(
             this.handleLoginSuccess.bind(this),
             error => {
                 if (error.status === 422) {

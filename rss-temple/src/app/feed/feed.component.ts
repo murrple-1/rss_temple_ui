@@ -1,8 +1,6 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { first } from 'rxjs/operators';
-
 import { FeedService } from '@app/_services/data/feed.service';
 import { Feed } from '@app/_models/feed';
 import { FeedEntryService } from '@app/_services/data/feedentry.service';
@@ -31,9 +29,7 @@ export class FeedComponent implements OnInit {
 
         this.feedService.get(url, {
             fields: ['uuid', 'title', 'subscribed'],
-        }).pipe(
-            first()
-        ).subscribe(feed => {
+        }).subscribe(feed => {
             feed.feedUrl = url;
             this.zone.run(() => {
                 this.feed = feed;
@@ -45,9 +41,7 @@ export class FeedComponent implements OnInit {
                 count: count,
                 search: `feedUuid:"${feed.uuid}"`,
                 sort: 'createdAt:DESC,publishedAt:DESC,updatedAt:DESC',
-            }).pipe(
-                first()
-            ).subscribe(feedEntries => {
+            }).subscribe(feedEntries => {
                 this.zone.run(() => {
                     this.feedEntries = feedEntries.objects;
                 });
@@ -60,9 +54,7 @@ export class FeedComponent implements OnInit {
     }
 
     startSubscribe() {
-        this.feedService.subscribe(this.feed.feedUrl).pipe(
-            first()
-        ).subscribe(() => {
+        this.feedService.subscribe(this.feed.feedUrl).subscribe(() => {
             this.zone.run(() => {
                 this.feed.subscribed = true;
             });
@@ -72,9 +64,7 @@ export class FeedComponent implements OnInit {
     }
 
     unsubscribe() {
-        this.feedService.unsubscribe(this.feed.feedUrl).pipe(
-            first()
-        ).subscribe(() => {
+        this.feedService.unsubscribe(this.feed.feedUrl).subscribe(() => {
             this.zone.run(() => {
                 this.feed.subscribed = false;
             });

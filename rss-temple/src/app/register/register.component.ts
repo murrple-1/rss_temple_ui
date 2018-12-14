@@ -2,8 +2,6 @@
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { first } from 'rxjs/operators';
-
 import { AlertService } from '@app/_services/alert.service';
 import { LoginService } from '@app/_services/login.service';
 
@@ -51,23 +49,17 @@ export class RegisterComponent implements OnInit {
                 this.registerForm.controls.email.value,
                 this.registerForm.controls.password.value,
                 this.g_token
-            ).pipe(
-                first()
             ).subscribe(this.handleRegisterSuccess.bind(this), this.handleRegisterError.bind(this));
         } else if (this.fb_token !== null) {
             this.loginService.createFacebookLogin(
                 this.registerForm.controls.email.value,
                 this.registerForm.controls.password.value,
                 this.fb_token
-            ).pipe(
-                first()
             ).subscribe(this.handleRegisterSuccess.bind(this), this.handleRegisterError.bind(this));
         } else {
             this.loginService.createMyLogin(
                 this.registerForm.controls.email.value,
                 this.registerForm.controls.password.value
-            ).pipe(
-                first()
             ).subscribe(this.handleRegisterSuccess.bind(this), this.handleRegisterError.bind(this));
         }
     }

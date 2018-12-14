@@ -1,8 +1,6 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { first } from 'rxjs/operators';
-
 import { FeedService } from '@app/_services/data/feed.service';
 import { Feed } from '@app/_models/feed';
 import { FeedEntry } from '@app/_models/feedentry';
@@ -35,9 +33,7 @@ export class MainComponent implements OnInit {
             fields: ['uuid'],
             search: 'subscribed:"true"',
             returnTotalCount: false,
-        }).pipe(
-            first()
-        ).subscribe(feeds => {
+        }).subscribe(feeds => {
             this.feeds = feeds.objects;
 
             if (feeds.objects.length > 0) {
@@ -47,9 +43,7 @@ export class MainComponent implements OnInit {
                     count: this.count,
                     search: `feedUuid:"${this.feeds.map(feed => feed.uuid).join('|')}" and isRead:"false"`,
                     sort: 'createdAt:DESC,publishedAt:DESC,updatedAt:DESC',
-                }).pipe(
-                    first()
-                ).subscribe(feedEntries => {
+                }).subscribe(feedEntries => {
                     this.zone.run(() => {
                         this.feedEntries = feedEntries.objects;
                     });
@@ -73,9 +67,7 @@ export class MainComponent implements OnInit {
             count: count,
             search: `feedUuid:"${this.feeds.map(feed => feed.uuid).join('|')}" and isRead:"false"`,
             sort: 'createdAt:DESC,publishedAt:DESC,updatedAt:DESC',
-        }).pipe(
-            first()
-        ).subscribe(feedEntries => {
+        }).subscribe(feedEntries => {
             this.zone.run(() => {
                 this.feedEntries = feedEntries.objects;
             });
@@ -89,9 +81,7 @@ export class MainComponent implements OnInit {
             fields: ['uuid'],
             search: 'subscribed:"true"',
             returnTotalCount: false,
-        }).pipe(
-            first()
-        ).subscribe(feeds => {
+        }).subscribe(feeds => {
             this.zone.run(() => {
                 this.feeds = feeds.objects;
             });
@@ -103,9 +93,7 @@ export class MainComponent implements OnInit {
                     count: this.count,
                     search: `feedUuid:"${this.feeds.map(feed => feed.uuid).join('|')}" and isRead:"false"`,
                     sort: 'createdAt:DESC,publishedAt:DESC,updatedAt:DESC',
-                }).pipe(
-                    first()
-                ).subscribe(feedEntries => {
+                }).subscribe(feedEntries => {
                     this.zone.run(() => {
                         this.feedEntries = feedEntries.objects;
                     });

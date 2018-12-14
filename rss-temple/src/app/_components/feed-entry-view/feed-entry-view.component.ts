@@ -1,7 +1,5 @@
 import { Component, Input, NgZone } from '@angular/core';
 
-import { first } from 'rxjs/operators';
-
 import { FeedEntry } from '@app/_models/feedentry';
 import { FeedEntryService } from '@app/_services/data/feedentry.service';
 
@@ -20,9 +18,7 @@ export class FeedEntryViewComponent {
     ) { }
 
     read() {
-        this.feedEntryService.read(this.feedEntry).pipe(
-            first()
-        ).subscribe(() => {
+        this.feedEntryService.read(this.feedEntry).subscribe(() => {
             this.zone.run(() => {
             this.feedEntry.isRead = true;
             });
@@ -32,9 +28,7 @@ export class FeedEntryViewComponent {
     }
 
     unread() {
-        this.feedEntryService.unread(this.feedEntry).pipe(
-            first()
-        ).subscribe(() => {
+        this.feedEntryService.unread(this.feedEntry).subscribe(() => {
             this.zone.run(() => {
             this.feedEntry.isRead = false;
             });
@@ -44,9 +38,7 @@ export class FeedEntryViewComponent {
     }
 
     favorite() {
-        this.feedEntryService.favorite(this.feedEntry).pipe(
-            first()
-        ).subscribe(() => {
+        this.feedEntryService.favorite(this.feedEntry).subscribe(() => {
             this.zone.run(() => {
             this.feedEntry.isFavorite = true;
             });
@@ -56,9 +48,7 @@ export class FeedEntryViewComponent {
     }
 
     unfavorite() {
-        this.feedEntryService.unfavorite(this.feedEntry).pipe(
-            first()
-        ).subscribe(() => {
+        this.feedEntryService.unfavorite(this.feedEntry).subscribe(() => {
             this.zone.run(() => {
             this.feedEntry.isFavorite = false;
             });

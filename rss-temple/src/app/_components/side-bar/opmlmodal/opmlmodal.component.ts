@@ -2,8 +2,6 @@ import { Component, ViewChild, ElementRef, NgZone } from '@angular/core';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { first } from 'rxjs/operators';
-
 import { OPMLService } from '@app/_services/data/opml.service';
 import { HttpErrorService } from '@app/_services/httperror.service';
 
@@ -36,9 +34,7 @@ export class OPMLModalComponent {
             const reader = new FileReader();
 
             reader.onload = () => {
-                this.opmlService.upload(reader.result).pipe(
-                    first()
-                ).subscribe(() => {
+                this.opmlService.upload(reader.result).subscribe(() => {
                     this.activeModal.close();
                 }, error => {
                     this.zone.run(() => {
