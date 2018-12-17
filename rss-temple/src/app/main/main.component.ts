@@ -65,7 +65,7 @@ export class MainComponent implements OnInit {
             fields: ['uuid', 'url', 'title', 'content', 'isRead'],
             returnTotalCount: false,
             count: count,
-            search: `feedUuid:"${this.feeds.map(feed => feed.uuid).join('|')}" and isRead:"false"`,
+            search: `feedUuid:"${this.feeds.map(_feed => _feed.uuid).join('|')}" and isRead:"false"`,
             sort: 'createdAt:DESC,publishedAt:DESC,updatedAt:DESC',
         }).subscribe(feedEntries => {
             this.zone.run(() => {

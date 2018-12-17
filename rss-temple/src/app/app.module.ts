@@ -31,7 +31,8 @@ import { OPMLService } from '@app/_services/data/opml.service';
 import { NavBarComponent } from '@app/_components/nav-bar/nav-bar.component';
 import { SideBarComponent } from '@app/_components/side-bar/side-bar.component';
 import { FeedEntryViewComponent } from '@app/_components/feed-entry-view/feed-entry-view.component';
-import { SubscribeModalComponent as SidebarSubscribeModalComponent } from '@app/_components/side-bar/subscribemodal/subscribemodal.component';
+import { SubscribeModalComponent as SidebarSubscribeModalComponent }
+    from '@app/_components/side-bar/subscribemodal/subscribemodal.component';
 import { OPMLModalComponent as SidebarOPMLModalComponent } from '@app/_components/side-bar/opmlmodal/opmlmodal.component';
 
 
