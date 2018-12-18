@@ -27,8 +27,9 @@ export class OPMLService {
     upload(opmlText: string | ArrayBuffer, options: CommonOptions = {}) {
         const headers = commonToHeader(options, sessionToken);
 
-        return this.http.post<void>(`${environment.apiHost}/api/opml`, opmlText, {
+        return this.http.post(`${environment.apiHost}/api/opml`, opmlText, {
             headers: headers,
+            observe: 'response',
         });
     }
 }

@@ -34,8 +34,12 @@ export class OPMLModalComponent {
             const reader = new FileReader();
 
             reader.onload = () => {
-                this.opmlService.upload(reader.result).subscribe(() => {
-                    this.activeModal.close();
+                this.opmlService.upload(reader.result).subscribe(response => {
+                    if (response.status !== 202) {
+                        this.activeModal.close();
+                    } else {
+                        // TODO
+                    }
                 }, error => {
                     this.zone.run(() => {
                         this.uploading = false;
