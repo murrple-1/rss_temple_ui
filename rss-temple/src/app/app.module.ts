@@ -28,6 +28,7 @@ import { FeedService } from '@app/_services/data/feed.service';
 import { FeedEntryService } from '@app/_services/data/feedentry.service';
 import { UserCategoryService } from '@app/_services/data/usercategory.service';
 import { OPMLService } from '@app/_services/data/opml.service';
+import { ProgressService } from '@app/_services/data/progress.service';
 import { NavBarComponent } from '@app/_components/nav-bar/nav-bar.component';
 import { SideBarComponent } from '@app/_components/side-bar/side-bar.component';
 import { FeedEntryViewComponent } from '@app/_components/feed-entry-view/feed-entry-view.component';
@@ -75,6 +76,7 @@ import { OPMLModalComponent as SidebarOPMLModalComponent } from '@app/_component
         FeedEntryService,
         UserCategoryService,
         OPMLService,
+        ProgressService,
         GAuthService,
         FBAuthService,
         HttpErrorService,
