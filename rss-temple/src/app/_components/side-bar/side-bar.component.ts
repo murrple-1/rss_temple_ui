@@ -1,6 +1,9 @@
-import { Component, OnInit, NgZone, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, NgZone, Output, EventEmitter, OnDestroy } from '@angular/core';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { Feed } from '@app/_models/feed';
 import { FeedService } from '@app/_services/data/feed.service';
@@ -8,18 +11,21 @@ import { SubscribeModalComponent, SubscriptionDetails } from '@app/_components/s
 import { OPMLModalComponent } from '@app/_components/side-bar/opmlmodal/opmlmodal.component';
 import { HttpErrorService } from '@app/_services/httperror.service';
 
+
 @Component({
   selector: 'rsst-side-bar',
   templateUrl: './side-bar.component.html',
   styleUrls: ['./side-bar.component.scss']
 })
-export class SideBarComponent implements OnInit {
+export class SideBarComponent implements OnInit, OnDestroy {
   subscribedFeeds: Feed[];
 
   @Output()
   feedAdded = new EventEmitter<Feed>();
   @Output()
   opmlUploaded = new EventEmitter<void>();
+
+  private unsubscribe$ = new Subject<void>();
 
   constructor(
     private feedService: FeedService,
@@ -33,11 +39,18 @@ export class SideBarComponent implements OnInit {
       fields: ['title', 'feedUrl'],
       search: 'subscribed:"true"',
       returnTotalCount: false,
-    }).subscribe(feeds => {
+    }).pipe(
+      takeUntil(this.unsubscribe$)
+    ).subscribe(feeds => {
       this.zone.run(() => {
         this.subscribedFeeds = feeds.objects;
       });
     });
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
   addFeed() {
@@ -46,10 +59,14 @@ export class SideBarComponent implements OnInit {
     modalRef.result.then((result: SubscriptionDetails) => {
       this.feedService.get(result.feedUrl, {
         fields: ['uuid', 'title', 'subscribed'],
-      }).subscribe(feed => {
+      }).pipe(
+        takeUntil(this.unsubscribe$)
+      ).subscribe(feed => {
         feed.feedUrl = result.feedUrl;
         if (!feed.subscribed) {
-          this.feedService.subscribe(result.feedUrl).subscribe(() => {
+          this.feedService.subscribe(result.feedUrl).pipe(
+            takeUntil(this.unsubscribe$)
+          ).subscribe(() => {
             this.zone.run(() => {
               this.feedAdded.emit(feed);
 
@@ -79,7 +96,9 @@ export class SideBarComponent implements OnInit {
         fields: ['title', 'feedUrl'],
         search: 'subscribed:"true"',
         returnTotalCount: false,
-      }).subscribe(feeds => {
+      }).pipe(
+        takeUntil(this.unsubscribe$)
+      ).subscribe(feeds => {
         this.zone.run(() => {
           this.subscribedFeeds = feeds.objects;
         });

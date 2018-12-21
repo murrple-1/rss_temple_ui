@@ -1,4 +1,7 @@
-import { Component, Input, NgZone } from '@angular/core';
+import { Component, Input, NgZone, OnDestroy } from '@angular/core';
+
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { FeedEntry } from '@app/_models/feedentry';
 import { FeedEntryService } from '@app/_services/data/feedentry.service';
@@ -8,19 +11,28 @@ import { FeedEntryService } from '@app/_services/data/feedentry.service';
   templateUrl: './feed-entry-view.component.html',
   styleUrls: ['./feed-entry-view.component.scss']
 })
-export class FeedEntryViewComponent {
+export class FeedEntryViewComponent implements OnDestroy {
     @Input()
     feedEntry: FeedEntry;
+
+    private unsubscribe$ = new Subject<void>();
 
     constructor(
         private feedEntryService: FeedEntryService,
         private zone: NgZone,
     ) { }
 
+    ngOnDestroy() {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
+    }
+
     read() {
-        this.feedEntryService.read(this.feedEntry).subscribe(() => {
+        this.feedEntryService.read(this.feedEntry).pipe(
+            takeUntil(this.unsubscribe$)
+        ).subscribe(() => {
             this.zone.run(() => {
-            this.feedEntry.isRead = true;
+                this.feedEntry.isRead = true;
             });
         }, error => {
             console.log(error);
@@ -28,9 +40,11 @@ export class FeedEntryViewComponent {
     }
 
     unread() {
-        this.feedEntryService.unread(this.feedEntry).subscribe(() => {
+        this.feedEntryService.unread(this.feedEntry).pipe(
+            takeUntil(this.unsubscribe$)
+        ).subscribe(() => {
             this.zone.run(() => {
-            this.feedEntry.isRead = false;
+                this.feedEntry.isRead = false;
             });
         }, error => {
             console.log(error);
@@ -38,9 +52,11 @@ export class FeedEntryViewComponent {
     }
 
     favorite() {
-        this.feedEntryService.favorite(this.feedEntry).subscribe(() => {
+        this.feedEntryService.favorite(this.feedEntry).pipe(
+            takeUntil(this.unsubscribe$)
+        ).subscribe(() => {
             this.zone.run(() => {
-            this.feedEntry.isFavorite = true;
+                this.feedEntry.isFavorite = true;
             });
         }, error => {
             console.log(error);
@@ -48,9 +64,11 @@ export class FeedEntryViewComponent {
     }
 
     unfavorite() {
-        this.feedEntryService.unfavorite(this.feedEntry).subscribe(() => {
+        this.feedEntryService.unfavorite(this.feedEntry).pipe(
+            takeUntil(this.unsubscribe$)
+        ).subscribe(() => {
             this.zone.run(() => {
-            this.feedEntry.isFavorite = false;
+                this.feedEntry.isFavorite = false;
             });
         }, error => {
             console.log(error);

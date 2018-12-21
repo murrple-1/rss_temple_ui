@@ -1,6 +1,9 @@
-import { Component, ViewChild, ElementRef, NgZone } from '@angular/core';
+import { Component, ViewChild, ElementRef, NgZone, OnDestroy } from '@angular/core';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { OPMLService } from '@app/_services/data/opml.service';
 import { ProgressService } from '@app/_services/data/progress.service';
@@ -15,7 +18,7 @@ interface ProgressStatus {
     templateUrl: 'opmlmodal.component.html',
     styleUrls: ['opmlmodal.component.scss'],
 })
-export class OPMLModalComponent {
+export class OPMLModalComponent implements OnDestroy {
     @ViewChild('opmlFileInput')
     opmlFileInput: ElementRef<HTMLInputElement>;
 
@@ -28,6 +31,8 @@ export class OPMLModalComponent {
 
     private readonly progressCheckInterval = 2000;
 
+    private unsubscribe$ = new Subject<void>();
+
     constructor(
         private opmlService: OPMLService,
         private progressService: ProgressService,
@@ -35,6 +40,11 @@ export class OPMLModalComponent {
         private activeModal: NgbActiveModal,
         private zone: NgZone,
     ) { }
+
+    ngOnDestroy() {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
+    }
 
     dismiss() {
         this.activeModal.dismiss();
@@ -48,7 +58,9 @@ export class OPMLModalComponent {
             const reader = new FileReader();
 
             reader.onload = () => {
-                this.opmlService.upload(reader.result).subscribe(response => {
+                this.opmlService.upload(reader.result).pipe(
+                    takeUntil(this.unsubscribe$)
+                ).subscribe(response => {
                     if (response.status === 200) {
                         this.activeModal.close();
                     } else if (response.status === 202) {
@@ -89,9 +101,9 @@ export class OPMLModalComponent {
     }
 
     private checkProgress() {
-        this.progressService.checkProgress(this.progressUuid, {
-
-        }).subscribe(status => {
+        this.progressService.checkProgress(this.progressUuid).pipe(
+            takeUntil(this.unsubscribe$)
+        ).subscribe(status => {
             switch(status.state) {
                 case 'notstarted':
                 case 'started':

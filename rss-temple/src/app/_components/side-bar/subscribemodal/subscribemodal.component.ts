@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -18,7 +18,6 @@ export class SubscribeModalComponent implements OnInit {
     constructor(
         private formBuilder: FormBuilder,
         private activeModal: NgbActiveModal,
-        private zone: NgZone,
     ) { }
 
     ngOnInit() {

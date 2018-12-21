@@ -1,5 +1,8 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { FeedService } from '@app/_services/data/feed.service';
 import { Feed } from '@app/_models/feed';
@@ -11,12 +14,14 @@ import { HttpErrorService } from '@app/_services/httperror.service';
     templateUrl: 'main.component.html',
     styleUrls: ['main.component.scss'],
 })
-export class MainComponent implements OnInit {
+export class MainComponent implements OnInit, OnDestroy {
     feedEntries: FeedEntry[];
 
     private feeds: Feed[];
 
     private count: number;
+
+    private unsubscribe$ = new Subject<void>();
 
     constructor(
         private feedService: FeedService,
@@ -33,7 +38,9 @@ export class MainComponent implements OnInit {
             fields: ['uuid'],
             search: 'subscribed:"true"',
             returnTotalCount: false,
-        }).subscribe(feeds => {
+        }).pipe(
+            takeUntil(this.unsubscribe$)
+        ).subscribe(feeds => {
             this.feeds = feeds.objects;
 
             if (feeds.objects.length > 0) {
@@ -43,7 +50,9 @@ export class MainComponent implements OnInit {
                     count: this.count,
                     search: `feedUuid:"${this.feeds.map(feed => feed.uuid).join('|')}" and isRead:"false"`,
                     sort: 'createdAt:DESC,publishedAt:DESC,updatedAt:DESC',
-                }).subscribe(feedEntries => {
+                }).pipe(
+                    takeUntil(this.unsubscribe$)
+                ).subscribe(feedEntries => {
                     this.zone.run(() => {
                         this.feedEntries = feedEntries.objects;
                     });
@@ -54,6 +63,11 @@ export class MainComponent implements OnInit {
         }, error => {
             this.httpErrorService.handleError(error);
         });
+    }
+
+    ngOnDestroy() {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 
     feedAdded(feed: Feed) {
@@ -67,7 +81,9 @@ export class MainComponent implements OnInit {
             count: count,
             search: `feedUuid:"${this.feeds.map(_feed => _feed.uuid).join('|')}" and isRead:"false"`,
             sort: 'createdAt:DESC,publishedAt:DESC,updatedAt:DESC',
-        }).subscribe(feedEntries => {
+        }).pipe(
+            takeUntil(this.unsubscribe$)
+        ).subscribe(feedEntries => {
             this.zone.run(() => {
                 this.feedEntries = feedEntries.objects;
             });
@@ -81,7 +97,9 @@ export class MainComponent implements OnInit {
             fields: ['uuid'],
             search: 'subscribed:"true"',
             returnTotalCount: false,
-        }).subscribe(feeds => {
+        }).pipe(
+            takeUntil(this.unsubscribe$)
+        ).subscribe(feeds => {
             this.zone.run(() => {
                 this.feeds = feeds.objects;
             });
@@ -93,7 +111,9 @@ export class MainComponent implements OnInit {
                     count: this.count,
                     search: `feedUuid:"${this.feeds.map(feed => feed.uuid).join('|')}" and isRead:"false"`,
                     sort: 'createdAt:DESC,publishedAt:DESC,updatedAt:DESC',
-                }).subscribe(feedEntries => {
+                }).pipe(
+                    takeUntil(this.unsubscribe$)
+                ).subscribe(feedEntries => {
                     this.zone.run(() => {
                         this.feedEntries = feedEntries.objects;
                     });

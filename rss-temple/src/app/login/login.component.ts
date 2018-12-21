@@ -2,7 +2,8 @@
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { AlertService } from '@app/_services/alert.service';
 import { LoginService } from '@app/_services/login.service';
@@ -22,12 +23,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     isLoggingIn = false;
 
     gLoaded = false;
-    private gLoadedSubscription: Subscription;
-    private gUserSubscription: Subscription;
-
     fbLoaded = false;
-    private fbLoadedSubscription: Subscription;
-    private fbUserSubscription: Subscription;
+
+    private unsubscribe$ = new Subject<void>();
 
     constructor(
         private formBuilder: FormBuilder,
@@ -48,7 +46,9 @@ export class LoginComponent implements OnInit, OnDestroy {
 
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/main';
 
-        this.gAuthService.isLoaded$.subscribe(isLoaded => {
+        this.gAuthService.isLoaded$.pipe(
+            takeUntil(this.unsubscribe$)
+        ).subscribe(isLoaded => {
             if (isLoaded !== this.gLoaded) {
                 this.zone.run(() => {
                     this.gLoaded = isLoaded;
@@ -60,7 +60,9 @@ export class LoginComponent implements OnInit, OnDestroy {
             }
         });
 
-        this.gUserSubscription = this.gAuthService.user$.subscribe(user => {
+        this.gAuthService.user$.pipe(
+            takeUntil(this.unsubscribe$)
+        ).subscribe(user => {
             this.zone.run(() => {
                 this.isLoggingIn = false;
             });
@@ -70,7 +72,9 @@ export class LoginComponent implements OnInit, OnDestroy {
             }
         });
 
-        this.fbLoadedSubscription = this.fbAuthService.isLoaded$.subscribe(isLoaded => {
+        this.fbAuthService.isLoaded$.pipe(
+            takeUntil(this.unsubscribe$)
+        ).subscribe(isLoaded => {
             if (isLoaded !== this.fbLoaded) {
                 this.zone.run(() => {
                     this.fbLoaded = isLoaded;
@@ -82,7 +86,9 @@ export class LoginComponent implements OnInit, OnDestroy {
             }
         });
 
-        this.fbUserSubscription = this.fbAuthService.user$.subscribe(user => {
+        this.fbAuthService.user$.pipe(
+            takeUntil(this.unsubscribe$)
+        ).subscribe(user => {
             this.zone.run(() => {
                 this.isLoggingIn = false;
             });
@@ -94,21 +100,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        if (this.gLoadedSubscription) {
-            this.gLoadedSubscription.unsubscribe();
-        }
-
-        if (this.gUserSubscription) {
-            this.gUserSubscription.unsubscribe();
-        }
-
-        if (this.fbLoadedSubscription) {
-            this.fbLoadedSubscription.unsubscribe();
-        }
-
-        if (this.fbUserSubscription) {
-            this.fbUserSubscription.unsubscribe();
-        }
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 
     onSubmit() {
@@ -119,7 +112,9 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
 
         this.isLoggingIn = true;
-        this.loginService.getMyLoginSession(this.loginForm.controls.email.value, this.loginForm.controls.password.value).subscribe(
+        this.loginService.getMyLoginSession(this.loginForm.controls.email.value, this.loginForm.controls.password.value).pipe(
+            takeUntil(this.unsubscribe$)
+        ).subscribe(
             this.handleLoginSuccess.bind(this),
             error => {
                 let errorMessage = 'Unknown Error';
@@ -156,7 +151,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     private handleGoogleUser(user: gapi.auth2.GoogleUser) {
-        this.loginService.getGoogleLoginSession(user).subscribe(
+        this.loginService.getGoogleLoginSession(user).pipe(
+            takeUntil(this.unsubscribe$)
+        ).subscribe(
             this.handleLoginSuccess.bind(this),
             error => {
                 if (error.status === 422) {
@@ -187,7 +184,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     private handleFacebookUser(user: fb.AuthResponse) {
-        this.loginService.getFacebookLoginSession(user).subscribe(
+        this.loginService.getFacebookLoginSession(user).pipe(
+            takeUntil(this.unsubscribe$)
+        ).subscribe(
             this.handleLoginSuccess.bind(this),
             error => {
                 if (error.status === 422) {

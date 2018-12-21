@@ -1,5 +1,8 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { FeedService } from '@app/_services/data/feed.service';
 import { Feed } from '@app/_models/feed';
@@ -11,9 +14,11 @@ import { HttpErrorService } from '@app/_services/httperror.service';
     templateUrl: 'feed.component.html',
     styleUrls: ['feed.component.scss'],
 })
-export class FeedComponent implements OnInit {
+export class FeedComponent implements OnInit, OnDestroy {
     feed: Feed;
     feedEntries: FeedEntry[];
+
+    private unsubscribe$ = new Subject<void>();
 
     constructor(
         private feedService: FeedService,
@@ -29,7 +34,9 @@ export class FeedComponent implements OnInit {
 
         this.feedService.get(url, {
             fields: ['uuid', 'title', 'subscribed'],
-        }).subscribe(feed => {
+        }).pipe(
+            takeUntil(this.unsubscribe$)
+        ).subscribe(feed => {
             feed.feedUrl = url;
             this.zone.run(() => {
                 this.feed = feed;
@@ -41,7 +48,9 @@ export class FeedComponent implements OnInit {
                 count: count,
                 search: `feedUuid:"${feed.uuid}"`,
                 sort: 'createdAt:DESC,publishedAt:DESC,updatedAt:DESC',
-            }).subscribe(feedEntries => {
+            }).pipe(
+                takeUntil(this.unsubscribe$)
+            ).subscribe(feedEntries => {
                 this.zone.run(() => {
                     this.feedEntries = feedEntries.objects;
                 });
@@ -53,8 +62,15 @@ export class FeedComponent implements OnInit {
         });
     }
 
+    ngOnDestroy() {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
+    }
+
     startSubscribe() {
-        this.feedService.subscribe(this.feed.feedUrl).subscribe(() => {
+        this.feedService.subscribe(this.feed.feedUrl).pipe(
+            takeUntil(this.unsubscribe$)
+        ).subscribe(() => {
             this.zone.run(() => {
                 this.feed.subscribed = true;
             });
@@ -64,7 +80,9 @@ export class FeedComponent implements OnInit {
     }
 
     unsubscribe() {
-        this.feedService.unsubscribe(this.feed.feedUrl).subscribe(() => {
+        this.feedService.unsubscribe(this.feed.feedUrl).pipe(
+            takeUntil(this.unsubscribe$)
+        ).subscribe(() => {
             this.zone.run(() => {
                 this.feed.subscribed = false;
             });

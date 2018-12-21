@@ -1,6 +1,9 @@
-﻿import { Component, OnInit, NgZone } from '@angular/core';
+﻿import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { AlertService } from '@app/_services/alert.service';
 import { LoginService } from '@app/_services/login.service';
@@ -9,13 +12,15 @@ import { LoginService } from '@app/_services/login.service';
     templateUrl: 'register.component.html',
     styleUrls: ['register.component.scss'],
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, OnDestroy {
     registerForm: FormGroup;
     loading = false;
     submitted = false;
 
     private g_token: string;
     private fb_token: string;
+
+    private unsubscribe$ = new Subject<void>();
 
     constructor(
         private formBuilder: FormBuilder,
@@ -36,6 +41,11 @@ export class RegisterComponent implements OnInit {
         this.fb_token = this.route.snapshot.paramMap.get('fb_token');
     }
 
+    ngOnDestroy() {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
+    }
+
     onSubmit() {
         this.submitted = true;
         if (this.registerForm.invalid) {
@@ -49,17 +59,23 @@ export class RegisterComponent implements OnInit {
                 this.registerForm.controls.email.value,
                 this.registerForm.controls.password.value,
                 this.g_token
+            ).pipe(
+                takeUntil(this.unsubscribe$)
             ).subscribe(this.handleRegisterSuccess.bind(this), this.handleRegisterError.bind(this));
         } else if (this.fb_token !== null) {
             this.loginService.createFacebookLogin(
                 this.registerForm.controls.email.value,
                 this.registerForm.controls.password.value,
                 this.fb_token
+            ).pipe(
+                takeUntil(this.unsubscribe$)
             ).subscribe(this.handleRegisterSuccess.bind(this), this.handleRegisterError.bind(this));
         } else {
             this.loginService.createMyLogin(
                 this.registerForm.controls.email.value,
                 this.registerForm.controls.password.value
+            ).pipe(
+                takeUntil(this.unsubscribe$)
             ).subscribe(this.handleRegisterSuccess.bind(this), this.handleRegisterError.bind(this));
         }
     }
