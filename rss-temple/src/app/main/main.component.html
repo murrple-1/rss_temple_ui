@@ -1,7 +1,12 @@
-<rsst-nav-bar></rsst-nav-bar>
-<rsst-side-bar (feedAdded)="feedAdded($event)" (opmlUploaded)="opmlUploaded()"></rsst-side-bar>
-<div>
-    <h2>All Entries</h2>
-    <span *ngIf="!feedEntries || feedEntries.length < 1">No Entries</span>
-    <rsst-feed-entry-view *ngFor="let feedEntry of feedEntries" [feedEntry]="feedEntry"></rsst-feed-entry-view>
+<nav rsst-nav-bar></nav>
+<div class="container-fluid">
+  <div class="row">
+    <nav rsst-side-bar (feedAdded)="feedAdded($event)" (opmlUploaded)="opmlUploaded()"></nav>
+
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+        <h2>All Entries</h2>
+        <span *ngIf="!feedEntries || feedEntries.length < 1">No Entries</span>
+        <rsst-feed-entry-view *ngFor="let feedEntry of feedEntries" [feedEntry]="feedEntry"></rsst-feed-entry-view>
+    </main>
+  </div>
 </div>

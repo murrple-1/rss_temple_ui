@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, NgZone, Output, EventEmitter, OnDestroy, HostBinding } from '@angular/core';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -13,12 +13,15 @@ import { HttpErrorService } from '@app/_services/httperror.service';
 
 
 @Component({
-  selector: 'rsst-side-bar',
+  selector: 'nav[rsst-side-bar]',
   templateUrl: './side-bar.component.html',
   styleUrls: ['./side-bar.component.scss']
 })
 export class SideBarComponent implements OnInit, OnDestroy {
   subscribedFeeds: Feed[];
+
+  @HostBinding('class')
+  _classes = 'col-md-2 d-none d-md-block bg-light sidebar';
 
   @Output()
   feedAdded = new EventEmitter<Feed>();

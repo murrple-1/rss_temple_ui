@@ -1,9 +1,26 @@
-<div>
-  <h2>Your Feeds</h2>
-  <a [routerLink]="" (click)="addFeed()"><i class="pi pi-plus-circle"></i> Add Feed</a>
-  <hr>
-  <span *ngIf="!subscribedFeeds || subscribedFeeds.length < 1">No Feeds</span>
-  <a *ngFor="let feed of subscribedFeeds" [routerLink]="['/feed', {url: feed.feedUrl}]">{{feed.title}}</a>
-  <hr>
-  <a [routerLink]="" (click)="uploadOPML()">Upload OPML</a>
+<div class="sidebar-sticky">
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link active" [routerLink]="">
+        Dashboard <span class="sr-only">(current)</span>
+      </a>
+    </li>
+  </ul>
+
+  <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+    <span>Your Feeds</span>
+    <a class="d-flex align-items-center text-muted" [routerLink]="" (click)="addFeed()">
+        <i class="pi pi-plus-circle"></i>
+    </a>
+  </h6>
+
+  <span class="px-3 mt-4 mb-1" *ngIf="!subscribedFeeds || subscribedFeeds.length < 1">No Feeds</span>
+
+  <ul class="nav flex-column mb-2">
+    <li *ngFor="let feed of subscribedFeeds" class="nav-item">
+      <a class="nav-link" [routerLink]="['/feed', {url: feed.feedUrl}]">{{feed.title}}</a>
+    </li>
+  </ul>
+
+  <a class="nav-link flex-column mb-2" [routerLink]="" (click)="uploadOPML()">Upload OPML</a>
 </div>
