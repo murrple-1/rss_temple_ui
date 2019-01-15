@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, Output, EventEmitter, OnDestroy, HostBinding } from '@angular/core';
+import { Component, OnInit, NgZone, Output, EventEmitter, OnDestroy, HostBinding, ElementRef, Renderer2 } from '@angular/core';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -20,8 +20,13 @@ import { HttpErrorService } from '@app/_services/httperror.service';
 export class SideBarComponent implements OnInit, OnDestroy {
   subscribedFeeds: Feed[];
 
-  @HostBinding('class')
-  _classes = 'col-md-2 d-none d-md-block bg-light sidebar';
+  private readonly _classes: string[] = [
+    'col-md-2',
+    'd-none',
+    'd-md-block',
+    'bg-light',
+    'sidebar',
+  ];
 
   @Output()
   feedAdded = new EventEmitter<Feed>();
@@ -35,7 +40,14 @@ export class SideBarComponent implements OnInit, OnDestroy {
     private httpErrorService: HttpErrorService,
     private modalService: NgbModal,
     private zone: NgZone,
-  ) { }
+    private elementRef: ElementRef,
+    private renderer: Renderer2,
+  ) {
+    const elem = this.elementRef.nativeElement;
+    for (const _class of this._classes) {
+      this.renderer.addClass(elem, _class);
+    }
+  }
 
   ngOnInit() {
     this.feedService.all({
