@@ -22,20 +22,11 @@ import { FBAuthService } from '@app/_services/fbauth.service';
 import { HttpErrorService } from '@app/_services/httperror.service';
 import { LoginComponent } from '@app/login/login.component';
 import { RegisterComponent } from '@app/register/register.component';
-import { MainComponent } from '@app/main/main.component';
-import { FeedComponent } from '@app/feed/feed.component';
 import { FeedService } from '@app/_services/data/feed.service';
 import { FeedEntryService } from '@app/_services/data/feedentry.service';
 import { UserCategoryService } from '@app/_services/data/usercategory.service';
 import { OPMLService } from '@app/_services/data/opml.service';
 import { ProgressService } from '@app/_services/data/progress.service';
-import { NavBarComponent } from '@app/_components/nav-bar/nav-bar.component';
-import { SideBarComponent } from '@app/_components/side-bar/side-bar.component';
-import { FeedEntryViewComponent } from '@app/_components/feed-entry-view/feed-entry-view.component';
-import { SubscribeModalComponent as SidebarSubscribeModalComponent }
-    from '@app/_components/side-bar/subscribemodal/subscribemodal.component';
-import { OPMLModalComponent as SidebarOPMLModalComponent } from '@app/_components/side-bar/opmlmodal/opmlmodal.component';
-
 
 @NgModule({
     imports: [
@@ -58,13 +49,6 @@ import { OPMLModalComponent as SidebarOPMLModalComponent } from '@app/_component
         AlertComponent,
         LoginComponent,
         RegisterComponent,
-        MainComponent,
-        FeedComponent,
-        NavBarComponent,
-        SideBarComponent,
-        SidebarSubscribeModalComponent,
-        SidebarOPMLModalComponent,
-        FeedEntryViewComponent,
     ],
     providers: [
         AuthGuard,
@@ -84,9 +68,5 @@ import { OPMLModalComponent as SidebarOPMLModalComponent } from '@app/_component
     bootstrap: [
         AppComponent,
     ],
-    entryComponents: [
-        SidebarSubscribeModalComponent,
-        SidebarOPMLModalComponent,
-    ]
 })
 export class AppModule { }

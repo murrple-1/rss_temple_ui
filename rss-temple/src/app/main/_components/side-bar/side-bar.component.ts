@@ -7,8 +7,8 @@ import { takeUntil } from 'rxjs/operators';
 
 import { Feed } from '@app/_models/feed';
 import { FeedService } from '@app/_services/data/feed.service';
-import { SubscribeModalComponent, SubscriptionDetails } from '@app/_components/side-bar/subscribemodal/subscribemodal.component';
-import { OPMLModalComponent } from '@app/_components/side-bar/opmlmodal/opmlmodal.component';
+import { SubscribeModalComponent, SubscriptionDetails } from './subscribemodal/subscribemodal.component';
+import { OPMLModalComponent } from './opmlmodal/opmlmodal.component';
 import { HttpErrorService } from '@app/_services/httperror.service';
 
 
