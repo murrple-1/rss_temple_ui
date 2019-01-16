@@ -1,15 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, Renderer2 } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 
 @Component({
-    selector: 'app-header',
+    selector: 'nav[rsst-header]',
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit {
-    public pushRightClass: string;
+export class HeaderComponent {
+    public pushRightClass = 'push-right';
 
-    constructor(public router: Router) {
+    private readonly _classes: string[] = [
+        'navbar',
+        'navbar-expand-lg',
+        'fixed-top',
+    ];
+
+    constructor(
+        public router: Router,
+        private elementRef: ElementRef,
+        private renderer: Renderer2
+    ) {
         this.router.events.subscribe(val => {
             if (
                 val instanceof NavigationEnd &&
@@ -19,10 +29,11 @@ export class HeaderComponent implements OnInit {
                 this.toggleSidebar();
             }
         });
-    }
 
-    ngOnInit() {
-        this.pushRightClass = 'push-right';
+        const elem = this.elementRef.nativeElement;
+        for (const _class of this._classes) {
+            this.renderer.addClass(elem, _class);
+        }
     }
 
     isToggled(): boolean {
@@ -35,15 +46,7 @@ export class HeaderComponent implements OnInit {
         dom.classList.toggle(this.pushRightClass);
     }
 
-    rltAndLtr() {
-        const dom: any = document.querySelector('body');
-        dom.classList.toggle('rtl');
-    }
-
     onLoggedout() {
         localStorage.removeItem('isLoggedin');
-    }
-
-    changeLang(language: string) {
     }
 }

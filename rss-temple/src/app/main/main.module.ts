@@ -6,8 +6,8 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { LayoutRoutingModule } from './main-routing.module';
 import { MainComponent } from './main.component';
-import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { HeaderComponent } from './components/header/header.component';
+import { SidebarComponent } from './_components/sidebar/sidebar.component';
+import { HeaderComponent } from './_components/header/header.component';
 import { SubscribeModalComponent as SidebarSubscribeModalComponent } from './_components/side-bar/subscribemodal/subscribemodal.component';
 import { OPMLModalComponent as SidebarOPMLModalComponent } from './_components/side-bar/opmlmodal/opmlmodal.component';
 
