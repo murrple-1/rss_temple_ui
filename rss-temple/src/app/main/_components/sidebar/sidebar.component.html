@@ -1,72 +1,63 @@
 <nav class="sidebar" [ngClass]="{sidebarPushRight: isActive, collapsed: collapsed}">
     <div class="list-group">
-        <a routerLink="/main/dashboard" [routerLinkActive]="['router-link-active']" class="list-group-item">
-            <i class="fa fa-fw fa-dashboard"></i>&nbsp;
+        <div class="header-fields">
+            <a class="list-group-item" (click)="logOut()">
+                <span><i class="pi pi-power-off"></i>&nbsp; Log Out</span>
+            </a>
+        </div>
+
+        <a [routerLink]="['/main/dashboard']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="pi pi-home"></i>&nbsp;
             <span>Dashboard</span>
         </a>
         <div class="nested-menu">
+            <a class="list-group-item" (click)="addExpandClass('pages')">
+                <i class="pi pi-align-left"></i>&nbsp;
+                <span>Your Feeds</span>
+            </a>
             <li class="nested" [class.expand]="showMenu === 'pages'">
-                <ul class="submenu">
+                <ul class="submenu" *ngIf="!subscribedFeeds || subscribedFeeds.length < 1">
                     <li>
-                        <a href="javascript:void(0)">
-                            <i class="fa fa-monument"></i>&nbsp;
-                            <span>Submenu</span>
-                        </a>
+                        <span class="text-light">No Feeds</span>
                     </li>
-                    <li>
-                        <a href="javascript:void(0)">
-                            <i class="fa fa-monument"></i>&nbsp;
-                            <span>Submenu</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0)">
-                            <i class="fa fa-monument"></i>&nbsp;
-                            <span>Submenu</span>
+                </ul>
+
+                <ul *ngIf="subscribedFeeds && subscribedFeeds.length > 0" class="submenu">
+                    <li *ngFor="let feed of subscribedFeeds">
+                        <a [routerLink]="['/feed', {url: feed.feedUrl}]">
+                            <i class="pi pi-paperclip"></i>&nbsp;
+                            <span>{{feed.title}}</span>
                         </a>
                     </li>
                 </ul>
             </li>
         </div>
-        <a [routerLink]="['/main/blank-page']" [routerLinkActive]="['router-link-active']" class="list-group-item">
-            <i class="fa fa-file-o"></i>&nbsp;
-            <span>Blank Page</span>
-        </a>
-
-        <div class="header-fields">
-            <div class="nested-menu">
-                <a class="list-group-item" (click)="addExpandClass('profile')">
-                    <span><i class="fa fa-user"></i>&nbsp; John Smith</span>
-                </a>
-                <li class="nested" [class.expand]="showMenu === 'profile'">
-                    <ul class="submenu">
-                        <li>
-                            <a href="javascript:void(0)">
-                                <span><i class="fa fa-fw fa-user"></i> Profile</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)">
-                                <span><i class="fa fa-fw fa-envelope"></i> Inbox</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)">
-                                <span><i class="fa fa-fw fa-gear"></i> Settings</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a [routerLink]="['/login']" (click)="onLoggedout()">
-                                <span><i class="fa fa-fw fa-power-off"></i> Log Out</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </div>
+        <a class="list-group-item" [routerLink]="" (click)="uploadOPML()">
+                <i class="pi pi-upload"></i>&nbsp;
+                <span>Upload OPML</span>
+            </a>
+        <div class="nested-menu">
+            <a class="list-group-item" (click)="addExpandClass('profile')">
+                <span><i class="pi pi-user-plus"></i>&nbsp; John Smith</span>
+            </a>
+            <li class="nested" [class.expand]="showMenu === 'profile'">
+                <ul class="submenu">
+                    <li>
+                        <a href="javascript:void(0)">
+                            <span><i class="pi pi-user"></i> Profile</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)">
+                            <span><i class="pi pi-cog"></i> Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
         </div>
     </div>
     <div class="toggle-button" [ngClass]="{collapsed: collapsed}" (click)="toggleCollapsed()">
-        <i class="fa fa-fw fa-angle-double-left"></i>&nbsp;
+        <i class="pi pi-angle-double-left"></i>&nbsp;
         <span>Collapse Sidebar</span>
     </div>
 </nav>
