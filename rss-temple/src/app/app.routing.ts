@@ -4,7 +4,7 @@ import { AuthGuard, NoAuthGuard } from '@app/_guards/auth.guard';
 import { LoginComponent } from '@app/login/login.component';
 import { RegisterComponent } from '@app/register/register.component';
 
-const appRoutes: Routes = [
+const routes: Routes = [
     { path: 'login', component: LoginComponent, canActivate: [NoAuthGuard] },
     { path: 'register', component: RegisterComponent, canActivate: [NoAuthGuard] },
     { path: 'main', canActivate: [AuthGuard], loadChildren: './main/main.module#MainModule' },
@@ -13,4 +13,4 @@ const appRoutes: Routes = [
     { path: '**', redirectTo: 'login' },
 ];
 
-export const routing = RouterModule.forRoot(appRoutes);
+export const routing = RouterModule.forRoot(routes);

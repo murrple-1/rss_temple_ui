@@ -8,7 +8,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from '@app/app.component';
 import { routing } from '@app/app.routing';
@@ -40,7 +40,7 @@ import { ProgressService } from '@app/_services/data/progress.service';
         ButtonModule,
         DropdownModule,
 
-        NgbModule,
+        NgbDropdownModule,
 
         routing,
     ],

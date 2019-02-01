@@ -1,0 +1,5 @@
+<main role="main">
+    <h2>All Entries</h2>
+    <span *ngIf="!feedEntries || feedEntries.length < 1">No Entries</span>
+    <rsst-feed-entry-view *ngFor="let feedEntry of feedEntries" [feedEntry]="feedEntry"></rsst-feed-entry-view>
+</main>

@@ -2,33 +2,41 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { LayoutRoutingModule } from './main-routing.module';
-import { MainComponent } from './main.component';
-import { SidebarComponent } from './_components/sidebar/sidebar.component';
-import { HeaderComponent } from './_components/header/header.component';
-import { SubscribeModalComponent as SidebarSubscribeModalComponent } from './_components/side-bar/subscribemodal/subscribemodal.component';
-import { OPMLModalComponent as SidebarOPMLModalComponent } from './_components/side-bar/opmlmodal/opmlmodal.component';
+import { routing } from '@app/main/main.routing';
+import { MainComponent } from '@app/main/main.component';
+import { FeedsComponent } from '@app/main/feeds/feeds.component';
+import { FeedComponent } from '@app/main/feed/feed.component';
+import { SidebarComponent } from '@app/main/_components/sidebar/sidebar.component';
+import { HeaderComponent } from '@app/main/_components/header/header.component';
+import { FeedEntryViewComponent } from '@app/main/_components/feed-entry-view/feed-entry-view.component';
+import { SubscribeModalComponent as SidebarSubscribeModalComponent } from '@app/main/_components/sidebar/subscribemodal/subscribemodal.component';
+import { OPMLModalComponent as SidebarOPMLModalComponent } from '@app/main/_components/sidebar/opmlmodal/opmlmodal.component';
 
 @NgModule({
     imports: [
         CommonModule,
-        LayoutRoutingModule,
-        NgbDropdownModule,
         FormsModule,
         ReactiveFormsModule,
+
+        NgbModalModule,
+
+        routing,
     ],
     declarations: [
         MainComponent,
+        FeedsComponent,
+        FeedComponent,
         SidebarComponent,
         HeaderComponent,
+        FeedEntryViewComponent,
         SidebarSubscribeModalComponent,
         SidebarOPMLModalComponent,
     ],
     entryComponents: [
         SidebarSubscribeModalComponent,
         SidebarOPMLModalComponent,
-    ]
+    ],
 })
 export class MainModule {}

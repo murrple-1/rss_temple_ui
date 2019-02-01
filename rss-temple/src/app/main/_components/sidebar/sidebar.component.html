@@ -1,63 +1,70 @@
-<nav class="sidebar" [ngClass]="{sidebarPushRight: isActive, collapsed: collapsed}">
-    <div class="list-group">
-        <div class="header-fields">
-            <a class="list-group-item" (click)="logOut()">
-                <span><i class="pi pi-power-off"></i>&nbsp; Log Out</span>
-            </a>
-        </div>
+<div class="list-group">
+  <div class="header-fields">
+    <a class="list-group-item" [routerLink]="" (click)="logOut()">
+      <i class="pi pi-power-off"></i>&nbsp;
+      <span>Log Out</span>
+    </a>
+  </div>
 
-        <a [routerLink]="['/main/dashboard']" [routerLinkActive]="['router-link-active']" class="list-group-item">
-            <i class="pi pi-home"></i>&nbsp;
-            <span>Dashboard</span>
-        </a>
-        <div class="nested-menu">
-            <a class="list-group-item" (click)="addExpandClass('pages')">
-                <i class="pi pi-align-left"></i>&nbsp;
-                <span>Your Feeds</span>
-            </a>
-            <li class="nested" [class.expand]="showMenu === 'pages'">
-                <ul class="submenu" *ngIf="!subscribedFeeds || subscribedFeeds.length < 1">
-                    <li>
-                        <span class="text-light">No Feeds</span>
-                    </li>
-                </ul>
+  <a [routerLink]="['/main/dashboard']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+    <i class="pi pi-home"></i>&nbsp;
+    <span>Dashboard</span>
+  </a>
+  <div class="nested-menu">
+    <a class="list-group-item" (click)="setExpandedMenu('feeds')">
+      <i class="pi pi-align-left"></i>&nbsp;
+      <span>Your Feeds</span>
+    </a>
+    <li class="nested" [class.expand]="shownMenu === 'feeds'">
+      <ul class="submenu">
+        <li>
+          <a [routerLink]="" (click)="addFeed()">
+            <i class="pi pi-plus-circle"></i>&nbsp;
+            <span>Add Feed</span>
+          </a>
+        </li>
+        <ng-container *ngIf="!subscribedFeeds || subscribedFeeds.length < 1">
+          <li>
+            <span class="text-light">No Feeds</span>
+          </li>
+        </ng-container>
 
-                <ul *ngIf="subscribedFeeds && subscribedFeeds.length > 0" class="submenu">
-                    <li *ngFor="let feed of subscribedFeeds">
-                        <a [routerLink]="['/feed', {url: feed.feedUrl}]">
-                            <i class="pi pi-paperclip"></i>&nbsp;
-                            <span>{{feed.title}}</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-        </div>
-        <a class="list-group-item" [routerLink]="" (click)="uploadOPML()">
-                <i class="pi pi-upload"></i>&nbsp;
-                <span>Upload OPML</span>
+        <ng-container *ngIf="subscribedFeeds && subscribedFeeds.length > 0">
+          <li *ngFor="let feed of subscribedFeeds">
+            <a [routerLink]="['/main/feed', {url: feed.feedUrl}]">
+              <i class="pi pi-paperclip"></i>&nbsp;
+              <span>{{feed.title}}</span>
             </a>
-        <div class="nested-menu">
-            <a class="list-group-item" (click)="addExpandClass('profile')">
-                <span><i class="pi pi-user-plus"></i>&nbsp; John Smith</span>
-            </a>
-            <li class="nested" [class.expand]="showMenu === 'profile'">
-                <ul class="submenu">
-                    <li>
-                        <a href="javascript:void(0)">
-                            <span><i class="pi pi-user"></i> Profile</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0)">
-                            <span><i class="pi pi-cog"></i> Settings</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-        </div>
-    </div>
-    <div class="toggle-button" [ngClass]="{collapsed: collapsed}" (click)="toggleCollapsed()">
-        <i class="pi pi-angle-double-left"></i>&nbsp;
-        <span>Collapse Sidebar</span>
-    </div>
-</nav>
+          </li>
+        </ng-container>
+      </ul>
+    </li>
+  </div>
+  <a class="list-group-item" [routerLink]="" (click)="uploadOPML()">
+    <i class="pi pi-upload"></i>&nbsp;
+    <span>Upload OPML</span>
+  </a>
+  <div class="nested-menu">
+    <a class="list-group-item" (click)="setExpandedMenu('profile')">
+      <span><i class="pi pi-user-plus"></i>&nbsp; John Smith</span>
+    </a>
+    <li class="nested" [class.expand]="shownMenu === 'profile'">
+      <ul class="submenu">
+        <li>
+          <a href="javascript:void(0)">
+            <span><i class="pi pi-user"></i> Profile</span>
+          </a>
+        </li>
+        <li>
+          <a href="javascript:void(0)">
+            <span><i class="pi pi-cog"></i> Settings</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+  </div>
+</div>
+<div class="toggle-button" [ngClass]="{collapsed: collapsed}" (click)="toggleCollapsed()">
+  <i class="pi pi-angle-double-left"></i>&nbsp;
+  <span>Collapse Sidebar</span>
+</div>

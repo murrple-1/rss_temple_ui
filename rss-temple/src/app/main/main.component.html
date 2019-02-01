@@ -1,5 +1,5 @@
 <nav rsst-header></nav>
-<app-sidebar (collapsedEvent)="receiveCollapsed($event)"></app-sidebar>
+<nav rsst-sidebar (collapsedEvent)="receiveCollapsed($event)"></nav>
 <section class="main-container" [ngClass]="{collapsed: collapedSideBar}">
-    <router-outlet></router-outlet>
+  <router-outlet></router-outlet>
 </section>

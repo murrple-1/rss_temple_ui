@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { AlertService } from '@app/_services/alert.service';
 import { deleteSessionToken } from '@app/_modules/session.module';
@@ -11,7 +12,7 @@ export class HttpErrorService {
         private router: Router,
     ) { }
 
-    handleError(error: any) {
+    handleError(error: HttpErrorResponse) {
         console.log(error);
 
         let errorMessage = 'Unknown Error';

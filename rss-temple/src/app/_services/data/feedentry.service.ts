@@ -23,7 +23,7 @@ import { allFn } from '@app/_services/data/all.function';
 import {
     CommonOptions,
     toHeader as commonToHeader
-} from './common.interface';
+} from '@app/_services/data/common.interface';
 
 import { environment } from '@environments/environment';
 

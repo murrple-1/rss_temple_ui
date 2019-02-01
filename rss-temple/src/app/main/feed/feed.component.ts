@@ -1,5 +1,6 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -29,9 +30,17 @@ export class FeedComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit() {
-        const url = this.route.snapshot.paramMap.get('url');
-        const count = parseInt(this.route.snapshot.paramMap.get('count') || '5', 10);
+        this.route.paramMap.pipe(
+            takeUntil(this.unsubscribe$)
+        ).subscribe(paramMap => {
+            const url = paramMap.get('url');
+            const count = parseInt(paramMap.get('count') || '5', 10);
 
+            this.initialize(url, count);
+        });
+    }
+
+    private initialize(url: string, count: number) {
         this.feedService.get(url, {
             fields: ['uuid', 'title', 'subscribed'],
         }).pipe(
@@ -54,10 +63,10 @@ export class FeedComponent implements OnInit, OnDestroy {
                 this.zone.run(() => {
                     this.feedEntries = feedEntries.objects;
                 });
-            }, error => {
+            }, (error: HttpErrorResponse) => {
                 this.httpErrorService.handleError(error);
             });
-        }, error => {
+        }, (error: HttpErrorResponse) => {
             this.httpErrorService.handleError(error);
         });
     }
@@ -74,7 +83,7 @@ export class FeedComponent implements OnInit, OnDestroy {
             this.zone.run(() => {
                 this.feed.subscribed = true;
             });
-        }, error => {
+        }, (error: HttpErrorResponse) => {
             this.httpErrorService.handleError(error);
         });
     }
@@ -86,7 +95,7 @@ export class FeedComponent implements OnInit, OnDestroy {
             this.zone.run(() => {
                 this.feed.subscribed = false;
             });
-        }, error => {
+        }, (error: HttpErrorResponse) => {
             this.httpErrorService.handleError(error);
         });
     }

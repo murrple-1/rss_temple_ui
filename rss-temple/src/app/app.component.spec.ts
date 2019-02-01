@@ -17,18 +17,18 @@ import { AlertService } from '@app/_services/alert.service';
 import { UserService } from '@app/_services/data/user.service';
 import { GAuthService } from '@app/_services/gauth.service';
 import { FBAuthService } from '@app/_services/fbauth.service';
-import { HttpErrorService } from './_services/httperror.service';
+import { HttpErrorService } from '@app/_services/httperror.service';
 import { LoginComponent } from '@app/login/login.component';
 import { RegisterComponent } from '@app/register/register.component';
 import { MainComponent } from '@app/main/main.component';
-import { FeedComponent } from '@app/feed/feed.component';
+import { FeedComponent } from '@app/main/feed/feed.component';
 import { FeedService } from '@app/_services/data/feed.service';
 import { FeedEntryService } from '@app/_services/data/feedentry.service';
 import { OPMLService } from '@app/_services/data/opml.service';
 import { ProgressService } from '@app/_services/data/progress.service';
-import { NavBarComponent } from '@app/_components/nav-bar/nav-bar.component';
-import { SideBarComponent } from '@app/_components/side-bar/side-bar.component';
-import { FeedEntryViewComponent } from '@app/_components/feed-entry-view/feed-entry-view.component';
+import { HeaderComponent } from '@app/main/_components/header/header.component';
+import { SidebarComponent } from '@app/main/_components/sidebar/sidebar.component';
+import { FeedEntryViewComponent } from '@app/main/_components/feed-entry-view/feed-entry-view.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -52,8 +52,8 @@ describe('AppComponent', () => {
         RegisterComponent,
         MainComponent,
         FeedComponent,
-        NavBarComponent,
-        SideBarComponent,
+        HeaderComponent,
+        SidebarComponent,
         FeedEntryViewComponent,
       ],
       providers: [

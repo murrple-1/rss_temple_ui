@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
 export class MainComponent {
     collapedSideBar: boolean;
 
-    receiveCollapsed($event) {
+    receiveCollapsed($event: boolean) {
         this.collapedSideBar = $event;
     }
 }

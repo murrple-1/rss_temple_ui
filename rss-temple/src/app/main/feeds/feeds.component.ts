@@ -1,5 +1,6 @@
 import { Component, NgZone, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -11,10 +12,10 @@ import { FeedEntryService } from '@app/_services/data/feedentry.service';
 import { HttpErrorService } from '@app/_services/httperror.service';
 
 @Component({
-    templateUrl: 'main.component.html',
-    styleUrls: ['main.component.scss'],
+    templateUrl: 'feeds.component.html',
+    styleUrls: ['feeds.component.scss'],
 })
-export class MainComponent implements OnInit, OnDestroy {
+export class FeedsComponent implements OnInit, OnDestroy {
     feedEntries: FeedEntry[];
 
     private feeds: Feed[];
@@ -56,11 +57,11 @@ export class MainComponent implements OnInit, OnDestroy {
                     this.zone.run(() => {
                         this.feedEntries = feedEntries.objects;
                     });
-                }, error => {
+                }, (error: HttpErrorResponse) => {
                     this.httpErrorService.handleError(error);
                 });
             }
-        }, error => {
+        }, (error: HttpErrorResponse) => {
             this.httpErrorService.handleError(error);
         });
     }
@@ -87,7 +88,7 @@ export class MainComponent implements OnInit, OnDestroy {
             this.zone.run(() => {
                 this.feedEntries = feedEntries.objects;
             });
-        }, error => {
+        }, (error: HttpErrorResponse) => {
             this.httpErrorService.handleError(error);
         });
     }
@@ -117,11 +118,11 @@ export class MainComponent implements OnInit, OnDestroy {
                     this.zone.run(() => {
                         this.feedEntries = feedEntries.objects;
                     });
-                }, error => {
+                }, (error: HttpErrorResponse) => {
                     this.httpErrorService.handleError(error);
                 });
             }
-        }, error => {
+        }, (error: HttpErrorResponse) => {
             this.httpErrorService.handleError(error);
         });
     }
