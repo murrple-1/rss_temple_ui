@@ -20,7 +20,7 @@ export class FeedsComponent implements OnInit, OnDestroy {
 
     private feeds: Feed[];
 
-    private count: number;
+    private count = 5;
 
     private unsubscribe$ = new Subject<void>();
 
@@ -33,37 +33,15 @@ export class FeedsComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit() {
-        this.count = parseInt(this.route.snapshot.paramMap.get('count') || '5', 10);
-
-        this.feedService.all({
-            fields: ['uuid'],
-            search: 'subscribed:"true"',
-            returnTotalCount: false,
-        }).pipe(
+        this.route.paramMap.pipe(
             takeUntil(this.unsubscribe$)
-        ).subscribe(feeds => {
-            this.feeds = feeds.objects;
+        ).subscribe(paramMap => {
+            this.count = parseInt(paramMap.get('count') || this.count.toString(), 10);
 
-            if (feeds.objects.length > 0) {
-                this.feedEntryService.some({
-                    fields: ['uuid', 'url', 'title', 'content', 'isRead'],
-                    returnTotalCount: false,
-                    count: this.count,
-                    search: `feedUuid:"${this.feeds.map(feed => feed.uuid).join('|')}" and isRead:"false"`,
-                    sort: 'createdAt:DESC,publishedAt:DESC,updatedAt:DESC',
-                }).pipe(
-                    takeUntil(this.unsubscribe$)
-                ).subscribe(feedEntries => {
-                    this.zone.run(() => {
-                        this.feedEntries = feedEntries.objects;
-                    });
-                }, (error: HttpErrorResponse) => {
-                    this.httpErrorService.handleError(error);
-                });
-            }
-        }, (error: HttpErrorResponse) => {
-            this.httpErrorService.handleError(error);
+            this.getFeedEntries();
         });
+
+        this.getFeeds();
     }
 
     ngOnDestroy() {
@@ -71,29 +49,7 @@ export class FeedsComponent implements OnInit, OnDestroy {
         this.unsubscribe$.complete();
     }
 
-    feedAdded(feed: Feed) {
-        this.feeds = this.feeds.concat(feed);
-
-        const count = parseInt(this.route.snapshot.paramMap.get('count') || '5', 10);
-
-        this.feedEntryService.some({
-            fields: ['uuid', 'url', 'title', 'content', 'isRead'],
-            returnTotalCount: false,
-            count: count,
-            search: `feedUuid:"${this.feeds.map(_feed => _feed.uuid).join('|')}" and isRead:"false"`,
-            sort: 'createdAt:DESC,publishedAt:DESC,updatedAt:DESC',
-        }).pipe(
-            takeUntil(this.unsubscribe$)
-        ).subscribe(feedEntries => {
-            this.zone.run(() => {
-                this.feedEntries = feedEntries.objects;
-            });
-        }, (error: HttpErrorResponse) => {
-            this.httpErrorService.handleError(error);
-        });
-    }
-
-    opmlUploaded() {
+    private getFeeds() {
         this.feedService.all({
             fields: ['uuid'],
             search: 'subscribed:"true"',
@@ -105,25 +61,39 @@ export class FeedsComponent implements OnInit, OnDestroy {
                 this.feeds = feeds.objects;
             });
 
-            if (feeds.objects.length > 0) {
-                this.feedEntryService.some({
-                    fields: ['uuid', 'url', 'title', 'content', 'isRead'],
-                    returnTotalCount: false,
-                    count: this.count,
-                    search: `feedUuid:"${this.feeds.map(feed => feed.uuid).join('|')}" and isRead:"false"`,
-                    sort: 'createdAt:DESC,publishedAt:DESC,updatedAt:DESC',
-                }).pipe(
-                    takeUntil(this.unsubscribe$)
-                ).subscribe(feedEntries => {
-                    this.zone.run(() => {
-                        this.feedEntries = feedEntries.objects;
-                    });
-                }, (error: HttpErrorResponse) => {
-                    this.httpErrorService.handleError(error);
-                });
-            }
+            this.getFeedEntries();
         }, (error: HttpErrorResponse) => {
             this.httpErrorService.handleError(error);
         });
+    }
+
+    private getFeedEntries() {
+        if (this.feeds && this.feeds.length > 0) {
+            this.feedEntryService.some({
+                fields: ['uuid', 'url', 'title', 'content', 'isRead'],
+                returnTotalCount: false,
+                count: this.count,
+                search: `feedUuid:"${this.feeds.map(feed => feed.uuid).join('|')}" and isRead:"false"`,
+                sort: 'createdAt:DESC,publishedAt:DESC,updatedAt:DESC',
+            }).pipe(
+                takeUntil(this.unsubscribe$)
+            ).subscribe(feedEntries => {
+                this.zone.run(() => {
+                    this.feedEntries = feedEntries.objects;
+                });
+            }, (error: HttpErrorResponse) => {
+                this.httpErrorService.handleError(error);
+            });
+        }
+    }
+
+    feedAdded(feed: Feed) {
+        this.feeds = this.feeds.concat(feed);
+
+        this.getFeedEntries();
+    }
+
+    opmlUploaded() {
+        this.getFeeds();
     }
 }

@@ -36,11 +36,16 @@ export class FeedComponent implements OnInit, OnDestroy {
             const url = paramMap.get('url');
             const count = parseInt(paramMap.get('count') || '5', 10);
 
-            this.initialize(url, count);
+            this.getFeed(url, count);
         });
     }
 
-    private initialize(url: string, count: number) {
+    ngOnDestroy() {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
+    }
+
+    private getFeed(url: string, count: number) {
         this.feedService.get(url, {
             fields: ['uuid', 'title', 'subscribed'],
         }).pipe(
@@ -69,11 +74,6 @@ export class FeedComponent implements OnInit, OnDestroy {
         }, (error: HttpErrorResponse) => {
             this.httpErrorService.handleError(error);
         });
-    }
-
-    ngOnDestroy() {
-        this.unsubscribe$.next();
-        this.unsubscribe$.complete();
     }
 
     startSubscribe() {

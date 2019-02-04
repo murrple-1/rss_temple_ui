@@ -44,7 +44,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             password: ['', Validators.required]
         });
 
-        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/main';
+        this.returnUrl = this.route.snapshot.paramMap.get('returnUrl') || '/main';
 
         this.gAuthService.isLoaded$.pipe(
             takeUntil(this.unsubscribe$)
