@@ -1,9 +1,16 @@
 <div class="list-group">
   <div class="header-fields">
-    <a class="list-group-item" [routerLink]="" (click)="logOut()">
+    <div class="search-bar form-inline m-2">
+      <input #searchBar class="form-control" type="text" placeholder="Search">
+    </div>
+    <a class="list-group-item search-icon" routerLink="" (click)="onSearchIconClicked()">
+      <i class="pi pi-search"></i>&nbsp;
+    </a>
+    <a class="list-group-item" routerLink="" (click)="logOut()">
       <i class="pi pi-power-off"></i>&nbsp;
       <span>Log Out</span>
     </a>
+    <hr>
   </div>
 
   <a [routerLink]="['/main/dashboard']" [routerLinkActive]="['router-link-active']" class="list-group-item">
@@ -40,31 +47,34 @@
       </ul>
     </li>
   </div>
-  <a class="list-group-item" [routerLink]="" (click)="uploadOPML()">
+  <a class="list-group-item" routerLink="" (click)="uploadOPML()">
     <i class="pi pi-upload"></i>&nbsp;
     <span>Upload OPML</span>
   </a>
   <div class="nested-menu">
     <a class="list-group-item" (click)="setExpandedMenu('profile')">
-      <span><i class="pi pi-user-plus"></i>&nbsp; John Smith</span>
+      <i class="pi pi-user-plus"></i>&nbsp;
+      <span>John Smith</span>
     </a>
     <li class="nested" [class.expand]="shownMenu === 'profile'">
       <ul class="submenu">
         <li>
           <a href="javascript:void(0)">
-            <span><i class="pi pi-user"></i> Profile</span>
+            <i class="pi pi-user"></i>&nbsp;
+            <span>Profile</span>
           </a>
         </li>
         <li>
           <a href="javascript:void(0)">
-            <span><i class="pi pi-cog"></i> Settings</span>
+            <i class="pi pi-cog"></i>&nbsp;
+            <span>Settings</span>
           </a>
         </li>
       </ul>
     </li>
   </div>
 </div>
-<div class="toggle-button" [ngClass]="{collapsed: collapsed}" (click)="toggleCollapsed()">
+<div class="toggle-button" [ngClass]="{collapsed: isCollapsed}" (click)="onToggleCollapseClicked()">
   <i class="pi pi-angle-double-left"></i>&nbsp;
   <span>Collapse Sidebar</span>
 </div>

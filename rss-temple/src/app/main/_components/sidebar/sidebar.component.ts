@@ -1,5 +1,4 @@
-import { Component, OnInit, NgZone, Output, EventEmitter, OnDestroy, Renderer2, ElementRef } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
+import { Component, OnInit, NgZone, Output, EventEmitter, OnDestroy, Renderer2, ElementRef, ViewChild } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -19,9 +18,9 @@ import { HttpErrorService } from '@app/_services/httperror.service';
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent implements OnInit, OnDestroy {
-  collapsed = false;
+  isCollapsed = false;
+  private userRequestedCollapsed = false;
   shownMenu: string = null;
-  private readonly pushRightClass = 'push-right';
   private readonly collapsedClass = 'collapsed';
 
   private readonly _classes: string[] = [
@@ -38,6 +37,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
   @Output()
   opmlUploaded = new EventEmitter<void>();
 
+  @ViewChild('searchBar')
+  private searchBar: ElementRef;
+
   private unsubscribe$ = new Subject<void>();
 
   constructor(
@@ -45,16 +47,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
     private httpErrorService: HttpErrorService,
     private modalService: NgbModal,
     private zone: NgZone,
-    private router: Router,
     private elementRef: ElementRef,
     private renderer: Renderer2,
   ) {
-    this.router.events.subscribe(val => {
-      if (val instanceof NavigationEnd && window.innerWidth <= 992 && this.isToggled()) {
-        this.toggleSidebar();
-      }
-    });
-
     const elem = this.elementRef.nativeElement;
     for (const _class of this._classes) {
       this.renderer.addClass(elem, _class);
@@ -85,34 +80,38 @@ export class SidebarComponent implements OnInit, OnDestroy {
   setExpandedMenu(menuName: string) {
     if (menuName === this.shownMenu) {
       this.shownMenu = null;
+      this.setIsCollapsed(this.userRequestedCollapsed);
     } else {
       this.shownMenu = menuName;
+      this.setIsCollapsed(false);
     }
   }
 
-  toggleCollapsed() {
-    this.collapsed = !this.collapsed;
+  onToggleCollapseClicked() {
+    this.userRequestedCollapsed = !this.userRequestedCollapsed;
+    this.setIsCollapsed(this.userRequestedCollapsed);
+  }
 
-    const elem = this.elementRef.nativeElement;
-    if (this.collapsed) {
-      this.renderer.addClass(elem, this.collapsedClass);
-    } else {
-      this.renderer.removeClass(elem, this.collapsedClass);
+  onSearchIconClicked() {
+    this.userRequestedCollapsed = false;
+    this.setIsCollapsed(false);
+
+    (this.searchBar.nativeElement as HTMLInputElement).focus();
+  }
+
+  private setIsCollapsed(isCollapsed: boolean) {
+    if (this.isCollapsed !== isCollapsed) {
+      this.isCollapsed = isCollapsed;
+
+      const elem = this.elementRef.nativeElement;
+      if (isCollapsed) {
+        this.renderer.addClass(elem, this.collapsedClass);
+      } else {
+        this.renderer.removeClass(elem, this.collapsedClass);
+      }
+
+      this.collapsedEvent.emit(isCollapsed);
     }
-
-    this.collapsedEvent.emit(this.collapsed);
-  }
-
-  isToggled() {
-    return document.querySelector('body').classList.contains(this.pushRightClass);
-  }
-
-  toggleSidebar() {
-    document.querySelector('body').classList.toggle(this.pushRightClass);
-  }
-
-  onLoggedout() {
-    localStorage.removeItem('isLoggedin');
   }
 
   addFeed() {

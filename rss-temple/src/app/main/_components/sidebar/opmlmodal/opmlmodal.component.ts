@@ -70,7 +70,7 @@ export class OPMLModalComponent implements OnDestroy {
                             this.zone.run(() => {
                                 this.progressUuid = body;
                                 this.checkProgress();
-                            })
+                            });
                         } else {
                             this.zone.run(() => {
                                 this.uploading = false;
@@ -105,7 +105,7 @@ export class OPMLModalComponent implements OnDestroy {
         this.progressService.checkProgress(this.progressUuid).pipe(
             takeUntil(this.unsubscribe$)
         ).subscribe(status => {
-            switch(status.state) {
+            switch (status.state) {
                 case 'notstarted':
                 case 'started':
                     this.zone.run(() => {

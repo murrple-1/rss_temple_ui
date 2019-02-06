@@ -76,6 +76,23 @@ $topnav-background-color: #222;
         }
     }
 }
+
+.search-bar {
+    display: inherit;
+}
+
+.search-icon {
+    display: none;
+}
+
+:host.collapsed .search-bar {
+    display: none;
+}
+
+:host.collapsed .search-icon {
+    display: inherit;
+}
+
 @media screen and (max-width: 992px) {
     :host.sidebar {
         top: 54px;

@@ -22,7 +22,7 @@ export class HeaderComponent {
   ) {
     this.router.events.subscribe(val => {
       if (val instanceof NavigationEnd && window.innerWidth <= 992 && this.isToggled()) {
-        this.toggleSidebar();
+        document.querySelector('body').classList.remove(this.pushRightClass);
       }
     });
 
@@ -32,15 +32,11 @@ export class HeaderComponent {
     }
   }
 
-  isToggled() {
+  private isToggled() {
     return document.querySelector('body').classList.contains(this.pushRightClass);
   }
 
   toggleSidebar() {
     document.querySelector('body').classList.toggle(this.pushRightClass);
-  }
-
-  onLoggedout() {
-    localStorage.removeItem('isLoggedin');
   }
 }

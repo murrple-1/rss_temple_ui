@@ -1,16 +1,17 @@
 <a class="navbar-brand" href="#">RSS Temple</a>
 <button class="navbar-toggler" type="button" (click)="toggleSidebar()">
-    <i class="pi pi-bars text-muted" aria-hidden="true"></i>
+  <i class="pi pi-bars text-muted" aria-hidden="true"></i>
 </button>
 <div class="collapse navbar-collapse">
-    <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2" type="text" placeholder="Search" >
-    </form>
-    <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-            <a [routerLink]="['/login']" class="nav-link mt-1" (click)="onLoggedout()">
-                <i class="pi pi-power-off"></i> Log Out
-            </a>
-        </li>
-    </ul>
+  <form class="form-inline my-2 my-lg-0">
+    <input class="form-control mr-sm-2" type="text" placeholder="Search">
+  </form>
+  <ul class="navbar-nav ml-auto">
+    <li class="nav-item">
+      <a [routerLink]="['/login']" class="nav-link mt-1">
+        <i class="pi pi-power-off"></i>&nbsp;
+        <span>Log Out</span>
+      </a>
+    </li>
+  </ul>
 </div>
