@@ -1,6 +1,7 @@
 ﻿import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -12,202 +13,214 @@ import { FBAuthService } from '@app/_services/fbauth.service';
 import { setSessionToken } from '@app/_modules/session.module';
 
 @Component({
-    templateUrl: 'login.component.html',
-    styleUrls: ['login.component.scss'],
+  templateUrl: 'login.component.html',
+  styleUrls: ['login.component.scss'],
 })
 export class LoginComponent implements OnInit, OnDestroy {
-    loginForm: FormGroup;
-    submitted = false;
-    returnUrl: string;
+  loginForm: FormGroup;
+  submitted = false;
+  returnUrl: string;
 
-    isLoggingIn = false;
+  isLoggingIn = false;
 
-    gLoaded = false;
-    fbLoaded = false;
+  gLoaded = false;
+  fbLoaded = false;
 
-    private unsubscribe$ = new Subject<void>();
+  private unsubscribe$ = new Subject<void>();
 
-    constructor(
-        private formBuilder: FormBuilder,
-        private route: ActivatedRoute,
-        private router: Router,
-        private loginService: LoginService,
-        private alertService: AlertService,
-        private gAuthService: GAuthService,
-        private fbAuthService: FBAuthService,
-        private zone: NgZone,
-    ) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router,
+    private loginService: LoginService,
+    private alertService: AlertService,
+    private gAuthService: GAuthService,
+    private fbAuthService: FBAuthService,
+    private zone: NgZone,
+  ) {}
 
-    ngOnInit() {
-        this.loginForm = this.formBuilder.group({
-            email: ['', [Validators.required, Validators.email]],
-            password: ['', Validators.required]
-        });
+  ngOnInit() {
+    this.loginForm = this.formBuilder.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
+    });
 
-        this.returnUrl = this.route.snapshot.paramMap.get('returnUrl') || '/main';
+    this.returnUrl = this.route.snapshot.paramMap.get('returnUrl') || '/main';
 
-        this.gAuthService.isLoaded$.pipe(
-            takeUntil(this.unsubscribe$)
-        ).subscribe(isLoaded => {
-            if (isLoaded !== this.gLoaded) {
-                this.zone.run(() => {
-                    this.gLoaded = isLoaded;
-                });
-            }
-
-            if (!isLoaded) {
-                this.gAuthService.load();
-            }
-        });
-
-        this.gAuthService.user$.pipe(
-            takeUntil(this.unsubscribe$)
-        ).subscribe(user => {
-            this.zone.run(() => {
-                this.isLoggingIn = false;
-            });
-
-            if (user) {
-                this.handleGoogleUser(user);
-            }
-        });
-
-        this.fbAuthService.isLoaded$.pipe(
-            takeUntil(this.unsubscribe$)
-        ).subscribe(isLoaded => {
-            if (isLoaded !== this.fbLoaded) {
-                this.zone.run(() => {
-                    this.fbLoaded = isLoaded;
-                });
-            }
-
-            if (!isLoaded) {
-                this.fbAuthService.load();
-            }
-        });
-
-        this.fbAuthService.user$.pipe(
-            takeUntil(this.unsubscribe$)
-        ).subscribe(user => {
-            this.zone.run(() => {
-                this.isLoggingIn = false;
-            });
-
-            if (user) {
-                this.handleFacebookUser(user);
-            }
-        });
-    }
-
-    ngOnDestroy() {
-        this.unsubscribe$.next();
-        this.unsubscribe$.complete();
-    }
-
-    onSubmit() {
-        this.submitted = true;
-
-        if (this.loginForm.invalid) {
-            return;
+    this.gAuthService.isLoaded$.pipe(takeUntil(this.unsubscribe$)).subscribe({
+      next: isLoaded => {
+        if (isLoaded !== this.gLoaded) {
+          this.zone.run(() => {
+            this.gLoaded = isLoaded;
+          });
         }
 
-        this.isLoggingIn = true;
-        this.loginService.getMyLoginSession(this.loginForm.controls.email.value, this.loginForm.controls.password.value).pipe(
-            takeUntil(this.unsubscribe$)
-        ).subscribe(
-            this.handleLoginSuccess.bind(this),
-            error => {
-                let errorMessage = 'Unknown Error';
-                switch (error.status) {
-                    case 0:
-                        errorMessage = 'Unable to connect to server';
-                        break;
-                    case 403:
-                        errorMessage = 'Email or password wrong';
-                        break;
-                }
-                this.alertService.error(errorMessage);
-
-                this.isLoggingIn = false;
-            }
-        );
-    }
-
-    private handleLoginSuccess(data: string | Object) {
-        if (typeof data === 'string') {
-            this.zone.run(() => {
-                setSessionToken(data);
-
-                this.router.navigate([this.returnUrl]);
-            });
-        } else {
-            throw new Error('data is not a string');
+        if (!isLoaded) {
+          this.gAuthService.load();
         }
+      },
+    });
+
+    this.gAuthService.user$.pipe(takeUntil(this.unsubscribe$)).subscribe({
+      next: user => {
+        this.zone.run(() => {
+          this.isLoggingIn = false;
+        });
+
+        if (user) {
+          this.handleGoogleUser(user);
+        }
+      },
+    });
+
+    this.fbAuthService.isLoaded$.pipe(takeUntil(this.unsubscribe$)).subscribe({
+      next: isLoaded => {
+        if (isLoaded !== this.fbLoaded) {
+          this.zone.run(() => {
+            this.fbLoaded = isLoaded;
+          });
+        }
+
+        if (!isLoaded) {
+          this.fbAuthService.load();
+        }
+      },
+    });
+
+    this.fbAuthService.user$.pipe(takeUntil(this.unsubscribe$)).subscribe({
+      next: user => {
+        this.zone.run(() => {
+          this.isLoggingIn = false;
+        });
+
+        if (user) {
+          this.handleFacebookUser(user);
+        }
+      },
+    });
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
+
+  onSubmit() {
+    this.submitted = true;
+
+    if (this.loginForm.invalid) {
+      return;
     }
 
-    onGoogleLogin() {
-        this.isLoggingIn = true;
-        this.gAuthService.signIn();
+    this.isLoggingIn = true;
+    this.loginService
+      .getMyLoginSession(
+        this.loginForm.controls.email.value,
+        this.loginForm.controls.password.value,
+      )
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: this.handleLoginSuccess.bind(this),
+        error: (error: HttpErrorResponse) => {
+          let errorMessage = 'Unknown Error';
+          switch (error.status) {
+            case 0:
+              errorMessage = 'Unable to connect to server';
+              break;
+            case 403:
+              errorMessage = 'Email or password wrong';
+              break;
+          }
+          this.alertService.error(errorMessage);
+
+          this.isLoggingIn = false;
+        },
+      });
+  }
+
+  private handleLoginSuccess(data: string | Object) {
+    if (typeof data === 'string') {
+      this.zone.run(() => {
+        setSessionToken(data);
+
+        this.router.navigate([this.returnUrl]);
+      });
+    } else {
+      throw new Error('data is not a string');
     }
+  }
 
-    private handleGoogleUser(user: gapi.auth2.GoogleUser) {
-        this.loginService.getGoogleLoginSession(user).pipe(
-            takeUntil(this.unsubscribe$)
-        ).subscribe(
-            this.handleLoginSuccess.bind(this),
-            error => {
-                if (error.status === 422) {
-                    this.zone.run(() => {
-                        this.router.navigate(['/register', { g_token: error.error.token, email: error.error.email }]);
-                    });
-                } else {
-                    let errorMessage = 'Unknown Error';
-                    switch (error.status) {
-                        case 0:
-                            errorMessage = 'Unable to connect to server';
-                            break;
-                    }
+  onGoogleLogin() {
+    this.isLoggingIn = true;
+    this.gAuthService.signIn();
+  }
 
-                    this.zone.run(() => {
-                        this.alertService.error(errorMessage);
-
-                        this.isLoggingIn = false;
-                    });
-                }
+  private handleGoogleUser(user: gapi.auth2.GoogleUser) {
+    this.loginService
+      .getGoogleLoginSession(user)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: this.handleLoginSuccess.bind(this),
+        error: (error: HttpErrorResponse) => {
+          if (error.status === 422) {
+            this.zone.run(() => {
+              this.router.navigate([
+                '/register',
+                { g_token: error.error.token, email: error.error.email },
+              ]);
+            });
+          } else {
+            let errorMessage = 'Unknown Error';
+            switch (error.status) {
+              case 0:
+                errorMessage = 'Unable to connect to server';
+                break;
             }
-        );
-    }
 
-    onFacebookLogin() {
-        this.isLoggingIn = true;
-        this.fbAuthService.signIn();
-    }
+            this.zone.run(() => {
+              this.alertService.error(errorMessage);
 
-    private handleFacebookUser(user: fb.AuthResponse) {
-        this.loginService.getFacebookLoginSession(user).pipe(
-            takeUntil(this.unsubscribe$)
-        ).subscribe(
-            this.handleLoginSuccess.bind(this),
-            error => {
-                if (error.status === 422) {
-                    this.zone.run(() => {
-                        this.router.navigate(['/register', { fb_token: error.error.token, email: error.error.email }]);
-                    });
-                } else {
-                    let errorMessage = 'Unknown Error';
-                    switch (error.status) {
-                        case 0:
-                            errorMessage = 'Unable to connect to server';
-                            break;
-                    }
+              this.isLoggingIn = false;
+            });
+          }
+        },
+      });
+  }
 
-                    this.zone.run(() => {
-                        this.alertService.error(errorMessage);
+  onFacebookLogin() {
+    this.isLoggingIn = true;
+    this.fbAuthService.signIn();
+  }
 
-                        this.isLoggingIn = false;
-                    });
-                }
+  private handleFacebookUser(user: fb.AuthResponse) {
+    this.loginService
+      .getFacebookLoginSession(user)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: this.handleLoginSuccess.bind(this),
+        error: (error: HttpErrorResponse) => {
+          if (error.status === 422) {
+            this.zone.run(() => {
+              this.router.navigate([
+                '/register',
+                { fb_token: error.error.token, email: error.error.email },
+              ]);
+            });
+          } else {
+            let errorMessage = 'Unknown Error';
+            switch (error.status) {
+              case 0:
+                errorMessage = 'Unable to connect to server';
+                break;
             }
-        );
-    }
+
+            this.zone.run(() => {
+              this.alertService.error(errorMessage);
+
+              this.isLoggingIn = false;
+            });
+          }
+        },
+      });
+  }
 }

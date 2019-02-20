@@ -12,7 +12,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { Subject } from 'rxjs';
+import { Subject, PartialObserver } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import {
@@ -71,17 +71,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
         returnTotalCount: false,
       })
       .pipe(takeUntil(this.unsubscribe$))
-      .subscribe(
-        feeds => {
+      .subscribe({
+        next: feeds => {
           this.zone.run(() => {
             this.subscribedFeeds = feeds.objects;
             this.filteredSubscribedFeeds.next(this.subscribedFeeds);
           });
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           this.httpErrorService.handleError(error);
         },
-      );
+      });
   }
 
   ngOnDestroy() {
@@ -99,8 +99,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
             fields: ['uuid', 'title', 'subscribed'],
           })
           .pipe(takeUntil(this.unsubscribe$))
-          .subscribe(
-            feed => {
+          .subscribe({
+            next: feed => {
               feed.feedUrl = result.feedUrl;
               if (!feed.subscribed) {
                 this.feedService
@@ -124,10 +124,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 // TODO something?
               }
             },
-            (error: HttpErrorResponse) => {
+            error: (error: HttpErrorResponse) => {
               this.httpErrorService.handleError(error);
             },
-          );
+          });
       },
       () => {
         // dialog dismissed, no-op
@@ -149,10 +149,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
             returnTotalCount: false,
           })
           .pipe(takeUntil(this.unsubscribe$))
-          .subscribe(feeds => {
-            this.zone.run(() => {
-              this.subscribedFeeds = feeds.objects;
-            });
+          .subscribe({
+            next: feeds => {
+              this.zone.run(() => {
+                this.subscribedFeeds = feeds.objects;
+              });
+            },
           });
       },
       () => {

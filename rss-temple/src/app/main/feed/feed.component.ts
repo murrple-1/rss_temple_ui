@@ -12,91 +12,114 @@ import { FeedEntry } from '@app/_models/feedentry';
 import { HttpErrorService } from '@app/_services/httperror.service';
 
 @Component({
-    templateUrl: 'feed.component.html',
-    styleUrls: ['feed.component.scss'],
+  templateUrl: 'feed.component.html',
+  styleUrls: ['feed.component.scss'],
 })
 export class FeedComponent implements OnInit, OnDestroy {
-    feed: Feed;
-    feedEntries: FeedEntry[];
+  feed: Feed;
+  feedEntries: FeedEntry[];
 
-    private unsubscribe$ = new Subject<void>();
+  private unsubscribe$ = new Subject<void>();
 
-    constructor(
-        private feedService: FeedService,
-        private feedEntryService: FeedEntryService,
-        private httpErrorService: HttpErrorService,
-        private route: ActivatedRoute,
-        private zone: NgZone,
-    ) { }
+  constructor(
+    private feedService: FeedService,
+    private feedEntryService: FeedEntryService,
+    private httpErrorService: HttpErrorService,
+    private route: ActivatedRoute,
+    private zone: NgZone,
+  ) {}
 
-    ngOnInit() {
-        this.route.paramMap.pipe(
-            takeUntil(this.unsubscribe$)
-        ).subscribe(paramMap => {
-            const url = paramMap.get('url');
-            const count = parseInt(paramMap.get('count') || '5', 10);
+  ngOnInit() {
+    this.route.paramMap.pipe(takeUntil(this.unsubscribe$)).subscribe({
+      next: paramMap => {
+        const url = paramMap.get('url');
+        const count = parseInt(paramMap.get('count') || '5', 10);
 
-            this.getFeed(url, count);
-        });
-    }
+        this.getFeed(url, count);
+      },
+    });
+  }
 
-    ngOnDestroy() {
-        this.unsubscribe$.next();
-        this.unsubscribe$.complete();
-    }
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
 
-    private getFeed(url: string, count: number) {
-        this.feedService.get(url, {
-            fields: ['uuid', 'title', 'subscribed'],
-        }).pipe(
-            takeUntil(this.unsubscribe$)
-        ).subscribe(feed => {
-            feed.feedUrl = url;
-            this.zone.run(() => {
-                this.feed = feed;
-            });
+  private getFeed(url: string, count: number) {
+    this.feedService
+      .get(url, {
+        fields: ['uuid', 'title', 'subscribed'],
+      })
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: feed => {
+          feed.feedUrl = url;
+          this.zone.run(() => {
+            this.feed = feed;
+          });
 
-            this.feedEntryService.some({
-                fields: ['uuid', 'url', 'title', 'content', 'isRead', 'isFavorite'],
-                returnTotalCount: false,
-                count: count,
-                search: `feedUuid:"${feed.uuid}"`,
-                sort: 'createdAt:DESC,publishedAt:DESC,updatedAt:DESC',
-            }).pipe(
-                takeUntil(this.unsubscribe$)
-            ).subscribe(feedEntries => {
+          this.feedEntryService
+            .some({
+              fields: [
+                'uuid',
+                'url',
+                'title',
+                'content',
+                'isRead',
+                'isFavorite',
+              ],
+              returnTotalCount: false,
+              count: count,
+              search: `feedUuid:"${feed.uuid}"`,
+              sort: 'createdAt:DESC,publishedAt:DESC,updatedAt:DESC',
+            })
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+              next: feedEntries => {
                 this.zone.run(() => {
-                    this.feedEntries = feedEntries.objects;
+                  this.feedEntries = feedEntries.objects;
                 });
-            }, (error: HttpErrorResponse) => {
+              },
+              error: (error: HttpErrorResponse) => {
                 this.httpErrorService.handleError(error);
+              },
             });
-        }, (error: HttpErrorResponse) => {
-            this.httpErrorService.handleError(error);
-        });
-    }
+        },
+        error: (error: HttpErrorResponse) => {
+          this.httpErrorService.handleError(error);
+        },
+      });
+  }
 
-    startSubscribe() {
-        this.feedService.subscribe(this.feed.feedUrl).pipe(
-            takeUntil(this.unsubscribe$)
-        ).subscribe(() => {
-            this.zone.run(() => {
-                this.feed.subscribed = true;
-            });
-        }, (error: HttpErrorResponse) => {
-            this.httpErrorService.handleError(error);
-        });
-    }
+  startSubscribe() {
+    this.feedService
+      .subscribe(this.feed.feedUrl)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: () => {
+          this.zone.run(() => {
+            this.feed.subscribed = true;
+          });
+        },
+        error: (error: HttpErrorResponse) => {
+          this.httpErrorService.handleError(error);
+        },
+      });
+  }
 
-    unsubscribe() {
-        this.feedService.unsubscribe(this.feed.feedUrl).pipe(
-            takeUntil(this.unsubscribe$)
-        ).subscribe(() => {
-            this.zone.run(() => {
-                this.feed.subscribed = false;
-            });
-        }, (error: HttpErrorResponse) => {
-            this.httpErrorService.handleError(error);
-        });
-    }
+  unsubscribe() {
+    this.feedService
+      .unsubscribe(this.feed.feedUrl)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: () => {
+          this.zone.run(() => {
+            this.feed.subscribed = false;
+          });
+        },
+        error: (error: HttpErrorResponse) => {
+          this.httpErrorService.handleError(error);
+        },
+      });
+  }
 }

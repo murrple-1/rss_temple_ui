@@ -68,8 +68,8 @@ export class OPMLModalComponent implements OnDestroy {
         this.opmlService
           .upload(reader.result)
           .pipe(takeUntil(this.unsubscribe$))
-          .subscribe(
-            response => {
+          .subscribe({
+            next: response => {
               if (response.status === 200) {
                 this.activeModal.close();
               } else if (response.status === 202) {
@@ -88,13 +88,13 @@ export class OPMLModalComponent implements OnDestroy {
                 this.activeModal.close();
               }
             },
-            (error: HttpErrorResponse) => {
+            error: (error: HttpErrorResponse) => {
               this.zone.run(() => {
                 this.uploading = false;
               });
               this.httpErrorService.handleError(error);
             },
-          );
+          });
       };
 
       reader.onerror = () => {
@@ -115,8 +115,8 @@ export class OPMLModalComponent implements OnDestroy {
     this.progressService
       .checkProgress(this.progressUuid)
       .pipe(takeUntil(this.unsubscribe$))
-      .subscribe(
-        status => {
+      .subscribe({
+        next: status => {
           switch (status.state) {
             case 'notstarted':
             case 'started':
@@ -136,9 +136,9 @@ export class OPMLModalComponent implements OnDestroy {
               break;
           }
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           this.httpErrorService.handleError(error);
         },
-      );
+      });
   }
 }
