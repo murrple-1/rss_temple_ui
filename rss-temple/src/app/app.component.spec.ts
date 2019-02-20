@@ -27,7 +27,6 @@ import { FeedEntryService } from '@app/_services/data/feedentry.service';
 import { OPMLService } from '@app/_services/data/opml.service';
 import { ProgressService } from '@app/_services/data/progress.service';
 import { HeaderComponent } from '@app/main/_components/header/header.component';
-import { SidebarComponent } from '@app/main/_components/sidebar/sidebar.component';
 import { FeedEntryViewComponent } from '@app/main/_components/feed-entry-view/feed-entry-view.component';
 
 describe('AppComponent', () => {
@@ -53,27 +52,26 @@ describe('AppComponent', () => {
         MainComponent,
         FeedComponent,
         HeaderComponent,
-        SidebarComponent,
         FeedEntryViewComponent,
       ],
       providers: [
-          {
-            provide: APP_BASE_HREF,
-            useValue : '/'
-          },
+        {
+          provide: APP_BASE_HREF,
+          useValue: '/',
+        },
 
-          AuthGuard,
-          NoAuthGuard,
-          AlertService,
-          LoginService,
-          UserService,
-          FeedService,
-          FeedEntryService,
-          OPMLService,
-          ProgressService,
-          GAuthService,
-          FBAuthService,
-          HttpErrorService,
+        AuthGuard,
+        NoAuthGuard,
+        AlertService,
+        LoginService,
+        UserService,
+        FeedService,
+        FeedEntryService,
+        OPMLService,
+        ProgressService,
+        GAuthService,
+        FBAuthService,
+        HttpErrorService,
       ],
     }).compileComponents();
   }));

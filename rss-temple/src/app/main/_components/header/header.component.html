@@ -1,17 +1,77 @@
-<a class="navbar-brand" href="#">RSS Temple</a>
-<button class="navbar-toggler" type="button" (click)="toggleSidebar()">
-  <i class="pi pi-bars text-muted" aria-hidden="true"></i>
+<a class="navbar-brand col-2" routerLink="/main">RSS Temple</a>
+<div ngbDropdown autoClose="outside" #feedDropdown="ngbDropdown" class="col-4">
+  <button
+    class="btn btn-outline-primary btn-block"
+    ngbDropdownAnchor
+    (click)="feedDropdown.toggle()"
+  >
+    Feeds
+  </button>
+  <div class="feeds-dropdown" ngbDropdownMenu>
+    <input
+      class="form-control"
+      type="search"
+      placeholder="Filter..."
+      (input)="onFilterInput($event)"
+    />
+    <div class="dropdown-divider"></div>
+    <a
+      class="dropdown-item"
+      routerLink=""
+      (click)="feedDropdown.close(); addFeed()"
+    >
+      <i class="pi pi-plus"></i>&nbsp; Add Feed...
+    </a>
+    <a
+      class="dropdown-item"
+      routerLink=""
+      (click)="feedDropdown.close(); uploadOPML()"
+    >
+      <i class="pi pi-upload"></i>&nbsp; Upload OPML...
+    </a>
+    <div class="dropdown-divider"></div>
+    <div
+      *ngIf="(filteredSubscribedFeeds | async)?.length === 0"
+      class="dropdown-item-text"
+    >
+      No Feeds Found
+    </div>
+    <a
+      *ngFor="let feed of (filteredSubscribedFeeds | async)"
+      class="dropdown-item"
+      [routerLink]="['/main/feed', { url: feed.feedUrl }]"
+      (click)="feedDropdown.close()"
+    >
+      {{ feed.title }}
+    </a>
+  </div>
+</div>
+<button
+  class="navbar-toggler"
+  type="button"
+  (click)="isCollapsed = !isCollapsed"
+>
+  <span class="navbar-toggler-icon"></span>
 </button>
-<div class="collapse navbar-collapse">
-  <form class="form-inline my-2 my-lg-0">
-    <input class="form-control mr-sm-2" type="text" placeholder="Search">
-  </form>
+<div class="navbar-collapse col-6" [ngbCollapse]="isCollapsed">
   <ul class="navbar-nav ml-auto">
     <li class="nav-item">
-      <a [routerLink]="['/login']" class="nav-link mt-1">
-        <i class="pi pi-power-off"></i>&nbsp;
-        <span>Log Out</span>
-      </a>
+      <a class="nav-link" routerLink="/main"
+        ><i class="pi pi-home"></i>&nbsp;Home</a
+      >
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/profile"
+        ><i class="pi pi-user"></i>&nbsp;Profile</a
+      >
     </li>
   </ul>
+  <form class="form-inline">
+    <input
+      class="form-control mr-2"
+      type="search"
+      placeholder="Search"
+      (keydown.enter)="onSearch($event)"
+    />
+  </form>
 </div>
