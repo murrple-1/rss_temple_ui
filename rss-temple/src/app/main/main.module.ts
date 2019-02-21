@@ -8,7 +8,7 @@ import {
   NgbDropdownModule,
 } from '@ng-bootstrap/ng-bootstrap';
 
-import { VirtualScrollerModule } from 'ngx-virtual-scroller';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 import { routing } from '@app/main/main.routing';
 import { MainComponent } from '@app/main/main.component';
@@ -29,7 +29,7 @@ import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/main/_compo
     NgbCollapseModule,
     NgbDropdownModule,
 
-    VirtualScrollerModule,
+    InfiniteScrollModule,
 
     routing,
   ],

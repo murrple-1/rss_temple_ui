@@ -1,11 +1,17 @@
 <main role="main">
-  <h2>All Entries</h2>
-  <span *ngIf="feedEntries?.length === 0">No Entries</span>
-  <virtual-scroller #scroll [items]="feedEntries">
+  <div
+    infinite-scroll
+    [infiniteScrollDisabled]="isLoadingMore"
+    (scrolled)="onApproachingBottom()"
+  >
+    <h2>All Entries</h2>
+    <span *ngIf="(feedEntries$ | async)?.length === 0">No Entries</span>
     <rsst-feed-entry-view
-      *ngFor="let item of scroll.viewPortItems"
-      [feedEntry]="item"
+      *ngFor="let feedEntry of (feedEntries$ | async)"
+      [feedEntry]="feedEntry"
     >
     </rsst-feed-entry-view>
-  </virtual-scroller>
+    <div *ngIf="isLoadingMore">Loading...</div>
+    <div *ngIf="!isLoadingMore">Load More</div>
+  </div>
 </main>
