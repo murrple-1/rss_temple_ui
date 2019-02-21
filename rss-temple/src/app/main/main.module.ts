@@ -18,7 +18,7 @@ import { HeaderComponent } from '@app/main/_components/header/header.component';
 import { FeedEntryViewComponent } from '@app/main/_components/feed-entry-view/feed-entry-view.component';
 import { SubscribeModalComponent as HeaderSubscribeModalComponent } from '@app/main/_components/header/subscribemodal/subscribemodal.component';
 import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/main/_components/header/opmlmodal/opmlmodal.component';
-import { InViewportDirective } from '@app/main/_directives/inviewport.directive';
+import { InViewportDirective } from '@app/_directives/inviewport.directive';
 
 @NgModule({
   imports: [
