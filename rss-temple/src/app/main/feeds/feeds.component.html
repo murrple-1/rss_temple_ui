@@ -9,6 +9,8 @@
     <rsst-feed-entry-view
       *ngFor="let feedEntry of (feedEntries$ | async)"
       [feedEntry]="feedEntry"
+      inViewport
+      (inViewport)="onEntryEnteredViewport($event)"
     >
     </rsst-feed-entry-view>
     <div *ngIf="isLoadingMore">Loading...</div>

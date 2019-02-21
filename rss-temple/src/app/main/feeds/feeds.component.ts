@@ -11,6 +11,7 @@ import { FeedEntry } from '@app/_models/feedentry';
 import { FeedEntryService, Field } from '@app/_services/data/feedentry.service';
 import { HttpErrorService } from '@app/_services/httperror.service';
 import { SomeOptions } from '@app/_services/data/some.interface';
+import { InViewportEvent } from '@app/main/_directives/inviewport.directive';
 
 @Component({
   templateUrl: 'feeds.component.html',
@@ -143,5 +144,10 @@ export class FeedsComponent implements OnInit, OnDestroy {
           },
         });
     }
+  }
+
+  onEntryEnteredViewport(event: InViewportEvent) {
+    // TODO
+    console.log(event);
   }
 }
