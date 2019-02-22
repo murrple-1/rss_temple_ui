@@ -36,6 +36,18 @@ export class InViewportDirective implements OnInit, OnDestroy {
 
   constructor(private elementRef: ElementRef<HTMLElement>) {}
 
+  private static rectIntersects(
+    r1: ClientRect | DOMRect,
+    r2: ClientRect | DOMRect,
+  ) {
+    return !(
+      r2.left > r1.right ||
+      r2.right < r1.left ||
+      r2.top > r1.bottom ||
+      r2.bottom < r1.top
+    );
+  }
+
   ngOnInit() {
     this.subscription = merge(
       fromEvent(window, 'scroll'),
@@ -47,18 +59,6 @@ export class InViewportDirective implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
-  }
-
-  private static rectIntersects(
-    r1: ClientRect | DOMRect,
-    r2: ClientRect | DOMRect,
-  ) {
-    return !(
-      r2.left > r1.right ||
-      r2.right < r1.left ||
-      r2.top > r1.bottom ||
-      r2.bottom < r1.top
-    );
   }
 
   private check() {
