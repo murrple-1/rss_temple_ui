@@ -9,6 +9,7 @@ import {
   ElementRef,
 } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -23,6 +24,7 @@ import { OPMLModalComponent } from '@app/main/_components/header/opmlmodal/opmlm
 import { Feed } from '@app/_models/feed';
 import { FeedService } from '@app/_services/data/feed.service';
 import { HttpErrorService } from '@app/_services/httperror.service';
+import { deleteSessionToken } from '@app/_modules/session.module';
 
 @Component({
   selector: 'nav[rsst-header]',
@@ -35,6 +37,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     'navbar-expand-lg',
     'navbar-dark',
     'bg-dark',
+    'fixed-top',
   ];
 
   isCollapsed = true;
@@ -56,6 +59,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private zone: NgZone,
     private elementRef: ElementRef,
     private renderer: Renderer2,
+    private router: Router,
   ) {
     const elem = this.elementRef.nativeElement;
     for (const _class of this._classes) {
@@ -177,5 +181,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
     const value = (event.target as HTMLInputElement).value;
 
     console.log(value);
+  }
+
+  logOut(event: Event) {
+    event.stopPropagation();
+
+    deleteSessionToken();
+
+    this.router.navigate(['/login']);
   }
 }
