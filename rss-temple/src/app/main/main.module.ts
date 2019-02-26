@@ -14,6 +14,7 @@ import { routing } from '@app/main/main.routing';
 import { MainComponent } from '@app/main/main.component';
 import { FeedsComponent } from '@app/main/feeds/feeds.component';
 import { FeedComponent } from '@app/main/feed/feed.component';
+import { ProfileComponent } from '@app/main/profile/profile.component';
 import { HeaderComponent } from '@app/main/_components/header/header.component';
 import { FeedEntryViewComponent } from '@app/main/_components/feed-entry-view/feed-entry-view.component';
 import { SubscribeModalComponent as HeaderSubscribeModalComponent } from '@app/main/_components/header/subscribemodal/subscribemodal.component';
@@ -38,6 +39,7 @@ import { InViewportDirective } from '@app/_directives/inviewport.directive';
     MainComponent,
     FeedsComponent,
     FeedComponent,
+    ProfileComponent,
     HeaderComponent,
     FeedEntryViewComponent,
     HeaderSubscribeModalComponent,
