@@ -7,7 +7,7 @@
   >
     Feeds
   </button>
-  <div class="feeds-dropdown" ngbDropdownMenu>
+  <div class="feeds-dropdown" ngbDropdownMenu #feedDropdownMenu>
     <input
       class="form-control"
       type="search"
@@ -40,7 +40,7 @@
       *ngFor="let feed of (filteredSubscribedFeeds | async)"
       class="dropdown-item"
       [routerLink]="['/main/feed', { url: feed.feedUrl }]"
-      (click)="feedDropdown.close()"
+      (click)="feedDropdown.close(); feedDropdownMenu.scrollTop = 0"
     >
       {{ feed.title }}
     </a>
