@@ -18,8 +18,8 @@ export class FeedEntryViewComponent implements OnDestroy {
   private unsubscribe$ = new Subject<void>();
 
   constructor(
-    private feedEntryService: FeedEntryService,
     private zone: NgZone,
+    private feedEntryService: FeedEntryService,
   ) {}
 
   ngOnDestroy() {

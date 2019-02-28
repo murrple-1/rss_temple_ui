@@ -53,13 +53,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new Subject<void>();
 
   constructor(
-    private feedService: FeedService,
-    private httpErrorService: HttpErrorService,
-    private modalService: NgbModal,
     private zone: NgZone,
     private elementRef: ElementRef,
     private renderer: Renderer2,
     private router: Router,
+    private modalService: NgbModal,
+    private feedService: FeedService,
+    private httpErrorService: HttpErrorService,
   ) {
     const elem = this.elementRef.nativeElement;
     for (const _class of this._classes) {

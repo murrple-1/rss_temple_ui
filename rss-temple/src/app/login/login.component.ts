@@ -32,11 +32,11 @@ export class LoginComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
+    private zone: NgZone,
     private loginService: LoginService,
     private alertService: AlertService,
     private gAuthService: GAuthService,
     private fbAuthService: FBAuthService,
-    private zone: NgZone,
   ) {}
 
   ngOnInit() {

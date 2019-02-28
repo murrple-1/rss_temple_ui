@@ -41,11 +41,11 @@ export class OPMLModalComponent implements OnDestroy {
   private unsubscribe$ = new Subject<void>();
 
   constructor(
+    private zone: NgZone,
+    private activeModal: NgbActiveModal,
     private opmlService: OPMLService,
     private progressService: ProgressService,
     private httpErrorService: HttpErrorService,
-    private activeModal: NgbActiveModal,
-    private zone: NgZone,
   ) {}
 
   ngOnDestroy() {

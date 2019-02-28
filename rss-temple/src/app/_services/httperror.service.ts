@@ -7,25 +7,22 @@ import { deleteSessionToken } from '@app/_modules/session.module';
 
 @Injectable()
 export class HttpErrorService {
-    constructor(
-        private alertService: AlertService,
-        private router: Router,
-    ) { }
+  constructor(private router: Router, private alertService: AlertService) {}
 
-    handleError(error: HttpErrorResponse) {
-        console.log(error);
+  handleError(error: HttpErrorResponse) {
+    console.log(error);
 
-        let errorMessage = 'Unknown Error';
-        switch (error.status) {
-            case 0:
-                errorMessage = 'Unable to connect to server';
-                break;
-            case 401:
-                errorMessage = 'Session expired';
-                deleteSessionToken();
-                this.router.navigate(['/login']);
-                break;
-        }
-        this.alertService.error(errorMessage);
+    let errorMessage = 'Unknown Error';
+    switch (error.status) {
+      case 0:
+        errorMessage = 'Unable to connect to server';
+        break;
+      case 401:
+        errorMessage = 'Session expired';
+        deleteSessionToken();
+        this.router.navigate(['/login']);
+        break;
     }
+    this.alertService.error(errorMessage);
+  }
 }

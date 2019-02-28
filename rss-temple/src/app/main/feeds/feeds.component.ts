@@ -30,11 +30,11 @@ export class FeedsComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new Subject<void>();
 
   constructor(
+    private route: ActivatedRoute,
+    private zone: NgZone,
     private feedService: FeedService,
     private feedEntryService: FeedEntryService,
     private httpErrorService: HttpErrorService,
-    private route: ActivatedRoute,
-    private zone: NgZone,
   ) {}
 
   ngOnInit() {

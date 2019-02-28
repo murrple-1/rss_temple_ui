@@ -18,10 +18,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new Subject<void>();
 
   constructor(
+    private zone: NgZone,
     private feedService: FeedService,
     private feedEntryService: FeedEntryService,
     private httpErrorService: HttpErrorService,
-    private zone: NgZone,
   ) {}
 
   ngOnInit() {

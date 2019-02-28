@@ -26,9 +26,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
+    private zone: NgZone,
     private loginService: LoginService,
     private alertService: AlertService,
-    private zone: NgZone,
   ) {}
 
   ngOnInit() {
