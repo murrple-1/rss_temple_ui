@@ -12,6 +12,7 @@ import {
 } from '@app/_services/data/get.interface';
 
 import { environment } from '@environments/environment';
+import { CommonOptions, toHeader } from './common.interface';
 
 export type Field = 'uuid' | 'email' | 'subscribedFeedUuids';
 
@@ -54,6 +55,22 @@ function toUser(value: Object) {
   return user;
 }
 
+export interface UpdateUserBody {
+  email?: string;
+  my?: {
+    password?: {
+      old: string;
+      new: string;
+    };
+  };
+  google?: {
+    token?: string;
+  };
+  facebook?: {
+    token: string;
+  };
+}
+
 @Injectable()
 export class UserService {
   constructor(private http: HttpClient) {}
@@ -68,5 +85,13 @@ export class UserService {
         params: params,
       })
       .pipe<User>(map(toUser));
+  }
+
+  update(body: UpdateUserBody, options: CommonOptions = {}) {
+    const headers = toHeader(options, sessionToken);
+
+    return this.http.put<void>(`${environment.apiHost}/api/user`, body, {
+      headers: headers,
+    });
   }
 }

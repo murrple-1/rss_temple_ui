@@ -188,6 +188,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     deleteSessionToken();
 
+    // TODO delete token on the server on the way out
+
     this.router.navigate(['/login']);
   }
 }
