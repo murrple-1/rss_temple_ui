@@ -14,7 +14,7 @@
       </div>
     </div>
     <hr />
-    <form>
+    <form class="mb-4">
       <div class="form-group">
         <label for="email">Email Address</label>
         <input
@@ -56,17 +56,38 @@
       <div class="form-group">
         <div class="container">
           <div class="row">
-            <div class="col-sm-6">
-              Facebook
-              <button type="button" class="btn btn-outline-primary">
-                Link
-              </button>
+            <h4>Login Links</h4>
+          </div>
+          <div class="row">
+            <div class="col-sm-2">
+              <div class="card text-center">
+                <i class="fab fa-google brand mt-2"></i>
+                <div class="card-body">
+                  <h5 class="card-title">Google</h5>
+                  <button
+                    type="button"
+                    class="btn btn-outline-primary"
+                    (click)="linkGoogle()"
+                  >
+                    Link
+                  </button>
+                </div>
+              </div>
             </div>
-            <div class="col-sm-6">
-              Google
-              <button type="button" class="btn btn-outline-primary">
-                Link
-              </button>
+            <div class="col-sm-2 offset-sm-1">
+              <div class="card text-center">
+                <i class="fab fa-facebook brand mt-2"></i>
+                <div class="card-body">
+                  <h5 class="card-title">Facebook</h5>
+                  <button
+                    type="button"
+                    class="btn btn-outline-primary"
+                    (click)="linkFacebook()"
+                  >
+                    Link
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

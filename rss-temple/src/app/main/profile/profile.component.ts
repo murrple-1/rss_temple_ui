@@ -66,6 +66,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
+  linkGoogle() {
+    console.log('google linked');
+  }
+
+  linkFacebook() {
+    console.log('facebook linked');
+  }
+
   save() {
     console.log('saved!');
   }

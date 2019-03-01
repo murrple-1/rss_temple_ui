@@ -1,16 +1,18 @@
 <main role="main">
-  <h2 *ngIf="!feed">No Feed</h2>
-  <h2 *ngIf="feed">{{ feed.title }}</h2>
+  <div class="container">
+    <h2 *ngIf="!feed">No Feed</h2>
+    <h2 *ngIf="feed">{{ feed.title }}</h2>
 
-  <button (click)="startSubscribe()" *ngIf="feed && !feed.subscribed">
-    Subscribe
-  </button>
-  <button (click)="unsubscribe()" *ngIf="feed && feed.subscribed">
-    Unsubscribe
-  </button>
+    <button (click)="startSubscribe()" *ngIf="feed && !feed.subscribed">
+      Subscribe
+    </button>
+    <button (click)="unsubscribe()" *ngIf="feed && feed.subscribed">
+      Unsubscribe
+    </button>
 
-  <rsst-feed-entry-view
-    *ngFor="let feedEntry of feedEntries"
-    [feedEntry]="feedEntry"
-  ></rsst-feed-entry-view>
+    <rsst-feed-entry-view
+      *ngFor="let feedEntry of feedEntries"
+      [feedEntry]="feedEntry"
+    ></rsst-feed-entry-view>
+  </div>
 </main>
