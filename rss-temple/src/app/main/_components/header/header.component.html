@@ -20,14 +20,14 @@
       routerLink=""
       (click)="feedDropdown.close(); addFeed()"
     >
-      <i class="pi pi-plus"></i>&nbsp; Add Feed...
+      <i class="fas fa-plus"></i>&nbsp; Add Feed...
     </a>
     <a
       class="dropdown-item"
       routerLink=""
       (click)="feedDropdown.close(); uploadOPML()"
     >
-      <i class="pi pi-upload"></i>&nbsp; Upload OPML...
+      <i class="fas fa-upload"></i>&nbsp; Upload OPML...
     </a>
     <div class="dropdown-divider"></div>
     <div
@@ -57,17 +57,17 @@
   <ul class="navbar-nav ml-auto">
     <li class="nav-item">
       <a class="nav-link" routerLink="/main"
-        ><i class="pi pi-home"></i>&nbsp;Home</a
+        ><i class="fas fa-home"></i>&nbsp;Home</a
       >
     </li>
     <li class="nav-item">
       <a class="nav-link" routerLink="/main/profile"
-        ><i class="pi pi-user"></i>&nbsp;Profile</a
+        ><i class="fas fa-user"></i>&nbsp;Profile</a
       >
     </li>
     <li class="nav-item">
       <a class="nav-link" routerLink="" (click)="logOut($event)"
-        ><i class="pi pi-power-off"></i>&nbsp;Log Out</a
+        ><i class="fas fa-power-off"></i>&nbsp;Log Out</a
       >
     </li>
   </ul>
