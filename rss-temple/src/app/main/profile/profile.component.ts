@@ -1,58 +1,75 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { Subject } from 'rxjs';
+import { Subject, zip } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { FeedService, FeedEntryService } from '@app/_services/data';
+import {
+  FeedService,
+  FeedEntryService,
+  UserService,
+} from '@app/_services/data';
 import { HttpErrorService } from '@app/_services';
+import { User } from '@app/_models/user';
 
 @Component({
   templateUrl: 'profile.component.html',
   styleUrls: ['profile.component.scss'],
 })
 export class ProfileComponent implements OnInit, OnDestroy {
+  profileForm: FormGroup;
+
+  hasGoogleLogin = false;
+  hasFacebookLogin = false;
+
   numberOfFeeds = 0;
   numberOfReadFeedEntries = 0;
 
   private unsubscribe$ = new Subject<void>();
 
   constructor(
+    private formBuilder: FormBuilder,
     private zone: NgZone,
     private feedService: FeedService,
     private feedEntryService: FeedEntryService,
+    private userService: UserService,
     private httpErrorService: HttpErrorService,
   ) {}
 
   ngOnInit() {
-    this.feedService
-      .some({
+    this.profileForm = this.formBuilder.group({
+      email: ['', [Validators.required, Validators.email]],
+      oldPassword: [''],
+      newPassword: [''],
+      newPasswordCheck: [''],
+    });
+
+    zip(
+      this.userService.get({
+        fields: ['email', 'hasGoogleLogin', 'hasFacebookLogin'],
+      }),
+      this.feedService.some({
         returnObjects: false,
         returnTotalCount: true,
-      })
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe({
-        next: value => {
-          this.zone.run(() => {
-            this.numberOfFeeds = value.totalCount;
-          });
-        },
-        error: (error: HttpErrorResponse) => {
-          this.httpErrorService.handleError(error);
-        },
-      });
-
-    this.feedEntryService
-      .some({
+      }),
+      this.feedEntryService.some({
         returnObjects: false,
         returnTotalCount: true,
         search: 'isRead:"true"',
-      })
+      }),
+    )
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: value => {
+        next: responses => {
           this.zone.run(() => {
-            this.numberOfReadFeedEntries = value.totalCount;
+            const user = responses[0];
+            this.profileForm.controls.email.setValue(user.email);
+            this.hasGoogleLogin = user.hasGoogleLogin;
+            this.hasFacebookLogin = user.hasFacebookLogin;
+
+            this.numberOfFeeds = responses[1].totalCount;
+            this.numberOfReadFeedEntries = responses[2].totalCount;
           });
         },
         error: (error: HttpErrorResponse) => {
@@ -71,6 +88,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   linkFacebook() {
+    console.log('facebook linked');
+  }
+
+  unlinkGoogle() {
+    console.log('google linked');
+  }
+
+  unlinkFacebook() {
     console.log('facebook linked');
   }
 

@@ -14,7 +14,12 @@ import {
 import { environment } from '@environments/environment';
 import { CommonOptions, toHeader } from './common.interface';
 
-export type Field = 'uuid' | 'email' | 'subscribedFeedUuids';
+export type Field =
+  | 'uuid'
+  | 'email'
+  | 'subscribedFeedUuids'
+  | 'hasGoogleLogin'
+  | 'hasFacebookLogin';
 
 function toUser(value: Object) {
   const user = new User();

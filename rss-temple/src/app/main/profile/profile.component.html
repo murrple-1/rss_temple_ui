@@ -14,85 +14,113 @@
       </div>
     </div>
     <hr />
-    <form class="mb-4">
-      <div class="form-group">
-        <label for="email">Email Address</label>
-        <input
-          type="email"
-          class="form-control"
-          id="email"
-          placeholder="Email"
-        />
-      </div>
-      <hr />
-      <div class="form-group">
-        <label for="old-password">Old Password</label>
-        <input
-          type="password"
-          class="form-control"
-          id="old-password"
-          placeholder="Old Password"
-        />
-      </div>
-      <div class="form-group">
-        <label for="new-password">New Password</label>
-        <input
-          type="password"
-          class="form-control"
-          id="new-password"
-          placeholder="Password"
-        />
-      </div>
-      <div class="form-group">
-        <label for="new-password-check">Reenter New Password</label>
-        <input
-          type="password"
-          class="form-control"
-          id="new-password-check"
-          placeholder="Reenter Password"
-        />
-      </div>
-      <hr />
-      <div class="form-group">
-        <div class="container">
-          <div class="row">
-            <h4>Login Links</h4>
-          </div>
-          <div class="row">
-            <div class="col-sm-2">
-              <div class="card text-center">
-                <i class="fab fa-google brand mt-2"></i>
-                <div class="card-body">
-                  <h5 class="card-title">Google</h5>
-                  <button
-                    type="button"
-                    class="btn btn-outline-primary"
-                    (click)="linkGoogle()"
-                  >
-                    Link
-                  </button>
+    <form class="mb-4" [formGroup]="profileForm">
+      <fieldset>
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            name="email"
+            placeholder="Email"
+            formControlName="email"
+            [ngClass]="{
+              'is-invalid': profileForm.controls.email.errors
+            }"
+          />
+        </div>
+        <hr />
+        <div class="form-group">
+          <label for="old-password">Old Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="old-password"
+            placeholder="Old Password"
+            formControlName="oldPassword"
+          />
+        </div>
+        <div class="form-group">
+          <label for="new-password">New Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="new-password"
+            placeholder="Password"
+            formControlName="newPassword"
+          />
+        </div>
+        <div class="form-group">
+          <label for="new-password-check">Reenter New Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="new-password-check"
+            placeholder="Reenter Password"
+            formControlName="newPasswordCheck"
+          />
+        </div>
+        <hr />
+        <div class="form-group">
+          <div class="container">
+            <div class="row">
+              <h4>Login Links</h4>
+            </div>
+            <div class="row">
+              <div class="col-sm-2">
+                <div class="card text-center">
+                  <i class="fab fa-google brand mt-2"></i>
+                  <div class="card-body">
+                    <h5 class="card-title">Google</h5>
+                    <button
+                      type="button"
+                      class="btn btn-outline-primary"
+                      (click)="linkGoogle()"
+                      *ngIf="!hasGoogleLogin"
+                    >
+                      Link
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline-warning"
+                      (click)="unlinkGoogle()"
+                      *ngIf="hasGoogleLogin"
+                    >
+                      Unlink
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="col-sm-2 offset-sm-1">
-              <div class="card text-center">
-                <i class="fab fa-facebook brand mt-2"></i>
-                <div class="card-body">
-                  <h5 class="card-title">Facebook</h5>
-                  <button
-                    type="button"
-                    class="btn btn-outline-primary"
-                    (click)="linkFacebook()"
-                  >
-                    Link
-                  </button>
+              <div class="col-sm-2 offset-sm-1">
+                <div class="card text-center">
+                  <i class="fab fa-facebook brand mt-2"></i>
+                  <div class="card-body">
+                    <h5 class="card-title">Facebook</h5>
+                    <button
+                      type="button"
+                      class="btn btn-outline-primary"
+                      (click)="linkFacebook()"
+                      *ngIf="!hasFacebookLogin"
+                    >
+                      Link
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline-warning"
+                      (click)="unlinkFacebook()"
+                      *ngIf="hasFacebookLogin"
+                    >
+                      Unlink
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <button class="btn btn-primary" (click)="save()">Save</button>
+        <button class="btn btn-primary" (click)="save()">Save</button>
+      </fieldset>
     </form>
   </div>
 </main>

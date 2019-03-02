@@ -105,7 +105,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  onSubmit() {
+  onLogin() {
     this.submitted = true;
 
     if (this.loginForm.invalid) {
@@ -115,8 +115,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.isLoggingIn = true;
     this.loginService
       .getMyLoginSession(
-        this.loginForm.controls.email.value,
-        this.loginForm.controls.password.value,
+        this.loginForm.controls.email.value as string,
+        this.loginForm.controls.password.value as string,
       )
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({

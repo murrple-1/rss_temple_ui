@@ -13,7 +13,7 @@
   <hr />
   <div class="row pt-3">
     <div class="col-md-4 offset-md-4">
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <form [formGroup]="loginForm">
         <fieldset [disabled]="isLoggingIn">
           <div class="form-group input-group">
             <label class="has-float-label">
@@ -62,7 +62,7 @@
             </div>
           </div>
           <div class="form-group">
-            <button class="btn btn-primary">Login</button>
+            <button class="btn btn-primary" (click)="onLogin()">Login</button>
             <a [routerLink]="['/register']" class="btn btn-link">Register</a>
           </div>
         </fieldset>
