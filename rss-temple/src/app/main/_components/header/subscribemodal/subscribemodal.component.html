@@ -4,17 +4,17 @@
 </div>
 <div class="modal-body">
   <form [formGroup]="subscribeForm">
-    <div class="form-group">
-      <span class="ui-float-label">
+    <div class="form-group input-group">
+      <label class="has-float-label">
         <input
           id="feed-url"
           formControlName="feedUrl"
           type="text"
           class="form-control"
-          pInputText
+          placeholder="Feed URL"
         />
-        <label for="feed-url">Feed URL</label>
-      </span>
+        <span>Feed URL</span>
+      </label>
       <div
         *ngIf="submitted && subscribeForm.controls.feedUrl.errors"
         class="invalid"

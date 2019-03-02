@@ -1,47 +1,93 @@
 ﻿<div class="container">
-    <div class="row">
-        <div class="col-md-4 offset-md-4">
-            <h2>Login <img *ngIf="isLoggingIn" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" /></h2>
-        </div>
+  <div class="row">
+    <div class="col-md-4 offset-md-4">
+      <h2>
+        Login
+        <img
+          *ngIf="isLoggingIn"
+          src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
+        />
+      </h2>
     </div>
-    <hr>
-    <div class="row pt-3">
-        <div class="col-md-4 offset-md-4">
-            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-                <fieldset [disabled]="isLoggingIn">
-                    <div class="form-group">
-                        <span class="ui-float-label">
-                            <input type="text" id="email" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && loginForm.controls.email.errors }" pInputText />
-                            <label for="email">Email</label>
-                        </span>
-                        <div *ngIf="submitted && loginForm.controls.email.errors" class="invalid">
-                            <div *ngIf="loginForm.controls.email.errors.required">Email is required</div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <span class="ui-float-label">
-                            <input type="password" id="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && loginForm.controls.password.errors }" pInputText />
-                            <label for="password">Password</label>
-                        </span>
-                        <div *ngIf="submitted && loginForm.controls.password.errors" class="invalid">
-                            <div *ngIf="loginForm.controls.password.errors.required">Password is required</div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <button class="btn btn-primary">Login</button>
-                        <a [routerLink]="['/register']" class="btn btn-link">Register</a>
-                    </div>
-                </fieldset>
-            </form>
-        </div>
+  </div>
+  <hr />
+  <div class="row pt-3">
+    <div class="col-md-4 offset-md-4">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <fieldset [disabled]="isLoggingIn">
+          <div class="form-group input-group">
+            <label class="has-float-label">
+              <input
+                type="email"
+                id="email"
+                formControlName="email"
+                placeholder="example@example.com"
+                class="form-control"
+                [ngClass]="{
+                  'is-invalid': submitted && loginForm.controls.email.errors
+                }"
+              />
+              <span>Email</span>
+            </label>
+          </div>
+          <div
+            *ngIf="submitted && loginForm.controls.email.errors"
+            class="invalid"
+          >
+            <div *ngIf="loginForm.controls.email.errors.required">
+              Email is required
+            </div>
+          </div>
+          <div class="form-group input-group">
+            <label class="has-float-label">
+              <input
+                type="password"
+                id="password"
+                formControlName="password"
+                placeholder="Password"
+                class="form-control"
+                [ngClass]="{
+                  'is-invalid': submitted && loginForm.controls.password.errors
+                }"
+              />
+              <span>Password</span>
+            </label>
+          </div>
+          <div
+            *ngIf="submitted && loginForm.controls.password.errors"
+            class="invalid"
+          >
+            <div *ngIf="loginForm.controls.password.errors.required">
+              Password is required
+            </div>
+          </div>
+          <div class="form-group">
+            <button class="btn btn-primary">Login</button>
+            <a [routerLink]="['/register']" class="btn btn-link">Register</a>
+          </div>
+        </fieldset>
+      </form>
     </div>
-    <hr>
-    <div class="row">
-        <div class="col-md-4 offset-md-4">
-            <fieldset [disabled]="isLoggingIn">
-                <button [disabled]="!gLoaded" class="btn btn-primary" (click)="onGoogleLogin()">Login with Google</button>
-                <button [disabled]="!fbLoaded" class="btn btn-primary" (click)="onFacebookLogin()">Login with Facebook</button>
-            </fieldset>
-        </div>
+  </div>
+  <hr />
+  <div class="row">
+    <div class="col-md-4 offset-md-4">
+      <fieldset [disabled]="isLoggingIn">
+        <button
+          [disabled]="!gLoaded"
+          class="btn btn-primary"
+          (click)="onGoogleLogin()"
+        >
+          Login with Google
+        </button>
+        <button
+          [disabled]="!fbLoaded"
+          class="btn btn-primary"
+          (click)="onFacebookLogin()"
+        >
+          Login with Facebook
+        </button>
+      </fieldset>
     </div>
+  </div>
 </div>

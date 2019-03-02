@@ -4,8 +4,6 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { APP_BASE_HREF } from '@angular/common';
 
-import { ButtonModule } from 'primeng/button';
-
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from '@app/app.component';
@@ -37,8 +35,6 @@ describe('AppComponent', () => {
         FormsModule,
         ReactiveFormsModule,
         HttpClientModule,
-
-        ButtonModule,
 
         NgbModule,
 

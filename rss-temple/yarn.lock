@@ -1149,6 +1149,11 @@ bonjour@^3.5.0:
     multicast-dns "^6.0.1"
     multicast-dns-service-types "^1.1.0"
 
+bootstrap-float-label@4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/bootstrap-float-label/-/bootstrap-float-label-4.0.2.tgz#bbd8d112f1aff33213b7703014fe89bdeb2a8aeb"
+  integrity sha1-u9jREvGv8zITt3AwFP6Jvesqius=
+
 bootstrap@^4.3.1:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.3.1.tgz#280ca8f610504d99d7b6b4bfc4b68cec601704ac"
@@ -5439,16 +5444,6 @@ pretty-quick@^1.10.0:
     ignore "^3.3.7"
     mri "^1.1.0"
     multimatch "^3.0.0"
-
-primeicons@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/primeicons/-/primeicons-1.0.0.tgz#90061f168ef6227f21f0a7db8204ffa85cd27aec"
-  integrity sha512-p/hzIjUVccW4eJPhuORHI3AUkDpqfvCQVrjxbFEejnTEdWY4C8fomVfjiaA9jCu83fSQnBHuRIGB96iAR8R6uA==
-
-primeng@^7.0.4:
-  version "7.0.5"
-  resolved "https://registry.yarnpkg.com/primeng/-/primeng-7.0.5.tgz#9a2e5921a7dcdd0052e99e11f7d23ea1953d155b"
-  integrity sha512-CVc6XxMZEsuCKXkyLUI/bRKX+spSBnEwqOFnAeXfSjIq0Uok51Dnrn8yNHyAWU2YRx93h7NWgxBtSXWVddEwqg==
 
 process-nextick-args@~1.0.6:
   version "1.0.7"
