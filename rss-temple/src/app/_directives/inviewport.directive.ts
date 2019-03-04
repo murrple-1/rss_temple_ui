@@ -32,7 +32,7 @@ export class InViewportDirective implements OnInit, OnDestroy {
   @Output()
   rsstInViewportWatch = new EventEmitter<InViewportEvent>();
 
-  private subscription: Subscription;
+  private subscription: Subscription | null = null;
 
   constructor(private elementRef: ElementRef<HTMLElement>) {}
 
@@ -58,7 +58,9 @@ export class InViewportDirective implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   private check() {

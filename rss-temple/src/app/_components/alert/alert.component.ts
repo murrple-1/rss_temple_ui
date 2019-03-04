@@ -11,7 +11,7 @@ import { AlertService, Message } from '@app/_services/alert.service';
   styleUrls: ['alert.component.scss'],
 })
 export class AlertComponent implements OnInit, OnDestroy {
-  message: Message;
+  message: Message | null = null;
 
   private unsubscribe$ = new Subject<void>();
 

@@ -11,7 +11,6 @@ import {
   UserService,
 } from '@app/_services/data';
 import { HttpErrorService } from '@app/_services';
-import { User } from '@app/_models/user';
 
 @Component({
   templateUrl: 'profile.component.html',
@@ -35,16 +34,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private feedEntryService: FeedEntryService,
     private userService: UserService,
     private httpErrorService: HttpErrorService,
-  ) {}
-
-  ngOnInit() {
+  ) {
     this.profileForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       oldPassword: [''],
       newPassword: [''],
       newPasswordCheck: [''],
     });
+  }
 
+  ngOnInit() {
     zip(
       this.userService.get({
         fields: ['email', 'hasGoogleLogin', 'hasFacebookLogin'],
@@ -65,11 +64,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
           this.zone.run(() => {
             const user = responses[0];
             this.profileForm.controls.email.setValue(user.email);
-            this.hasGoogleLogin = user.hasGoogleLogin;
-            this.hasFacebookLogin = user.hasFacebookLogin;
+            this.hasGoogleLogin = user.hasGoogleLogin!;
+            this.hasFacebookLogin = user.hasFacebookLogin!;
 
-            this.numberOfFeeds = responses[1].totalCount;
-            this.numberOfReadFeedEntries = responses[2].totalCount;
+            this.numberOfFeeds = responses[1].totalCount!;
+            this.numberOfReadFeedEntries = responses[2].totalCount!;
           });
         },
         error: (error: HttpErrorResponse) => {

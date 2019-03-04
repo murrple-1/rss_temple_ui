@@ -19,7 +19,7 @@ import { setSessionToken } from '@app/_modules/session.module';
 export class LoginComponent implements OnInit, OnDestroy {
   loginForm: FormGroup;
   submitted = false;
-  returnUrl: string;
+  returnUrl: string | null = null;
 
   isLoggingIn = false;
 
@@ -37,14 +37,14 @@ export class LoginComponent implements OnInit, OnDestroy {
     private alertService: AlertService,
     private gAuthService: GAuthService,
     private fbAuthService: FBAuthService,
-  ) {}
-
-  ngOnInit() {
+  ) {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
     });
+  }
 
+  ngOnInit() {
     this.returnUrl = this.route.snapshot.paramMap.get('returnUrl') || '/main';
 
     this.gAuthService.isLoaded$.pipe(takeUntil(this.unsubscribe$)).subscribe({

@@ -27,7 +27,7 @@ import { environment } from '@environments/environment';
 
 export type Field = 'uuid' | 'text' | 'feedUuids';
 
-function toUserCategory(value: Object) {
+function toUserCategory(value: Record<string, any>) {
   const userCategory = new UserCategory();
 
   if (value.hasOwnProperty('uuid')) {

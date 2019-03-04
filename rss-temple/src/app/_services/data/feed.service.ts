@@ -38,7 +38,7 @@ export type Field =
   | 'customTitle'
   | 'calculatedTitle';
 
-function toFeed(value: Object) {
+function toFeed(value: Record<string, any>) {
   const feed = new Feed();
 
   if (value.hasOwnProperty('uuid')) {

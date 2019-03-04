@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -11,16 +11,14 @@ export interface SubscriptionDetails {
   templateUrl: 'subscribemodal.component.html',
   styleUrls: ['subscribemodal.component.scss'],
 })
-export class SubscribeModalComponent implements OnInit {
+export class SubscribeModalComponent {
   subscribeForm: FormGroup;
   submitted = false;
 
   constructor(
     private formBuilder: FormBuilder,
     private activeModal: NgbActiveModal,
-  ) {}
-
-  ngOnInit() {
+  ) {
     this.subscribeForm = this.formBuilder.group({
       feedUrl: ['', [Validators.required]],
     });

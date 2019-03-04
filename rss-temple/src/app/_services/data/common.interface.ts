@@ -1,13 +1,16 @@
 export interface CommonOptions {
-    sessionToken?: string;
+  sessionToken?: string;
 }
 
-export function toHeader(options: CommonOptions, sessionTokenFn: () => string) {
-    const headers: {
-        [param: string]: string | string[]
-    } = {
-        'X-Session-Token': options.sessionToken || sessionTokenFn(),
-    };
+export function toHeader(
+  options: CommonOptions,
+  sessionTokenFn: () => string | null,
+) {
+  const headers: {
+    [param: string]: string | string[];
+  } = {
+    'X-Session-Token': options.sessionToken || sessionTokenFn()!,
+  };
 
-    return headers;
+  return headers;
 }

@@ -21,7 +21,7 @@ export type Field =
   | 'hasGoogleLogin'
   | 'hasFacebookLogin';
 
-function toUser(value: Object) {
+function toUser(value: Record<string, any>) {
   const user = new User();
 
   if (value.hasOwnProperty('uuid')) {

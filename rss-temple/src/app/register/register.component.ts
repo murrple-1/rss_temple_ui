@@ -17,8 +17,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
   loading = false;
   submitted = false;
 
-  private g_token: string;
-  private fb_token: string;
+  private g_token: string | null = null;
+  private fb_token: string | null = null;
 
   private unsubscribe$ = new Subject<void>();
 
@@ -29,9 +29,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     private zone: NgZone,
     private loginService: LoginService,
     private alertService: AlertService,
-  ) {}
-
-  ngOnInit() {
+  ) {
     this.registerForm = this.formBuilder.group({
       email: [
         this.route.snapshot.paramMap.get('email') || '',
@@ -39,7 +37,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
       ],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
+  }
 
+  ngOnInit() {
     this.g_token = this.route.snapshot.paramMap.get('g_token');
     this.fb_token = this.route.snapshot.paramMap.get('fb_token');
   }

@@ -16,8 +16,8 @@ import { HttpErrorService } from '@app/_services/httperror.service';
   styleUrls: ['feed.component.scss'],
 })
 export class FeedComponent implements OnInit, OnDestroy {
-  feed: Feed;
-  feedEntries: FeedEntry[];
+  feed: Feed | null = null;
+  feedEntries: FeedEntry[] = [];
 
   private unsubscribe$ = new Subject<void>();
 
@@ -35,7 +35,9 @@ export class FeedComponent implements OnInit, OnDestroy {
         const url = paramMap.get('url');
         const count = parseInt(paramMap.get('count') || '5', 10);
 
-        this.getFeed(url, count);
+        if (url) {
+          this.getFeed(url, count);
+        }
       },
     });
   }
@@ -77,7 +79,7 @@ export class FeedComponent implements OnInit, OnDestroy {
             .subscribe({
               next: feedEntries => {
                 this.zone.run(() => {
-                  this.feedEntries = feedEntries.objects;
+                  this.feedEntries = feedEntries.objects!;
                 });
               },
               error: (error: HttpErrorResponse) => {
@@ -91,35 +93,39 @@ export class FeedComponent implements OnInit, OnDestroy {
       });
   }
 
-  startSubscribe() {
-    this.feedService
-      .subscribe(this.feed.feedUrl)
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe({
-        next: () => {
-          this.zone.run(() => {
-            this.feed.subscribed = true;
-          });
-        },
-        error: (error: HttpErrorResponse) => {
-          this.httpErrorService.handleError(error);
-        },
-      });
+  onSubscribe() {
+    if (this.feed && this.feed.feedUrl) {
+      this.feedService
+        .subscribe(this.feed.feedUrl)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe({
+          next: () => {
+            this.zone.run(() => {
+              this.feed!.subscribed = true;
+            });
+          },
+          error: (error: HttpErrorResponse) => {
+            this.httpErrorService.handleError(error);
+          },
+        });
+    }
   }
 
-  unsubscribe() {
-    this.feedService
-      .unsubscribe(this.feed.feedUrl)
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe({
-        next: () => {
-          this.zone.run(() => {
-            this.feed.subscribed = false;
-          });
-        },
-        error: (error: HttpErrorResponse) => {
-          this.httpErrorService.handleError(error);
-        },
-      });
+  onUnsubscribe() {
+    if (this.feed && this.feed.feedUrl) {
+      this.feedService
+        .unsubscribe(this.feed.feedUrl)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe({
+          next: () => {
+            this.zone.run(() => {
+              this.feed!.subscribed = false;
+            });
+          },
+          error: (error: HttpErrorResponse) => {
+            this.httpErrorService.handleError(error);
+          },
+        });
+    }
   }
 }

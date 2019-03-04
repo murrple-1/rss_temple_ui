@@ -13,7 +13,7 @@ import { FeedEntryService } from '@app/_services/data/feedentry.service';
 })
 export class FeedEntryViewComponent implements OnDestroy {
   @Input()
-  feedEntry: FeedEntry;
+  feedEntry!: FeedEntry;
 
   private unsubscribe$ = new Subject<void>();
 

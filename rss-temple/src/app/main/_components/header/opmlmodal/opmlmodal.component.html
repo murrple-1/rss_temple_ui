@@ -15,7 +15,7 @@
       [disabled]="uploading"
     />
   </div>
-  <div *ngIf="progressUuid">
+  <div *ngIf="uploading">
     <span *ngIf="progressStatus"
       >Loading new feeds ({{ progressStatus.finishedCount }}/{{
         progressStatus.totalCount

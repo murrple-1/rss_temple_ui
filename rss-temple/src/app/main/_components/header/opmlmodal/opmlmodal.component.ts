@@ -27,14 +27,13 @@ interface ProgressStatus {
 })
 export class OPMLModalComponent implements OnDestroy {
   @ViewChild('opmlFileInput')
-  opmlFileInput: ElementRef<HTMLInputElement>;
+  opmlFileInput!: ElementRef<HTMLInputElement>;
 
   uploading = false;
 
-  progressUuid: string = null;
-  progressStatus: ProgressStatus = null;
+  progressStatus: ProgressStatus | null = null;
 
-  errorString: string = null;
+  errorString: string | null = null;
 
   private readonly progressCheckInterval = 2000;
 
@@ -66,7 +65,7 @@ export class OPMLModalComponent implements OnDestroy {
 
       reader.onload = () => {
         this.opmlService
-          .upload(reader.result)
+          .upload(reader.result!)
           .pipe(takeUntil(this.unsubscribe$))
           .subscribe({
             next: response => {
@@ -76,8 +75,7 @@ export class OPMLModalComponent implements OnDestroy {
                 const body = response.body;
                 if (typeof body === 'string') {
                   this.zone.run(() => {
-                    this.progressUuid = body;
-                    this.checkProgress();
+                    this.checkProgress(body);
                   });
                 } else {
                   this.zone.run(() => {
@@ -111,9 +109,9 @@ export class OPMLModalComponent implements OnDestroy {
     }
   }
 
-  private checkProgress() {
+  private checkProgress(progressUuid: string) {
     this.progressService
-      .checkProgress(this.progressUuid)
+      .checkProgress(progressUuid)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: status => {
@@ -127,7 +125,7 @@ export class OPMLModalComponent implements OnDestroy {
                 };
               });
               setTimeout(
-                this.checkProgress.bind(this),
+                this.checkProgress.bind(this, progressUuid),
                 this.progressCheckInterval,
               );
               break;

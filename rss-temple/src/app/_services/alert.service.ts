@@ -3,7 +3,7 @@ import { Router, NavigationStart } from '@angular/router';
 
 import { Observable, Subject } from 'rxjs';
 
-export class Message {
+export interface Message {
   type: 'success' | 'error';
   text: string;
 }

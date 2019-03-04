@@ -15,7 +15,7 @@ export interface SomeOptions<Field> extends CommonOptions {
 
 export function toHeader<Field>(
   options: SomeOptions<Field>,
-  sessionTokenFn: () => string,
+  sessionTokenFn: () => string | null,
 ) {
   const headers = commonToHeader(options, sessionTokenFn);
   return headers;

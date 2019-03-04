@@ -41,7 +41,7 @@ export type Field =
   | 'isRead'
   | 'isFavorite';
 
-function toFeedEntry(value: Object) {
+function toFeedEntry(value: Record<string, any>) {
   const feedEntry = new FeedEntry();
 
   if (value.hasOwnProperty('uuid')) {

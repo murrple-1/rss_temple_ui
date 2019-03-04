@@ -18,8 +18,8 @@ import { InViewportEvent } from '@app/_directives/inviewport.directive';
   styleUrls: ['feeds.component.scss'],
 })
 export class FeedsComponent implements OnInit, OnDestroy {
-  private feeds: Feed[];
-  private feedEntries: FeedEntry[];
+  private feeds: Feed[] = [];
+  private feedEntries: FeedEntry[] = [];
 
   feedEntries$ = new BehaviorSubject<FeedEntry[]>([]);
 
@@ -67,7 +67,7 @@ export class FeedsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: feeds => {
-          this.feeds = feeds.objects;
+          this.feeds = feeds.objects!;
 
           this.getFeedEntries();
         },
@@ -97,7 +97,7 @@ export class FeedsComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: feedEntries => {
-            this.feedEntries = feedEntries.objects;
+            this.feedEntries = feedEntries.objects!;
 
             this.feedEntries$.next(this.feedEntries);
           },
@@ -127,7 +127,7 @@ export class FeedsComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: feedEntries => {
-            this.feedEntries = this.feedEntries.concat(feedEntries.objects);
+            this.feedEntries = this.feedEntries.concat(feedEntries.objects!);
 
             this.feedEntries$.next(this.feedEntries);
 

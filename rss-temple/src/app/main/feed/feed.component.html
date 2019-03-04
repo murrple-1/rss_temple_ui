@@ -3,10 +3,10 @@
     <h2 *ngIf="!feed">No Feed</h2>
     <h2 *ngIf="feed">{{ feed.title }}</h2>
 
-    <button (click)="startSubscribe()" *ngIf="feed && !feed.subscribed">
+    <button (click)="onSubscribe()" *ngIf="feed && !feed.subscribed">
       Subscribe
     </button>
-    <button (click)="unsubscribe()" *ngIf="feed && feed.subscribed">
+    <button (click)="onUnsubscribe()" *ngIf="feed && feed.subscribed">
       Unsubscribe
     </button>
 
