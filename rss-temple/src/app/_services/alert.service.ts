@@ -6,41 +6,24 @@ import { SnackbarService } from 'ngx-snackbar';
 export class AlertService {
   constructor(private snackbarService: SnackbarService) {}
 
-  // TODO colors
   success(text: string) {
-    this.message(text, 'white', 'green');
+    this.message(text, 'success');
   }
 
-  // TODO colors
   error(text: string) {
-    this.message(text, 'white', 'red');
+    this.message(text, 'error');
   }
 
-  // TODO colors
   info(text: string) {
-    this.message(text, 'black', 'grey');
+    this.message(text, 'info');
   }
 
-  private message(text: string, color: string, backgroudColor: string) {
-    interface Data {
-      id: string;
-    }
-    let data: Data | null = null;
-
+  private message(text: string, customClass: string) {
     this.snackbarService.add({
       msg: text,
-      color: color,
-      background: backgroudColor,
+      customClass: customClass,
       action: {
         text: 'Dismiss',
-        onClick: () => {
-          if (data) {
-            this.snackbarService.remove(data.id);
-          }
-        },
-      },
-      onAdd: (_data: Data) => {
-        data = _data;
       },
     });
   }
