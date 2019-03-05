@@ -297,10 +297,10 @@
   resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free/-/fontawesome-free-5.7.2.tgz#1498c3eb78ee7c78c5488418707de90aaf58d5d7"
   integrity sha512-Ha4HshKdCVKgu4TVCtG8XyPPYdzTzNW4/fvPnn+LT7AosRABryhlRv4cc4+o84dgpvVJN9reN7jo/c+nYujFug==
 
-"@ng-bootstrap/ng-bootstrap@^4.0.4":
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/@ng-bootstrap/ng-bootstrap/-/ng-bootstrap-4.0.4.tgz#19bf7e2bdab59e9c359b353633a5a2336410b9a5"
-  integrity sha512-77wXARMgUA0VdOAnctOlmdkeTRLESTrFpxHY8jy48FKy7DOogcq+Fs0QCBiufi5YSu8m+rmlKtoeZ8Yg9YEsbQ==
+"@ng-bootstrap/ng-bootstrap@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@ng-bootstrap/ng-bootstrap/-/ng-bootstrap-4.1.0.tgz#84c542e7dbb1e03944c87a2615199edc39c3d6c7"
+  integrity sha512-7THBEgwDW9bs3R6JQ3glDXAxyihrUqM8p71Es2GpN21xLs2fcxUUcLO4ioRcWGGlR6QKwamzNVAHNUDB5IMY+Q==
   dependencies:
     tslib "^1.9.0"
 
@@ -338,10 +338,10 @@
     semver "5.6.0"
     semver-intersect "1.4.0"
 
-"@types/facebook-js-sdk@^3.1.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@types/facebook-js-sdk/-/facebook-js-sdk-3.2.0.tgz#b783f2e310d058b8690af73a07601712684f2ded"
-  integrity sha512-dcBz71rpohe67EQXrNQdtRtL/Csc2nflj8KKZNJxy72O/nacaioaTsfXPPp0gylgDGWwxrX3Bg6iTbkE4me3vQ==
+"@types/facebook-js-sdk@^3.2.1":
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/@types/facebook-js-sdk/-/facebook-js-sdk-3.2.1.tgz#d8ed7319d90d8d97037b5757c35ea46dfcf245c7"
+  integrity sha512-qtEgePYXvOisztYL79mkhEaawhlAAQLeg9bmsM616HDhqv2Tag1XQv8cTwTVLvKZ6TmBcBiqI5wiMljpzEfZgg==
 
 "@types/gapi.auth2@0.0.50":
   version "0.0.50"
