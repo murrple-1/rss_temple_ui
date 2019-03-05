@@ -38,9 +38,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ) {
     this.profileForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
-      oldPassword: [''],
-      newPassword: [''],
-      newPasswordCheck: [''],
+      oldPassword: ['', [Validators.minLength(6)]],
+      newPassword: ['', [Validators.minLength(6)]],
+      newPasswordCheck: ['', [Validators.minLength(6)]],
     });
   }
 
