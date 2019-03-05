@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "rss-temple"
+		},
+		{
+			"path": "rss-temple-home"
+		},
+		{
+			"path": ".",
+			"name": "root"
+		}
+	],
+	"settings": {}
+}
