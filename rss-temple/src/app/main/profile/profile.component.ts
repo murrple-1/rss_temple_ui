@@ -11,6 +11,7 @@ import {
   UserService,
 } from '@app/_services/data';
 import { HttpErrorService } from '@app/_services';
+import { UpdateUserBody } from '@app/_services/data/user.service';
 
 @Component({
   templateUrl: 'profile.component.html',
@@ -64,6 +65,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           this.zone.run(() => {
             const user = responses[0];
             this.profileForm.controls.email.setValue(user.email);
+            this.profileForm.controls.email.markAsPristine();
             this.hasGoogleLogin = user.hasGoogleLogin!;
             this.hasFacebookLogin = user.hasFacebookLogin!;
 
@@ -99,6 +101,56 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   save() {
-    console.log('saved!');
+    let hasUpdates = false;
+    const updateUserBody: UpdateUserBody = {};
+
+    const emailControl = this.profileForm.controls.email;
+    if (!emailControl.errors && emailControl.dirty) {
+      updateUserBody.email = emailControl.value as string;
+      hasUpdates = true;
+    }
+
+    const oldPasswordControl = this.profileForm.controls.oldPassword;
+    if (
+      oldPasswordControl.dirty &&
+      (oldPasswordControl.value as string).length > 0
+    ) {
+      const newPasswordControl = this.profileForm.controls.newPassword;
+      const newPasswordCheckControl = this.profileForm.controls
+        .newPasswordCheck;
+
+      if (
+        newPasswordControl.dirty &&
+        (newPasswordControl.value as string).length > 0
+      ) {
+        if (newPasswordControl.value === newPasswordCheckControl.value) {
+          updateUserBody.my = {
+            password: {
+              old: oldPasswordControl.value as string,
+              new: newPasswordControl.value as string,
+            },
+          };
+          hasUpdates = true;
+        } else {
+          // TODO new passwords don't match
+        }
+      } else {
+        // TODO no new password entered
+      }
+    }
+
+    if (hasUpdates) {
+      this.userService
+        .update(updateUserBody)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe({
+          next: () => {
+            // TODO
+          },
+          error: (error: HttpErrorResponse) => {
+            this.httpErrorService.handleError(error);
+          },
+        });
+    }
   }
 }
