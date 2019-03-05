@@ -1,43 +1,47 @@
 ﻿import { Injectable } from '@angular/core';
-import { Router, NavigationStart } from '@angular/router';
 
-import { Observable, Subject } from 'rxjs';
-
-export interface Message {
-  type: 'success' | 'error';
-  text: string;
-}
+import { SnackbarService } from 'ngx-snackbar';
 
 @Injectable()
 export class AlertService {
-  private subject = new Subject<Message>();
-  private keepAfterNavigationChange = false;
+  constructor(private snackbarService: SnackbarService) {}
 
-  constructor(private router: Router) {
-    this.router.events.subscribe({
-      next: event => {
-        if (event instanceof NavigationStart) {
-          if (this.keepAfterNavigationChange) {
-            this.keepAfterNavigationChange = false;
-          } else {
-            this.subject.next();
+  // TODO colors
+  success(text: string) {
+    this.message(text, 'white', 'green');
+  }
+
+  // TODO colors
+  error(text: string) {
+    this.message(text, 'white', 'red');
+  }
+
+  // TODO colors
+  info(text: string) {
+    this.message(text, 'black', 'grey');
+  }
+
+  private message(text: string, color: string, backgroudColor: string) {
+    type Data = {
+      id: string;
+    };
+    let data: Data | null = null;
+
+    this.snackbarService.add({
+      msg: text,
+      color: color,
+      background: backgroudColor,
+      action: {
+        text: 'Dismiss',
+        onClick: () => {
+          if (data) {
+            this.snackbarService.remove(data.id);
           }
-        }
+        },
+      },
+      onAdd: (_data: Data) => {
+        data = _data;
       },
     });
-  }
-
-  success(text: string, keepAfterNavigationChange = false) {
-    this.keepAfterNavigationChange = keepAfterNavigationChange;
-    this.subject.next({ type: 'success', text: text });
-  }
-
-  error(text: string, keepAfterNavigationChange = false) {
-    this.keepAfterNavigationChange = keepAfterNavigationChange;
-    this.subject.next({ type: 'error', text: text });
-  }
-
-  getMessage(): Observable<Message> {
-    return this.subject.asObservable();
   }
 }

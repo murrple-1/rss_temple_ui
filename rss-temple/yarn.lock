@@ -4642,6 +4642,11 @@ ngx-infinite-scroll@^7.0.1:
   dependencies:
     opencollective "^1.0.3"
 
+ngx-snackbar@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/ngx-snackbar/-/ngx-snackbar-2.0.1.tgz#0571769056b132ecf3b5fc80221e2f0893076ddc"
+  integrity sha512-bM5d1mrcqbWuZK+5GRAJHYm4ACBVyFILhXTtbFRMGKxG2AxFk/eHroUauahzU/7P2GZzAt8/M5wqEn5CnuRu9A==
+
 nice-try@^1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"

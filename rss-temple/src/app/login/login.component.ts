@@ -6,10 +6,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { AlertService } from '@app/_services/alert.service';
-import { LoginService } from '@app/_services/login.service';
-import { GAuthService } from '@app/_services/gauth.service';
-import { FBAuthService } from '@app/_services/fbauth.service';
+import {
+  AlertService,
+  LoginService,
+  GAuthService,
+  FBAuthService,
+} from '@app/_services';
 import { setSessionToken } from '@app/_modules/session.module';
 
 @Component({

@@ -6,9 +6,10 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
+import { SnackbarModule } from 'ngx-snackbar';
+
 import { AppComponent } from '@app/app.component';
 import { routing } from '@app/app.routing';
-import { AlertComponent } from '@app/_components/alert/alert.component';
 import { AuthGuard, NoAuthGuard } from '@app/_guards/auth.guard';
 import {
   AlertService,
@@ -38,14 +39,11 @@ import { RegisterComponent } from '@app/register/register.component';
 
     NgbDropdownModule,
 
+    SnackbarModule.forRoot(),
+
     routing,
   ],
-  declarations: [
-    AppComponent,
-    AlertComponent,
-    LoginComponent,
-    RegisterComponent,
-  ],
+  declarations: [AppComponent, LoginComponent, RegisterComponent],
   providers: [
     AuthGuard,
     NoAuthGuard,

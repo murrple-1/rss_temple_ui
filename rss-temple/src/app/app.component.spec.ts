@@ -6,24 +6,30 @@ import { APP_BASE_HREF } from '@angular/common';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
+import { SnackbarModule } from 'ngx-snackbar';
+
 import { AppComponent } from '@app/app.component';
 import { routing } from '@app/app.routing';
-import { AlertComponent } from '@app/_components/alert/alert.component';
 import { AuthGuard, NoAuthGuard } from '@app/_guards/auth.guard';
-import { LoginService } from '@app/_services/login.service';
-import { AlertService } from '@app/_services/alert.service';
-import { UserService } from '@app/_services/data/user.service';
-import { GAuthService } from '@app/_services/gauth.service';
-import { FBAuthService } from '@app/_services/fbauth.service';
-import { HttpErrorService } from '@app/_services/httperror.service';
+import {
+  LoginService,
+  AlertService,
+  GAuthService,
+  FBAuthService,
+  HttpErrorService,
+} from '@app/_services';
+import {
+  UserService,
+  FeedService,
+  FeedEntryService,
+  OPMLService,
+  ProgressService,
+  UserCategoryService,
+} from '@app/_services/data';
 import { LoginComponent } from '@app/login/login.component';
 import { RegisterComponent } from '@app/register/register.component';
 import { MainComponent } from '@app/main/main.component';
 import { FeedComponent } from '@app/main/feed/feed.component';
-import { FeedService } from '@app/_services/data/feed.service';
-import { FeedEntryService } from '@app/_services/data/feedentry.service';
-import { OPMLService } from '@app/_services/data/opml.service';
-import { ProgressService } from '@app/_services/data/progress.service';
 import { HeaderComponent } from '@app/main/_components/header/header.component';
 import { FeedEntryViewComponent } from '@app/main/_components/feed-entry-view/feed-entry-view.component';
 
@@ -38,11 +44,12 @@ describe('AppComponent', () => {
 
         NgbModule,
 
+        SnackbarModule.forRoot(),
+
         routing,
       ],
       declarations: [
         AppComponent,
-        AlertComponent,
         LoginComponent,
         RegisterComponent,
         MainComponent,
@@ -65,6 +72,7 @@ describe('AppComponent', () => {
         FeedEntryService,
         OPMLService,
         ProgressService,
+        UserCategoryService,
         GAuthService,
         FBAuthService,
         HttpErrorService,

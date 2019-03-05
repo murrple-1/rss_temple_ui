@@ -5,8 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { AlertService } from '@app/_services/alert.service';
-import { LoginService } from '@app/_services/login.service';
+import { AlertService, LoginService } from '@app/_services';
 
 @Component({
   templateUrl: 'register.component.html',
