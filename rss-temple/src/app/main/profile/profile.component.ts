@@ -64,13 +64,26 @@ export class ProfileComponent implements OnInit, OnDestroy {
         next: responses => {
           this.zone.run(() => {
             const user = responses[0];
-            this.profileForm.controls.email.setValue(user.email);
-            this.profileForm.controls.email.markAsPristine();
-            this.hasGoogleLogin = user.hasGoogleLogin!;
-            this.hasFacebookLogin = user.hasFacebookLogin!;
+            if (user.email !== undefined) {
+              this.profileForm.controls.email.setValue(user.email);
+              this.profileForm.controls.email.markAsPristine();
+            }
 
-            this.numberOfFeeds = responses[1].totalCount!;
-            this.numberOfReadFeedEntries = responses[2].totalCount!;
+            if (user.hasGoogleLogin !== undefined) {
+              this.hasGoogleLogin = user.hasGoogleLogin;
+            }
+
+            if (user.hasFacebookLogin !== undefined) {
+              this.hasFacebookLogin = user.hasFacebookLogin;
+            }
+
+            if (responses[1].totalCount !== undefined) {
+              this.numberOfFeeds = responses[1].totalCount;
+            }
+
+            if (responses[2].totalCount) {
+              this.numberOfReadFeedEntries = responses[2].totalCount;
+            }
           });
         },
         error: (error: HttpErrorResponse) => {

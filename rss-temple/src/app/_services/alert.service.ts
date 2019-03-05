@@ -22,9 +22,9 @@ export class AlertService {
   }
 
   private message(text: string, color: string, backgroudColor: string) {
-    type Data = {
+    interface Data {
       id: string;
-    };
+    }
     let data: Data | null = null;
 
     this.snackbarService.add({

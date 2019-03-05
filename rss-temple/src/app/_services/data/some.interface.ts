@@ -31,27 +31,27 @@ export function toParams<Field>(
     fields: (options.fields || fieldsFn()).join(','),
   };
 
-  if (typeof options.count !== 'undefined') {
+  if (options.count !== undefined) {
     params['count'] = options.count.toString();
   }
 
-  if (typeof options.skip !== 'undefined') {
+  if (options.skip !== undefined) {
     params['skip'] = options.skip.toString();
   }
 
-  if (typeof options.search !== 'undefined') {
+  if (options.search !== undefined) {
     params['search'] = options.search;
   }
 
-  if (typeof options.sort !== 'undefined') {
+  if (options.sort !== undefined) {
     params['sort'] = options.sort;
   }
 
-  if (typeof options.returnObjects !== 'undefined') {
+  if (options.returnObjects !== undefined) {
     params['objects'] = options.returnObjects ? 'true' : 'false';
   }
 
-  if (typeof options.returnTotalCount !== 'undefined') {
+  if (options.returnTotalCount !== undefined) {
     params['totalcount'] = options.returnTotalCount ? 'true' : 'false';
   }
 

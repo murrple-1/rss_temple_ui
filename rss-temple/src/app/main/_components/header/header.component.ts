@@ -78,8 +78,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .subscribe({
         next: feeds => {
           this.zone.run(() => {
-            this.subscribedFeeds = feeds.objects!;
-            this.filteredSubscribedFeeds.next(this.subscribedFeeds);
+            if (feeds.objects !== undefined) {
+              this.subscribedFeeds = feeds.objects;
+              this.filteredSubscribedFeeds.next(this.subscribedFeeds);
+            }
           });
         },
         error: (error: HttpErrorResponse) => {
@@ -156,7 +158,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
           .subscribe({
             next: feeds => {
               this.zone.run(() => {
-                this.subscribedFeeds = feeds.objects!;
+                if (feeds.objects !== undefined) {
+                  this.subscribedFeeds = feeds.objects;
+                }
               });
             },
           });
@@ -171,7 +175,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     const value = (event.target as HTMLInputElement).value.toLowerCase();
 
     const filteredFeeds = this.subscribedFeeds.filter(feed => {
-      return feed.title!.toLowerCase().includes(value);
+      if (feed.title !== undefined) {
+        return feed.title.toLowerCase().includes(value);
+      } else {
+        return true;
+      }
     });
 
     this.filteredSubscribedFeeds.next(filteredFeeds);

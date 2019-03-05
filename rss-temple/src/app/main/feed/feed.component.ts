@@ -79,7 +79,9 @@ export class FeedComponent implements OnInit, OnDestroy {
             .subscribe({
               next: feedEntries => {
                 this.zone.run(() => {
-                  this.feedEntries = feedEntries.objects!;
+                  if (feedEntries.objects !== undefined) {
+                    this.feedEntries = feedEntries.objects;
+                  }
                 });
               },
               error: (error: HttpErrorResponse) => {
@@ -101,7 +103,9 @@ export class FeedComponent implements OnInit, OnDestroy {
         .subscribe({
           next: () => {
             this.zone.run(() => {
-              this.feed!.subscribed = true;
+              if (this.feed !== null) {
+                this.feed.subscribed = true;
+              }
             });
           },
           error: (error: HttpErrorResponse) => {
@@ -119,7 +123,9 @@ export class FeedComponent implements OnInit, OnDestroy {
         .subscribe({
           next: () => {
             this.zone.run(() => {
-              this.feed!.subscribed = false;
+              if (this.feed !== null) {
+                this.feed.subscribed = false;
+              }
             });
           },
           error: (error: HttpErrorResponse) => {

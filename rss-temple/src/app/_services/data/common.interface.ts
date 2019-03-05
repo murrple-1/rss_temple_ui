@@ -8,9 +8,12 @@ export function toHeader(
 ) {
   const headers: {
     [param: string]: string | string[];
-  } = {
-    'X-Session-Token': options.sessionToken || sessionTokenFn()!,
-  };
+  } = {};
+
+  const sessionToken = options.sessionToken || sessionTokenFn();
+  if (sessionToken !== null) {
+    headers['X-Session-Token'] = sessionToken;
+  }
 
   return headers;
 }

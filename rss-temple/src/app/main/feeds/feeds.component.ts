@@ -67,9 +67,11 @@ export class FeedsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: feeds => {
-          this.feeds = feeds.objects!;
+          if (feeds.objects !== undefined) {
+            this.feeds = feeds.objects;
 
-          this.getFeedEntries();
+            this.getFeedEntries();
+          }
         },
         error: (error: HttpErrorResponse) => {
           this.httpErrorService.handleError(error);
@@ -91,15 +93,16 @@ export class FeedsComponent implements OnInit, OnDestroy {
   }
 
   private getFeedEntries() {
-    if (this.feeds && this.feeds.length > 0) {
+    if (this.feeds.length > 0) {
       this.feedEntryService
         .some(this.someOptions())
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: feedEntries => {
-            this.feedEntries = feedEntries.objects!;
-
-            this.feedEntries$.next(this.feedEntries);
+            if (feedEntries.objects !== undefined) {
+              this.feedEntries = feedEntries.objects;
+              this.feedEntries$.next(this.feedEntries);
+            }
           },
           error: (error: HttpErrorResponse) => {
             this.httpErrorService.handleError(error);
@@ -127,9 +130,10 @@ export class FeedsComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: feedEntries => {
-            this.feedEntries = this.feedEntries.concat(feedEntries.objects!);
-
-            this.feedEntries$.next(this.feedEntries);
+            if (feedEntries.objects !== undefined) {
+              this.feedEntries = this.feedEntries.concat(feedEntries.objects);
+              this.feedEntries$.next(this.feedEntries);
+            }
 
             this.zone.run(() => {
               this.isLoadingMore = false;

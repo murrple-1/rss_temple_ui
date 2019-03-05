@@ -64,35 +64,37 @@ export class OPMLModalComponent implements OnDestroy {
       const reader = new FileReader();
 
       reader.onload = () => {
-        this.opmlService
-          .upload(reader.result!)
-          .pipe(takeUntil(this.unsubscribe$))
-          .subscribe({
-            next: response => {
-              if (response.status === 200) {
-                this.activeModal.close();
-              } else if (response.status === 202) {
-                const body = response.body;
-                if (typeof body === 'string') {
-                  this.zone.run(() => {
-                    this.checkProgress(body);
-                  });
+        if (reader.result !== null) {
+          this.opmlService
+            .upload(reader.result)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+              next: response => {
+                if (response.status === 200) {
+                  this.activeModal.close();
+                } else if (response.status === 202) {
+                  const body = response.body;
+                  if (typeof body === 'string') {
+                    this.zone.run(() => {
+                      this.checkProgress(body);
+                    });
+                  } else {
+                    this.zone.run(() => {
+                      this.uploading = false;
+                    });
+                  }
                 } else {
-                  this.zone.run(() => {
-                    this.uploading = false;
-                  });
+                  this.activeModal.close();
                 }
-              } else {
-                this.activeModal.close();
-              }
-            },
-            error: (error: HttpErrorResponse) => {
-              this.zone.run(() => {
-                this.uploading = false;
-              });
-              this.httpErrorService.handleError(error);
-            },
-          });
+              },
+              error: (error: HttpErrorResponse) => {
+                this.zone.run(() => {
+                  this.uploading = false;
+                });
+                this.httpErrorService.handleError(error);
+              },
+            });
+        }
       };
 
       reader.onerror = () => {
