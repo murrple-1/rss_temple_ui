@@ -21,9 +21,9 @@ import {
   SubscriptionDetails,
 } from '@app/main/_components/header/subscribemodal/subscribemodal.component';
 import { OPMLModalComponent } from '@app/main/_components/header/opmlmodal/opmlmodal.component';
-import { Feed } from '@app/_models/feed';
-import { FeedService } from '@app/_services/data/feed.service';
-import { HttpErrorService } from '@app/_services/httperror.service';
+import { Feed } from '@app/_models';
+import { FeedService } from '@app/_services/data';
+import { HttpErrorService } from '@app/_services';
 import { deleteSessionToken } from '@app/_modules/session.module';
 
 @Component({

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { map } from 'rxjs/operators';
 
-import { User } from '@app/_models/user';
+import { User } from '@app/_models';
 import { sessionToken } from '@app/_modules/session.module';
 import {
   GetOptions,

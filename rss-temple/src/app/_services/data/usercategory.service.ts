@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { map } from 'rxjs/operators';
 
-import { UserCategory } from '@app/_models/usercategory';
+import { UserCategory } from '@app/_models';
 import { sessionToken } from '@app/_modules/session.module';
 import { Objects, toObjects } from '@app/_services/data/objects';
 import {

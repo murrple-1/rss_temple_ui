@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 
 import { utc } from 'moment';
 
-import { FeedEntry } from '@app/_models/feedentry';
+import { FeedEntry } from '@app/_models';
 import { sessionToken } from '@app/_modules/session.module';
 import { Objects, toObjects } from '@app/_services/data/objects';
 import {

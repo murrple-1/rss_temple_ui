@@ -5,11 +5,9 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { FeedService } from '@app/_services/data/feed.service';
-import { Feed } from '@app/_models/feed';
-import { FeedEntryService } from '@app/_services/data/feedentry.service';
-import { FeedEntry } from '@app/_models/feedentry';
-import { HttpErrorService } from '@app/_services/httperror.service';
+import { FeedService, FeedEntryService } from '@app/_services/data';
+import { Feed, FeedEntry } from '@app/_models';
+import { HttpErrorService } from '@app/_services';
 
 @Component({
   templateUrl: 'feed.component.html',

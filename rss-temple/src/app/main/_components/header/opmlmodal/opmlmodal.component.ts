@@ -12,9 +12,8 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { OPMLService } from '@app/_services/data/opml.service';
-import { ProgressService } from '@app/_services/data/progress.service';
-import { HttpErrorService } from '@app/_services/httperror.service';
+import { OPMLService, ProgressService } from '@app/_services/data';
+import { HttpErrorService } from '@app/_services';
 
 interface ProgressStatus {
   totalCount: number;

@@ -3,8 +3,8 @@ import { Component, Input, NgZone, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { FeedEntry } from '@app/_models/feedentry';
-import { FeedEntryService } from '@app/_services/data/feedentry.service';
+import { FeedEntry } from '@app/_models';
+import { FeedEntryService } from '@app/_services/data';
 
 @Component({
   selector: 'rsst-feed-entry-view',
