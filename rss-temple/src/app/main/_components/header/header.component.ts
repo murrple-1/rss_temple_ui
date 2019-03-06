@@ -8,12 +8,11 @@ import {
   Renderer2,
   ElementRef,
 } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { Subject, PartialObserver } from 'rxjs';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import {
@@ -84,7 +83,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
             }
           });
         },
-        error: (error: HttpErrorResponse) => {
+        error: error => {
           this.httpErrorService.handleError(error);
         },
       });
@@ -112,8 +111,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 this.feedService
                   .subscribe(result.feedUrl)
                   .pipe(takeUntil(this.unsubscribe$))
-                  .subscribe(
-                    () => {
+                  .subscribe({
+                    next: () => {
                       this.zone.run(() => {
                         this.feedAdded.emit(feed);
 
@@ -122,15 +121,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
                         );
                       });
                     },
-                    (error: HttpErrorResponse) => {
+                    error: error => {
                       this.httpErrorService.handleError(error);
                     },
-                  );
+                  });
               } else {
                 // TODO something?
               }
             },
-            error: (error: HttpErrorResponse) => {
+            error: error => {
               this.httpErrorService.handleError(error);
             },
           });

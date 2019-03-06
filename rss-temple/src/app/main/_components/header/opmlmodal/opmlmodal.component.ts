@@ -5,7 +5,6 @@ import {
   NgZone,
   OnDestroy,
 } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -86,10 +85,11 @@ export class OPMLModalComponent implements OnDestroy {
                   this.activeModal.close();
                 }
               },
-              error: (error: HttpErrorResponse) => {
+              error: error => {
                 this.zone.run(() => {
                   this.uploading = false;
                 });
+
                 this.httpErrorService.handleError(error);
               },
             });
@@ -135,7 +135,7 @@ export class OPMLModalComponent implements OnDestroy {
               break;
           }
         },
-        error: (error: HttpErrorResponse) => {
+        error: error => {
           this.httpErrorService.handleError(error);
         },
       });

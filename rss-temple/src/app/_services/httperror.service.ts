@@ -9,20 +9,23 @@ import { deleteSessionToken } from '@app/_modules/session.module';
 export class HttpErrorService {
   constructor(private router: Router, private alertService: AlertService) {}
 
-  handleError(error: HttpErrorResponse) {
-    console.log(error);
-
+  handleError(error: any) {
     let errorMessage = 'Unknown Error';
-    switch (error.status) {
-      case 0:
-        errorMessage = 'Unable to connect to server';
-        break;
-      case 401:
-        errorMessage = 'Session expired';
-        deleteSessionToken();
-        this.router.navigate(['/login']);
-        break;
+    if (error instanceof HttpErrorResponse) {
+      switch (error.status) {
+        case 0:
+          errorMessage = 'Unable to connect to server';
+          break;
+        case 401:
+          errorMessage = 'Session expired';
+          deleteSessionToken();
+          this.router.navigate(['/login']);
+          break;
+      }
     }
+
+    console.log(errorMessage, error);
+
     this.alertService.error(errorMessage);
   }
 }

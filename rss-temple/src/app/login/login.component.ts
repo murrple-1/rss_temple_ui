@@ -123,19 +123,25 @@ export class LoginComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: this.handleLoginSuccess.bind(this),
-        error: (error: HttpErrorResponse) => {
+        error: error => {
           let errorMessage = 'Unknown Error';
-          switch (error.status) {
-            case 0:
-              errorMessage = 'Unable to connect to server';
-              break;
-            case 403:
-              errorMessage = 'Email or password wrong';
-              break;
+          if (error instanceof HttpErrorResponse) {
+            switch (error.status) {
+              case 0:
+                errorMessage = 'Unable to connect to server';
+                break;
+              case 403:
+                errorMessage = 'Email or password wrong';
+                break;
+            }
           }
+
+          console.log(errorMessage, error);
           this.alertService.error(errorMessage);
 
-          this.isLoggingIn = false;
+          this.zone.run(() => {
+            this.isLoggingIn = false;
+          });
         },
       });
   }

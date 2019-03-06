@@ -1,6 +1,5 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -82,12 +81,12 @@ export class FeedComponent implements OnInit, OnDestroy {
                   }
                 });
               },
-              error: (error: HttpErrorResponse) => {
+              error: error => {
                 this.httpErrorService.handleError(error);
               },
             });
         },
-        error: (error: HttpErrorResponse) => {
+        error: error => {
           this.httpErrorService.handleError(error);
         },
       });
@@ -106,7 +105,7 @@ export class FeedComponent implements OnInit, OnDestroy {
               }
             });
           },
-          error: (error: HttpErrorResponse) => {
+          error: error => {
             this.httpErrorService.handleError(error);
           },
         });
@@ -126,7 +125,7 @@ export class FeedComponent implements OnInit, OnDestroy {
               }
             });
           },
-          error: (error: HttpErrorResponse) => {
+          error: error => {
             this.httpErrorService.handleError(error);
           },
         });

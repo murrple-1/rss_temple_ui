@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { Subject, zip } from 'rxjs';
@@ -86,7 +85,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             }
           });
         },
-        error: (error: HttpErrorResponse) => {
+        error: error => {
           this.httpErrorService.handleError(error);
         },
       });
@@ -160,7 +159,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           next: () => {
             // TODO
           },
-          error: (error: HttpErrorResponse) => {
+          error: error => {
             this.httpErrorService.handleError(error);
           },
         });
