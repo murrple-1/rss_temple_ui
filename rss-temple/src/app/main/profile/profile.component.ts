@@ -9,7 +9,7 @@ import {
   FeedEntryService,
   UserService,
 } from '@app/_services/data';
-import { HttpErrorService } from '@app/_services';
+import { HttpErrorService, GAuthService, FBAuthService } from '@app/_services';
 import { UpdateUserBody } from '@app/_services/data/user.service';
 
 @Component({
@@ -25,6 +25,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   numberOfFeeds = 0;
   numberOfReadFeedEntries = 0;
 
+  gLoaded = false;
+  fbLoaded = false;
+
   private unsubscribe$ = new Subject<void>();
 
   constructor(
@@ -34,6 +37,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private feedEntryService: FeedEntryService,
     private userService: UserService,
     private httpErrorService: HttpErrorService,
+    private gAuthService: GAuthService,
+    private fbAuthService: FBAuthService,
   ) {
     this.profileForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
@@ -89,6 +94,50 @@ export class ProfileComponent implements OnInit, OnDestroy {
           this.httpErrorService.handleError(error);
         },
       });
+
+    this.gAuthService.isLoaded$.pipe(takeUntil(this.unsubscribe$)).subscribe({
+      next: isLoaded => {
+        if (isLoaded !== this.gLoaded) {
+          this.zone.run(() => {
+            this.gLoaded = isLoaded;
+          });
+        }
+
+        if (!isLoaded) {
+          this.gAuthService.load();
+        }
+      },
+    });
+
+    this.gAuthService.user$.pipe(takeUntil(this.unsubscribe$)).subscribe({
+      next: user => {
+        if (user) {
+          this.handleGoogleUser(user);
+        }
+      },
+    });
+
+    this.fbAuthService.isLoaded$.pipe(takeUntil(this.unsubscribe$)).subscribe({
+      next: isLoaded => {
+        if (isLoaded !== this.fbLoaded) {
+          this.zone.run(() => {
+            this.fbLoaded = isLoaded;
+          });
+        }
+
+        if (!isLoaded) {
+          this.fbAuthService.load();
+        }
+      },
+    });
+
+    this.fbAuthService.user$.pipe(takeUntil(this.unsubscribe$)).subscribe({
+      next: user => {
+        if (user) {
+          this.handleFacebookUser(user);
+        }
+      },
+    });
   }
 
   ngOnDestroy() {
@@ -97,19 +146,91 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   linkGoogle() {
-    console.log('google linked');
+    this.gAuthService.signIn();
+  }
+
+  private handleGoogleUser(user: gapi.auth2.GoogleUser) {
+    this.userService
+      .update({
+        google: {
+          token: user.getAuthResponse().id_token,
+        },
+      })
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: () => {
+          this.zone.run(() => {
+            this.hasGoogleLogin = true;
+          });
+        },
+        error: error => {
+          this.httpErrorService.handleError(error);
+        },
+      });
   }
 
   linkFacebook() {
-    console.log('facebook linked');
+    this.fbAuthService.signIn();
+  }
+
+  private handleFacebookUser(user: fb.AuthResponse) {
+    this.userService
+      .update({
+        facebook: {
+          token: user.accessToken,
+        },
+      })
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: () => {
+          this.zone.run(() => {
+            this.hasFacebookLogin = true;
+          });
+        },
+        error: error => {
+          this.httpErrorService.handleError(error);
+        },
+      });
   }
 
   unlinkGoogle() {
-    console.log('google linked');
+    this.gAuthService.signOut();
+
+    this.userService
+      .update({
+        google: null,
+      })
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: () => {
+          this.zone.run(() => {
+            this.hasGoogleLogin = false;
+          });
+        },
+        error: error => {
+          this.httpErrorService.handleError(error);
+        },
+      });
   }
 
   unlinkFacebook() {
-    console.log('facebook linked');
+    this.fbAuthService.signOut();
+
+    this.userService
+      .update({
+        facebook: null,
+      })
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: () => {
+          this.zone.run(() => {
+            this.hasFacebookLogin = false;
+          });
+        },
+        error: error => {
+          this.httpErrorService.handleError(error);
+        },
+      });
   }
 
   save() {

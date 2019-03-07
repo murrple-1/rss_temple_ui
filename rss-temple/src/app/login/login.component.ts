@@ -169,25 +169,39 @@ export class LoginComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: this.handleLoginSuccess.bind(this),
-        error: (error: HttpErrorResponse) => {
-          if (error.status === 422) {
-            this.zone.run(() => {
-              this.router.navigate([
-                '/register',
-                { g_token: error.error.token, email: error.error.email },
-              ]);
-            });
-          } else {
-            let errorMessage = 'Unknown Error';
-            switch (error.status) {
-              case 0:
-                errorMessage = 'Unable to connect to server';
-                break;
-            }
+        error: error => {
+          if (error instanceof HttpErrorResponse) {
+            if (error.status === 422) {
+              this.zone.run(() => {
+                this.router.navigate([
+                  '/register',
+                  { g_token: error.error.token, email: error.error.email },
+                ]);
+              });
+            } else {
+              let errorMessage = 'Unknown Error';
+              switch (error.status) {
+                case 0:
+                  errorMessage = 'Unable to connect to server';
+                  break;
+              }
 
-            this.zone.run(() => {
+              console.log(errorMessage, error);
+
               this.alertService.error(errorMessage);
 
+              this.zone.run(() => {
+                this.isLoggingIn = false;
+              });
+            }
+          } else {
+            const errorMessage = 'Unknown Error';
+
+            console.log(errorMessage, error);
+
+            this.alertService.error(errorMessage);
+
+            this.zone.run(() => {
               this.isLoggingIn = false;
             });
           }
@@ -206,25 +220,35 @@ export class LoginComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: this.handleLoginSuccess.bind(this),
-        error: (error: HttpErrorResponse) => {
-          if (error.status === 422) {
-            this.zone.run(() => {
+        error: error => {
+          if (error instanceof HttpErrorResponse) {
+            if (error.status === 422) {
               this.router.navigate([
                 '/register',
                 { fb_token: error.error.token, email: error.error.email },
               ]);
-            });
-          } else {
-            let errorMessage = 'Unknown Error';
-            switch (error.status) {
-              case 0:
-                errorMessage = 'Unable to connect to server';
-                break;
-            }
+            } else {
+              let errorMessage = 'Unknown Error';
+              switch (error.status) {
+                case 0:
+                  errorMessage = 'Unable to connect to server';
+                  break;
+              }
 
-            this.zone.run(() => {
               this.alertService.error(errorMessage);
 
+              this.zone.run(() => {
+                this.isLoggingIn = false;
+              });
+            }
+          } else {
+            const errorMessage = 'Unknown Error';
+
+            console.log(errorMessage, error);
+
+            this.alertService.error(errorMessage);
+
+            this.zone.run(() => {
               this.isLoggingIn = false;
             });
           }

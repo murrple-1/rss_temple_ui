@@ -70,10 +70,10 @@ export interface UpdateUserBody {
   };
   google?: {
     token?: string;
-  };
+  } | null;
   facebook?: {
     token: string;
-  };
+  } | null;
 }
 
 @Injectable()
