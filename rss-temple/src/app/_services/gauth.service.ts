@@ -29,27 +29,13 @@ export class GAuthService {
 
   signIn() {
     if (this.auth2) {
-      this.auth2.signIn().then(
-        user => {
-          this._user$.next(user);
-        },
-        err => {
-          console.log(err);
-        },
-      );
+      this.auth2.signIn();
     }
   }
 
   signOut() {
     if (this.auth2) {
-      (this.auth2.signOut() as Promise<void>).then(
-        () => {
-          this._user$.next(null);
-        },
-        (err: any) => {
-          console.error(err);
-        },
-      );
+      this.auth2.signOut();
     }
   }
 
@@ -62,6 +48,17 @@ export class GAuthService {
         })
         .then(auth => {
           this.auth2 = auth;
+
+          this.auth2.currentUser.listen(user => {
+            this._user$.next(user);
+          });
+
+          this.auth2.isSignedIn.listen(signedIn => {
+            if (!signedIn) {
+              this._user$.next(null);
+            }
+          });
+
           this._isLoaded$.next(true);
         });
     });
