@@ -22,8 +22,8 @@ import {
 import { OPMLModalComponent } from '@app/main/_components/header/opmlmodal/opmlmodal.component';
 import { Feed } from '@app/_models';
 import { FeedService } from '@app/_services/data';
-import { HttpErrorService } from '@app/_services';
-import { deleteSessionToken } from '@app/_modules/session.module';
+import { HttpErrorService, LoginService } from '@app/_services';
+import { deleteSessionToken, sessionToken } from '@app/_modules/session.module';
 
 @Component({
   selector: 'nav[rsst-header]',
@@ -58,6 +58,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private router: Router,
     private modalService: NgbModal,
     private feedService: FeedService,
+    private loginService: LoginService,
     private httpErrorService: HttpErrorService,
   ) {
     const elem = this.elementRef.nativeElement;
@@ -193,9 +194,23 @@ export class HeaderComponent implements OnInit, OnDestroy {
   logOut(event: Event) {
     event.stopPropagation();
 
-    deleteSessionToken();
+    const _sessionToken = sessionToken();
+    if (_sessionToken !== null) {
+      deleteSessionToken();
 
-    // TODO delete token on the server on the way out
+      this.loginService
+        .deleteSessionToken({
+          sessionToken: _sessionToken,
+        })
+        .subscribe({
+          next: () => {
+            // do nothing
+          },
+          error: error => {
+            console.log(error);
+          },
+        });
+    }
 
     this.router.navigate(['/login']);
   }

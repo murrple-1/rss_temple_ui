@@ -2,6 +2,11 @@
 import { HttpClient } from '@angular/common/http';
 
 import { environment } from '@environments/environment';
+import {
+  CommonOptions,
+  toHeader as commonToHeader,
+} from '@app/_services/data/common.interface';
+import { sessionToken } from '@app/_modules/session.module';
 
 @Injectable()
 export class LoginService {
@@ -65,5 +70,13 @@ export class LoginService {
         responseType: 'json',
       },
     );
+  }
+
+  deleteSessionToken(options: CommonOptions = {}) {
+    const headers = commonToHeader(options, sessionToken);
+
+    return this.http.delete<void>(`${environment.apiHost}/api/session`, {
+      headers: headers,
+    });
   }
 }

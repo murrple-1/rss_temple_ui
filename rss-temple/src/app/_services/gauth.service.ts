@@ -8,22 +8,14 @@ import { environment } from '@environments/environment';
 export class GAuthService {
   private auth2: gapi.auth2.GoogleAuth | null = null;
 
-  private _user$ = new BehaviorSubject<gapi.auth2.GoogleUser | null>(null);
-  private _isLoaded$ = new BehaviorSubject<boolean>(false);
-
-  user$: Observable<gapi.auth2.GoogleUser | null>;
-  isLoaded$: Observable<boolean>;
-
-  constructor() {
-    this.user$ = this._user$.asObservable();
-    this.isLoaded$ = this._isLoaded$.asObservable();
-  }
+  user$ = new BehaviorSubject<gapi.auth2.GoogleUser | null>(null);
+  isLoaded$ = new BehaviorSubject<boolean>(false);
 
   signIn() {
     if (this.auth2) {
       this.auth2.signIn().then(
         user => {
-          this._user$.next(user);
+          this.user$.next(user);
         },
         err => {
           console.log(err);
@@ -36,7 +28,7 @@ export class GAuthService {
     if (this.auth2) {
       (this.auth2.signOut() as Promise<void>).then(
         () => {
-          this._user$.next(null);
+          this.user$.next(null);
         },
         (err: any) => {
           console.error(err);
@@ -54,7 +46,7 @@ export class GAuthService {
         })
         .then(auth => {
           this.auth2 = auth;
-          this._isLoaded$.next(true);
+          this.isLoaded$.next(true);
         });
     });
   }

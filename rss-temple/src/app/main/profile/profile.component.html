@@ -15,7 +15,7 @@
     </div>
     <hr />
     <form class="mb-4" [formGroup]="profileForm">
-      <fieldset>
+      <fieldset [disabled]="isLoading || isSaving">
         <div class="form-group">
           <label for="email">Email Address</label>
           <input
@@ -26,7 +26,7 @@
             placeholder="Email"
             formControlName="email"
             [ngClass]="{
-              'is-invalid': profileForm.controls.email.errors
+              'is-invalid': !isLoading && profileForm.controls.email.errors
             }"
           />
         </div>
@@ -86,7 +86,7 @@
         <div class="form-group">
           <div class="container">
             <div class="row">
-              <h4>Login Links</h4>
+              <h4>3rd Party Logins</h4>
             </div>
             <div class="row">
               <div class="col-sm-2">
@@ -99,6 +99,7 @@
                       class="btn btn-outline-primary"
                       (click)="linkGoogle()"
                       *ngIf="!hasGoogleLogin"
+                      [disabled]="!gLoaded"
                     >
                       Link
                     </button>
@@ -107,6 +108,7 @@
                       class="btn btn-outline-warning"
                       (click)="unlinkGoogle()"
                       *ngIf="hasGoogleLogin"
+                      [disabled]="!gLoaded"
                     >
                       Unlink
                     </button>
@@ -123,6 +125,7 @@
                       class="btn btn-outline-primary"
                       (click)="linkFacebook()"
                       *ngIf="!hasFacebookLogin"
+                      [disabled]="!fbLoaded"
                     >
                       Link
                     </button>
@@ -131,6 +134,7 @@
                       class="btn btn-outline-warning"
                       (click)="unlinkFacebook()"
                       *ngIf="hasFacebookLogin"
+                      [disabled]="!fbLoaded"
                     >
                       Unlink
                     </button>

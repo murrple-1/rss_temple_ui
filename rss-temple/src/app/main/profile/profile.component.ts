@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { Subject, zip } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -9,7 +10,12 @@ import {
   FeedEntryService,
   UserService,
 } from '@app/_services/data';
-import { HttpErrorService, GAuthService, FBAuthService } from '@app/_services';
+import {
+  HttpErrorService,
+  GAuthService,
+  FBAuthService,
+  AlertService,
+} from '@app/_services';
 import { UpdateUserBody } from '@app/_services/data/user.service';
 
 @Component({
@@ -28,6 +34,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   gLoaded = false;
   fbLoaded = false;
 
+  isLoading = false;
+  isSaving = false;
+
   private unsubscribe$ = new Subject<void>();
 
   constructor(
@@ -39,6 +48,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private httpErrorService: HttpErrorService,
     private gAuthService: GAuthService,
     private fbAuthService: FBAuthService,
+    private alertService: AlertService,
   ) {
     this.profileForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
@@ -49,6 +59,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.isLoading = true;
+
     zip(
       this.userService.get({
         fields: ['email', 'hasGoogleLogin', 'hasFacebookLogin'],
@@ -88,10 +100,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
             if (responses[2].totalCount) {
               this.numberOfReadFeedEntries = responses[2].totalCount;
             }
+
+            this.isLoading = false;
           });
         },
         error: error => {
           this.httpErrorService.handleError(error);
+
+          this.zone.run(() => {
+            this.isLoading = false;
+          });
         },
       });
 
@@ -194,7 +212,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   unlinkGoogle() {
-    this.gAuthService.signOut();
+    if (this.gAuthService.user$.getValue() !== null) {
+      this.gAuthService.signOut();
+    }
+
+    this.hasGoogleLogin = false;
 
     this.userService
       .update({
@@ -202,19 +224,22 @@ export class ProfileComponent implements OnInit, OnDestroy {
       })
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: () => {
-          this.zone.run(() => {
-            this.hasGoogleLogin = false;
-          });
-        },
         error: error => {
           this.httpErrorService.handleError(error);
+
+          this.zone.run(() => {
+            this.hasGoogleLogin = true;
+          });
         },
       });
   }
 
   unlinkFacebook() {
-    this.fbAuthService.signOut();
+    if (this.fbAuthService.user$.getValue() !== null) {
+      this.fbAuthService.signOut();
+    }
+
+    this.hasFacebookLogin = false;
 
     this.userService
       .update({
@@ -222,13 +247,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
       })
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: () => {
-          this.zone.run(() => {
-            this.hasFacebookLogin = false;
-          });
-        },
         error: error => {
           this.httpErrorService.handleError(error);
+
+          this.zone.run(() => {
+            this.hasFacebookLogin = true;
+          });
         },
       });
   }
@@ -273,15 +297,29 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
 
     if (hasUpdates) {
+      this.isSaving = true;
+
       this.userService
         .update(updateUserBody)
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: () => {
-            // TODO
+            this.alertService.success('Profile Saved');
+
+            this.zone.run(() => {
+              this.isSaving = false;
+            });
           },
           error: error => {
-            this.httpErrorService.handleError(error);
+            if (error instanceof HttpErrorResponse && error.status == 400) {
+              this.alertService.error('Profile failed to save');
+            } else {
+              this.httpErrorService.handleError(error);
+            }
+
+            this.zone.run(() => {
+              this.isSaving = false;
+            });
           },
         });
     }

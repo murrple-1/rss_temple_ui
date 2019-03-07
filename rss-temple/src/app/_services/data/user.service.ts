@@ -42,6 +42,24 @@ function toUser(value: Record<string, any>) {
     }
   }
 
+  if (value.hasOwnProperty('hasGoogleLogin')) {
+    const hasGoogleLogin = value['hasGoogleLogin'];
+    if (typeof hasGoogleLogin === 'boolean') {
+      user.hasGoogleLogin = hasGoogleLogin;
+    } else {
+      throw new Error("'hasGoogleLogin' must be boolean");
+    }
+  }
+
+  if (value.hasOwnProperty('hasFacebookLogin')) {
+    const hasFacebookLogin = value['hasFacebookLogin'];
+    if (typeof hasFacebookLogin === 'boolean') {
+      user.hasFacebookLogin = hasFacebookLogin;
+    } else {
+      throw new Error("'hasFacebookLogin' must be boolean");
+    }
+  }
+
   if (value.hasOwnProperty('subscribedFeedUuids')) {
     const subscribedFeedUuids = value['subscribedFeedUuids'];
     if (Array.isArray(subscribedFeedUuids)) {
