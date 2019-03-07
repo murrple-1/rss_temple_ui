@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { Subject, BehaviorSubject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { FeedService, FeedEntryService } from '@app/_services/data';
@@ -17,9 +17,7 @@ import { InViewportEvent } from '@app/_directives/inviewport.directive';
 })
 export class FeedsComponent implements OnInit, OnDestroy {
   private feeds: Feed[] = [];
-  private feedEntries: FeedEntry[] = [];
-
-  feedEntries$ = new BehaviorSubject<FeedEntry[]>([]);
+  feedEntries: FeedEntry[] = [];
 
   isLoadingMore = false;
 
@@ -99,7 +97,6 @@ export class FeedsComponent implements OnInit, OnDestroy {
           next: feedEntries => {
             if (feedEntries.objects !== undefined) {
               this.feedEntries = feedEntries.objects;
-              this.feedEntries$.next(this.feedEntries);
             }
           },
           error: error => {
@@ -130,7 +127,6 @@ export class FeedsComponent implements OnInit, OnDestroy {
           next: feedEntries => {
             if (feedEntries.objects !== undefined) {
               this.feedEntries = this.feedEntries.concat(feedEntries.objects);
-              this.feedEntries$.next(this.feedEntries);
             }
 
             this.zone.run(() => {

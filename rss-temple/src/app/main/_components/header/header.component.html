@@ -31,13 +31,13 @@
     </a>
     <div class="dropdown-divider"></div>
     <div
-      *ngIf="(filteredSubscribedFeeds | async)?.length === 0"
+      *ngIf="filteredSubscribedFeeds.length === 0"
       class="dropdown-item-text"
     >
       No Feeds Found
     </div>
     <a
-      *ngFor="let feed of (filteredSubscribedFeeds | async)"
+      *ngFor="let feed of filteredSubscribedFeeds"
       class="dropdown-item"
       [routerLink]="['/main/feed', { url: feed.feedUrl }]"
       (click)="feedDropdown.close(); feedDropdownMenu.scrollTop = 0"

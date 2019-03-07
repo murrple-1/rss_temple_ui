@@ -42,7 +42,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isCollapsed = true;
 
   private subscribedFeeds: Feed[] = [];
-  filteredSubscribedFeeds = new Subject<Feed[]>();
+  filteredSubscribedFeeds: Feed[] = [];
 
   @Output()
   feedAdded = new EventEmitter<Feed>();
@@ -79,7 +79,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
           this.zone.run(() => {
             if (feeds.objects !== undefined) {
               this.subscribedFeeds = feeds.objects;
-              this.filteredSubscribedFeeds.next(this.subscribedFeeds);
+              this.filteredSubscribedFeeds = feeds.objects;
             }
           });
         },
@@ -181,7 +181,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.filteredSubscribedFeeds.next(filteredFeeds);
+    this.filteredSubscribedFeeds = filteredFeeds;
   }
 
   onSearch(event: Event) {
