@@ -34,6 +34,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   gLoaded = false;
   fbLoaded = false;
 
+  private gDidSignIn = false;
+  private fbDidSignIn = false;
+
   isLoading = false;
   isSaving = false;
 
@@ -129,6 +132,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     this.gAuthService.user$.pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: user => {
+        this.gDidSignIn = user !== null;
+
         if (user) {
           this.handleGoogleUser(user);
         }
@@ -151,6 +156,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     this.fbAuthService.user$.pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: user => {
+        this.fbDidSignIn = user !== null;
+
         if (user) {
           this.handleFacebookUser(user);
         }
@@ -212,7 +219,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   unlinkGoogle() {
-    if (this.gAuthService.user$.getValue() !== null) {
+    if (this.gDidSignIn) {
       this.gAuthService.signOut();
     }
 
@@ -235,7 +242,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   unlinkFacebook() {
-    if (this.fbAuthService.user$.getValue() !== null) {
+    if (this.fbDidSignIn) {
       this.fbAuthService.signOut();
     }
 

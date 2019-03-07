@@ -6,8 +6,24 @@ import { environment } from '@environments/environment';
 
 @Injectable()
 export class FBAuthService {
-  user$ = new BehaviorSubject<facebook.AuthResponse | null>(null);
-  isLoaded$ = new BehaviorSubject<boolean>(false);
+  private _user$ = new BehaviorSubject<facebook.AuthResponse | null>(null);
+  private _isLoaded$ = new BehaviorSubject<boolean>(false);
+
+  user$: Observable<facebook.AuthResponse | null>;
+  isLoaded$: Observable<boolean>;
+
+  get user() {
+    return this._user$.value;
+  }
+
+  get isLoaded() {
+    return this._isLoaded$.value;
+  }
+
+  constructor() {
+    this.user$ = this._user$.asObservable();
+    this.isLoaded$ = this._isLoaded$.asObservable();
+  }
 
   signIn(
     options: fb.LoginOptions = {
@@ -16,16 +32,16 @@ export class FBAuthService {
   ) {
     FB.login(response => {
       if (response.status === 'connected') {
-        this.user$.next(response.authResponse);
+        this._user$.next(response.authResponse);
       } else {
-        this.user$.next(null);
+        this._user$.next(null);
       }
     }, options);
   }
 
   signOut() {
     FB.logout(_ => {
-      this.user$.next(null);
+      this._user$.next(null);
     });
   }
 
@@ -38,7 +54,7 @@ export class FBAuthService {
       });
       FB.AppEvents.logPageView();
 
-      this.isLoaded$.next(true);
+      this._isLoaded$.next(true);
     };
 
     if (document.getElementById(id)) {
