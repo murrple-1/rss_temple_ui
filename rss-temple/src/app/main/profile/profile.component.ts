@@ -351,7 +351,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             });
           },
           error: error => {
-            if (error instanceof HttpErrorResponse && error.status == 400) {
+            if (error instanceof HttpErrorResponse && error.status === 400) {
               this.alertService.error('Profile failed to save', 5000);
             } else {
               this.httpErrorService.handleError(error);
