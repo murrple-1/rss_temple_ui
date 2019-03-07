@@ -6,25 +6,30 @@ import { SnackbarService } from 'ngx-snackbar';
 export class AlertService {
   constructor(private snackbarService: SnackbarService) {}
 
-  success(text: string) {
-    this.message(text, 'success');
+  success(text: string, timeoutMilliseconds?: number) {
+    this.message(text, 'success', timeoutMilliseconds);
   }
 
-  error(text: string) {
-    this.message(text, 'error');
+  error(text: string, timeoutMilliseconds?: number) {
+    this.message(text, 'error', timeoutMilliseconds);
   }
 
-  info(text: string) {
-    this.message(text, 'info');
+  info(text: string, timeoutMilliseconds?: number) {
+    this.message(text, 'info', timeoutMilliseconds);
   }
 
-  private message(text: string, customClass: string) {
+  private message(
+    text: string,
+    customClass: string,
+    timeoutMilliseconds?: number,
+  ) {
     this.snackbarService.add({
       msg: text,
       customClass: customClass,
       action: {
         text: 'Dismiss',
       },
+      timeout: timeoutMilliseconds,
     });
   }
 }

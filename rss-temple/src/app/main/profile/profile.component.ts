@@ -1,9 +1,15 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  AbstractControl,
+  ValidationErrors,
+} from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { Subject, zip } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, skip } from 'rxjs/operators';
 
 import {
   FeedService,
@@ -34,9 +40,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
   gLoaded = false;
   fbLoaded = false;
 
-  private gDidSignIn = false;
-  private fbDidSignIn = false;
-
   isLoading = false;
   isSaving = false;
 
@@ -53,12 +56,45 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private fbAuthService: FBAuthService,
     private alertService: AlertService,
   ) {
-    this.profileForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
-      oldPassword: ['', [Validators.minLength(6)]],
-      newPassword: ['', [Validators.minLength(6)]],
-      newPasswordCheck: ['', [Validators.minLength(6)]],
-    });
+    this.profileForm = this.formBuilder.group(
+      {
+        email: ['', [Validators.email]],
+        oldPassword: [''],
+        newPassword: [''],
+        newPasswordCheck: [''],
+      },
+      {
+        validators: [ProfileComponent.checkPasswords],
+      },
+    );
+  }
+
+  private static checkPasswords(group: FormGroup) {
+    let passwordErrors: Record<string, any> | null = null;
+
+    const oldPassword = group.controls.oldPassword.value as string;
+    const newPassword = group.controls.newPassword.value as string;
+    const newPasswordCheck = group.controls.newPasswordCheck.value as string;
+
+    if (
+      oldPassword.length > 0 &&
+      newPassword.length > 0 &&
+      newPasswordCheck.length > 0
+    ) {
+      if (newPassword.length < 6) {
+        passwordErrors = passwordErrors || {};
+        passwordErrors['tooShort'] = true;
+      } else {
+        if (newPassword !== newPasswordCheck) {
+          passwordErrors = passwordErrors || {};
+          passwordErrors['doesNotMatch'] = true;
+        }
+      }
+    }
+
+    return {
+      passwordErrors: passwordErrors,
+    } as ValidationErrors;
   }
 
   ngOnInit() {
@@ -130,15 +166,22 @@ export class ProfileComponent implements OnInit, OnDestroy {
       },
     });
 
-    this.gAuthService.user$.pipe(takeUntil(this.unsubscribe$)).subscribe({
-      next: user => {
-        this.gDidSignIn = user !== null;
+    if (this.gAuthService.user !== null) {
+      this.gAuthService.signOut();
+    }
 
-        if (user) {
-          this.handleGoogleUser(user);
-        }
-      },
-    });
+    this.gAuthService.user$
+      .pipe(
+        skip(1),
+        takeUntil(this.unsubscribe$),
+      )
+      .subscribe({
+        next: user => {
+          if (user !== null) {
+            this.handleGoogleUser(user);
+          }
+        },
+      });
 
     this.fbAuthService.isLoaded$.pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: isLoaded => {
@@ -154,15 +197,22 @@ export class ProfileComponent implements OnInit, OnDestroy {
       },
     });
 
-    this.fbAuthService.user$.pipe(takeUntil(this.unsubscribe$)).subscribe({
-      next: user => {
-        this.fbDidSignIn = user !== null;
+    if (this.fbAuthService.user !== null) {
+      this.fbAuthService.signOut();
+    }
 
-        if (user) {
-          this.handleFacebookUser(user);
-        }
-      },
-    });
+    this.fbAuthService.user$
+      .pipe(
+        skip(1),
+        takeUntil(this.unsubscribe$),
+      )
+      .subscribe({
+        next: user => {
+          if (user !== null) {
+            this.handleFacebookUser(user);
+          }
+        },
+      });
   }
 
   ngOnDestroy() {
@@ -219,9 +269,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   unlinkGoogle() {
-    if (this.gDidSignIn) {
-      this.gAuthService.signOut();
-    }
+    this.gAuthService.signOut();
 
     this.hasGoogleLogin = false;
 
@@ -242,9 +290,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   unlinkFacebook() {
-    if (this.fbDidSignIn) {
-      this.fbAuthService.signOut();
-    }
+    this.fbAuthService.signOut();
 
     this.hasFacebookLogin = false;
 
@@ -276,31 +322,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     const oldPasswordControl = this.profileForm.controls.oldPassword;
     if (
-      oldPasswordControl.dirty &&
-      (oldPasswordControl.value as string).length > 0
+      (oldPasswordControl.value as string).length > 0 &&
+      !((this.profileForm.errors || {}) as ValidationErrors).passwordErrors
     ) {
       const newPasswordControl = this.profileForm.controls.newPassword;
-      const newPasswordCheckControl = this.profileForm.controls
-        .newPasswordCheck;
 
-      if (
-        newPasswordControl.dirty &&
-        (newPasswordControl.value as string).length > 0
-      ) {
-        if (newPasswordControl.value === newPasswordCheckControl.value) {
-          updateUserBody.my = {
-            password: {
-              old: oldPasswordControl.value as string,
-              new: newPasswordControl.value as string,
-            },
-          };
-          hasUpdates = true;
-        } else {
-          // TODO new passwords don't match
-        }
-      } else {
-        // TODO no new password entered
-      }
+      updateUserBody.my = {
+        password: {
+          old: oldPasswordControl.value as string,
+          new: newPasswordControl.value as string,
+        },
+      };
+      hasUpdates = true;
     }
 
     if (hasUpdates) {
@@ -311,7 +344,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: () => {
-            this.alertService.success('Profile Saved');
+            this.alertService.success('Profile Saved', 5000);
 
             this.zone.run(() => {
               this.isSaving = false;
@@ -319,7 +352,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           },
           error: error => {
             if (error instanceof HttpErrorResponse && error.status == 400) {
-              this.alertService.error('Profile failed to save');
+              this.alertService.error('Profile failed to save', 5000);
             } else {
               this.httpErrorService.handleError(error);
             }

@@ -41,11 +41,6 @@
             formControlName="oldPassword"
           />
         </div>
-        <div *ngIf="profileForm.controls.oldPassword.errors" class="invalid">
-          <div *ngIf="profileForm.controls.oldPassword.errors.required">
-            Email is required
-          </div>
-        </div>
         <div class="form-group">
           <label for="new-password">New Password</label>
           <input
@@ -55,14 +50,6 @@
             placeholder="Password"
             formControlName="newPassword"
           />
-        </div>
-        <div
-          *ngIf="submitted && loginForm.controls.email.errors"
-          class="invalid"
-        >
-          <div *ngIf="loginForm.controls.email.errors.required">
-            Email is required
-          </div>
         </div>
         <div class="form-group">
           <label for="new-password-check">Reenter New Password</label>
@@ -74,12 +61,12 @@
             formControlName="newPasswordCheck"
           />
         </div>
-        <div
-          *ngIf="submitted && loginForm.controls.email.errors"
-          class="invalid"
-        >
-          <div *ngIf="loginForm.controls.email.errors.required">
-            Email is required
+        <div *ngIf="profileForm.errors.passwordErrors" class="invalid">
+          <div *ngIf="profileForm.errors.passwordErrors.tooShort">
+            New Password is too short
+          </div>
+          <div *ngIf="profileForm.errors.passwordErrors.doesNotMatch">
+            Passwords do not Match
           </div>
         </div>
         <hr />

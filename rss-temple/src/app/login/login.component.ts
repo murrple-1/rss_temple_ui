@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, skip } from 'rxjs/operators';
 
 import {
   AlertService,
@@ -63,17 +63,26 @@ export class LoginComponent implements OnInit, OnDestroy {
       },
     });
 
-    this.gAuthService.user$.pipe(takeUntil(this.unsubscribe$)).subscribe({
-      next: user => {
-        this.zone.run(() => {
-          this.isLoggingIn = false;
-        });
+    if (this.gAuthService.user !== null) {
+      this.gAuthService.signOut();
+    }
 
-        if (user) {
-          this.handleGoogleUser(user);
-        }
-      },
-    });
+    this.gAuthService.user$
+      .pipe(
+        skip(1),
+        takeUntil(this.unsubscribe$),
+      )
+      .subscribe({
+        next: user => {
+          this.zone.run(() => {
+            this.isLoggingIn = false;
+          });
+
+          if (user) {
+            this.handleGoogleUser(user);
+          }
+        },
+      });
 
     this.fbAuthService.isLoaded$.pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: isLoaded => {
@@ -89,17 +98,26 @@ export class LoginComponent implements OnInit, OnDestroy {
       },
     });
 
-    this.fbAuthService.user$.pipe(takeUntil(this.unsubscribe$)).subscribe({
-      next: user => {
-        this.zone.run(() => {
-          this.isLoggingIn = false;
-        });
+    if (this.fbAuthService.user !== null) {
+      this.fbAuthService.signOut();
+    }
 
-        if (user) {
-          this.handleFacebookUser(user);
-        }
-      },
-    });
+    this.fbAuthService.user$
+      .pipe(
+        skip(1),
+        takeUntil(this.unsubscribe$),
+      )
+      .subscribe({
+        next: user => {
+          this.zone.run(() => {
+            this.isLoggingIn = false;
+          });
+
+          if (user) {
+            this.handleFacebookUser(user);
+          }
+        },
+      });
   }
 
   ngOnDestroy() {
