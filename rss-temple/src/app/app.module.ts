@@ -27,7 +27,9 @@ import {
   UserService,
 } from '@app/_services/data';
 import { LoginComponent } from '@app/login/login.component';
+import { RequestPasswordResetModalComponent as LoginRequestPasswordResetModalComponent } from '@app/login/requestpasswordresetmodal/requestpasswordresetmodal.component';
 import { RegisterComponent } from '@app/register/register.component';
+import { ResetPasswordComponent } from '@app/resetpassword/resetpassword.component';
 
 @NgModule({
   imports: [
@@ -43,7 +45,13 @@ import { RegisterComponent } from '@app/register/register.component';
 
     routing,
   ],
-  declarations: [AppComponent, LoginComponent, RegisterComponent],
+  declarations: [
+    AppComponent,
+    LoginComponent,
+    RegisterComponent,
+    ResetPasswordComponent,
+    LoginRequestPasswordResetModalComponent,
+  ],
   providers: [
     AuthGuard,
     NoAuthGuard,
@@ -59,6 +67,7 @@ import { RegisterComponent } from '@app/register/register.component';
     FBAuthService,
     HttpErrorService,
   ],
+  entryComponents: [LoginRequestPasswordResetModalComponent],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
