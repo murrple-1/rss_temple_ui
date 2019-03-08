@@ -155,7 +155,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           }
 
           console.log(errorMessage, error);
-          this.alertService.error(errorMessage);
+          this.alertService.error(errorMessage, 5000);
 
           this.zone.run(() => {
             this.isLoggingIn = false;
@@ -206,7 +206,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
               console.log(errorMessage, error);
 
-              this.alertService.error(errorMessage);
+              this.alertService.error(errorMessage, 5000);
 
               this.zone.run(() => {
                 this.isLoggingIn = false;
@@ -217,7 +217,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
             console.log(errorMessage, error);
 
-            this.alertService.error(errorMessage);
+            this.alertService.error(errorMessage, 5000);
 
             this.zone.run(() => {
               this.isLoggingIn = false;
@@ -253,7 +253,7 @@ export class LoginComponent implements OnInit, OnDestroy {
                   break;
               }
 
-              this.alertService.error(errorMessage);
+              this.alertService.error(errorMessage, 5000);
 
               this.zone.run(() => {
                 this.isLoggingIn = false;
@@ -264,7 +264,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
             console.log(errorMessage, error);
 
-            this.alertService.error(errorMessage);
+            this.alertService.error(errorMessage, 5000);
 
             this.zone.run(() => {
               this.isLoggingIn = false;

@@ -112,7 +112,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     }
 
     this.zone.run(() => {
-      this.alertService.error(errorMessage);
+      this.alertService.error(errorMessage, 5000);
 
       this.loading = false;
     });
