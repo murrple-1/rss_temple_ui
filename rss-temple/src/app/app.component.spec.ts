@@ -32,6 +32,7 @@ import { MainComponent } from '@app/main/main.component';
 import { FeedComponent } from '@app/main/feed/feed.component';
 import { HeaderComponent } from '@app/main/_components/header/header.component';
 import { FeedEntryViewComponent } from '@app/main/_components/feed-entry-view/feed-entry-view.component';
+import { ResetPasswordComponent } from '@app/resetpassword/resetpassword.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -52,6 +53,7 @@ describe('AppComponent', () => {
         AppComponent,
         LoginComponent,
         RegisterComponent,
+        ResetPasswordComponent,
         MainComponent,
         FeedComponent,
         HeaderComponent,
