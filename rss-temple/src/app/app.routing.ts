@@ -4,6 +4,7 @@ import { AuthGuard, NoAuthGuard } from '@app/_guards/auth.guard';
 import { LoginComponent } from '@app/login/login.component';
 import { RegisterComponent } from '@app/register/register.component';
 import { ResetPasswordComponent } from '@app/resetpassword/resetpassword.component';
+import { VerifyComponent } from '@app/verify/verify.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [NoAuthGuard] },
@@ -15,6 +16,11 @@ const routes: Routes = [
   {
     path: 'resetpassword',
     component: ResetPasswordComponent,
+    canActivate: [NoAuthGuard],
+  },
+  {
+    path: 'verify',
+    component: VerifyComponent,
     canActivate: [NoAuthGuard],
   },
   {
