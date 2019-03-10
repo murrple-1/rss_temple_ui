@@ -13,6 +13,8 @@ import {
   FBAuthService,
 } from '@app/_services';
 import { setSessionToken } from '@app/_modules/session.module';
+import { RequestPasswordResetModalComponent } from '@app/login/requestpasswordresetmodal/requestpasswordresetmodal.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   templateUrl: 'login.component.html',
@@ -35,6 +37,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private zone: NgZone,
+    private modalService: NgbModal,
     private loginService: LoginService,
     private alertService: AlertService,
     private gAuthService: GAuthService,
@@ -272,5 +275,18 @@ export class LoginComponent implements OnInit, OnDestroy {
           }
         },
       });
+  }
+
+  onForgottenPassword() {
+    const modalRef = this.modalService.open(RequestPasswordResetModalComponent);
+
+    modalRef.result.then(
+      () => {
+        // done, no-op
+      },
+      error => {
+        // dialog dismissed, no-op
+      },
+    );
   }
 }

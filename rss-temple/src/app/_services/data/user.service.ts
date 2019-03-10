@@ -117,4 +117,20 @@ export class UserService {
       headers: headers,
     });
   }
+
+  verify(token: string) {
+    const params: {
+      [param: string]: string | string[];
+    } = {
+      token: token,
+    };
+
+    return this.http.post<void>(
+      `${environment.apiHost}/api/user/verify`,
+      undefined,
+      {
+        params: params,
+      },
+    );
+  }
 }

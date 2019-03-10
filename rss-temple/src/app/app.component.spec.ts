@@ -25,6 +25,7 @@ import {
   OPMLService,
   ProgressService,
   UserCategoryService,
+  PasswordResetTokenService,
 } from '@app/_services/data';
 import { LoginComponent } from '@app/login/login.component';
 import { RegisterComponent } from '@app/register/register.component';
@@ -77,6 +78,7 @@ describe('AppComponent', () => {
         OPMLService,
         ProgressService,
         UserCategoryService,
+        PasswordResetTokenService,
         GAuthService,
         FBAuthService,
         HttpErrorService,
