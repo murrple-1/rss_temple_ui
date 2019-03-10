@@ -3,15 +3,15 @@ import { map, flatMap } from 'rxjs/operators';
 
 import { Objects, toObjects } from '@app/_services/data/objects';
 import { AllOptions } from '@app/_services/data/all.interface';
-import { SomeOptions } from '@app/_services/data/some.interface';
+import { QueryOptions } from '@app/_services/data/query.interface';
 
-export function allFn<Field, T>(
+export function queryAllFn<Field, T>(
   options: AllOptions<Field>,
-  someFn: (options: SomeOptions<Field>) => Observable<Objects<T>>,
+  queryFn: (options: QueryOptions<Field>) => Observable<Objects<T>>,
   toFn: (t: Object) => T,
   pageSize: number,
 ) {
-  return someFn({
+  return queryFn({
     count: pageSize,
     fields: options.fields,
     returnObjects: true,
@@ -37,7 +37,7 @@ export function allFn<Field, T>(
 
       while (firstObjs.totalCount && skip < firstObjs.totalCount) {
         allCalls.push(
-          someFn({
+          queryFn({
             count: pageSize,
             fields: options.fields,
             returnObjects: true,

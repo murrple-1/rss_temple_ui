@@ -58,7 +58,7 @@ export class FeedComponent implements OnInit, OnDestroy {
           });
 
           this.feedEntryService
-            .some({
+            .query({
               fields: [
                 'uuid',
                 'url',

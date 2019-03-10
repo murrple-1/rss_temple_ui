@@ -14,12 +14,12 @@ import {
   toParams as getToParams,
 } from '@app/_services/data/get.interface';
 import {
-  SomeOptions,
-  toHeader as someToHeader,
-  toParams as someToParams,
-} from '@app/_services/data/some.interface';
+  QueryOptions,
+  toHeader as queryToHeader,
+  toBody as queryToBody,
+} from '@app/_services/data/query.interface';
 import { AllOptions } from '@app/_services/data/all.interface';
-import { allFn } from '@app/_services/data/all.function';
+import { queryAllFn } from '@app/_services/data/queryall.function';
 import {
   CommonOptions,
   toHeader as commonToHeader,
@@ -196,22 +196,21 @@ export class FeedEntryService {
       .pipe<FeedEntry>(map(toFeedEntry));
   }
 
-  some(options: SomeOptions<Field> = {}) {
-    const headers = someToHeader(options, sessionToken);
-    const params = someToParams(options, () => ['uuid']);
+  query(options: QueryOptions<Field> = {}) {
+    const headers = queryToHeader(options, sessionToken);
+    const body = queryToBody(options, () => ['uuid']);
 
     return this.http
-      .get(`${environment.apiHost}/api/feedentries`, {
+      .post(`${environment.apiHost}/api/feedentries`, body, {
         headers: headers,
-        params: params,
       })
       .pipe<Objects<FeedEntry>>(
         map(retObj => toObjects<FeedEntry>(retObj, toFeedEntry)),
       );
   }
 
-  all(options: AllOptions<Field> = {}, pageSize = 1000) {
-    return allFn(options, this.some.bind(this), toFeedEntry, pageSize);
+  queryAll(options: AllOptions<Field> = {}, pageSize = 1000) {
+    return queryAllFn(options, this.query.bind(this), toFeedEntry, pageSize);
   }
 
   read(feedEntry: FeedEntry, options: CommonOptions = {}) {

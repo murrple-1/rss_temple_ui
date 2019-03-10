@@ -69,7 +69,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.feedService
-      .all({
+      .queryAll({
         fields: ['title', 'feedUrl'],
         search: 'subscribed:"true"',
         returnTotalCount: false,
@@ -149,7 +149,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.opmlUploaded.emit();
 
         this.feedService
-          .all({
+          .queryAll({
             fields: ['title', 'feedUrl'],
             search: 'subscribed:"true"',
             returnTotalCount: false,

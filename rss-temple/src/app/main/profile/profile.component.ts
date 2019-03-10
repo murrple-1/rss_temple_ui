@@ -104,11 +104,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.userService.get({
         fields: ['email', 'hasGoogleLogin', 'hasFacebookLogin'],
       }),
-      this.feedService.some({
+      this.feedService.query({
         returnObjects: false,
         returnTotalCount: true,
       }),
-      this.feedEntryService.some({
+      this.feedEntryService.query({
         returnObjects: false,
         returnTotalCount: true,
         search: 'isRead:"true"',

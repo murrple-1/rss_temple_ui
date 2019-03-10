@@ -12,12 +12,12 @@ import {
   toParams as getToParams,
 } from '@app/_services/data/get.interface';
 import {
-  SomeOptions,
-  toHeader as someToHeader,
-  toParams as someToParams,
-} from '@app/_services/data/some.interface';
+  QueryOptions,
+  toHeader as queryToHeader,
+  toBody as queryToBody,
+} from '@app/_services/data/query.interface';
 import { AllOptions } from '@app/_services/data/all.interface';
-import { allFn } from '@app/_services/data/all.function';
+import { queryAllFn } from '@app/_services/data/queryall.function';
 import {
   CommonOptions,
   toHeader as commonToHeader,
@@ -71,22 +71,21 @@ export class UserCategoryService {
       .pipe<UserCategory>(map(toUserCategory));
   }
 
-  some(options: SomeOptions<Field> = {}) {
-    const headers = someToHeader(options, sessionToken);
-    const params = someToParams(options, () => ['uuid']);
+  query(options: QueryOptions<Field> = {}) {
+    const headers = queryToHeader(options, sessionToken);
+    const body = queryToBody(options, () => ['uuid']);
 
     return this.http
-      .get(`${environment.apiHost}/api/usercategories`, {
+      .post(`${environment.apiHost}/api/usercategories`, body, {
         headers: headers,
-        params: params,
       })
       .pipe<Objects<UserCategory>>(
         map(retObj => toObjects<UserCategory>(retObj, toUserCategory)),
       );
   }
 
-  all(options: AllOptions<Field> = {}, pageSize = 1000) {
-    return allFn(options, this.some.bind(this), toUserCategory, pageSize);
+  queryAll(options: AllOptions<Field> = {}, pageSize = 1000) {
+    return queryAllFn(options, this.query.bind(this), toUserCategory, pageSize);
   }
 
   create(userCategoryJson: ICreateUserCategory, options: CommonOptions = {}) {

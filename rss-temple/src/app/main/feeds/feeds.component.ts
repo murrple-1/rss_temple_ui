@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { FeedService, FeedEntryService } from '@app/_services/data';
-import { SomeOptions } from '@app/_services/data/some.interface';
+import { QueryOptions } from '@app/_services/data/query.interface';
 import { Field } from '@app/_services/data/feedentry.service';
 import { Feed, FeedEntry } from '@app/_models';
 import { HttpErrorService } from '@app/_services';
@@ -55,7 +55,7 @@ export class FeedsComponent implements OnInit, OnDestroy {
 
   private getFeeds() {
     this.feedService
-      .all({
+      .queryAll({
         fields: ['uuid'],
         search: 'subscribed:"true"',
         returnTotalCount: false,
@@ -75,7 +75,7 @@ export class FeedsComponent implements OnInit, OnDestroy {
       });
   }
 
-  private someOptions(skip?: number): SomeOptions<Field> {
+  private queryOptions(skip?: number): QueryOptions<Field> {
     return {
       fields: ['uuid', 'url', 'title', 'content', 'isRead'],
       returnTotalCount: false,
@@ -91,7 +91,7 @@ export class FeedsComponent implements OnInit, OnDestroy {
   private getFeedEntries() {
     if (this.feeds.length > 0) {
       this.feedEntryService
-        .some(this.someOptions())
+        .query(this.queryOptions())
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: feedEntries => {
@@ -121,7 +121,7 @@ export class FeedsComponent implements OnInit, OnDestroy {
       this.isLoadingMore = true;
 
       this.feedEntryService
-        .some(this.someOptions(this.feedEntries.length))
+        .query(this.queryOptions(this.feedEntries.length))
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: feedEntries => {
