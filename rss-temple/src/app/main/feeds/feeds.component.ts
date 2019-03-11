@@ -9,6 +9,7 @@ import { QueryOptions } from '@app/_services/data/query.interface';
 import { Field } from '@app/_services/data/feedentry.service';
 import { Feed, FeedEntry } from '@app/_models';
 import { HttpErrorService } from '@app/_services';
+import { FeedObservableService } from '@app/main/_services';
 import { InViewportEvent } from '@app/_directives/inviewport.directive';
 
 @Component({
@@ -29,6 +30,7 @@ export class FeedsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private zone: NgZone,
     private feedService: FeedService,
+    private feedObservableService: FeedObservableService,
     private feedEntryService: FeedEntryService,
     private httpErrorService: HttpErrorService,
   ) {}
@@ -46,6 +48,40 @@ export class FeedsComponent implements OnInit, OnDestroy {
     });
 
     this.getFeeds();
+
+    this.feedObservableService.feedAdded
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: feed => {
+          this.feeds.push(feed);
+
+          this.getFeedEntries();
+        },
+      });
+
+    this.feedObservableService.feedRemoved
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: feed => {
+          this.feeds = this.feeds.filter(f => {
+            if (feed.uuid !== undefined) {
+              return f.uuid !== feed.uuid;
+            } else {
+              return true;
+            }
+          });
+
+          this.getFeedEntries();
+        },
+      });
+
+    this.feedObservableService.feedsChanged
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: () => {
+          this.getFeeds();
+        },
+      });
   }
 
   ngOnDestroy() {

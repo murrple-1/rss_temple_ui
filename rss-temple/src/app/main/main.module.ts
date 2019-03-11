@@ -20,6 +20,7 @@ import { FeedEntryViewComponent } from '@app/main/_components/feed-entry-view/fe
 import { SubscribeModalComponent as HeaderSubscribeModalComponent } from '@app/main/_components/header/subscribemodal/subscribemodal.component';
 import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/main/_components/header/opmlmodal/opmlmodal.component';
 import { InViewportDirective } from '@app/_directives/inviewport.directive';
+import { FeedObservableService } from '@app/main/_services';
 
 @NgModule({
   imports: [
@@ -35,6 +36,7 @@ import { InViewportDirective } from '@app/_directives/inviewport.directive';
 
     routing,
   ],
+  providers: [FeedObservableService],
   declarations: [
     MainComponent,
     FeedsComponent,

@@ -2,11 +2,10 @@ import {
   Component,
   OnInit,
   NgZone,
-  Output,
-  EventEmitter,
   OnDestroy,
   Renderer2,
   ElementRef,
+  ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -23,6 +22,7 @@ import { OPMLModalComponent } from '@app/main/_components/header/opmlmodal/opmlm
 import { Feed } from '@app/_models';
 import { FeedService } from '@app/_services/data';
 import { HttpErrorService, LoginService } from '@app/_services';
+import { FeedObservableService } from '@app/main/_services';
 import { deleteSessionToken, sessionToken } from '@app/_modules/session.module';
 
 @Component({
@@ -44,10 +44,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private subscribedFeeds: Feed[] = [];
   filteredSubscribedFeeds: Feed[] = [];
 
-  @Output()
-  feedAdded = new EventEmitter<Feed>();
-  @Output()
-  opmlUploaded = new EventEmitter<void>();
+  @ViewChild('filterInput')
+  private filterInput: ElementRef<HTMLInputElement> | null = null;
 
   private unsubscribe$ = new Subject<void>();
 
@@ -58,6 +56,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private router: Router,
     private modalService: NgbModal,
     private feedService: FeedService,
+    private feedObservableService: FeedObservableService,
     private loginService: LoginService,
     private httpErrorService: HttpErrorService,
   ) {
@@ -67,11 +66,24 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
+  private static sortFeeds(a: Feed, b: Feed) {
+    if (a.title !== undefined) {
+      if (b.title !== undefined) {
+        return a.title.localeCompare(b.title);
+      } else {
+        return 1;
+      }
+    } else {
+      return -1;
+    }
+  }
+
   ngOnInit() {
     this.feedService
       .queryAll({
         fields: ['title', 'feedUrl'],
         search: 'subscribed:"true"',
+        sort: 'title:ASC',
         returnTotalCount: false,
       })
       .pipe(takeUntil(this.unsubscribe$))
@@ -115,11 +127,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
                   .subscribe({
                     next: () => {
                       this.zone.run(() => {
-                        this.feedAdded.emit(feed);
+                        this.feedObservableService.feedAdded.next(feed);
 
-                        this.subscribedFeeds = this.subscribedFeeds.concat(
-                          feed,
-                        );
+                        this.subscribedFeeds = this.subscribedFeeds
+                          .concat(feed)
+                          .sort(HeaderComponent.sortFeeds);
+
+                        if (this.filterInput !== null) {
+                          this.filterFeeds(
+                            this.filterInput.nativeElement.value,
+                          );
+                        }
                       });
                     },
                     error: error => {
@@ -146,7 +164,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     modalRef.result.then(
       () => {
-        this.opmlUploaded.emit();
+        this.feedObservableService.feedsChanged.next();
 
         this.feedService
           .queryAll({
@@ -160,6 +178,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
               this.zone.run(() => {
                 if (feeds.objects !== undefined) {
                   this.subscribedFeeds = feeds.objects;
+
+                  if (this.filterInput !== null) {
+                    this.filterFeeds(this.filterInput.nativeElement.value);
+                  }
                 }
               });
             },
@@ -172,13 +194,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   onFilterInput(event: Event) {
-    const value = (event.target as HTMLInputElement).value.toLowerCase();
+    const value = (event.target as HTMLInputElement).value;
+
+    this.filterFeeds(value);
+  }
+
+  private filterFeeds(value: string) {
+    value = value.toLowerCase();
 
     const filteredFeeds = this.subscribedFeeds.filter(feed => {
       if (feed.title !== undefined) {
         return feed.title.toLowerCase().includes(value);
       } else {
-        return true;
+        return false;
       }
     });
 
@@ -186,6 +214,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   onSearch(event: Event) {
+    // TODO searching?
+
     const value = (event.target as HTMLInputElement).value;
 
     console.log(value);

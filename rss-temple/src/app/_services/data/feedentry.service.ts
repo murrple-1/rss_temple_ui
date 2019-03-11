@@ -201,7 +201,7 @@ export class FeedEntryService {
     const body = queryToBody(options, () => ['uuid']);
 
     return this.http
-      .post(`${environment.apiHost}/api/feedentries`, body, {
+      .post(`${environment.apiHost}/api/feedentries/query`, body, {
         headers: headers,
       })
       .pipe<Objects<FeedEntry>>(

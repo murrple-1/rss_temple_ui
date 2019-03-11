@@ -76,7 +76,7 @@ export class UserCategoryService {
     const body = queryToBody(options, () => ['uuid']);
 
     return this.http
-      .post(`${environment.apiHost}/api/usercategories`, body, {
+      .post(`${environment.apiHost}/api/usercategories/query`, body, {
         headers: headers,
       })
       .pipe<Objects<UserCategory>>(

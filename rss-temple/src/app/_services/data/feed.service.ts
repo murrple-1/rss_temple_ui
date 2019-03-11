@@ -159,7 +159,7 @@ export class FeedService {
     const body = queryToBody(options, () => ['uuid']);
 
     return this.http
-      .post(`${environment.apiHost}/api/feeds`, body, {
+      .post(`${environment.apiHost}/api/feeds/query`, body, {
         headers: headers,
       })
       .pipe<Objects<Feed>>(map(retObj => toObjects<Feed>(retObj, toFeed)));

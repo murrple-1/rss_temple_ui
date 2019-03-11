@@ -25,7 +25,7 @@ interface ProgressStatus {
 })
 export class OPMLModalComponent implements OnDestroy {
   @ViewChild('opmlFileInput')
-  opmlFileInput!: ElementRef<HTMLInputElement>;
+  private opmlFileInput: ElementRef<HTMLInputElement> | null = null;
 
   uploading = false;
 
@@ -55,58 +55,60 @@ export class OPMLModalComponent implements OnDestroy {
   }
 
   finish() {
-    const nativeElement = this.opmlFileInput.nativeElement;
-    if (nativeElement.files && nativeElement.files.length > 0) {
-      const file = nativeElement.files[0];
+    if (this.opmlFileInput !== null) {
+      const nativeElement = this.opmlFileInput.nativeElement;
+      if (nativeElement.files && nativeElement.files.length > 0) {
+        const file = nativeElement.files[0];
 
-      const reader = new FileReader();
+        const reader = new FileReader();
 
-      reader.onload = () => {
-        if (reader.result !== null) {
-          this.opmlService
-            .upload(reader.result)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
-              next: response => {
-                if (response.status === 200) {
-                  this.activeModal.close();
-                } else if (response.status === 202) {
-                  const body = response.body;
-                  if (typeof body === 'string') {
-                    this.zone.run(() => {
-                      this.checkProgress(body);
-                    });
+        reader.onload = () => {
+          if (reader.result !== null) {
+            this.opmlService
+              .upload(reader.result)
+              .pipe(takeUntil(this.unsubscribe$))
+              .subscribe({
+                next: response => {
+                  if (response.status === 200) {
+                    this.activeModal.close();
+                  } else if (response.status === 202) {
+                    const body = response.body;
+                    if (typeof body === 'string') {
+                      this.zone.run(() => {
+                        this.checkProgress(body);
+                      });
+                    } else {
+                      this.zone.run(() => {
+                        this.uploading = false;
+                      });
+                    }
                   } else {
-                    this.zone.run(() => {
-                      this.uploading = false;
-                    });
+                    this.activeModal.close();
                   }
-                } else {
-                  this.activeModal.close();
-                }
-              },
-              error: error => {
-                this.zone.run(() => {
-                  this.uploading = false;
-                });
+                },
+                error: error => {
+                  this.zone.run(() => {
+                    this.uploading = false;
+                  });
 
-                this.httpErrorService.handleError(error);
-              },
-            });
-        }
-      };
+                  this.httpErrorService.handleError(error);
+                },
+              });
+          }
+        };
 
-      reader.onerror = () => {
-        // TODO show error?
-        this.zone.run(() => {
-          this.uploading = false;
-        });
-      };
+        reader.onerror = () => {
+          // TODO show error?
+          this.zone.run(() => {
+            this.uploading = false;
+          });
+        };
 
-      this.uploading = true;
-      reader.readAsText(file);
-    } else {
-      this.activeModal.dismiss();
+        this.uploading = true;
+        reader.readAsText(file);
+      } else {
+        this.activeModal.dismiss();
+      }
     }
   }
 
