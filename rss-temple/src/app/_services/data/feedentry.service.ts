@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { map } from 'rxjs/operators';
 
-import { utc } from 'moment';
+import * as moment from 'moment';
 
 import { FeedEntry } from '@app/_models';
 import { sessionToken } from '@app/_modules/session.module';
@@ -69,7 +69,7 @@ function toFeedEntry(value: Record<string, any>) {
     if (createdAt === null) {
       feedEntry.createdAt = null;
     } else if (typeof createdAt === 'string') {
-      const _moment = utc(createdAt, 'YYYY-MM-DD HH:mm:ss');
+      const _moment = moment.utc(createdAt, 'YYYY-MM-DD HH:mm:ss');
       if (_moment.isValid()) {
         feedEntry.createdAt = _moment;
       } else {
@@ -83,7 +83,7 @@ function toFeedEntry(value: Record<string, any>) {
   if (value.hasOwnProperty('publishedAt')) {
     const publishedAt = value['publishedAt'];
     if (typeof publishedAt === 'string') {
-      const _moment = utc(publishedAt, 'YYYY-MM-DD HH:mm:ss');
+      const _moment = moment.utc(publishedAt, 'YYYY-MM-DD HH:mm:ss');
       if (_moment.isValid()) {
         feedEntry.publishedAt = _moment;
       } else {
@@ -99,7 +99,7 @@ function toFeedEntry(value: Record<string, any>) {
     if (updatedAt === null) {
       feedEntry.updatedAt = null;
     } else if (typeof updatedAt === 'string') {
-      const _moment = utc(updatedAt, 'YYYY-MM-DD HH:mm:ss');
+      const _moment = moment.utc(updatedAt, 'YYYY-MM-DD HH:mm:ss');
       if (_moment.isValid()) {
         feedEntry.updatedAt = _moment;
       } else {

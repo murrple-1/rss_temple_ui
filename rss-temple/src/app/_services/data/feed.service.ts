@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { map } from 'rxjs/operators';
 
-import { utc } from 'moment';
+import * as moment from 'moment';
 
 import { Feed } from '@app/_models';
 import { sessionToken } from '@app/_modules/session.module';
@@ -80,7 +80,7 @@ function toFeed(value: Record<string, any>) {
   if (value.hasOwnProperty('publishedAt')) {
     const publishedAt = value['publishedAt'];
     if (typeof publishedAt === 'string') {
-      const _moment = utc(publishedAt, 'YYYY-MM-DD HH:mm:ss');
+      const _moment = moment.utc(publishedAt, 'YYYY-MM-DD HH:mm:ss');
       if (_moment.isValid()) {
         feed.publishedAt = _moment;
       } else {
@@ -96,7 +96,7 @@ function toFeed(value: Record<string, any>) {
     if (updatedAt === null) {
       feed.updatedAt = null;
     } else if (typeof updatedAt === 'string') {
-      const _moment = utc(updatedAt, 'YYYY-MM-DD HH:mm:ss');
+      const _moment = moment.utc(updatedAt, 'YYYY-MM-DD HH:mm:ss');
       if (_moment.isValid()) {
         feed.updatedAt = _moment;
       } else {
