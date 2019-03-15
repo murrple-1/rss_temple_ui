@@ -13,11 +13,11 @@ import { HttpErrorService } from '@app/_services';
   styleUrls: ['resetpassword.component.scss'],
 })
 export class ResetPasswordComponent implements OnInit, OnDestroy {
+  private static readonly timeoutInterval = 2000;
+
   token: string | null = null;
 
   resetPasswordForm: FormGroup;
-
-  private static readonly timeoutInterval = 2000;
 
   private unsubscribe$ = new Subject<void>();
 
