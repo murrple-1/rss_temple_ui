@@ -1,11 +1,11 @@
-import * as moment from 'moment';
+import * as dayjs from 'dayjs';
 
 export class FeedEntry {
   uuid?: string;
   id?: string | null;
-  createdAt?: moment.Moment | null;
-  publishedAt?: moment.Moment;
-  updatedAt?: moment.Moment | null;
+  createdAt?: dayjs.Dayjs | null;
+  publishedAt?: dayjs.Dayjs;
+  updatedAt?: dayjs.Dayjs | null;
   title?: string;
   url?: string;
   content?: string | null;

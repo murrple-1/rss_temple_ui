@@ -1,12 +1,12 @@
-import * as moment from 'moment';
+import * as dayjs from 'dayjs';
 
 export class Feed {
   uuid?: string;
   title?: string;
   feedUrl?: string;
   homeUrl?: string | null;
-  publishedAt?: moment.Moment;
-  updatedAt?: moment.Moment | null;
+  publishedAt?: dayjs.Dayjs;
+  updatedAt?: dayjs.Dayjs | null;
   subscribed?: boolean;
   customTitle?: string;
   calculatedTitle?: string;

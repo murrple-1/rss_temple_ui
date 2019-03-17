@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { map } from 'rxjs/operators';
 
-import * as moment from 'moment';
+import * as dayjs from 'dayjs';
 
 import { FeedEntry } from '@app/_models';
 import { sessionToken } from '@app/_modules/session.module';
@@ -69,9 +69,12 @@ function toFeedEntry(value: Record<string, any>) {
     if (createdAt === null) {
       feedEntry.createdAt = null;
     } else if (typeof createdAt === 'string') {
-      const _moment = moment.utc(createdAt, 'YYYY-MM-DD HH:mm:ss');
-      if (_moment.isValid()) {
-        feedEntry.createdAt = _moment;
+      const _dayjs = dayjs(createdAt, {
+        format: 'YYYY-MM-DD HH:mm:ss',
+        utc: true,
+      });
+      if (_dayjs.isValid()) {
+        feedEntry.createdAt = _dayjs;
       } else {
         throw new Error("'createdAt' invalid");
       }
@@ -83,9 +86,12 @@ function toFeedEntry(value: Record<string, any>) {
   if (value.hasOwnProperty('publishedAt')) {
     const publishedAt = value['publishedAt'];
     if (typeof publishedAt === 'string') {
-      const _moment = moment.utc(publishedAt, 'YYYY-MM-DD HH:mm:ss');
-      if (_moment.isValid()) {
-        feedEntry.publishedAt = _moment;
+      const _dayjs = dayjs(publishedAt, {
+        format: 'YYYY-MM-DD HH:mm:ss',
+        utc: true,
+      });
+      if (_dayjs.isValid()) {
+        feedEntry.publishedAt = _dayjs;
       } else {
         throw new Error("'publishedAt' invalid");
       }
@@ -99,9 +105,12 @@ function toFeedEntry(value: Record<string, any>) {
     if (updatedAt === null) {
       feedEntry.updatedAt = null;
     } else if (typeof updatedAt === 'string') {
-      const _moment = moment.utc(updatedAt, 'YYYY-MM-DD HH:mm:ss');
-      if (_moment.isValid()) {
-        feedEntry.updatedAt = _moment;
+      const _dayjs = dayjs(updatedAt, {
+        format: 'YYYY-MM-DD HH:mm:ss',
+        utc: true,
+      });
+      if (_dayjs.isValid()) {
+        feedEntry.updatedAt = _dayjs;
       } else {
         throw new Error("'updatedAt' invalid");
       }

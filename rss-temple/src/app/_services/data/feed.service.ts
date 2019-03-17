@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { map } from 'rxjs/operators';
 
-import * as moment from 'moment';
+import * as dayjs from 'dayjs';
 
 import { Feed } from '@app/_models';
 import { sessionToken } from '@app/_modules/session.module';
@@ -80,9 +80,12 @@ function toFeed(value: Record<string, any>) {
   if (value.hasOwnProperty('publishedAt')) {
     const publishedAt = value['publishedAt'];
     if (typeof publishedAt === 'string') {
-      const _moment = moment.utc(publishedAt, 'YYYY-MM-DD HH:mm:ss');
-      if (_moment.isValid()) {
-        feed.publishedAt = _moment;
+      const _dayjs = dayjs(publishedAt, {
+        format: 'YYYY-MM-DD HH:mm:ss',
+        utc: true,
+      });
+      if (_dayjs.isValid()) {
+        feed.publishedAt = _dayjs;
       } else {
         throw new Error("'publishedAt' invalid");
       }
@@ -96,9 +99,12 @@ function toFeed(value: Record<string, any>) {
     if (updatedAt === null) {
       feed.updatedAt = null;
     } else if (typeof updatedAt === 'string') {
-      const _moment = moment.utc(updatedAt, 'YYYY-MM-DD HH:mm:ss');
-      if (_moment.isValid()) {
-        feed.updatedAt = _moment;
+      const _dayjs = dayjs(updatedAt, {
+        format: 'YYYY-MM-DD HH:mm:ss',
+        utc: true,
+      });
+      if (_dayjs.isValid()) {
+        feed.updatedAt = _dayjs;
       } else {
         throw new Error("'updatedAt' invalid");
       }
