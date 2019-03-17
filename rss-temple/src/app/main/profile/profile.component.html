@@ -61,7 +61,10 @@
             formControlName="newPasswordCheck"
           />
         </div>
-        <div *ngIf="profileForm.errors.passwordErrors" class="invalid">
+        <div
+          *ngIf="profileForm.errors && profileForm.errors.passwordErrors"
+          class="invalid"
+        >
           <div *ngIf="profileForm.errors.passwordErrors.tooShort">
             New Password is too short
           </div>
