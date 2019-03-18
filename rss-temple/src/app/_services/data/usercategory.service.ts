@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 
 import { UserCategory } from '@app/_models';
 import { sessionToken } from '@app/_modules/session.module';
-import { Objects, toObjects } from '@app/_services/data/objects';
+import { toObjects } from '@app/_services/data/objects';
 import {
   GetOptions,
   toHeader as getToHeader,
@@ -22,12 +22,17 @@ import {
   CommonOptions,
   toHeader as commonToHeader,
 } from '@app/_services/data/common.interface';
+import { JsonValue, isJsonObject } from '@app/_services/data/json.type';
 
 import { environment } from '@environments/environment';
 
 export type Field = keyof UserCategory;
 
-function toUserCategory(value: Record<string, any>) {
+function toUserCategory(value: JsonValue) {
+  if (!isJsonObject(value)) {
+    throw new Error('JSON must be object');
+  }
+
   const userCategory = new UserCategory();
 
   if (value['uuid'] !== undefined) {
@@ -64,11 +69,11 @@ export class UserCategoryService {
     const params = getToParams(options, () => ['uuid']);
 
     return this.http
-      .get(`${environment.apiHost}/api/usercategory/${uuid}`, {
+      .get<JsonValue>(`${environment.apiHost}/api/usercategory/${uuid}`, {
         headers: headers,
         params: params,
       })
-      .pipe<UserCategory>(map(toUserCategory));
+      .pipe(map(toUserCategory));
   }
 
   query(options: QueryOptions<Field> = {}) {
@@ -76,12 +81,14 @@ export class UserCategoryService {
     const body = queryToBody(options, () => ['uuid']);
 
     return this.http
-      .post(`${environment.apiHost}/api/usercategories/query`, body, {
-        headers: headers,
-      })
-      .pipe<Objects<UserCategory>>(
-        map(retObj => toObjects<UserCategory>(retObj, toUserCategory)),
-      );
+      .post<JsonValue>(
+        `${environment.apiHost}/api/usercategories/query`,
+        body,
+        {
+          headers: headers,
+        },
+      )
+      .pipe(map(retObj => toObjects(retObj, toUserCategory)));
   }
 
   queryAll(options: AllOptions<Field> = {}, pageSize = 1000) {
@@ -92,10 +99,14 @@ export class UserCategoryService {
     const headers = commonToHeader(options, sessionToken);
 
     return this.http
-      .post(`${environment.apiHost}/api/usercategory`, userCategoryJson, {
-        headers: headers,
-        responseType: 'json',
-      })
-      .pipe<UserCategory>(map(toUserCategory));
+      .post<JsonValue>(
+        `${environment.apiHost}/api/usercategory`,
+        userCategoryJson,
+        {
+          headers: headers,
+          responseType: 'json',
+        },
+      )
+      .pipe(map(toUserCategory));
   }
 }

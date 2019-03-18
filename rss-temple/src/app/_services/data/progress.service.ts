@@ -8,6 +8,7 @@ import {
   CommonOptions,
   toHeader as commonToHeader,
 } from '@app/_services/data/common.interface';
+import { JsonValue, isJsonObject } from '@app/_services/data/json.type';
 
 import { environment } from '@environments/environment';
 
@@ -17,12 +18,21 @@ export interface ProgressInterface {
   finishedCount: number;
 }
 
-function toProgressInterface(value: Record<string, any>): ProgressInterface {
+function toProgressInterface(value: JsonValue): ProgressInterface {
+  if (!isJsonObject(value)) {
+    throw new Error('JSON must be object');
+  }
+
   if (value['state'] === undefined) {
     throw new Error("'state' missing");
   }
 
-  if (!['notstarted', 'started', 'finished'].includes(value['state'])) {
+  const state = value['state'];
+  if (typeof state !== 'string') {
+    throw new Error("'state' must be string");
+  }
+
+  if (!['notstarted', 'started', 'finished'].includes(state)) {
     throw new Error("'state' malformed");
   }
 
@@ -42,7 +52,7 @@ function toProgressInterface(value: Record<string, any>): ProgressInterface {
     throw new Error("'finishedCount' must be number");
   }
 
-  return value as ProgressInterface;
+  return (value as unknown) as ProgressInterface;
 }
 
 @Injectable()
@@ -53,9 +63,12 @@ export class ProgressService {
     const headers = commonToHeader(options, sessionToken);
 
     return this.http
-      .get(`${environment.apiHost}/api/feed/subscribe/progress/${uuid}`, {
-        headers: headers,
-      })
+      .get<JsonValue>(
+        `${environment.apiHost}/api/feed/subscribe/progress/${uuid}`,
+        {
+          headers: headers,
+        },
+      )
       .pipe(map(toProgressInterface));
   }
 }

@@ -1,14 +1,15 @@
 import { Observable, forkJoin } from 'rxjs';
 import { map, flatMap } from 'rxjs/operators';
 
-import { Objects, toObjects } from '@app/_services/data/objects';
+import { Objects } from '@app/_services/data/objects';
 import { AllOptions } from '@app/_services/data/all.interface';
 import { QueryOptions } from '@app/_services/data/query.interface';
+import { JsonValue } from '@app/_services/data/json.type';
 
 export function queryAllFn<Field, T>(
   options: AllOptions<Field>,
   queryFn: (options: QueryOptions<Field>) => Observable<Objects<T>>,
-  toFn: (t: Object) => T,
+  toFn: (t: JsonValue) => T,
   pageSize: number,
 ) {
   return queryFn({
@@ -22,20 +23,18 @@ export function queryAllFn<Field, T>(
     sessionToken: options.sessionToken,
   }).pipe(
     flatMap(retObj => {
-      const firstObjs = toObjects<T>(retObj, toFn);
-
       const allCalls: Observable<Objects<T>>[] = [];
 
       allCalls.push(
         new Observable<Objects<T>>(observer => {
-          observer.next(firstObjs);
+          observer.next(retObj);
           observer.complete();
         }),
       );
 
       let skip = pageSize;
 
-      while (firstObjs.totalCount && skip < firstObjs.totalCount) {
+      while (retObj.totalCount && skip < retObj.totalCount) {
         allCalls.push(
           queryFn({
             count: pageSize,
@@ -59,9 +58,8 @@ export function queryAllFn<Field, T>(
           objs.objects = [];
 
           for (const _retObj of allRetObjs) {
-            const obj = toObjects<T>(_retObj, toFn);
-            if (obj.objects) {
-              objs.objects.push(...obj.objects);
+            if (_retObj.objects) {
+              objs.objects.push(..._retObj.objects);
             }
           }
 

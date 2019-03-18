@@ -7,7 +7,7 @@ import * as dayjs from 'dayjs';
 
 import { FeedEntry } from '@app/_models';
 import { sessionToken } from '@app/_modules/session.module';
-import { Objects, toObjects } from '@app/_services/data/objects';
+import { toObjects } from '@app/_services/data/objects';
 import {
   GetOptions,
   toHeader as getToHeader,
@@ -24,12 +24,17 @@ import {
   CommonOptions,
   toHeader as commonToHeader,
 } from '@app/_services/data/common.interface';
+import { JsonValue, isJsonObject } from '@app/_services/data/json.type';
 
 import { environment } from '@environments/environment';
 
 export type Field = keyof FeedEntry;
 
-function toFeedEntry(value: Record<string, any>) {
+function toFeedEntry(value: JsonValue) {
+  if (!isJsonObject(value)) {
+    throw new Error('JSON must be object');
+  }
+
   const feedEntry = new FeedEntry();
 
   if (value['uuid'] !== undefined) {
@@ -186,7 +191,7 @@ export class FeedEntryService {
     const params = getToParams(options, () => ['uuid']);
 
     return this.http
-      .get(`${environment.apiHost}/api/feedentry/${uuid}`, {
+      .get<JsonValue>(`${environment.apiHost}/api/feedentry/${uuid}`, {
         headers: headers,
         params: params,
       })
@@ -198,7 +203,7 @@ export class FeedEntryService {
     const body = queryToBody(options, () => ['uuid']);
 
     return this.http
-      .post(`${environment.apiHost}/api/feedentries/query`, body, {
+      .post<JsonValue>(`${environment.apiHost}/api/feedentries/query`, body, {
         headers: headers,
       })
       .pipe(map(retObj => toObjects<FeedEntry>(retObj, toFeedEntry)));

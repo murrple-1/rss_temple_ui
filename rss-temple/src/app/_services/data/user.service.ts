@@ -10,13 +10,22 @@ import {
   toHeader as getToHeader,
   toParams as getToParams,
 } from '@app/_services/data/get.interface';
+import { CommonOptions, toHeader } from '@app/_services/data/common.interface';
+import {
+  JsonValue,
+  isJsonObject,
+  isJsonArray,
+} from '@app/_services/data/json.type';
 
 import { environment } from '@environments/environment';
-import { CommonOptions, toHeader } from './common.interface';
 
 export type Field = keyof User;
 
-function toUser(value: Record<string, any>) {
+function toUser(value: JsonValue) {
+  if (!isJsonObject(value)) {
+    throw new Error('JSON must be object');
+  }
+
   const user = new User();
 
   if (value['uuid'] !== undefined) {
@@ -57,14 +66,14 @@ function toUser(value: Record<string, any>) {
 
   if (value['subscribedFeedUuids'] !== undefined) {
     const subscribedFeedUuids = value['subscribedFeedUuids'];
-    if (Array.isArray(subscribedFeedUuids)) {
+    if (isJsonArray(subscribedFeedUuids)) {
       for (const element of subscribedFeedUuids) {
         if (typeof element !== 'string') {
           throw new Error("'subscribedFeedUuids' element must be string");
         }
       }
 
-      user.subscribedFeedUuids = value['subscribedFeedUuids'];
+      user.subscribedFeedUuids = subscribedFeedUuids as string[];
     } else {
       throw new Error("'subscribedFeedUuids' must be array");
     }
@@ -98,11 +107,11 @@ export class UserService {
     const params = getToParams(options, () => ['uuid']);
 
     return this.http
-      .get(`${environment.apiHost}/api/user`, {
+      .get<JsonValue>(`${environment.apiHost}/api/user`, {
         headers: headers,
         params: params,
       })
-      .pipe<User>(map(toUser));
+      .pipe(map(toUser));
   }
 
   update(body: UpdateUserBody, options: CommonOptions = {}) {

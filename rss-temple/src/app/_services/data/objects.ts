@@ -1,12 +1,22 @@
+import {
+  JsonValue,
+  isJsonObject,
+  isJsonArray,
+} from '@app/_services/data/json.type';
+
 export class Objects<T> {
   totalCount?: number;
   objects?: T[];
 }
 
 export function toObjects<T>(
-  value: Record<string, any>,
-  fn: (t: Record<string, any>) => T,
+  value: JsonValue,
+  fn: (t: JsonValue) => T,
 ): Objects<T> {
+  if (!isJsonObject(value)) {
+    throw new Error('JSON must be object');
+  }
+
   const objs = new Objects<T>();
 
   if (value['totalCount'] !== undefined) {
@@ -20,12 +30,12 @@ export function toObjects<T>(
 
   if (value['objects'] !== undefined) {
     const objects = value['objects'];
-    if (Array.isArray(objects)) {
+    if (isJsonArray(objects)) {
       const _objects: T[] = [];
       for (const obj of objects) {
         _objects.push(fn(obj));
       }
-      objs.objects = objects;
+      objs.objects = _objects;
     } else {
       throw new Error("'objects' must be number");
     }
