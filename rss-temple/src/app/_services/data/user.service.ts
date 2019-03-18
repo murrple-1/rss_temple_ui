@@ -67,10 +67,8 @@ function toUser(value: JsonValue) {
   if (value['subscribedFeedUuids'] !== undefined) {
     const subscribedFeedUuids = value['subscribedFeedUuids'];
     if (isJsonArray(subscribedFeedUuids)) {
-      for (const element of subscribedFeedUuids) {
-        if (typeof element !== 'string') {
-          throw new Error("'subscribedFeedUuids' element must be string");
-        }
+      if (subscribedFeedUuids.some(elem => typeof elem !== 'string')) {
+        throw new Error("'subscribedFeedUuids' element must be string");
       }
 
       user.subscribedFeedUuids = subscribedFeedUuids as string[];

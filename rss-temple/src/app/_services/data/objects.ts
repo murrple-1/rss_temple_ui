@@ -31,11 +31,7 @@ export function toObjects<T>(
   if (value['objects'] !== undefined) {
     const objects = value['objects'];
     if (isJsonArray(objects)) {
-      const _objects: T[] = [];
-      for (const obj of objects) {
-        _objects.push(fn(obj));
-      }
-      objs.objects = _objects;
+      objs.objects = objects.map(fn);
     } else {
       throw new Error("'objects' must be number");
     }
