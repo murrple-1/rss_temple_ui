@@ -27,16 +27,7 @@ import {
 
 import { environment } from '@environments/environment';
 
-export type Field =
-  | 'uuid'
-  | 'title'
-  | 'feedUrl'
-  | 'homeUrl'
-  | 'publishedAt'
-  | 'updatedAt'
-  | 'subscribed'
-  | 'customTitle'
-  | 'calculatedTitle';
+export type Field = keyof Feed;
 
 function toFeed(value: Record<string, any>) {
   const feed = new Feed();

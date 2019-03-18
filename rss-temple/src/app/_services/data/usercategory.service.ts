@@ -25,7 +25,7 @@ import {
 
 import { environment } from '@environments/environment';
 
-export type Field = 'uuid' | 'text' | 'feedUuids';
+export type Field = keyof UserCategory;
 
 function toUserCategory(value: Record<string, any>) {
   const userCategory = new UserCategory();
