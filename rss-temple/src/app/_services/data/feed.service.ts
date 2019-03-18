@@ -32,7 +32,7 @@ export type Field = keyof Feed;
 function toFeed(value: Record<string, any>) {
   const feed = new Feed();
 
-  if (value.hasOwnProperty('uuid')) {
+  if (value['uuid'] !== undefined) {
     const uuid = value['uuid'];
     if (typeof uuid === 'string') {
       feed.uuid = uuid;
@@ -41,7 +41,7 @@ function toFeed(value: Record<string, any>) {
     }
   }
 
-  if (value.hasOwnProperty('title')) {
+  if (value['title'] !== undefined) {
     const title = value['title'];
     if (typeof title === 'string') {
       feed.title = title;
@@ -50,7 +50,7 @@ function toFeed(value: Record<string, any>) {
     }
   }
 
-  if (value.hasOwnProperty('feedUrl')) {
+  if (value['feedUrl'] !== undefined) {
     const feedUrl = value['feedUrl'];
     if (typeof feedUrl === 'string') {
       feed.feedUrl = feedUrl;
@@ -59,7 +59,7 @@ function toFeed(value: Record<string, any>) {
     }
   }
 
-  if (value.hasOwnProperty('homeUrl')) {
+  if (value['homeUrl'] !== undefined) {
     const homeUrl = value['homeUrl'];
     if (homeUrl === null || typeof homeUrl === 'string') {
       feed.homeUrl = homeUrl;
@@ -68,7 +68,7 @@ function toFeed(value: Record<string, any>) {
     }
   }
 
-  if (value.hasOwnProperty('publishedAt')) {
+  if (value['publishedAt'] !== undefined) {
     const publishedAt = value['publishedAt'];
     if (typeof publishedAt === 'string') {
       const _dayjs = dayjs(publishedAt, {
@@ -85,7 +85,7 @@ function toFeed(value: Record<string, any>) {
     }
   }
 
-  if (value.hasOwnProperty('updatedAt')) {
+  if (value['updatedAt'] !== undefined) {
     const updatedAt = value['updatedAt'];
     if (updatedAt === null) {
       feed.updatedAt = null;
@@ -104,7 +104,7 @@ function toFeed(value: Record<string, any>) {
     }
   }
 
-  if (value.hasOwnProperty('subscribed')) {
+  if (value['subscribed'] !== undefined) {
     const subscribed = value['subscribed'];
     if (typeof subscribed === 'boolean') {
       feed.subscribed = subscribed;
@@ -113,7 +113,7 @@ function toFeed(value: Record<string, any>) {
     }
   }
 
-  if (value.hasOwnProperty('customTitle')) {
+  if (value['customTitle'] !== undefined) {
     const customTitle = value['customTitle'];
     if (typeof customTitle === 'string') {
       feed.customTitle = customTitle;
@@ -122,7 +122,7 @@ function toFeed(value: Record<string, any>) {
     }
   }
 
-  if (value.hasOwnProperty('calculatedTitle')) {
+  if (value['calculatedTitle'] !== undefined) {
     const calculatedTitle = value['calculatedTitle'];
     if (typeof calculatedTitle === 'string') {
       feed.calculatedTitle = calculatedTitle;
@@ -148,7 +148,7 @@ export class FeedService {
         headers: headers,
         params: params,
       })
-      .pipe<Feed>(map(toFeed));
+      .pipe(map(toFeed));
   }
 
   query(options: QueryOptions<Field> = {}) {
@@ -159,7 +159,7 @@ export class FeedService {
       .post(`${environment.apiHost}/api/feeds/query`, body, {
         headers: headers,
       })
-      .pipe<Objects<Feed>>(map(retObj => toObjects<Feed>(retObj, toFeed)));
+      .pipe(map(retObj => toObjects<Feed>(retObj, toFeed)));
   }
 
   queryAll(options: AllOptions<Field> = {}, pageSize = 1000) {

@@ -5,11 +5,11 @@ export class Objects<T> {
 
 export function toObjects<T>(
   value: Record<string, any>,
-  fn: (t: Object) => T,
+  fn: (t: Record<string, any>) => T,
 ): Objects<T> {
   const objs = new Objects<T>();
 
-  if (value.hasOwnProperty('totalCount')) {
+  if (value['totalCount'] !== undefined) {
     const totalCount = value['totalCount'];
     if (typeof totalCount === 'number') {
       objs.totalCount = totalCount;
@@ -18,7 +18,7 @@ export function toObjects<T>(
     }
   }
 
-  if (value.hasOwnProperty('objects')) {
+  if (value['objects'] !== undefined) {
     const objects = value['objects'];
     if (Array.isArray(objects)) {
       const _objects: T[] = [];

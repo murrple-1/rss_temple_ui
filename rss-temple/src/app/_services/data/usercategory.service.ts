@@ -30,7 +30,7 @@ export type Field = keyof UserCategory;
 function toUserCategory(value: Record<string, any>) {
   const userCategory = new UserCategory();
 
-  if (value.hasOwnProperty('uuid')) {
+  if (value['uuid'] !== undefined) {
     const uuid = value['uuid'];
     if (typeof uuid === 'string') {
       userCategory.uuid = uuid;
@@ -39,7 +39,7 @@ function toUserCategory(value: Record<string, any>) {
     }
   }
 
-  if (value.hasOwnProperty('text')) {
+  if (value['text'] !== undefined) {
     const text = value['text'];
     if (typeof text === 'string') {
       userCategory.text = text;

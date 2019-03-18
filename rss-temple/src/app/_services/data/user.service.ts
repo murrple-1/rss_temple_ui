@@ -19,7 +19,7 @@ export type Field = keyof User;
 function toUser(value: Record<string, any>) {
   const user = new User();
 
-  if (value.hasOwnProperty('uuid')) {
+  if (value['uuid'] !== undefined) {
     const uuid = value['uuid'];
     if (typeof uuid === 'string') {
       user.uuid = uuid;
@@ -28,7 +28,7 @@ function toUser(value: Record<string, any>) {
     }
   }
 
-  if (value.hasOwnProperty('email')) {
+  if (value['email'] !== undefined) {
     const email = value['email'];
     if (typeof email === 'string') {
       user.email = email;
@@ -37,7 +37,7 @@ function toUser(value: Record<string, any>) {
     }
   }
 
-  if (value.hasOwnProperty('hasGoogleLogin')) {
+  if (value['hasGoogleLogin'] !== undefined) {
     const hasGoogleLogin = value['hasGoogleLogin'];
     if (typeof hasGoogleLogin === 'boolean') {
       user.hasGoogleLogin = hasGoogleLogin;
@@ -46,7 +46,7 @@ function toUser(value: Record<string, any>) {
     }
   }
 
-  if (value.hasOwnProperty('hasFacebookLogin')) {
+  if (value['hasFacebookLogin'] !== undefined) {
     const hasFacebookLogin = value['hasFacebookLogin'];
     if (typeof hasFacebookLogin === 'boolean') {
       user.hasFacebookLogin = hasFacebookLogin;
@@ -55,14 +55,14 @@ function toUser(value: Record<string, any>) {
     }
   }
 
-  if (value.hasOwnProperty('subscribedFeedUuids')) {
+  if (value['subscribedFeedUuids'] !== undefined) {
     const subscribedFeedUuids = value['subscribedFeedUuids'];
     if (Array.isArray(subscribedFeedUuids)) {
-      subscribedFeedUuids.forEach(element => {
+      for (const element of subscribedFeedUuids) {
         if (typeof element !== 'string') {
           throw new Error("'subscribedFeedUuids' element must be string");
         }
-      });
+      }
 
       user.subscribedFeedUuids = value['subscribedFeedUuids'];
     } else {

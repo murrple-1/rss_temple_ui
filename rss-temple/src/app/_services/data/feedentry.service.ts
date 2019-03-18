@@ -32,7 +32,7 @@ export type Field = keyof FeedEntry;
 function toFeedEntry(value: Record<string, any>) {
   const feedEntry = new FeedEntry();
 
-  if (value.hasOwnProperty('uuid')) {
+  if (value['uuid'] !== undefined) {
     const uuid = value['uuid'];
     if (typeof uuid === 'string') {
       feedEntry.uuid = uuid;
@@ -41,7 +41,7 @@ function toFeedEntry(value: Record<string, any>) {
     }
   }
 
-  if (value.hasOwnProperty('id')) {
+  if (value['id'] !== undefined) {
     const id = value['id'];
     if (id === null) {
       feedEntry.id = null;
@@ -52,7 +52,7 @@ function toFeedEntry(value: Record<string, any>) {
     }
   }
 
-  if (value.hasOwnProperty('createdAt')) {
+  if (value['createdAt'] !== undefined) {
     const createdAt = value['createdAt'];
     if (createdAt === null) {
       feedEntry.createdAt = null;
@@ -71,7 +71,7 @@ function toFeedEntry(value: Record<string, any>) {
     }
   }
 
-  if (value.hasOwnProperty('publishedAt')) {
+  if (value['publishedAt'] !== undefined) {
     const publishedAt = value['publishedAt'];
     if (typeof publishedAt === 'string') {
       const _dayjs = dayjs(publishedAt, {
@@ -88,7 +88,7 @@ function toFeedEntry(value: Record<string, any>) {
     }
   }
 
-  if (value.hasOwnProperty('updatedAt')) {
+  if (value['updatedAt'] !== undefined) {
     const updatedAt = value['updatedAt'];
     if (updatedAt === null) {
       feedEntry.updatedAt = null;
@@ -107,7 +107,7 @@ function toFeedEntry(value: Record<string, any>) {
     }
   }
 
-  if (value.hasOwnProperty('title')) {
+  if (value['title'] !== undefined) {
     const title = value['title'];
     if (typeof title === 'string') {
       feedEntry.title = title;
@@ -116,7 +116,7 @@ function toFeedEntry(value: Record<string, any>) {
     }
   }
 
-  if (value.hasOwnProperty('url')) {
+  if (value['url'] !== undefined) {
     const url = value['url'];
     if (typeof url === 'string') {
       feedEntry.url = url;
@@ -125,7 +125,7 @@ function toFeedEntry(value: Record<string, any>) {
     }
   }
 
-  if (value.hasOwnProperty('content')) {
+  if (value['content'] !== undefined) {
     const content = value['content'];
     if (content === null) {
       feedEntry.content = null;
@@ -136,7 +136,7 @@ function toFeedEntry(value: Record<string, any>) {
     }
   }
 
-  if (value.hasOwnProperty('authorName')) {
+  if (value['authorName'] !== undefined) {
     const authorName = value['authorName'];
     if (authorName === null) {
       feedEntry.authorName = null;
@@ -147,7 +147,7 @@ function toFeedEntry(value: Record<string, any>) {
     }
   }
 
-  if (value.hasOwnProperty('fromSubscription')) {
+  if (value['fromSubscription'] !== undefined) {
     const fromSubscription = value['fromSubscription'];
     if (typeof fromSubscription === 'boolean') {
       feedEntry.fromSubscription = fromSubscription;
@@ -156,7 +156,7 @@ function toFeedEntry(value: Record<string, any>) {
     }
   }
 
-  if (value.hasOwnProperty('isRead')) {
+  if (value['isRead'] !== undefined) {
     const isRead = value['isRead'];
     if (typeof isRead === 'boolean') {
       feedEntry.fromSubscription = isRead;
@@ -165,7 +165,7 @@ function toFeedEntry(value: Record<string, any>) {
     }
   }
 
-  if (value.hasOwnProperty('isFavorite')) {
+  if (value['isFavorite'] !== undefined) {
     const isFavorite = value['isFavorite'];
     if (typeof isFavorite === 'boolean') {
       feedEntry.fromSubscription = isFavorite;
@@ -190,7 +190,7 @@ export class FeedEntryService {
         headers: headers,
         params: params,
       })
-      .pipe<FeedEntry>(map(toFeedEntry));
+      .pipe(map(toFeedEntry));
   }
 
   query(options: QueryOptions<Field> = {}) {
@@ -201,9 +201,7 @@ export class FeedEntryService {
       .post(`${environment.apiHost}/api/feedentries/query`, body, {
         headers: headers,
       })
-      .pipe<Objects<FeedEntry>>(
-        map(retObj => toObjects<FeedEntry>(retObj, toFeedEntry)),
-      );
+      .pipe(map(retObj => toObjects<FeedEntry>(retObj, toFeedEntry)));
   }
 
   queryAll(options: AllOptions<Field> = {}, pageSize = 1000) {
