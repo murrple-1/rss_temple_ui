@@ -4,4 +4,29 @@
       <h2>Reset Password</h2>
     </div>
   </div>
+  <div class="row">
+    <div class="col-md-4 offset-md-4">
+      <ng-container *ngIf="state === State.Sending">
+        <div>Sending...</div>
+      </ng-container>
+      <ng-container *ngIf="state === State.Success">
+        <div>Success</div>
+        <ng-container *ngTemplateOutlet="backToLoginPage"></ng-container>
+      </ng-container>
+      <ng-container *ngIf="state === State.Error">
+        <div class="error">Error</div>
+        <ng-container *ngTemplateOutlet="backToLoginPage"></ng-container>
+      </ng-container>
+      <ng-container *ngIf="state === State.NoToken">
+        <div>No Token</div>
+        <ng-container *ngTemplateOutlet="backToLoginPage"></ng-container>
+      </ng-container>
+    </div>
+  </div>
 </div>
+
+<ng-template #backToLoginPage>
+  <div>
+    <a routerLink="/login">Back to Login page</a>
+  </div>
+</ng-template>
