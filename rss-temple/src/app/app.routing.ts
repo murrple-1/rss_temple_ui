@@ -16,12 +16,10 @@ const routes: Routes = [
   {
     path: 'resetpassword',
     component: ResetPasswordComponent,
-    canActivate: [NoAuthGuard],
   },
   {
     path: 'verify',
     component: VerifyComponent,
-    canActivate: [NoAuthGuard],
   },
   {
     path: 'main',

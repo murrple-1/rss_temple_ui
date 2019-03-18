@@ -1,12 +1,22 @@
-﻿import { Component, OnInit, OnDestroy } from '@angular/core';
+﻿import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, ValidationErrors } from '@angular/forms';
 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { PasswordResetTokenService } from '@app/_services/data';
 import { HttpErrorService } from '@app/_services';
+import { HttpErrorResponse } from '@angular/common/http';
+
+enum State {
+  NotStarted,
+  Sending,
+  Success,
+  BadToken,
+  Error,
+  NoToken,
+}
 
 @Component({
   templateUrl: 'resetpassword.component.html',
@@ -15,7 +25,10 @@ import { HttpErrorService } from '@app/_services';
 export class ResetPasswordComponent implements OnInit, OnDestroy {
   private static readonly timeoutInterval = 2000;
 
-  token: string | null = null;
+  state = State.NotStarted;
+  readonly State = State;
+
+  private token: string | null = null;
 
   resetPasswordForm: FormGroup;
 
@@ -25,6 +38,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private zone: NgZone,
     private passwordResetTokenService: PasswordResetTokenService,
     private httpErrorService: HttpErrorService,
   ) {
@@ -34,13 +48,40 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
         newPasswordCheck: [''],
       },
       {
-        validators: [],
+        validators: [ResetPasswordComponent.checkPasswords],
       },
     );
   }
 
+  private static checkPasswords(group: FormGroup) {
+    let passwordErrors: Record<string, any> | null = null;
+
+    const newPassword = group.controls.newPassword.value as string;
+    const newPasswordCheck = group.controls.newPasswordCheck.value as string;
+
+    if (newPassword.length > 0 && newPasswordCheck.length > 0) {
+      if (newPassword.length < 6) {
+        passwordErrors = passwordErrors || {};
+        passwordErrors['tooShort'] = true;
+      } else {
+        if (newPassword !== newPasswordCheck) {
+          passwordErrors = passwordErrors || {};
+          passwordErrors['doesNotMatch'] = true;
+        }
+      }
+    }
+
+    return {
+      passwordErrors: passwordErrors,
+    } as ValidationErrors;
+  }
+
   ngOnInit() {
     this.token = this.activatedRoute.snapshot.queryParamMap.get('token');
+
+    if (this.token === null) {
+      this.state = State.NoToken;
+    }
   }
 
   ngOnDestroy() {
@@ -53,6 +94,16 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if (
+      this.resetPasswordForm.errors &&
+      this.resetPasswordForm.errors.passwordErrors
+    ) {
+      this.state = State.Error;
+      return;
+    }
+
+    this.state = State.Sending;
+
     this.passwordResetTokenService
       .reset({
         token: this.token,
@@ -61,12 +112,26 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => {
+          this.zone.run(() => {
+            this.state = State.Success;
+          });
+
           window.setTimeout(() => {
             this.router.navigate(['/login']);
           }, ResetPasswordComponent.timeoutInterval);
         },
         error: error => {
-          this.httpErrorService.handleError(error);
+          if (error instanceof HttpErrorResponse && error.status === 404) {
+            this.zone.run(() => {
+              this.state = State.BadToken;
+            });
+          } else {
+            this.httpErrorService.handleError(error);
+
+            this.zone.run(() => {
+              this.state = State.Error;
+            });
+          }
         },
       });
   }
