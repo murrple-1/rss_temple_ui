@@ -292,10 +292,10 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@fortawesome/fontawesome-free@^5.7.2":
-  version "5.7.2"
-  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free/-/fontawesome-free-5.7.2.tgz#1498c3eb78ee7c78c5488418707de90aaf58d5d7"
-  integrity sha512-Ha4HshKdCVKgu4TVCtG8XyPPYdzTzNW4/fvPnn+LT7AosRABryhlRv4cc4+o84dgpvVJN9reN7jo/c+nYujFug==
+"@fortawesome/fontawesome-free@^5.8.0":
+  version "5.8.0"
+  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free/-/fontawesome-free-5.8.0.tgz#e22f161b0f95d633f4223b43773241edfcba6fdc"
+  integrity sha512-fWy8Aq/O8sj3EFyeubTsWSdpbmcJiIXoUcO0AaAXazQ0SuxnDQv+Q5tUSJLvEkmuj/x9kRTOKreizQX5GSuwmg==
 
 "@ng-bootstrap/ng-bootstrap@^4.1.0":
   version "4.1.0"
@@ -360,10 +360,10 @@
   resolved "https://registry.yarnpkg.com/@types/jasmine/-/jasmine-3.3.7.tgz#52f2bfe8d2995d4756585d2328c97fbb0fec66e3"
   integrity sha512-TuXyEBYWWrjBZAC4h3YY5NcrgC9HaLO5FogvkY5FOfAyjrk3wWABoH/3p7ooFfA8BHjc2BeQCDvvQBLb+9q1rA==
 
-"@types/jasmine@^3.3.10":
-  version "3.3.10"
-  resolved "https://registry.yarnpkg.com/@types/jasmine/-/jasmine-3.3.10.tgz#5b90c8e74246487e8810100ddc2547ffc94d31f6"
-  integrity sha512-F4yCbIk3Tgj7j+/cR5qtE5rQHVFyd7vOuG4zqeykztN99SSVCKwiPIea2Q/nVJbC6GJXbtaNKSyFVtMCkoRngA==
+"@types/jasmine@^3.3.12":
+  version "3.3.12"
+  resolved "https://registry.yarnpkg.com/@types/jasmine/-/jasmine-3.3.12.tgz#bf282cb540e9ad7a0a04b742082c073b655eab39"
+  integrity sha512-lXvr2xFQEVQLkIhuGaR3GC1L9lMU1IxeWnAF/wNY5ZWpC4p9dgxkKkzMp7pntpAdv9pZSnYqgsBkCg32MXSZMg==
 
 "@types/jasminewd2@^2.0.6":
   version "2.0.6"
