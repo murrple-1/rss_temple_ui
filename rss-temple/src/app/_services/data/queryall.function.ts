@@ -55,12 +55,8 @@ export function queryAllFn<Field, T>(
         map(allRetObjs => {
           const objs = new Objects<T>();
 
-          // TODO replace with `flatMap()` when more browsers support
-          // via https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap#reduce_and_concat
-          objs.objects = allRetObjs.reduce(
-            (arr: T[], _retObj: Objects<T>) =>
-              _retObj.objects ? arr.concat(_retObj.objects) : arr,
-            [],
+          objs.objects = allRetObjs.flatMap(_retObj =>
+            _retObj.objects ? _retObj.objects : [],
           );
 
           if (options.returnTotalCount) {
