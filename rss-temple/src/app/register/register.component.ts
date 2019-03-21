@@ -6,6 +6,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { AlertService, LoginService } from '@app/_services';
+import { isValidPassword } from '@app/_modules/password.module';
 
 @Component({
   templateUrl: 'register.component.html',
@@ -34,7 +35,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
         this.route.snapshot.paramMap.get('email') || '',
         [Validators.required, Validators.email],
       ],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required, isValidPassword()]],
     });
   }
 

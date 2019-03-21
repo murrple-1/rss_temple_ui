@@ -22,6 +22,10 @@ import {
   AlertService,
 } from '@app/_services';
 import { UpdateUserBody } from '@app/_services/data/user.service';
+import {
+  isValidPassword,
+  doPasswordsMatch,
+} from '@app/_modules/password.module';
 
 @Component({
   templateUrl: 'profile.component.html',
@@ -59,41 +63,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
       {
         email: ['', [Validators.email]],
         oldPassword: [''],
-        newPassword: [''],
-        newPasswordCheck: [''],
+        newPassword: ['', [isValidPassword()]],
+        newPasswordCheck: ['', [isValidPassword()]],
       },
       {
-        validators: [ProfileComponent.checkPasswords],
+        validators: [doPasswordsMatch('newPassword', 'newPasswordCheck')],
       },
     );
-  }
-
-  private static checkPasswords(group: FormGroup) {
-    let passwordErrors: Record<string, any> | null = null;
-
-    const oldPassword = group.controls.oldPassword.value as string;
-    const newPassword = group.controls.newPassword.value as string;
-    const newPasswordCheck = group.controls.newPasswordCheck.value as string;
-
-    if (
-      oldPassword.length > 0 &&
-      newPassword.length > 0 &&
-      newPasswordCheck.length > 0
-    ) {
-      if (newPassword.length < 6) {
-        passwordErrors = passwordErrors || {};
-        passwordErrors['tooShort'] = true;
-      } else {
-        if (newPassword !== newPasswordCheck) {
-          passwordErrors = passwordErrors || {};
-          passwordErrors['doesNotMatch'] = true;
-        }
-      }
-    }
-
-    return {
-      passwordErrors: passwordErrors,
-    } as ValidationErrors;
   }
 
   ngOnInit() {

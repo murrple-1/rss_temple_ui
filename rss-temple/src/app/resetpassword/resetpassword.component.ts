@@ -1,13 +1,17 @@
 ﻿import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, FormBuilder, ValidationErrors } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { PasswordResetTokenService } from '@app/_services/data';
 import { HttpErrorService } from '@app/_services';
-import { HttpErrorResponse } from '@angular/common/http';
+import {
+  isValidPassword,
+  doPasswordsMatch,
+} from '@app/_modules/password.module';
 
 enum State {
   NotStarted,
@@ -44,36 +48,13 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   ) {
     this.resetPasswordForm = this.formBuilder.group(
       {
-        newPassword: [''],
-        newPasswordCheck: [''],
+        newPassword: ['', [isValidPassword()]],
+        newPasswordCheck: ['', [isValidPassword()]],
       },
       {
-        validators: [ResetPasswordComponent.checkPasswords],
+        validators: [doPasswordsMatch('newPassword', 'newPasswordCheck')],
       },
     );
-  }
-
-  private static checkPasswords(group: FormGroup) {
-    let passwordErrors: Record<string, any> | null = null;
-
-    const newPassword = group.controls.newPassword.value as string;
-    const newPasswordCheck = group.controls.newPasswordCheck.value as string;
-
-    if (newPassword.length > 0 && newPasswordCheck.length > 0) {
-      if (newPassword.length < 6) {
-        passwordErrors = passwordErrors || {};
-        passwordErrors['tooShort'] = true;
-      } else {
-        if (newPassword !== newPasswordCheck) {
-          passwordErrors = passwordErrors || {};
-          passwordErrors['doesNotMatch'] = true;
-        }
-      }
-    }
-
-    return {
-      passwordErrors: passwordErrors,
-    } as ValidationErrors;
   }
 
   ngOnInit() {
