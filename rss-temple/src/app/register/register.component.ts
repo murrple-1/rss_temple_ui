@@ -49,7 +49,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  onSubmit() {
+  onRegister() {
     this.submitted = true;
     if (this.registerForm.invalid) {
       return;
