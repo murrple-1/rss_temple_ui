@@ -14,11 +14,11 @@
         <ng-container *ngTemplateOutlet="backToLoginPage"></ng-container>
       </ng-container>
       <ng-container *ngIf="state === State.Error">
-        <div class="error">Error</div>
+        <div class="alert alert-danger" role="alert">Error</div>
         <ng-container *ngTemplateOutlet="backToLoginPage"></ng-container>
       </ng-container>
       <ng-container *ngIf="state === State.NoToken">
-        <div class="error">No Token</div>
+        <div class="alert alert-danger" role="alert">No Token</div>
         <ng-container *ngTemplateOutlet="backToLoginPage"></ng-container>
       </ng-container>
     </div>

@@ -1,0 +1,11 @@
+form.ng-invalid div.error-group {
+  display: none;
+}
+
+form.ng-invalid.is-submitted div.error-group {
+  display: initial;
+}
+
+form.is-submitted input.ng-invalid {
+  border-color: #dc3545;
+}

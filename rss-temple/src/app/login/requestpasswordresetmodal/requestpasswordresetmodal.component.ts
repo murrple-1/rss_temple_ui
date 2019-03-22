@@ -9,11 +9,20 @@ import { PasswordResetTokenService } from '@app/_services/data';
 import { takeUntil } from 'rxjs/operators';
 import { HttpErrorService } from '@app/_services';
 
+enum State {
+  NotStarted,
+  Sending,
+  Error,
+}
+
 @Component({
   templateUrl: 'requestpasswordresetmodal.component.html',
   styleUrls: ['requestpasswordresetmodal.component.scss'],
 })
 export class RequestPasswordResetModalComponent implements OnDestroy {
+  state = State.NotStarted;
+  readonly State = State;
+
   forgottenPasswordForm: FormGroup;
 
   submitted = false;
