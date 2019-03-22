@@ -11,6 +11,7 @@ import { HttpErrorService } from '@app/_services';
 import {
   isValidPassword,
   doPasswordsMatch,
+  passwordRequirementsText,
 } from '@app/_modules/password.module';
 
 enum State {
@@ -35,6 +36,10 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   private token: string | null = null;
 
   resetPasswordForm: FormGroup;
+
+  get passwordRequirementsText() {
+    return passwordRequirementsText('en');
+  }
 
   private unsubscribe$ = new Subject<void>();
 
