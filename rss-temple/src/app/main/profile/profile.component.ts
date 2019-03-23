@@ -27,11 +27,23 @@ import {
   doPasswordsMatch,
 } from '@app/_modules/password.module';
 
+enum State {
+  IsLoading,
+  LoadSuccess,
+  LoadError,
+  IsSaving,
+  SaveSuccess,
+  SaveError,
+}
+
 @Component({
   templateUrl: 'profile.component.html',
   styleUrls: ['profile.component.scss'],
 })
 export class ProfileComponent implements OnInit, OnDestroy {
+  state = State.IsLoading;
+  readonly State = State;
+
   profileForm: FormGroup;
 
   hasGoogleLogin = false;
@@ -42,9 +54,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   gLoaded = false;
   fbLoaded = false;
-
-  isLoading = false;
-  isSaving = false;
 
   private unsubscribe$ = new Subject<void>();
 
@@ -73,8 +82,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.isLoading = true;
-
     zip(
       this.userService.get({
         fields: ['email', 'hasGoogleLogin', 'hasFacebookLogin'],
@@ -115,14 +122,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
               this.numberOfReadFeedEntries = responses[2].totalCount;
             }
 
-            this.isLoading = false;
+            this.state = State.LoadSuccess;
           });
         },
         error: error => {
           this.httpErrorService.handleError(error);
 
           this.zone.run(() => {
-            this.isLoading = false;
+            this.state = State.LoadError;
           });
         },
       });
@@ -312,7 +319,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
 
     if (hasUpdates) {
-      this.isSaving = true;
+      this.state = State.IsSaving;
 
       this.userService
         .update(updateUserBody)
@@ -322,7 +329,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             this.alertService.success('Profile Saved', 5000);
 
             this.zone.run(() => {
-              this.isSaving = false;
+              this.state = State.SaveSuccess;
             });
           },
           error: error => {
@@ -333,7 +340,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             }
 
             this.zone.run(() => {
-              this.isSaving = false;
+              this.state = State.SaveError;
             });
           },
         });

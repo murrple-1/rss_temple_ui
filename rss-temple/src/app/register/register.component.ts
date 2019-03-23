@@ -8,14 +8,21 @@ import { takeUntil } from 'rxjs/operators';
 import { AlertService, LoginService } from '@app/_services';
 import { isValidPassword } from '@app/_modules/password.module';
 
+enum State {
+  Ready,
+  IsRegistering,
+  RegisterFailed,
+}
+
 @Component({
   templateUrl: 'register.component.html',
   styleUrls: ['register.component.scss'],
 })
 export class RegisterComponent implements OnInit, OnDestroy {
+  state = State.Ready;
+  readonly State = State;
+
   registerForm: FormGroup;
-  loading = false;
-  submitted = false;
 
   private g_token: string | null = null;
   private fb_token: string | null = null;
@@ -50,12 +57,12 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   onRegister() {
-    this.submitted = true;
     if (this.registerForm.invalid) {
+      this.state = State.RegisterFailed;
       return;
     }
 
-    this.loading = true;
+    this.state = State.IsRegistering;
 
     if (this.g_token !== null) {
       this.loginService
@@ -115,7 +122,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.zone.run(() => {
       this.alertService.error(errorMessage, 5000);
 
-      this.loading = false;
+      this.state = State.RegisterFailed;
     });
   }
 }

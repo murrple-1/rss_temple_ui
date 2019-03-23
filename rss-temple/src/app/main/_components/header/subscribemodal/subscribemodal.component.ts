@@ -35,7 +35,7 @@ export class SubscribeModalComponent {
     }
 
     const result: SubscriptionDetails = {
-      feedUrl: this.subscribeForm.controls.feedUrl.value,
+      feedUrl: this.subscribeForm.controls.feedUrl.value as string,
     };
     this.activeModal.close(result);
   }

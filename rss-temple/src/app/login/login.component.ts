@@ -16,16 +16,23 @@ import { setSessionToken } from '@app/_modules/session.module';
 import { RequestPasswordResetModalComponent } from '@app/login/requestpasswordresetmodal/requestpasswordresetmodal.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
+enum State {
+  Ready,
+  IsLoggingIn,
+  LoginFailed,
+}
+
 @Component({
   templateUrl: 'login.component.html',
   styleUrls: ['login.component.scss'],
 })
 export class LoginComponent implements OnInit, OnDestroy {
-  loginForm: FormGroup;
-  submitted = false;
-  returnUrl: string | null = null;
+  state = State.Ready;
+  readonly State = State;
 
-  isLoggingIn = false;
+  loginForm: FormGroup;
+
+  returnUrl: string | null = null;
 
   gLoaded = false;
   fbLoaded = false;
@@ -78,7 +85,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       .subscribe({
         next: user => {
           this.zone.run(() => {
-            this.isLoggingIn = false;
+            this.state = State.Ready;
           });
 
           if (user) {
@@ -113,7 +120,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       .subscribe({
         next: user => {
           this.zone.run(() => {
-            this.isLoggingIn = false;
+            this.state = State.Ready;
           });
 
           if (user) {
@@ -129,13 +136,13 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   onLogin() {
-    this.submitted = true;
+    this.state = State.Ready;
 
     if (this.loginForm.invalid) {
       return;
     }
 
-    this.isLoggingIn = true;
+    this.state = State.IsLoggingIn;
     this.loginService
       .getMyLoginSession(
         this.loginForm.controls.email.value as string,
@@ -161,7 +168,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.alertService.error(errorMessage, 5000);
 
           this.zone.run(() => {
-            this.isLoggingIn = false;
+            this.state = State.LoginFailed;
           });
         },
       });
@@ -180,7 +187,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   onGoogleLogin() {
-    this.isLoggingIn = true;
+    this.state = State.IsLoggingIn;
     this.gAuthService.signIn();
   }
 
@@ -212,7 +219,7 @@ export class LoginComponent implements OnInit, OnDestroy {
               this.alertService.error(errorMessage, 5000);
 
               this.zone.run(() => {
-                this.isLoggingIn = false;
+                this.state = State.LoginFailed;
               });
             }
           } else {
@@ -223,7 +230,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             this.alertService.error(errorMessage, 5000);
 
             this.zone.run(() => {
-              this.isLoggingIn = false;
+              this.state = State.LoginFailed;
             });
           }
         },
@@ -231,7 +238,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   onFacebookLogin() {
-    this.isLoggingIn = true;
+    this.state = State.IsLoggingIn;
     this.fbAuthService.signIn();
   }
 
@@ -259,7 +266,7 @@ export class LoginComponent implements OnInit, OnDestroy {
               this.alertService.error(errorMessage, 5000);
 
               this.zone.run(() => {
-                this.isLoggingIn = false;
+                this.state = State.LoginFailed;
               });
             }
           } else {
@@ -270,7 +277,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             this.alertService.error(errorMessage, 5000);
 
             this.zone.run(() => {
-              this.isLoggingIn = false;
+              this.state = State.LoginFailed;
             });
           }
         },
