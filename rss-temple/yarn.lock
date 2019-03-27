@@ -377,10 +377,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.18.tgz#1d3ca764718915584fcd9f6344621b7672665c67"
   integrity sha512-fh+pAqt4xRzPfqA6eh3Z2y6fyZavRIumvjhaCL753+TVkGKGhpPeyrJG2JftD0T9q4GF00KjefsQ+PQNDdWQaQ==
 
-"@types/node@^11.11.6":
-  version "11.11.6"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-11.11.6.tgz#df929d1bb2eee5afdda598a41930fe50b43eaa6a"
-  integrity sha512-Exw4yUWMBXM3X+8oqzJNRqZSwUAaS4+7NdvHqQuFi/d+synz++xmX3QIf+BFqneW8N31R8Ky+sikfZUXq07ggQ==
+"@types/node@^11.12.0":
+  version "11.12.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-11.12.0.tgz#ec5594728811dc2797e42396cfcdf786f2052c12"
+  integrity sha512-Lg00egj78gM+4aE0Erw05cuDbvX9sLJbaaPwwRtdCdAMnIudqrQZ0oZX98Ek0yiSK/A2nubHgJfvII/rTT2Dwg==
 
 "@types/q@^0.0.32":
   version "0.0.32"
@@ -1612,10 +1612,10 @@ codecov@^3.2.0:
     teeny-request "^3.7.0"
     urlgrey "^0.4.4"
 
-codelyzer@^5.0.0-beta.1:
-  version "5.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/codelyzer/-/codelyzer-5.0.0-beta.1.tgz#749bc5d7f9cb73f71cc17594bae85227de0434fb"
-  integrity sha512-Pz+AF7F6SdO/aKvRNeDFFHWqSe0vGzbv3F1gu+OrE7+hbIeXm8RFafXZVYsO3edek9cRP8abo/mw28LK/BUSEA==
+codelyzer@^5.0.0-beta.2:
+  version "5.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/codelyzer/-/codelyzer-5.0.0-beta.2.tgz#1d112e3b79f45298c5ed589641829bd5a3e63934"
+  integrity sha512-cH5vxszkzhAg92pvuKXFuoDgKIqX3a5hIPv545pfuPc2GKDXuiWACPteny29k3/FGaw9eub1iUlyLVkPpETtsg==
   dependencies:
     app-root-path "^2.1.0"
     aria-query "^3.0.0"
