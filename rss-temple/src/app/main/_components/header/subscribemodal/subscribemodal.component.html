@@ -3,26 +3,27 @@
   <button type="button" class="close" (click)="dismiss()">X</button>
 </div>
 <div class="modal-body">
-  <form [formGroup]="subscribeForm">
-    <div class="form-group input-group">
-      <label class="has-float-label">
-        <input
-          formControlName="feedUrl"
-          type="text"
-          class="form-control"
-          placeholder="Feed URL"
-        />
-        <span>Feed URL</span>
-      </label>
-      <div
-        *ngIf="submitted && subscribeForm.controls.feedUrl.errors"
-        class="invalid"
-      >
-        <div *ngIf="subscribeForm.controls.feedUrl.errors.required">
-          Feed URL is required
+  <form [formGroup]="subscribeForm" [ngClass]="{ 'is-submitted': submitted }">
+    <fieldset>
+      <div class="form-group input-group">
+        <label class="has-float-label">
+          <input
+            formControlName="feedUrl"
+            type="text"
+            class="form-control"
+            placeholder="Feed URL"
+          />
+          <span>Feed URL</span>
+        </label>
+        <div class="error-group">
+          <ng-container *ngIf="subscribeForm.controls.feedUrl.errors">
+            <div *ngIf="subscribeForm.controls.feedUrl.errors.required">
+              Feed URL is required
+            </div>
+          </ng-container>
         </div>
       </div>
-    </div>
+    </fieldset>
   </form>
 </div>
 <div class="modal-footer">

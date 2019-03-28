@@ -14,8 +14,18 @@
       </div>
     </div>
     <hr />
-    <form class="mb-4" [formGroup]="profileForm">
-      <fieldset [disabled]="isLoading || isSaving">
+    <form
+      class="mb-4"
+      [formGroup]="profileForm"
+      [ngClass]="{
+        'is-submitted': [
+          State.IsSaving,
+          State.SaveSuccess,
+          State.SaveError
+        ].includes(state)
+      }"
+    >
+      <fieldset [disabled]="[State.IsLoading, State.IsSaving].includes(state)">
         <div class="form-group">
           <label for="email">Email Address</label>
           <input
@@ -25,9 +35,6 @@
             name="email"
             placeholder="Email"
             formControlName="email"
-            [ngClass]="{
-              'is-invalid': !isLoading && profileForm.controls.email.errors
-            }"
           />
         </div>
         <hr />
@@ -61,16 +68,17 @@
             formControlName="newPasswordCheck"
           />
         </div>
-        <div
-          *ngIf="profileForm.errors && profileForm.errors.passwordErrors"
-          class="invalid"
-        >
-          <div *ngIf="profileForm.errors.passwordErrors.tooShort">
-            New Password is too short
-          </div>
-          <div *ngIf="profileForm.errors.passwordErrors.doesNotMatch">
-            Passwords do not Match
-          </div>
+        <div class="error-group">
+          <ng-container *ngIf="profileForm.errors">
+            <ng-container *ngIf="profileForm.errors.passwordErrors">
+              <div *ngIf="profileForm.errors.passwordErrors.tooShort">
+                New Password is too short
+              </div>
+              <div *ngIf="profileForm.errors.passwordErrors.doesNotMatch">
+                Passwords do not Match
+              </div>
+            </ng-container>
+          </ng-container>
         </div>
         <hr />
         <div class="form-group">

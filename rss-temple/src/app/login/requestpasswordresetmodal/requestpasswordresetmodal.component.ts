@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, NgZone } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -25,13 +25,12 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
 
   forgottenPasswordForm: FormGroup;
 
-  submitted = false;
-
   private unsubscribe$ = new Subject<void>();
 
   constructor(
     private formBuilder: FormBuilder,
     private activeModal: NgbActiveModal,
+    private zone: NgZone,
     private passwordResetTokenService: PasswordResetTokenService,
     private httpErrorService: HttpErrorService,
   ) {
@@ -50,9 +49,10 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
   }
 
   request() {
-    this.submitted = true;
+    this.state = State.Sending;
 
     if (this.forgottenPasswordForm.controls.email.errors) {
+      this.state = State.Error;
       return;
     }
 
@@ -65,6 +65,10 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
         },
         error: error => {
           this.httpErrorService.handleError(error);
+
+          this.zone.run(() => {
+            this.state = State.Error;
+          });
         },
       });
   }
