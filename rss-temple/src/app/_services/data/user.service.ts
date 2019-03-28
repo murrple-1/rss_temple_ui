@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { map } from 'rxjs/operators';
 
@@ -121,18 +121,12 @@ export class UserService {
   }
 
   verify(token: string) {
-    const params: {
-      [param: string]: string | string[];
-    } = {
-      token: token,
-    };
+    const formData = new FormData();
+    formData.append('token', token);
 
     return this.http.post<void>(
       `${environment.apiHost}/api/user/verify`,
-      undefined,
-      {
-        params: params,
-      },
+      formData,
     );
   }
 }
