@@ -1,0 +1,31 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/rss_temple_http/
+    docker:
+      - image: circleci/node:10-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "~/rss_temple_http/rss-temple/yarn.lock" }}
+      - run:
+          name: install-dependencies
+          command: yarn install --frozen-lockfile
+          working_directory: ~/rss_temple_http/rss-temple/
+      - save_cache:
+          key: dependency-cache-{{ checksum "~/rss_temple_http/rss-temple/yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+            - ./node_modules
+      - run:
+          name: angular-test
+          command: yarn run test-ci
+          working_directory: ~/rss_temple_http/rss-temple/
+      - run:
+          name: angular-e2e
+          command: yarn run e2e-ci
+          working_directory: ~/rss_temple_http/rss-temple/
+      - run:
+          name: codecov
+          command: yarn codecov -- --disable=gcov
+          working_directory: ~/rss_temple_http/rss-temple/
