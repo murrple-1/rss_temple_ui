@@ -3,6 +3,16 @@
 
 var path = require('path');
 
+var reporters = ['progress', 'kjhtml'];
+var _test_type = (process.env.TEST_TYPE || 'standard').toLowerCase();
+if (_test_type === 'standard') {
+  // do nothing
+} else if (_test_type === 'xml') {
+  reporters.push('junit');
+} else {
+  throw new Error("unknown 'TEST_TYPE'");
+}
+
 module.exports = function(config) {
   config.set({
     basePath: '',
@@ -26,7 +36,7 @@ module.exports = function(config) {
     junitReporter: {
       outputDir: path.join(__dirname, '../test-results/'),
     },
-    reporters: ['progress', 'kjhtml', 'junit'],
+    reporters: reporters,
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
