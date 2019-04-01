@@ -7,6 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { AlertService, LoginService } from '@app/_services';
 import { isValidPassword } from '@app/_modules/password.module';
+import { FormGroupErrors } from '@app/_modules/formgrouperrors.module';
 
 enum State {
   Ready,
@@ -23,6 +24,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
   readonly State = State;
 
   registerForm: FormGroup;
+
+  registerFormErrors = new FormGroupErrors();
 
   private g_token: string | null = null;
   private fb_token: string | null = null;
@@ -44,6 +47,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
       ],
       password: ['', [Validators.required, isValidPassword()]],
     });
+
+    this.registerFormErrors.initializeControls(this.registerForm);
   }
 
   ngOnInit() {
@@ -67,8 +72,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
     if (this.g_token !== null) {
       this.loginService
         .createGoogleLogin(
-          this.registerForm.controls.email.value,
-          this.registerForm.controls.password.value,
+          this.registerForm.controls.email.value as string,
+          this.registerForm.controls.password.value as string,
           this.g_token,
         )
         .pipe(takeUntil(this.unsubscribe$))
@@ -79,8 +84,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
     } else if (this.fb_token !== null) {
       this.loginService
         .createFacebookLogin(
-          this.registerForm.controls.email.value,
-          this.registerForm.controls.password.value,
+          this.registerForm.controls.email.value as string,
+          this.registerForm.controls.password.value as string,
           this.fb_token,
         )
         .pipe(takeUntil(this.unsubscribe$))
@@ -91,8 +96,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
     } else {
       this.loginService
         .createMyLogin(
-          this.registerForm.controls.email.value,
-          this.registerForm.controls.password.value,
+          this.registerForm.controls.email.value as string,
+          this.registerForm.controls.password.value as string,
         )
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({

@@ -24,9 +24,10 @@
           State.SaveError
         ].includes(state)
       }"
+      (ngSubmit)="onSave()"
     >
       <fieldset [disabled]="[State.IsLoading, State.IsSaving].includes(state)">
-        <div class="form-group">
+        <div class="form-group input-group">
           <label for="email">Email Address</label>
           <input
             type="email"
@@ -36,9 +37,14 @@
             placeholder="Email"
             formControlName="email"
           />
+          <small
+            *ngFor="let errorString of profileFormErrors.controls.email"
+            class="form-text text-muted"
+            >{{ errorString }}</small
+          >
         </div>
         <hr />
-        <div class="form-group">
+        <div class="form-group input-group">
           <label for="old-password">Old Password</label>
           <input
             type="password"
@@ -47,8 +53,13 @@
             placeholder="Old Password"
             formControlName="oldPassword"
           />
+          <small
+            *ngFor="let errorString of profileFormErrors.controls.oldPassword"
+            class="form-text text-muted"
+            >{{ errorString }}</small
+          >
         </div>
-        <div class="form-group">
+        <div class="form-group input-group">
           <label for="new-password">New Password</label>
           <input
             type="password"
@@ -57,6 +68,11 @@
             placeholder="Password"
             formControlName="newPassword"
           />
+          <small
+            *ngFor="let errorString of profileFormErrors.controls.newPassword"
+            class="form-text text-muted"
+            >{{ errorString }}</small
+          >
         </div>
         <div class="form-group">
           <label for="new-password-check">Reenter New Password</label>
@@ -67,18 +83,18 @@
             placeholder="Reenter Password"
             formControlName="newPasswordCheck"
           />
+          <small
+            *ngFor="
+              let errorString of profileFormErrors.controls.newPasswordCheck
+            "
+            class="form-text text-muted"
+            >{{ errorString }}</small
+          >
         </div>
         <div class="error-group">
-          <ng-container *ngIf="profileForm.errors">
-            <ng-container *ngIf="profileForm.errors.passwordErrors">
-              <div *ngIf="profileForm.errors.passwordErrors.tooShort">
-                New Password is too short
-              </div>
-              <div *ngIf="profileForm.errors.passwordErrors.doesNotMatch">
-                Passwords do not Match
-              </div>
-            </ng-container>
-          </ng-container>
+          <div *ngFor="let errorString of profileFormErrors.errors">
+            {{ errorString }}
+          </div>
         </div>
         <hr />
         <div class="form-group">
@@ -142,7 +158,7 @@
             </div>
           </div>
         </div>
-        <button class="btn btn-primary" (click)="save()">Save</button>
+        <button type="submit" class="btn btn-primary">Save</button>
       </fieldset>
     </form>
   </div>

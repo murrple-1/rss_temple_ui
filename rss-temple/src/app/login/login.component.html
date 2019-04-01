@@ -16,6 +16,7 @@
       <form
         [formGroup]="loginForm"
         [ngClass]="{ 'is-submitted': state !== State.Ready }"
+        (ngSubmit)="onLogin()"
       >
         <fieldset [disabled]="state === State.IsLoggingIn">
           <div class="form-group input-group">
@@ -28,13 +29,11 @@
               />
               <span>Email</span>
             </label>
-          </div>
-          <div class="error-group">
-            <ng-container *ngIf="loginForm.controls.email.errors">
-              <div *ngIf="loginForm.controls.email.errors.required">
-                Email is required
-              </div>
-            </ng-container>
+            <small
+              *ngFor="let errorString of loginFormErrors.controls.email"
+              class="form-text text-muted"
+              >{{ errorString }}</small
+            >
           </div>
           <div class="form-group input-group">
             <label class="has-float-label">
@@ -46,16 +45,19 @@
               />
               <span>Password</span>
             </label>
+            <small
+              *ngFor="let errorString of loginFormErrors.controls.password"
+              class="form-text text-muted"
+              >{{ errorString }}</small
+            >
           </div>
           <div class="error-group">
-            <ng-container *ngIf="loginForm.controls.password.errors">
-              <div *ngIf="loginForm.controls.password.errors.required">
-                Password is required
-              </div>
-            </ng-container>
+            <div *ngFor="let errorString of loginFormErrors.errors">
+              {{ errorString }}
+            </div>
           </div>
           <div class="form-group">
-            <button class="btn btn-primary" (click)="onLogin()">Login</button>
+            <button type="submit" class="btn btn-primary">Login</button>
             <a [routerLink]="['/register']" class="btn btn-link">Register</a>
           </div>
         </fieldset>
@@ -85,7 +87,7 @@
   </div>
   <hr />
   <div class="row">
-    <div class="col-md-4  offset-md-4">
+    <div class="col-md-4 offset-md-4">
       <a routerLink="" (click)="onForgottenPassword()">Forgot your Password?</a>
     </div>
   </div>

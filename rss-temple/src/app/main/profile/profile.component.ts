@@ -26,6 +26,7 @@ import {
   isValidPassword,
   doPasswordsMatch,
 } from '@app/_modules/password.module';
+import { FormGroupErrors } from '@app/_modules/formgrouperrors.module';
 
 enum State {
   IsLoading,
@@ -45,6 +46,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   readonly State = State;
 
   profileForm: FormGroup;
+  profileFormErrors = new FormGroupErrors();
 
   hasGoogleLogin = false;
   hasFacebookLogin = false;
@@ -79,6 +81,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
         validators: [doPasswordsMatch('newPassword', 'newPasswordCheck')],
       },
     );
+
+    this.profileFormErrors.initializeControls(this.profileForm);
   }
 
   ngOnInit() {
@@ -292,7 +296,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       });
   }
 
-  save() {
+  onSave() {
     let hasUpdates = false;
     const updateUserBody: UpdateUserBody = {};
 

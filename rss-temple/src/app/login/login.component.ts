@@ -15,6 +15,7 @@ import {
 import { setSessionToken } from '@app/_modules/session.module';
 import { RequestPasswordResetModalComponent } from '@app/login/requestpasswordresetmodal/requestpasswordresetmodal.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { FormGroupErrors } from '@app/_modules/formgrouperrors.module';
 
 enum State {
   Ready,
@@ -31,6 +32,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   readonly State = State;
 
   loginForm: FormGroup;
+  loginFormErrors = new FormGroupErrors();
 
   returnUrl: string | null = null;
 
@@ -54,6 +56,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
     });
+
+    this.loginFormErrors.initializeControls(this.loginForm);
   }
 
   ngOnInit() {
@@ -136,9 +140,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   onLogin() {
-    this.state = State.Ready;
-
     if (this.loginForm.invalid) {
+      this.state = State.LoginFailed;
       return;
     }
 
