@@ -102,9 +102,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     )
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: responses => {
+        next: ([user, feedsObjects, readFeedEntriesObject]) => {
           this.zone.run(() => {
-            const user = responses[0];
             if (user.email !== undefined) {
               this.profileForm.controls.email.setValue(user.email);
               this.profileForm.controls.email.markAsPristine();
@@ -118,12 +117,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
               this.hasFacebookLogin = user.hasFacebookLogin;
             }
 
-            if (responses[1].totalCount !== undefined) {
-              this.numberOfFeeds = responses[1].totalCount;
+            if (feedsObjects.totalCount !== undefined) {
+              this.numberOfFeeds = feedsObjects.totalCount;
             }
 
-            if (responses[2].totalCount) {
-              this.numberOfReadFeedEntries = responses[2].totalCount;
+            if (readFeedEntriesObject.totalCount) {
+              this.numberOfReadFeedEntries = readFeedEntriesObject.totalCount;
             }
 
             this.state = State.LoadSuccess;
