@@ -1,8 +1,8 @@
-form.ng-invalid div.error-group {
+form.ng-invalid div.app--error-group {
   display: none;
 }
 
-form.ng-invalid.is-submitted div.error-group {
+form.ng-invalid.is-submitted div.app--error-group {
   display: initial;
 }
 
