@@ -296,22 +296,32 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   onSave() {
+    if (this.profileForm.pristine) {
+      return;
+    }
+
+    if (this.profileForm.invalid) {
+      this.state = State.SaveError;
+      return;
+    }
+
     let hasUpdates = false;
     const updateUserBody: UpdateUserBody = {};
 
     const emailControl = this.profileForm.controls.email;
-    if (!emailControl.errors && emailControl.dirty) {
+    if (emailControl.dirty) {
       updateUserBody.email = emailControl.value as string;
       hasUpdates = true;
     }
 
     const oldPasswordControl = this.profileForm.controls.oldPassword;
+    const newPasswordControl = this.profileForm.controls.newPassword;
+    const newPasswordCheckControl = this.profileForm.controls.newPasswordCheck;
     if (
-      (oldPasswordControl.value as string).length > 0 &&
-      !((this.profileForm.errors || {}) as ValidationErrors).passwordErrors
+      oldPasswordControl.dirty &&
+      newPasswordControl.dirty &&
+      newPasswordCheckControl.dirty
     ) {
-      const newPasswordControl = this.profileForm.controls.newPassword;
-
       updateUserBody.my = {
         password: {
           old: oldPasswordControl.value as string,
@@ -330,6 +340,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
         .subscribe({
           next: () => {
             this.alertService.success('Profile Saved', 5000);
+
+            this.profileForm.markAsPristine();
 
             this.zone.run(() => {
               this.state = State.SaveSuccess;

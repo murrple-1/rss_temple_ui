@@ -15,12 +15,15 @@
           />
           <span>Feed URL</span>
         </label>
-        <div class="app--error-group">
-          <ng-container *ngIf="subscribeForm.controls.feedUrl.errors">
-            <div *ngIf="subscribeForm.controls.feedUrl.errors.required">
-              Feed URL is required
-            </div>
-          </ng-container>
+        <small
+          *ngFor="let errorString of subscribeFormErrors.controls.feedUrl"
+          class="form-text text-muted"
+          >{{ errorString }}</small
+        >
+      </div>
+      <div class="app--error-group">
+        <div *ngFor="let errorString of subscribeFormErrors.errors">
+          {{ errorString }}
         </div>
       </div>
     </fieldset>

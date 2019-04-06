@@ -13,6 +13,7 @@ import {
   doPasswordsMatch,
   passwordRequirementsText,
 } from '@app/_modules/password.module';
+import { FormGroupErrors } from '@app/_modules/formgrouperrors.module';
 
 enum State {
   NotStarted,
@@ -36,6 +37,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   private token: string | null = null;
 
   resetPasswordForm: FormGroup;
+  resetPasswordFormErrors = new FormGroupErrors();
 
   get passwordRequirementsText() {
     return passwordRequirementsText('en');
@@ -60,6 +62,8 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
         validators: [doPasswordsMatch('newPassword', 'newPasswordCheck')],
       },
     );
+
+    this.resetPasswordFormErrors.initializeControls(this.resetPasswordForm);
   }
 
   ngOnInit() {
@@ -80,10 +84,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (
-      this.resetPasswordForm.errors &&
-      this.resetPasswordForm.errors.passwordErrors
-    ) {
+    if (this.resetPasswordForm.invalid) {
       this.state = State.Error;
       return;
     }

@@ -8,6 +8,7 @@ import { Subject } from 'rxjs';
 import { PasswordResetTokenService } from '@app/_services/data';
 import { takeUntil } from 'rxjs/operators';
 import { HttpErrorService } from '@app/_services';
+import { FormGroupErrors } from '@app/_modules/formgrouperrors.module';
 
 enum State {
   NotStarted,
@@ -24,6 +25,7 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
   readonly State = State;
 
   forgottenPasswordForm: FormGroup;
+  forgottenPasswordFormErrors = new FormGroupErrors();
 
   private unsubscribe$ = new Subject<void>();
 
@@ -37,6 +39,10 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
     this.forgottenPasswordForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
     });
+
+    this.forgottenPasswordFormErrors.initializeControls(
+      this.forgottenPasswordForm,
+    );
   }
 
   ngOnDestroy() {
@@ -51,7 +57,7 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
   request() {
     this.state = State.Sending;
 
-    if (this.forgottenPasswordForm.controls.email.errors) {
+    if (this.forgottenPasswordForm.invalid) {
       this.state = State.Error;
       return;
     }

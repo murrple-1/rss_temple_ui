@@ -24,7 +24,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
   readonly State = State;
 
   registerForm: FormGroup;
-
   registerFormErrors = new FormGroupErrors();
 
   private g_token: string | null = null;

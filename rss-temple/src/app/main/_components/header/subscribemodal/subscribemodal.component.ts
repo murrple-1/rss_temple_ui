@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { FormGroupErrors } from '@app/_modules/formgrouperrors.module';
 
 export interface SubscriptionDetails {
   feedUrl: string;
@@ -12,8 +13,10 @@ export interface SubscriptionDetails {
   styleUrls: ['subscribemodal.component.scss'],
 })
 export class SubscribeModalComponent {
-  subscribeForm: FormGroup;
   submitted = false;
+
+  subscribeForm: FormGroup;
+  subscribeFormErrors = new FormGroupErrors();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -22,6 +25,8 @@ export class SubscribeModalComponent {
     this.subscribeForm = this.formBuilder.group({
       feedUrl: ['', [Validators.required]],
     });
+
+    this.subscribeFormErrors.initializeControls(this.subscribeForm);
   }
 
   dismiss() {
