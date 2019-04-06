@@ -7,7 +7,7 @@
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
-      "prefix": "rsst",
+      "prefix": "app",
       "schematics": {},
       "architect": {
         "build": {

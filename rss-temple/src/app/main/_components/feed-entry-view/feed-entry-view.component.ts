@@ -7,7 +7,7 @@ import { FeedEntry } from '@app/_models';
 import { FeedEntryService } from '@app/_services/data';
 
 @Component({
-  selector: 'rsst-feed-entry-view',
+  selector: 'app-feed-entry-view',
   templateUrl: './feed-entry-view.component.html',
   styleUrls: ['./feed-entry-view.component.scss'],
 })

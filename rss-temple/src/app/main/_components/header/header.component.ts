@@ -26,7 +26,7 @@ import { FeedObservableService } from '@app/main/_services';
 import { deleteSessionToken, sessionToken } from '@app/_modules/session.module';
 
 @Component({
-  selector: 'nav[rsst-header]',
+  selector: 'nav[app-header]',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })

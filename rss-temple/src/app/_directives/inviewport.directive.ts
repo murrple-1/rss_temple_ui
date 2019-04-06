@@ -23,14 +23,14 @@ export type InViewportEvent =
     };
 
 @Directive({
-  selector: '[rsstInViewport]',
+  selector: '[appInViewport]',
 })
 export class InViewportDirective implements OnInit, OnDestroy {
   @Input()
-  rsstInViewportOffset = 0;
+  appInViewportOffset = 0;
 
   @Output()
-  rsstInViewportWatch = new EventEmitter<InViewportEvent>();
+  appInViewportWatch = new EventEmitter<InViewportEvent>();
 
   private subscription: Subscription | null = null;
 
@@ -67,12 +67,12 @@ export class InViewportDirective implements OnInit, OnDestroy {
     const nativeElement = this.elementRef.nativeElement;
 
     const viewportRect: ClientRect | DOMRect = {
-      top: -this.rsstInViewportOffset,
-      bottom: window.innerHeight + this.rsstInViewportOffset,
+      top: -this.appInViewportOffset,
+      bottom: window.innerHeight + this.appInViewportOffset,
       left: 0,
       right: window.innerWidth,
       width: window.innerWidth,
-      height: window.innerHeight + 2 * this.rsstInViewportOffset,
+      height: window.innerHeight + 2 * this.appInViewportOffset,
     };
 
     const boundingRect = nativeElement.getBoundingClientRect();
@@ -91,6 +91,6 @@ export class InViewportDirective implements OnInit, OnDestroy {
       };
     }
 
-    this.rsstInViewportWatch.emit(event);
+    this.appInViewportWatch.emit(event);
   }
 }
