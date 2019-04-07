@@ -57,8 +57,24 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
   request() {
     this.state = State.Sending;
 
+    this.forgottenPasswordFormErrors.clearErrors();
     if (this.forgottenPasswordForm.invalid) {
       this.state = State.Error;
+
+      const emailErrors = this.forgottenPasswordForm.controls.email.errors;
+      if (emailErrors !== null) {
+        if (emailErrors.required) {
+          this.forgottenPasswordFormErrors.controls.email.push(
+            'Email required',
+          );
+        }
+
+        if (emailErrors.email) {
+          this.forgottenPasswordFormErrors.controls.email.push(
+            'Email malformed',
+          );
+        }
+      }
       return;
     }
 

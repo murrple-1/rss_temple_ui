@@ -6,7 +6,11 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { AlertService, LoginService } from '@app/_services';
-import { isValidPassword } from '@app/_modules/password.module';
+import {
+  isValidPassword,
+  passwordRequirementsText,
+  doPasswordsMatch,
+} from '@app/_modules/password.module';
 import { FormGroupErrors } from '@app/_modules/formgrouperrors.module';
 
 enum State {
@@ -39,13 +43,19 @@ export class RegisterComponent implements OnInit, OnDestroy {
     private loginService: LoginService,
     private alertService: AlertService,
   ) {
-    this.registerForm = this.formBuilder.group({
-      email: [
-        this.route.snapshot.paramMap.get('email') || '',
-        [Validators.required, Validators.email],
-      ],
-      password: ['', [Validators.required, isValidPassword()]],
-    });
+    this.registerForm = this.formBuilder.group(
+      {
+        email: [
+          this.route.snapshot.paramMap.get('email') || '',
+          [Validators.required, Validators.email],
+        ],
+        password: ['', [Validators.required, isValidPassword()]],
+        passwordCheck: ['', [Validators.required]],
+      },
+      {
+        validators: [doPasswordsMatch('password', 'passwordCheck')],
+      },
+    );
 
     this.registerFormErrors.initializeControls(this.registerForm);
   }
@@ -61,8 +71,56 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   onRegister() {
+    this.registerFormErrors.clearErrors();
     if (this.registerForm.invalid) {
       this.state = State.RegisterFailed;
+
+      const errors = this.registerForm.errors;
+      if (errors !== null) {
+        if (errors.passwordsdonotmatch) {
+          this.registerFormErrors.errors.push('Passwords do not match');
+        }
+      }
+
+      const emailErrors = this.registerForm.controls.email.errors;
+      if (emailErrors !== null) {
+        if (emailErrors.required) {
+          this.registerFormErrors.controls.email.push('Email required');
+        }
+
+        if (emailErrors.email) {
+          this.registerFormErrors.controls.email.push('Email malformed');
+        }
+      }
+
+      const passwordErrors = this.registerForm.controls.password.errors;
+      if (passwordErrors !== null) {
+        if (passwordErrors.required) {
+          this.registerFormErrors.controls.password.push('Password required');
+        }
+
+        if (
+          passwordErrors.minlength ||
+          passwordErrors.nolowercase ||
+          passwordErrors.nouppercase ||
+          passwordErrors.nodigit ||
+          passwordErrors.nospecialcharacter
+        ) {
+          this.registerFormErrors.controls.password.push(
+            passwordRequirementsText('en'),
+          );
+        }
+      }
+
+      const passwordCheckErrors = this.registerForm.controls.passwordCheck
+        .errors;
+      if (passwordCheckErrors !== null) {
+        if (passwordCheckErrors.required) {
+          this.registerFormErrors.controls.passwordCheck.push(
+            'Password required',
+          );
+        }
+      }
       return;
     }
 

@@ -140,12 +140,33 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   onLogin() {
+    this.loginFormErrors.clearErrors();
     if (this.loginForm.invalid) {
       this.state = State.LoginFailed;
+
+      const emailErrors = this.loginForm.controls.email.errors;
+      if (emailErrors !== null) {
+        if (emailErrors.required) {
+          this.loginFormErrors.controls.email.push('Email required');
+        }
+
+        if (emailErrors.email) {
+          this.loginFormErrors.controls.email.push('Email malformed');
+        }
+      }
+
+      const passwordErrors = this.loginForm.controls.password.errors;
+      if (passwordErrors !== null) {
+        if (passwordErrors.required) {
+          this.loginFormErrors.controls.password.push('Password required');
+        }
+      }
+
       return;
     }
 
     this.state = State.IsLoggingIn;
+
     this.loginService
       .getMyLoginSession(
         this.loginForm.controls.email.value as string,

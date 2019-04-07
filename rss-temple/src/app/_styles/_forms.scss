@@ -3,7 +3,7 @@ form.ng-invalid div.app--error-group {
 }
 
 form.ng-invalid.is-submitted div.app--error-group {
-  display: initial;
+  display: block;
 }
 
 form.is-submitted input.ng-invalid {

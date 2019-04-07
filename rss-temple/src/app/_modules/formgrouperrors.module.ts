@@ -11,4 +11,12 @@ export class FormGroupErrors {
       this.controls[key] = [];
     }
   }
+
+  clearErrors() {
+    this.errors = [];
+
+    for (const key of Object.keys(this.controls)) {
+      this.controls[key] = [];
+    }
+  }
 }

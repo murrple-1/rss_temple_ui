@@ -1,6 +1,6 @@
 ﻿import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { Subject } from 'rxjs';
@@ -55,8 +55,8 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   ) {
     this.resetPasswordForm = this.formBuilder.group(
       {
-        newPassword: ['', [isValidPassword()]],
-        newPasswordCheck: ['', [isValidPassword()]],
+        newPassword: ['', [Validators.required, isValidPassword()]],
+        newPasswordCheck: ['', [Validators.required]],
       },
       {
         validators: [doPasswordsMatch('newPassword', 'newPasswordCheck')],
@@ -84,8 +84,48 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.resetPasswordFormErrors.clearErrors();
     if (this.resetPasswordForm.invalid) {
       this.state = State.Error;
+
+      const errors = this.resetPasswordForm.errors;
+      if (errors !== null) {
+        if (errors.passwordsdonotmatch) {
+          this.resetPasswordFormErrors.errors.push('Passwords do not match');
+        }
+      }
+
+      const newPasswordErrors = this.resetPasswordForm.controls.newPassword
+        .errors;
+      if (newPasswordErrors !== null) {
+        if (newPasswordErrors.required) {
+          this.resetPasswordFormErrors.controls.newPassword.push(
+            'Password required',
+          );
+        }
+
+        if (
+          newPasswordErrors.nolowercase ||
+          newPasswordErrors.nouppercase ||
+          newPasswordErrors.nodigit ||
+          newPasswordErrors.nospecialcharacters
+        ) {
+          this.resetPasswordFormErrors.controls.newPassword.push(
+            passwordRequirementsText('en'),
+          );
+        }
+      }
+
+      const newPasswordCheckErrors = this.resetPasswordForm.controls
+        .newPasswordCheck.errors;
+      if (newPasswordCheckErrors !== null) {
+        if (newPasswordCheckErrors.required) {
+          this.resetPasswordFormErrors.controls.newPasswordCheck.push(
+            'Password required',
+          );
+        }
+      }
+
       return;
     }
 

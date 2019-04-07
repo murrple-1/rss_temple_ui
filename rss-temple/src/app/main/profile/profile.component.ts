@@ -25,6 +25,7 @@ import { UpdateUserBody } from '@app/_services/data/user.service';
 import {
   isValidPassword,
   doPasswordsMatch,
+  passwordRequirementsText,
 } from '@app/_modules/password.module';
 import { FormGroupErrors } from '@app/_modules/formgrouperrors.module';
 
@@ -75,7 +76,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         email: ['', [Validators.email]],
         oldPassword: [''],
         newPassword: ['', [isValidPassword()]],
-        newPasswordCheck: ['', [isValidPassword()]],
+        newPasswordCheck: [''],
       },
       {
         validators: [doPasswordsMatch('newPassword', 'newPasswordCheck')],
@@ -300,8 +301,38 @@ export class ProfileComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.profileFormErrors.clearErrors();
     if (this.profileForm.invalid) {
       this.state = State.SaveError;
+
+      const errors = this.profileForm.errors;
+      if (errors !== null) {
+        if (errors.passwordsdonotmatch) {
+          this.profileFormErrors.errors.push('Passwords do not match');
+        }
+      }
+
+      const emailErrors = this.profileForm.controls.email.errors;
+      if (emailErrors !== null) {
+        if (emailErrors.email) {
+          this.profileFormErrors.controls.email.push('Email malformed');
+        }
+      }
+
+      const newPasswordErrors = this.profileForm.controls.newPassword.errors;
+      if (newPasswordErrors !== null) {
+        if (
+          newPasswordErrors.nolowercase ||
+          newPasswordErrors.nouppercase ||
+          newPasswordErrors.nodigit ||
+          newPasswordErrors.nospecialcharacter
+        ) {
+          this.profileFormErrors.controls.newPassword.push(
+            passwordRequirementsText('en'),
+          );
+        }
+      }
+
       return;
     }
 

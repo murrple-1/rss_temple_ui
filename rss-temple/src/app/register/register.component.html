@@ -13,37 +13,69 @@
         (ngSubmit)="onRegister()"
       >
         <fieldset [disabled]="state === State.IsRegistering">
-          <div class="form-group input-group">
-            <label class="has-float-label">
-              <input
-                type="text"
-                formControlName="email"
-                placeholder="example@example.com"
-                class="form-control"
-              />
-              <span>Email</span>
-            </label>
+          <div class="form-group">
+            <div class="input-group">
+              <label class="has-float-label">
+                <input
+                  type="text"
+                  formControlName="email"
+                  placeholder="example@example.com"
+                  class="form-control"
+                />
+                <span>Email</span>
+              </label>
+            </div>
+            <small
+              *ngFor="let errorString of registerFormErrors.controls.email"
+              class="form-text text-muted"
+              >{{ errorString }}</small
+            >
           </div>
-          <div class="form-group input-group">
-            <label class="has-float-label">
-              <input
-                type="password"
-                formControlName="password"
-                placeholder="Password"
-                class="form-control"
-              />
-              <span>Password</span>
-            </label>
+          <div class="form-group">
+            <div class="input-group">
+              <label class="has-float-label">
+                <input
+                  type="password"
+                  formControlName="password"
+                  placeholder="Password"
+                  class="form-control"
+                />
+                <span>Password</span>
+              </label>
+            </div>
             <small
               *ngFor="let errorString of registerFormErrors.controls.password"
               class="form-text text-muted"
               >{{ errorString }}</small
             >
           </div>
-          <div class="app--error-group">
-            <div *ngFor="let errorString of registerFormErrors.errors">
-              {{ errorString }}
+          <div class="form-group">
+            <div class="input-group">
+              <label class="has-float-label">
+                <input
+                  type="password"
+                  formControlName="passwordCheck"
+                  placeholder="Password"
+                  class="form-control"
+                />
+                <span>Re-enter Password</span>
+              </label>
             </div>
+            <small
+              *ngFor="
+                let errorString of registerFormErrors.controls.passwordCheck
+              "
+              class="form-text text-muted"
+              >{{ errorString }}</small
+            >
+          </div>
+          <div class="form-group app--error-group">
+            <small
+              *ngFor="let errorString of registerFormErrors.errors"
+              class="form-text text-muted"
+            >
+              {{ errorString }}
+            </small>
           </div>
           <div class="form-group">
             <button type="submit" class="btn btn-primary">

@@ -35,7 +35,15 @@ export class SubscribeModalComponent {
 
   finish() {
     this.submitted = true;
+
+    this.subscribeFormErrors.clearErrors();
     if (this.subscribeForm.invalid) {
+      const urlErrors = this.subscribeForm.controls.feedUrl.errors;
+      if (urlErrors !== null) {
+        if (urlErrors.required) {
+          this.subscribeFormErrors.controls.feedUrl.push('URL required');
+        }
+      }
       return;
     }
 
