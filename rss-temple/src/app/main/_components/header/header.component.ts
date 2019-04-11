@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { Subject } from 'rxjs';
+import { Subject, zip } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import {
@@ -19,11 +19,19 @@ import {
   SubscriptionDetails,
 } from '@app/main/_components/header/subscribemodal/subscribemodal.component';
 import { OPMLModalComponent } from '@app/main/_components/header/opmlmodal/opmlmodal.component';
-import { Feed } from '@app/_models';
-import { FeedService } from '@app/_services/data';
+import { Feed, UserCategory } from '@app/_models';
+import { FeedService, UserCategoryService } from '@app/_services/data';
 import { HttpErrorService, LoginService } from '@app/_services';
 import { FeedObservableService } from '@app/main/_services';
 import { deleteSessionToken, sessionToken } from '@app/_modules/session.module';
+
+interface CategorizedFeeds {
+  noCategory: Feed[];
+  category: {
+    name: string;
+    feeds: Feed[];
+  }[];
+}
 
 @Component({
   selector: 'nav[app-header]',
@@ -41,11 +49,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   isCollapsed = true;
 
-  private subscribedFeeds: Feed[] = [];
-  filteredSubscribedFeeds: Feed[] = [];
+  private allCategorizedFeeds: CategorizedFeeds = {
+    noCategory: [],
+    category: [],
+  };
+  filteredCategorizedFeeds: CategorizedFeeds = {
+    noCategory: [],
+    category: [],
+  };
 
   @ViewChild('filterInput')
-  private filterInput: ElementRef<HTMLInputElement> | null = null;
+  private filterInput?: ElementRef<HTMLInputElement>;
 
   private unsubscribe$ = new Subject<void>();
 
@@ -56,6 +70,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private router: Router,
     private modalService: NgbModal,
     private feedService: FeedService,
+    private userCategoryService: UserCategoryService,
     private feedObservableService: FeedObservableService,
     private loginService: LoginService,
     private httpErrorService: HttpErrorService,
@@ -64,6 +79,54 @@ export class HeaderComponent implements OnInit, OnDestroy {
     for (const _class of this._classes) {
       this.renderer.addClass(elem, _class);
     }
+  }
+
+  private static buildAllCategorizedFeeds(
+    userCategories: UserCategory[],
+    feeds: Feed[],
+  ) {
+    const allCategorizedFeedUuids = new Set<string>(
+      userCategories.flatMap(userCategory_ => {
+        if (userCategory_.feedUuids !== undefined) {
+          return userCategory_.feedUuids;
+        } else {
+          return [];
+        }
+      }),
+    );
+
+    const allCategorizedFeeds: CategorizedFeeds = {
+      noCategory: feeds.filter(feed_ => {
+        if (feed_.uuid !== undefined) {
+          return !allCategorizedFeedUuids.has(feed_.uuid);
+        } else {
+          return false;
+        }
+      }),
+      category: [],
+    };
+
+    for (const userCategory of userCategories) {
+      if (
+        userCategory.text !== undefined &&
+        userCategory.feedUuids !== undefined
+      ) {
+        const feedUuids = new Set<string>(userCategory.feedUuids);
+
+        allCategorizedFeeds.category.push({
+          name: userCategory.text,
+          feeds: feeds.filter(feed_ => {
+            if (feed_.uuid !== undefined) {
+              return feedUuids.has(feed_.uuid);
+            } else {
+              return false;
+            }
+          }),
+        });
+      }
+    }
+
+    return allCategorizedFeeds;
   }
 
   private static sortFeeds(a: Feed, b: Feed) {
@@ -79,22 +142,35 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.feedService
-      .queryAll({
-        fields: ['title', 'feedUrl'],
+    zip(
+      this.userCategoryService.queryAll({
+        fields: ['text', 'feedUuids'],
+        sort: 'text:ASC',
+        returnTotalCount: false,
+      }),
+      this.feedService.queryAll({
+        fields: ['uuid', 'title', 'feedUrl'],
         search: 'subscribed:"true"',
         sort: 'title:ASC',
         returnTotalCount: false,
-      })
+      }),
+    )
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: feeds => {
-          this.zone.run(() => {
-            if (feeds.objects !== undefined) {
-              this.subscribedFeeds = feeds.objects;
-              this.filteredSubscribedFeeds = feeds.objects;
-            }
-          });
+        next: ([userCategories, feeds]) => {
+          if (
+            userCategories.objects !== undefined &&
+            feeds.objects !== undefined
+          ) {
+            const allCategorizedFeeds = HeaderComponent.buildAllCategorizedFeeds(
+              userCategories.objects,
+              feeds.objects,
+            );
+            this.zone.run(() => {
+              this.allCategorizedFeeds = allCategorizedFeeds;
+              this.filteredCategorizedFeeds = allCategorizedFeeds;
+            });
+          }
         },
         error: error => {
           this.httpErrorService.handleError(error);
@@ -129,11 +205,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
                       this.zone.run(() => {
                         this.feedObservableService.feedAdded.next(feed);
 
-                        this.subscribedFeeds = this.subscribedFeeds
+                        this.allCategorizedFeeds.noCategory = this.allCategorizedFeeds.noCategory
                           .concat(feed)
                           .sort(HeaderComponent.sortFeeds);
 
-                        if (this.filterInput !== null) {
+                        if (this.filterInput !== undefined) {
                           this.filterFeeds(
                             this.filterInput.nativeElement.value,
                           );
@@ -166,20 +242,33 @@ export class HeaderComponent implements OnInit, OnDestroy {
       () => {
         this.feedObservableService.feedsChanged.next();
 
-        this.feedService
-          .queryAll({
-            fields: ['title', 'feedUrl'],
-            search: 'subscribed:"true"',
+        zip(
+          this.userCategoryService.queryAll({
+            fields: ['text', 'feedUuids'],
+            sort: 'text:ASC',
             returnTotalCount: false,
-          })
+          }),
+          this.feedService.queryAll({
+            fields: ['uuid', 'title', 'feedUrl'],
+            search: 'subscribed:"true"',
+            sort: 'title:ASC',
+            returnTotalCount: false,
+          }),
+        )
           .pipe(takeUntil(this.unsubscribe$))
           .subscribe({
-            next: feeds => {
+            next: ([userCategories, feeds]) => {
               this.zone.run(() => {
-                if (feeds.objects !== undefined) {
-                  this.subscribedFeeds = feeds.objects;
+                if (
+                  userCategories.objects !== undefined &&
+                  feeds.objects !== undefined
+                ) {
+                  this.allCategorizedFeeds = HeaderComponent.buildAllCategorizedFeeds(
+                    userCategories.objects,
+                    feeds.objects,
+                  );
 
-                  if (this.filterInput !== null) {
+                  if (this.filterInput !== undefined) {
                     this.filterFeeds(this.filterInput.nativeElement.value);
                   }
                 }
@@ -200,17 +289,29 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   private filterFeeds(value: string) {
-    value = value.toLowerCase();
+    value = value.trim().toLowerCase();
 
-    const filteredFeeds = this.subscribedFeeds.filter(feed => {
+    const filterFn = (feed: Feed) => {
       if (feed.title !== undefined) {
         return feed.title.toLowerCase().includes(value);
       } else {
         return false;
       }
-    });
+    };
 
-    this.filteredSubscribedFeeds = filteredFeeds;
+    const filteredCategorizedFeeds: CategorizedFeeds = {
+      noCategory: this.allCategorizedFeeds.noCategory.filter(filterFn),
+      category: [],
+    };
+
+    for (const category of this.allCategorizedFeeds.category) {
+      filteredCategorizedFeeds.category.push({
+        name: category.name,
+        feeds: category.feeds.filter(filterFn),
+      });
+    }
+
+    this.filteredCategorizedFeeds = filteredCategorizedFeeds;
   }
 
   onSearch(event: Event) {

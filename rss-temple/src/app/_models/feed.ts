@@ -10,4 +10,5 @@ export class Feed {
   subscribed?: boolean;
   customTitle?: string;
   calculatedTitle?: string;
+  userCategoryUuids?: string[];
 }

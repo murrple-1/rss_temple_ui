@@ -25,7 +25,7 @@ interface ProgressStatus {
 })
 export class OPMLModalComponent implements OnDestroy {
   @ViewChild('opmlFileInput')
-  private opmlFileInput: ElementRef<HTMLInputElement> | null = null;
+  private opmlFileInput?: ElementRef<HTMLInputElement>;
 
   uploading = false;
 
@@ -55,7 +55,7 @@ export class OPMLModalComponent implements OnDestroy {
   }
 
   finish() {
-    if (this.opmlFileInput !== null) {
+    if (this.opmlFileInput !== undefined) {
       const nativeElement = this.opmlFileInput.nativeElement;
       if (nativeElement.files && nativeElement.files.length > 0) {
         const file = nativeElement.files[0];

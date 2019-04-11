@@ -1,11 +1,15 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { Subject } from 'rxjs';
+import { Subject, zip } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { FeedService, FeedEntryService } from '@app/_services/data';
-import { Feed, FeedEntry } from '@app/_models';
+import {
+  FeedService,
+  FeedEntryService,
+  UserCategoryService,
+} from '@app/_services/data';
+import { Feed, FeedEntry, UserCategory } from '@app/_models';
 import { HttpErrorService } from '@app/_services';
 
 @Component({
@@ -15,6 +19,7 @@ import { HttpErrorService } from '@app/_services';
 export class FeedComponent implements OnInit, OnDestroy {
   feed: Feed | null = null;
   feedEntries: FeedEntry[] = [];
+  userCategories: UserCategory[] = [];
 
   private unsubscribe$ = new Subject<void>();
 
@@ -23,6 +28,7 @@ export class FeedComponent implements OnInit, OnDestroy {
     private zone: NgZone,
     private feedService: FeedService,
     private feedEntryService: FeedEntryService,
+    private userCategoryService: UserCategoryService,
     private httpErrorService: HttpErrorService,
   ) {}
 
@@ -47,37 +53,60 @@ export class FeedComponent implements OnInit, OnDestroy {
   private getFeed(url: string, count: number) {
     this.feedService
       .get(url, {
-        fields: ['uuid', 'title', 'subscribed'],
+        fields: ['uuid', 'title', 'subscribed', 'userCategoryUuids'],
       })
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: feed => {
           feed.feedUrl = url;
-          this.zone.run(() => {
-            this.feed = feed;
+
+          const feedEntryObservable = this.feedEntryService.query({
+            fields: ['uuid', 'url', 'title', 'content', 'isRead', 'isFavorite'],
+            returnTotalCount: false,
+            count: count,
+            search: `feedUuid:"${feed.uuid}"`,
+            sort: 'createdAt:DESC,publishedAt:DESC,updatedAt:DESC',
           });
 
-          this.feedEntryService
-            .query({
-              fields: [
-                'uuid',
-                'url',
-                'title',
-                'content',
-                'isRead',
-                'isFavorite',
-              ],
-              returnTotalCount: false,
-              count: count,
-              search: `feedUuid:"${feed.uuid}"`,
-              sort: 'createdAt:DESC,publishedAt:DESC,updatedAt:DESC',
-            })
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
+          if (
+            feed.userCategoryUuids !== undefined &&
+            feed.userCategoryUuids.length > 0
+          ) {
+            zip(
+              feedEntryObservable,
+              this.userCategoryService.queryAll({
+                fields: ['text'],
+                returnTotalCount: false,
+                search: `uuid:"${feed.userCategoryUuids.join('|')}"`,
+                sort: 'text:ASC',
+              }),
+            )
+              .pipe(takeUntil(this.unsubscribe$))
+              .subscribe({
+                next: ([feedEntries, userCategories]) => {
+                  this.zone.run(() => {
+                    if (
+                      feedEntries.objects !== undefined &&
+                      userCategories.objects !== undefined
+                    ) {
+                      this.feed = feed;
+                      this.feedEntries = feedEntries.objects;
+                      this.userCategories = userCategories.objects;
+                    }
+                  });
+                },
+                error: error => {
+                  this.httpErrorService.handleError(error);
+                },
+              });
+          } else {
+            feedEntryObservable.pipe(takeUntil(this.unsubscribe$)).subscribe({
               next: feedEntries => {
                 this.zone.run(() => {
                   if (feedEntries.objects !== undefined) {
+                    this.feed = feed;
                     this.feedEntries = feedEntries.objects;
+                    this.userCategories = [];
                   }
                 });
               },
@@ -85,6 +114,7 @@ export class FeedComponent implements OnInit, OnDestroy {
                 this.httpErrorService.handleError(error);
               },
             });
+          }
         },
         error: error => {
           this.httpErrorService.handleError(error);

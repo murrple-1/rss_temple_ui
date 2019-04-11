@@ -32,19 +32,40 @@
     </a>
     <div class="dropdown-divider"></div>
     <div
-      *ngIf="filteredSubscribedFeeds.length === 0"
+      *ngIf="
+        filteredCategorizedFeeds.noCategory.length === 0 &&
+        filteredCategorizedFeeds.category.length === 0
+      "
       class="dropdown-item-text"
     >
       No Feeds Found
     </div>
-    <a
-      *ngFor="let feed of filteredSubscribedFeeds"
-      class="dropdown-item"
-      [routerLink]="['/main/feed', { url: feed.feedUrl }]"
-      (click)="feedDropdown.close(); feedDropdownMenu.scrollTop = 0"
-    >
-      {{ feed.title }}
-    </a>
+    <ng-container *ngFor="let category of filteredCategorizedFeeds.category">
+      <div class="dropdown-item-text app--category-name">
+        {{ category.name }}
+      </div>
+      <ng-container *ngFor="let feed of category.feeds; let last = last">
+        <a
+          class="dropdown-item"
+          [routerLink]="['/main/feed', { url: feed.feedUrl }]"
+          (click)="feedDropdown.close(); feedDropdownMenu.scrollTop = 0"
+        >
+          {{ feed.title }}
+        </a>
+        <div *ngIf="!last" class="dropdown-divider"></div>
+      </ng-container>
+    </ng-container>
+    <ng-container *ngIf="filteredCategorizedFeeds.noCategory.length > 0">
+      <div class="dropdown-item-text app--category-name">Uncategorized</div>
+      <a
+        *ngFor="let feed of filteredCategorizedFeeds.noCategory"
+        class="dropdown-item"
+        [routerLink]="['/main/feed', { url: feed.feedUrl }]"
+        (click)="feedDropdown.close(); feedDropdownMenu.scrollTop = 0"
+      >
+        {{ feed.title }}
+      </a>
+    </ng-container>
   </div>
 </div>
 <button

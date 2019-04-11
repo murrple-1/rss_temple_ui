@@ -10,6 +10,10 @@
       Unsubscribe
     </button>
 
+    <div *ngFor="let userCategory of userCategories">
+      {{ userCategory.text }}
+    </div>
+
     <app-feed-entry-view
       *ngFor="let feedEntry of feedEntries"
       [feedEntry]="feedEntry"
