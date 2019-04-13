@@ -167,4 +167,8 @@ export class FeedComponent implements OnInit, OnDestroy {
         });
     }
   }
+
+  onAddUserCategory() {
+    console.log('Hello');
+  }
 }

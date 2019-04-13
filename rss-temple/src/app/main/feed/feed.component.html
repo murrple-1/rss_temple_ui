@@ -19,9 +19,17 @@
       Unsubscribe
     </button>
 
+    <hr />
+
     <div *ngFor="let userCategory of userCategories">
       {{ userCategory.text }}
     </div>
+
+    <button (click)="onAddUserCategory()" *ngIf="feed && feed.subscribed">
+      Add User Category
+    </button>
+
+    <hr />
 
     <app-feed-entry-view
       *ngFor="let feedEntry of feedEntries"
