@@ -23,6 +23,24 @@
           >{{ errorString }}</small
         >
       </div>
+      <div class="form-group">
+        <div class="input-group">
+          <label class="has-float-label">
+            <input
+              formControlName="customName"
+              type="text"
+              class="form-control"
+              placeholder="Custom Name"
+            />
+            <span>Custom Name</span>
+          </label>
+        </div>
+        <small
+          *ngFor="let errorString of subscribeFormErrors.controls.customName"
+          class="form-text text-muted"
+          >{{ errorString }}</small
+        >
+      </div>
       <div class="app--error-group">
         <small
           *ngFor="let errorString of subscribeFormErrors.errors"

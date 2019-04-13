@@ -1,7 +1,16 @@
 <main role="main">
   <div class="container">
     <h2 *ngIf="!feed">No Feed</h2>
-    <h2 *ngIf="feed">{{ feed.title }}</h2>
+    <ng-container *ngIf="feed">
+      <h2 *ngIf="!feed.customTitle; else customTitleHeader">
+        {{ feed.title }}
+      </h2>
+      <ng-template #customTitleHeader>
+        <h2>{{ feed.customTitle }}</h2>
+        <h3>{{ feed.title }}</h3>
+      </ng-template>
+    </ng-container>
+    <h2 *ngIf="feed">{{ feed.calculatedTitle }}</h2>
 
     <button (click)="onSubscribe()" *ngIf="feed && !feed.subscribed">
       Subscribe

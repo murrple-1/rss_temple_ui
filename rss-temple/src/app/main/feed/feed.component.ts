@@ -53,7 +53,13 @@ export class FeedComponent implements OnInit, OnDestroy {
   private getFeed(url: string, count: number) {
     this.feedService
       .get(url, {
-        fields: ['uuid', 'title', 'subscribed', 'userCategoryUuids'],
+        fields: [
+          'uuid',
+          'title',
+          'customTitle',
+          'subscribed',
+          'userCategoryUuids',
+        ],
       })
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({

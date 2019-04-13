@@ -171,13 +171,17 @@ export class FeedService {
     return queryAllFn(options, this.query.bind(this), toFeed, pageSize);
   }
 
-  subscribe(url: string, options: CommonOptions = {}) {
+  subscribe(url: string, customTitle?: string, options: CommonOptions = {}) {
     const headers = commonToHeader(options, sessionToken);
     const params: {
       [header: string]: string | string[];
     } = {
       url: url,
     };
+
+    if (customTitle !== undefined) {
+      params['customtitle'] = customTitle;
+    }
 
     return this.http.post<void>(
       `${environment.apiHost}/api/feed/subscribe`,

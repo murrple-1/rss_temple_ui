@@ -130,9 +130,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   private static sortFeeds(a: Feed, b: Feed) {
-    if (a.title !== undefined) {
-      if (b.title !== undefined) {
-        return a.title.localeCompare(b.title);
+    if (a.calculatedTitle !== undefined) {
+      if (b.calculatedTitle !== undefined) {
+        return a.calculatedTitle.localeCompare(b.calculatedTitle);
       } else {
         return 1;
       }
@@ -149,9 +149,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
         returnTotalCount: false,
       }),
       this.feedService.queryAll({
-        fields: ['uuid', 'title', 'feedUrl'],
+        fields: ['uuid', 'calculatedTitle', 'feedUrl'],
         search: 'subscribed:"true"',
-        sort: 'title:ASC',
+        sort: 'calculatedTitle:ASC',
         returnTotalCount: false,
       }),
     )
@@ -198,10 +198,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
               feed.feedUrl = result.feedUrl;
               if (!feed.subscribed) {
                 this.feedService
-                  .subscribe(result.feedUrl)
+                  .subscribe(result.feedUrl, result.customTitle)
                   .pipe(takeUntil(this.unsubscribe$))
                   .subscribe({
                     next: () => {
+                      feed.calculatedTitle = result.customTitle || feed.title;
                       this.zone.run(() => {
                         this.feedObservableService.feedAdded.next(feed);
 
@@ -249,9 +250,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
             returnTotalCount: false,
           }),
           this.feedService.queryAll({
-            fields: ['uuid', 'title', 'feedUrl'],
+            fields: ['uuid', 'calculatedTitle', 'feedUrl'],
             search: 'subscribed:"true"',
-            sort: 'title:ASC',
+            sort: 'calculatedTitle:ASC',
             returnTotalCount: false,
           }),
         )
@@ -292,8 +293,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     value = value.trim().toLowerCase();
 
     const filterFn = (feed: Feed) => {
-      if (feed.title !== undefined) {
-        return feed.title.toLowerCase().includes(value);
+      if (feed.calculatedTitle !== undefined) {
+        return feed.calculatedTitle.toLowerCase().includes(value);
       } else {
         return false;
       }

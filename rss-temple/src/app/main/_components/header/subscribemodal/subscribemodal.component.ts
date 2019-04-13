@@ -6,6 +6,7 @@ import { FormGroupErrors } from '@app/_modules/formgrouperrors.module';
 
 export interface SubscriptionDetails {
   feedUrl: string;
+  customTitle?: string;
 }
 
 @Component({
@@ -24,6 +25,7 @@ export class SubscribeModalComponent {
   ) {
     this.subscribeForm = this.formBuilder.group({
       feedUrl: ['', [Validators.required]],
+      customName: [''],
     });
 
     this.subscribeFormErrors.initializeControls(this.subscribeForm);
@@ -47,8 +49,15 @@ export class SubscribeModalComponent {
       return;
     }
 
+    let customName: string | undefined;
+    const customName_ = this.subscribeForm.controls.customName.value as string;
+    if (customName_.trim() !== '') {
+      customName = customName_;
+    }
+
     const result: SubscriptionDetails = {
       feedUrl: this.subscribeForm.controls.feedUrl.value as string,
+      customTitle: customName,
     };
     this.activeModal.close(result);
   }

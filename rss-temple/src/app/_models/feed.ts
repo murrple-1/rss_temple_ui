@@ -8,7 +8,7 @@ export class Feed {
   publishedAt?: dayjs.Dayjs;
   updatedAt?: dayjs.Dayjs | null;
   subscribed?: boolean;
-  customTitle?: string;
+  customTitle?: string | null;
   calculatedTitle?: string;
   userCategoryUuids?: string[];
 }
