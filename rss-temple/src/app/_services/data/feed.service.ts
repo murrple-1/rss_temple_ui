@@ -120,10 +120,10 @@ function toFeed(value: JsonValue) {
 
   if (value['customTitle'] !== undefined) {
     const customTitle = value['customTitle'];
-    if (typeof customTitle === 'string') {
+    if (customTitle === null || typeof customTitle === 'string') {
       feed.customTitle = customTitle;
     } else {
-      throw new Error("'customTitle' must be string");
+      throw new Error("'customTitle' must be string or null");
     }
   }
 
