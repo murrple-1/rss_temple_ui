@@ -8,16 +8,16 @@ import { NgbDropdownModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { SnackbarModule } from 'ngx-snackbar';
 
-import { AppComponent } from '@app/app.component';
 import { routing } from '@app/app.routing';
-import { AuthGuard, NoAuthGuard } from '@app/_guards/auth.guard';
+import { AppComponent } from '@app/app.component';
+import { AuthGuard, NoAuthGuard } from '@app/guards/auth.guard';
 import {
   AlertService,
   FBAuthService,
   GAuthService,
   HttpErrorService,
   LoginService,
-} from '@app/_services';
+} from '@app/services';
 import {
   FeedEntryService,
   FeedService,
@@ -26,12 +26,12 @@ import {
   UserCategoryService,
   UserService,
   PasswordResetTokenService,
-} from '@app/_services/data';
-import { LoginComponent } from '@app/login/login.component';
-import { RequestPasswordResetModalComponent as LoginRequestPasswordResetModalComponent } from '@app/login/requestpasswordresetmodal/requestpasswordresetmodal.component';
-import { RegisterComponent } from '@app/register/register.component';
-import { ResetPasswordComponent } from '@app/resetpassword/resetpassword.component';
-import { VerifyComponent } from '@app/verify/verify.component';
+} from '@app/services/data';
+import { LoginComponent } from '@app/components/login/login.component';
+import { RequestPasswordResetModalComponent as LoginRequestPasswordResetModalComponent } from '@app/components/login/requestpasswordresetmodal/requestpasswordresetmodal.component';
+import { RegisterComponent } from '@app/components/register/register.component';
+import { ResetPasswordComponent } from '@app/components/resetpassword/resetpassword.component';
+import { VerifyComponent } from '@app/components/verify/verify.component';
 
 @NgModule({
   imports: [

@@ -10,14 +10,14 @@ import { SnackbarModule } from 'ngx-snackbar';
 
 import { AppComponent } from '@app/app.component';
 import { routing } from '@app/app.routing';
-import { AuthGuard, NoAuthGuard } from '@app/_guards/auth.guard';
+import { AuthGuard, NoAuthGuard } from '@app/guards/auth.guard';
 import {
   LoginService,
   AlertService,
   GAuthService,
   FBAuthService,
   HttpErrorService,
-} from '@app/_services';
+} from '@app/services';
 import {
   UserService,
   FeedService,
@@ -26,15 +26,15 @@ import {
   ProgressService,
   UserCategoryService,
   PasswordResetTokenService,
-} from '@app/_services/data';
-import { LoginComponent } from '@app/login/login.component';
-import { RegisterComponent } from '@app/register/register.component';
-import { MainComponent } from '@app/main/main.component';
-import { FeedComponent } from '@app/main/feed/feed.component';
-import { HeaderComponent } from '@app/main/_components/header/header.component';
-import { FeedEntryViewComponent } from '@app/main/_components/feed-entry-view/feed-entry-view.component';
-import { ResetPasswordComponent } from '@app/resetpassword/resetpassword.component';
-import { VerifyComponent } from '@app/verify/verify.component';
+} from '@app/services/data';
+import { LoginComponent } from '@app/components/login/login.component';
+import { RegisterComponent } from '@app/components/register/register.component';
+import { MainComponent } from '@app/routes/main/main.component';
+import { FeedComponent } from '@app/routes/main/components/feed/feed.component';
+import { HeaderComponent } from '@app/routes/main/components/shared/header/header.component';
+import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
+import { ResetPasswordComponent } from '@app/components/resetpassword/resetpassword.component';
+import { VerifyComponent } from '@app/components/verify/verify.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {

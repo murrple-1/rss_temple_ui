@@ -1,10 +1,10 @@
-﻿import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 
-import { AuthGuard, NoAuthGuard } from '@app/_guards/auth.guard';
-import { LoginComponent } from '@app/login/login.component';
-import { RegisterComponent } from '@app/register/register.component';
-import { ResetPasswordComponent } from '@app/resetpassword/resetpassword.component';
-import { VerifyComponent } from '@app/verify/verify.component';
+import { NoAuthGuard, AuthGuard } from '@app/guards/auth.guard';
+import { LoginComponent } from '@app/components/login/login.component';
+import { RegisterComponent } from '@app/components/register/register.component';
+import { ResetPasswordComponent } from '@app/components/resetpassword/resetpassword.component';
+import { VerifyComponent } from '@app/components/verify/verify.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [NoAuthGuard] },
@@ -24,10 +24,9 @@ const routes: Routes = [
   {
     path: 'main',
     canActivate: [AuthGuard],
-    loadChildren: './main/main.module#MainModule',
+    loadChildren: './routes/main/main.module#MainModule',
   },
 
-  // otherwise redirect to home
   { path: '**', redirectTo: 'login' },
 ];
 
