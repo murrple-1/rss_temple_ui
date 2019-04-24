@@ -20,7 +20,8 @@
   },
   "prettier": {
     "singleQuote": true,
-    "trailingComma": "all"
+    "trailingComma": "all",
+    "endOfLine": "lf"
   },
   "dependencies": {
     "@angular/animations": "^7.2.13",
