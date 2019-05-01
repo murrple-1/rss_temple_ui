@@ -12,24 +12,41 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { Subject, zip } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, map } from 'rxjs/operators';
 
 import {
   SubscribeModalComponent,
   SubscriptionDetails,
 } from '@app/routes/main/components/shared/header/subscribemodal/subscribemodal.component';
 import { OPMLModalComponent } from '@app/routes/main/components/shared/header/opmlmodal/opmlmodal.component';
-import { Feed, UserCategory } from '@app/models';
 import { FeedService, UserCategoryService } from '@app/services/data';
 import { HttpErrorService, LoginService } from '@app/services';
 import { FeedObservableService } from '@app/routes/main/services';
 import { deleteSessionToken, sessionToken } from '@app/libs/session.lib';
+import { UserCategory, Feed } from '@app/models';
+
+interface UserCategoryImpl extends UserCategory {
+  text: string;
+  feedUuids: string[];
+}
+
+interface FeedImpl extends Feed {
+  uuid: string;
+  calculatedTitle: string;
+  feedUrl: string;
+}
+
+interface FeedImpl2 extends Feed {
+  uuid: string;
+  title: string;
+  subscribed: boolean;
+}
 
 interface CategorizedFeeds {
-  noCategory: Feed[];
+  noCategory: FeedImpl[];
   category: {
     name: string;
-    feeds: Feed[];
+    feeds: FeedImpl[];
   }[];
 }
 
@@ -82,8 +99,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   private static buildAllCategorizedFeeds(
-    userCategories: UserCategory[],
-    feeds: Feed[],
+    userCategories: UserCategoryImpl[],
+    feeds: FeedImpl[],
   ) {
     const allCategorizedFeedUuids = new Set<string>(
       userCategories.flatMap(userCategory_ => {
@@ -129,7 +146,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     return allCategorizedFeeds;
   }
 
-  private static sortFeeds(a: Feed, b: Feed) {
+  private static sortFeeds(a: FeedImpl, b: FeedImpl) {
     if (a.calculatedTitle !== undefined) {
       if (b.calculatedTitle !== undefined) {
         return a.calculatedTitle.localeCompare(b.calculatedTitle);
@@ -155,22 +172,31 @@ export class HeaderComponent implements OnInit, OnDestroy {
         returnTotalCount: false,
       }),
     )
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe({
-        next: ([userCategories, feeds]) => {
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        map(([userCategories, feeds]) => {
           if (
             userCategories.objects !== undefined &&
             feeds.objects !== undefined
           ) {
-            const allCategorizedFeeds = HeaderComponent.buildAllCategorizedFeeds(
-              userCategories.objects,
-              feeds.objects,
-            );
-            this.zone.run(() => {
-              this.allCategorizedFeeds = allCategorizedFeeds;
-              this.filteredCategorizedFeeds = allCategorizedFeeds;
-            });
+            return [userCategories.objects, feeds.objects] as [
+              UserCategoryImpl[],
+              FeedImpl[]
+            ];
           }
+          throw new Error('malformed response');
+        }),
+      )
+      .subscribe({
+        next: ([userCategories, feeds]) => {
+          const allCategorizedFeeds = HeaderComponent.buildAllCategorizedFeeds(
+            userCategories,
+            feeds,
+          );
+          this.zone.run(() => {
+            this.allCategorizedFeeds = allCategorizedFeeds;
+            this.filteredCategorizedFeeds = allCategorizedFeeds;
+          });
         },
         error: error => {
           this.httpErrorService.handleError(error);
@@ -192,17 +218,29 @@ export class HeaderComponent implements OnInit, OnDestroy {
           .get(result.feedUrl, {
             fields: ['uuid', 'title', 'subscribed'],
           })
-          .pipe(takeUntil(this.unsubscribe$))
+          .pipe(
+            takeUntil(this.unsubscribe$),
+            map(feed => {
+              return feed as FeedImpl2;
+            }),
+          )
           .subscribe({
-            next: feed => {
-              feed.feedUrl = result.feedUrl;
-              if (!feed.subscribed) {
+            next: feed_ => {
+              const feed: FeedImpl = {
+                uuid: feed_.uuid,
+                feedUrl: result.feedUrl,
+                calculatedTitle: feed_.title,
+              };
+              if (!feed_.subscribed) {
                 this.feedService
                   .subscribe(result.feedUrl, result.customTitle)
                   .pipe(takeUntil(this.unsubscribe$))
                   .subscribe({
                     next: () => {
-                      feed.calculatedTitle = result.customTitle || feed.title;
+                      if (result.customTitle !== undefined) {
+                        feed.calculatedTitle = result.customTitle;
+                      }
+
                       this.zone.run(() => {
                         this.feedObservableService.feedAdded.next(feed);
 
@@ -256,22 +294,31 @@ export class HeaderComponent implements OnInit, OnDestroy {
             returnTotalCount: false,
           }),
         )
-          .pipe(takeUntil(this.unsubscribe$))
+          .pipe(
+            takeUntil(this.unsubscribe$),
+            map(([userCategories, feeds]) => {
+              if (
+                userCategories.objects !== undefined &&
+                feeds.objects !== undefined
+              ) {
+                return [userCategories.objects, feeds.objects] as [
+                  UserCategoryImpl[],
+                  FeedImpl[]
+                ];
+              }
+              throw new Error('malformed response');
+            }),
+          )
           .subscribe({
             next: ([userCategories, feeds]) => {
               this.zone.run(() => {
-                if (
-                  userCategories.objects !== undefined &&
-                  feeds.objects !== undefined
-                ) {
-                  this.allCategorizedFeeds = HeaderComponent.buildAllCategorizedFeeds(
-                    userCategories.objects,
-                    feeds.objects,
-                  );
+                this.allCategorizedFeeds = HeaderComponent.buildAllCategorizedFeeds(
+                  userCategories,
+                  feeds,
+                );
 
-                  if (this.filterInput !== undefined) {
-                    this.filterFeeds(this.filterInput.nativeElement.value);
-                  }
+                if (this.filterInput !== undefined) {
+                  this.filterFeeds(this.filterInput.nativeElement.value);
                 }
               });
             },
@@ -292,7 +339,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private filterFeeds(value: string) {
     value = value.trim().toLowerCase();
 
-    const filterFn = (feed: Feed) => {
+    const filterFn = (feed: FeedImpl) => {
       if (feed.calculatedTitle !== undefined) {
         return feed.calculatedTitle.toLowerCase().includes(value);
       } else {

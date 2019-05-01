@@ -1,4 +1,4 @@
-<div class="app--view">
+<div *ngIf="feedEntry !== undefined" class="app--view">
   <h2>
     <a href="{{ feedEntry.url }}" target="_blank">{{ feedEntry.title }}</a>
   </h2>

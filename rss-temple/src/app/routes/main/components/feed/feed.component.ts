@@ -2,24 +2,46 @@ import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { Subject, zip } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, map } from 'rxjs/operators';
 
 import {
   FeedService,
   FeedEntryService,
   UserCategoryService,
 } from '@app/services/data';
-import { Feed, FeedEntry, UserCategory } from '@app/models';
 import { HttpErrorService } from '@app/services';
+import { Feed, FeedEntry, UserCategory } from '@app/models';
+
+interface FeedImpl extends Feed {
+  uuid: string;
+  title: string;
+  feedUrl: string;
+  customTitle: string | null;
+  subscribed: boolean;
+  userCategoryUuids: string[];
+}
+
+interface FeedEntryImpl extends FeedEntry {
+  uuid: string;
+  url: string;
+  title: string;
+  content: string;
+  isRead: boolean;
+  isFavorite: boolean;
+}
+
+interface UserCategoryImpl extends UserCategory {
+  text: string;
+}
 
 @Component({
   templateUrl: 'feed.component.html',
   styleUrls: ['feed.component.scss'],
 })
 export class FeedComponent implements OnInit, OnDestroy {
-  feed: Feed | null = null;
-  feedEntries: FeedEntry[] = [];
-  userCategories: UserCategory[] = [];
+  feed: FeedImpl | null = null;
+  feedEntries: FeedEntryImpl[] = [];
+  userCategories: UserCategoryImpl[] = [];
 
   private unsubscribe$ = new Subject<void>();
 
@@ -61,7 +83,12 @@ export class FeedComponent implements OnInit, OnDestroy {
           'userCategoryUuids',
         ],
       })
-      .pipe(takeUntil(this.unsubscribe$))
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        map(feed => {
+          return feed as FeedImpl;
+        }),
+      )
       .subscribe({
         next: feed => {
           feed.feedUrl = url;
@@ -74,10 +101,7 @@ export class FeedComponent implements OnInit, OnDestroy {
             sort: 'createdAt:DESC,publishedAt:DESC,updatedAt:DESC',
           });
 
-          if (
-            feed.userCategoryUuids !== undefined &&
-            feed.userCategoryUuids.length > 0
-          ) {
+          if (feed.userCategoryUuids.length > 0) {
             zip(
               feedEntryObservable,
               this.userCategoryService.queryAll({
@@ -87,18 +111,27 @@ export class FeedComponent implements OnInit, OnDestroy {
                 sort: 'text:ASC',
               }),
             )
-              .pipe(takeUntil(this.unsubscribe$))
+              .pipe(
+                takeUntil(this.unsubscribe$),
+                map(([feedEntries, userCategories]) => {
+                  if (
+                    feedEntries.objects !== undefined &&
+                    userCategories.objects !== undefined
+                  ) {
+                    return [feedEntries.objects, userCategories.objects] as [
+                      FeedEntryImpl[],
+                      UserCategoryImpl[]
+                    ];
+                  }
+                  throw new Error('malformed response');
+                }),
+              )
               .subscribe({
                 next: ([feedEntries, userCategories]) => {
                   this.zone.run(() => {
-                    if (
-                      feedEntries.objects !== undefined &&
-                      userCategories.objects !== undefined
-                    ) {
-                      this.feed = feed;
-                      this.feedEntries = feedEntries.objects;
-                      this.userCategories = userCategories.objects;
-                    }
+                    this.feed = feed;
+                    this.feedEntries = feedEntries;
+                    this.userCategories = userCategories;
                   });
                 },
                 error: error => {
@@ -106,20 +139,28 @@ export class FeedComponent implements OnInit, OnDestroy {
                 },
               });
           } else {
-            feedEntryObservable.pipe(takeUntil(this.unsubscribe$)).subscribe({
-              next: feedEntries => {
-                this.zone.run(() => {
+            feedEntryObservable
+              .pipe(
+                takeUntil(this.unsubscribe$),
+                map(feedEntries => {
                   if (feedEntries.objects !== undefined) {
-                    this.feed = feed;
-                    this.feedEntries = feedEntries.objects;
-                    this.userCategories = [];
+                    return feedEntries.objects as FeedEntryImpl[];
                   }
-                });
-              },
-              error: error => {
-                this.httpErrorService.handleError(error);
-              },
-            });
+                  throw new Error('malformed response');
+                }),
+              )
+              .subscribe({
+                next: feedEntries => {
+                  this.zone.run(() => {
+                    this.feed = feed;
+                    this.feedEntries = feedEntries;
+                    this.userCategories = [];
+                  });
+                },
+                error: error => {
+                  this.httpErrorService.handleError(error);
+                },
+              });
           }
         },
         error: error => {

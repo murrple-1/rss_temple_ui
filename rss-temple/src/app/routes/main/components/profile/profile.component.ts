@@ -1,14 +1,9 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  ValidationErrors,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { Subject, zip } from 'rxjs';
-import { takeUntil, skip } from 'rxjs/operators';
+import { takeUntil, skip, map } from 'rxjs/operators';
 
 import { FeedService, FeedEntryService, UserService } from '@app/services/data';
 import {
@@ -24,6 +19,13 @@ import {
   passwordRequirementsText,
 } from '@app/libs/password.lib';
 import { FormGroupErrors } from '@app/libs/formgrouperrors.lib';
+import { User } from '@app/models';
+
+interface UserImpl extends User {
+  email: string;
+  hasGoogleLogin: boolean;
+  hasFacebookLogin: boolean;
+}
 
 enum State {
   IsLoading,
@@ -97,30 +99,35 @@ export class ProfileComponent implements OnInit, OnDestroy {
         search: 'isRead:"true"',
       }),
     )
-      .pipe(takeUntil(this.unsubscribe$))
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        map(([user, feedsObjects, feedEntriesObject]) => {
+          if (
+            feedsObjects.totalCount !== undefined &&
+            feedEntriesObject.totalCount !== undefined
+          ) {
+            return [
+              user as UserImpl,
+              feedsObjects.totalCount,
+              feedEntriesObject.totalCount,
+            ] as [UserImpl, number, number];
+          }
+          throw new Error('malformed response');
+        }),
+      )
       .subscribe({
-        next: ([user, feedsObjects, readFeedEntriesObject]) => {
+        next: ([user, feedsCount, readFeedEntriesCount]) => {
           this.zone.run(() => {
-            if (user.email !== undefined) {
-              this.profileForm.controls.email.setValue(user.email);
-              this.profileForm.controls.email.markAsPristine();
-            }
+            this.profileForm.controls.email.setValue(user.email);
+            this.profileForm.controls.email.markAsPristine();
 
-            if (user.hasGoogleLogin !== undefined) {
-              this.hasGoogleLogin = user.hasGoogleLogin;
-            }
+            this.hasGoogleLogin = user.hasGoogleLogin;
 
-            if (user.hasFacebookLogin !== undefined) {
-              this.hasFacebookLogin = user.hasFacebookLogin;
-            }
+            this.hasFacebookLogin = user.hasFacebookLogin;
 
-            if (feedsObjects.totalCount !== undefined) {
-              this.numberOfFeeds = feedsObjects.totalCount;
-            }
+            this.numberOfFeeds = feedsCount;
 
-            if (readFeedEntriesObject.totalCount) {
-              this.numberOfReadFeedEntries = readFeedEntriesObject.totalCount;
-            }
+            this.numberOfReadFeedEntries = readFeedEntriesCount;
 
             this.state = State.LoadSuccess;
           });

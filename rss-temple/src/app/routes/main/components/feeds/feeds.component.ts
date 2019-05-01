@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, map } from 'rxjs/operators';
 
 import { FeedService, FeedEntryService } from '@app/services/data';
 import { QueryOptions } from '@app/services/data/query.interface';
@@ -12,13 +12,25 @@ import { HttpErrorService } from '@app/services';
 import { FeedObservableService } from '@app/routes/main/services';
 import { InViewportEvent } from '@app/directives/inviewport.directive';
 
+interface FeedImpl extends Feed {
+  uuid: string;
+}
+
+interface FeedEntryImpl extends FeedEntry {
+  uuid: string;
+  url: string;
+  title: string;
+  content: string;
+  isRead: boolean;
+}
+
 @Component({
   templateUrl: 'feeds.component.html',
   styleUrls: ['feeds.component.scss'],
 })
 export class FeedsComponent implements OnInit, OnDestroy {
-  private feeds: Feed[] = [];
-  feedEntries: FeedEntry[] = [];
+  private feeds: FeedImpl[] = [];
+  feedEntries: FeedEntryImpl[] = [];
 
   isLoadingMore = false;
 
@@ -50,7 +62,12 @@ export class FeedsComponent implements OnInit, OnDestroy {
     this.getFeeds();
 
     this.feedObservableService.feedAdded
-      .pipe(takeUntil(this.unsubscribe$))
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        map(feed => {
+          return feed as FeedImpl;
+        }),
+      )
       .subscribe({
         next: feed => {
           this.feeds.push(feed);
@@ -96,14 +113,20 @@ export class FeedsComponent implements OnInit, OnDestroy {
         search: 'subscribed:"true"',
         returnTotalCount: false,
       })
-      .pipe(takeUntil(this.unsubscribe$))
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        map(feeds => {
+          if (feeds.objects !== undefined) {
+            return feeds.objects as FeedImpl[];
+          }
+          throw new Error('malformed response');
+        }),
+      )
       .subscribe({
         next: feeds => {
-          if (feeds.objects !== undefined) {
-            this.feeds = feeds.objects;
+          this.feeds = feeds;
 
-            this.getFeedEntries();
-          }
+          this.getFeedEntries();
         },
         error: error => {
           this.httpErrorService.handleError(error);
@@ -111,7 +134,7 @@ export class FeedsComponent implements OnInit, OnDestroy {
       });
   }
 
-  private queryOptions(skip?: number): QueryOptions<Field> {
+  private feedEntryQueryOptions(skip?: number): QueryOptions<Field> {
     return {
       fields: ['uuid', 'url', 'title', 'content', 'isRead'],
       returnTotalCount: false,
@@ -127,13 +150,19 @@ export class FeedsComponent implements OnInit, OnDestroy {
   private getFeedEntries() {
     if (this.feeds.length > 0) {
       this.feedEntryService
-        .query(this.queryOptions())
-        .pipe(takeUntil(this.unsubscribe$))
+        .query(this.feedEntryQueryOptions())
+        .pipe(
+          takeUntil(this.unsubscribe$),
+          map(feedEntries => {
+            if (feedEntries.objects !== undefined) {
+              return feedEntries.objects as FeedEntryImpl[];
+            }
+            throw new Error('malformed response');
+          }),
+        )
         .subscribe({
           next: feedEntries => {
-            if (feedEntries.objects !== undefined) {
-              this.feedEntries = feedEntries.objects;
-            }
+            this.feedEntries = feedEntries;
           },
           error: error => {
             this.httpErrorService.handleError(error);
@@ -142,7 +171,7 @@ export class FeedsComponent implements OnInit, OnDestroy {
     }
   }
 
-  feedAdded(feed: Feed) {
+  feedAdded(feed: FeedImpl) {
     this.feeds = this.feeds.concat(feed);
 
     this.getFeedEntries();
@@ -157,13 +186,19 @@ export class FeedsComponent implements OnInit, OnDestroy {
       this.isLoadingMore = true;
 
       this.feedEntryService
-        .query(this.queryOptions(this.feedEntries.length))
-        .pipe(takeUntil(this.unsubscribe$))
+        .query(this.feedEntryQueryOptions(this.feedEntries.length))
+        .pipe(
+          takeUntil(this.unsubscribe$),
+          map(feedEntries => {
+            if (feedEntries.objects !== undefined) {
+              return feedEntries.objects as FeedEntryImpl[];
+            }
+            throw new Error('malformed response');
+          }),
+        )
         .subscribe({
           next: feedEntries => {
-            if (feedEntries.objects !== undefined) {
-              this.feedEntries = this.feedEntries.concat(feedEntries.objects);
-            }
+            this.feedEntries = this.feedEntries.concat(feedEntries);
 
             this.zone.run(() => {
               this.isLoadingMore = false;
