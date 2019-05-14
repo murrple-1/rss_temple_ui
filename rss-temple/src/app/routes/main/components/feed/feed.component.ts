@@ -1,6 +1,8 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
 import { Subject, zip } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 
@@ -11,6 +13,7 @@ import {
 } from '@app/services/data';
 import { HttpErrorService } from '@app/services';
 import { Feed, FeedEntry, UserCategory } from '@app/models';
+import { UserCategoriesModalComponent } from '@app/routes/main/components/feed/usercategoriesmodal/usercategoriesmodal.component';
 
 interface FeedImpl extends Feed {
   uuid: string;
@@ -48,6 +51,7 @@ export class FeedComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private zone: NgZone,
+    private modal: NgbModal,
     private feedService: FeedService,
     private feedEntryService: FeedEntryService,
     private userCategoryService: UserCategoryService,
@@ -210,7 +214,18 @@ export class FeedComponent implements OnInit, OnDestroy {
   }
 
   onAddUserCategory() {
-    // TODO implement
-    console.log('Hello');
+    const modalRef = this.modal.open(UserCategoriesModalComponent, {
+      beforeDismiss: UserCategoriesModalComponent.beforeDismiss,
+    });
+
+    const component = modalRef.componentInstance as UserCategoriesModalComponent;
+    component.userCategories = this.userCategories.map(
+      userCategory => userCategory.text,
+    );
+
+    modalRef.result.then((result: string[]) => {
+      // TODO what do?
+      console.log(result);
+    });
   }
 }

@@ -14,6 +14,7 @@ import { routing } from '@app/routes/main/main.routing';
 import { MainComponent } from '@app/routes/main/main.component';
 import { FeedsComponent } from '@app/routes/main/components/feeds/feeds.component';
 import { FeedComponent } from '@app/routes/main/components/feed/feed.component';
+import { UserCategoriesModalComponent } from '@app/routes/main/components/feed/usercategoriesmodal/usercategoriesmodal.component';
 import { ProfileComponent } from '@app/routes/main/components/profile/profile.component';
 import { HeaderComponent } from '@app/routes/main/components/shared/header/header.component';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
@@ -41,6 +42,7 @@ import { FeedObservableService } from '@app/routes/main/services';
     MainComponent,
     FeedsComponent,
     FeedComponent,
+    UserCategoriesModalComponent,
     ProfileComponent,
     HeaderComponent,
     FeedEntryViewComponent,
@@ -49,6 +51,10 @@ import { FeedObservableService } from '@app/routes/main/services';
 
     InViewportDirective,
   ],
-  entryComponents: [HeaderSubscribeModalComponent, HeaderOPMLModalComponent],
+  entryComponents: [
+    HeaderSubscribeModalComponent,
+    HeaderOPMLModalComponent,
+    UserCategoriesModalComponent,
+  ],
 })
 export class MainModule {}

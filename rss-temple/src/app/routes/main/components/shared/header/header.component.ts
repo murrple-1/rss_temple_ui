@@ -85,7 +85,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private elementRef: ElementRef,
     private renderer: Renderer2,
     private router: Router,
-    private modalService: NgbModal,
+    private modal: NgbModal,
     private feedService: FeedService,
     private userCategoryService: UserCategoryService,
     private feedObservableService: FeedObservableService,
@@ -210,7 +210,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   addFeed() {
-    const modalRef = this.modalService.open(SubscribeModalComponent);
+    const modalRef = this.modal.open(SubscribeModalComponent);
 
     modalRef.result.then(
       (result: SubscriptionDetails) => {
@@ -275,7 +275,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   uploadOPML() {
-    const modalRef = this.modalService.open(OPMLModalComponent);
+    const modalRef = this.modal.open(OPMLModalComponent);
 
     modalRef.result.then(
       () => {

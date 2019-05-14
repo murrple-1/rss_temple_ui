@@ -46,7 +46,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private zone: NgZone,
-    private modalService: NgbModal,
+    private modal: NgbModal,
     private loginService: LoginService,
     private alertService: AlertService,
     private gAuthService: GAuthService,
@@ -309,7 +309,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   onForgottenPassword() {
-    const modalRef = this.modalService.open(RequestPasswordResetModalComponent);
+    const modalRef = this.modal.open(RequestPasswordResetModalComponent);
 
     modalRef.result.then(
       () => {
