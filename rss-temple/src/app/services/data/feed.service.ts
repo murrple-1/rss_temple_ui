@@ -24,7 +24,11 @@ import {
   CommonOptions,
   toHeader as commonToHeader,
 } from '@app/services/data/common.interface';
-import { JsonValue, isJsonObject } from '@app/services/data/json.type';
+import {
+  JsonValue,
+  isJsonObject,
+  isJsonArray,
+} from '@app/services/data/json.type';
 
 import { environment } from '@environments/environment';
 
@@ -133,6 +137,22 @@ function toFeed(value: JsonValue) {
       feed.calculatedTitle = calculatedTitle;
     } else {
       throw new Error("'calculatedTitle' must be string");
+    }
+  }
+
+  if (value['userCategoryUuids'] !== undefined) {
+    const userCategoryUuids = value['userCategoryUuids'];
+
+    if (isJsonArray(userCategoryUuids)) {
+      for (const userCategoryUuid of userCategoryUuids) {
+        if (typeof userCategoryUuid !== 'string') {
+          throw new Error("'userCategoryUuids' element must be string");
+        }
+      }
+
+      feed.userCategoryUuids = userCategoryUuids as string[];
+    } else {
+      throw new Error("'userCategoryUuids' must be array");
     }
   }
 

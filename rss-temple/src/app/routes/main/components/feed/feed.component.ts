@@ -210,6 +210,7 @@ export class FeedComponent implements OnInit, OnDestroy {
   }
 
   onAddUserCategory() {
+    // TODO implement
     console.log('Hello');
   }
 }
