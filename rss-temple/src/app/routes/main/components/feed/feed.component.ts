@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { Subject, zip } from 'rxjs';
-import { takeUntil, map } from 'rxjs/operators';
+import { takeUntil, map, take } from 'rxjs/operators';
 
 import {
   FeedService,
@@ -13,7 +13,11 @@ import {
 } from '@app/services/data';
 import { HttpErrorService } from '@app/services';
 import { Feed, FeedEntry, UserCategory } from '@app/models';
-import { UserCategoriesModalComponent } from '@app/routes/main/components/feed/usercategoriesmodal/usercategoriesmodal.component';
+import {
+  UserCategoriesModalComponent,
+  ReturnData,
+} from '@app/routes/main/components/feed/usercategoriesmodal/usercategoriesmodal.component';
+import { IApply } from '@app/services/data/usercategory.service';
 
 interface FeedImpl extends Feed {
   uuid: string;
@@ -219,13 +223,38 @@ export class FeedComponent implements OnInit, OnDestroy {
     });
 
     const component = modalRef.componentInstance as UserCategoriesModalComponent;
-    component.userCategories = this.userCategories.map(
-      userCategory => userCategory.text,
+    component.initialUserCategories = new Set<string>(
+      this.userCategories.map(userCategory => userCategory.text),
     );
 
-    modalRef.result.then((result: string[]) => {
-      // TODO what do?
-      console.log(result);
+    modalRef.result.then((returnData: ReturnData[]) => {
+      if (this.feed !== null) {
+        const applyBody: IApply = {};
+        applyBody[this.feed.uuid] = new Set<string>(
+          returnData.map(data => data.uuid),
+        );
+
+        this.userCategoryService
+          .apply(applyBody)
+          .pipe(
+            takeUntil(this.unsubscribe$),
+            take(1),
+          )
+          .subscribe({
+            next: () => {
+              this.zone.run(() => {
+                this.userCategories = returnData.map<UserCategoryImpl>(data => {
+                  return {
+                    text: data.text,
+                  };
+                });
+              });
+            },
+            error: error => {
+              this.httpErrorService.handleError(error);
+            },
+          });
+      }
     });
   }
 }

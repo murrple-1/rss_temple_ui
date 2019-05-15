@@ -4,17 +4,26 @@
 <div class="modal-body">
   <ul class="list-group app--user-categories-list">
     <li
-      *ngIf="userCategories.length === 0; else userCategoryList"
+      *ngIf="userCategorySelections.length === 0; else userCategoryList"
       class="list-group-item disabled"
     >
       No Categories
     </li>
     <ng-template #userCategoryList>
       <li
-        *ngFor="let userCategory of userCategories; index as i"
+        *ngFor="let userCategorySelection of userCategorySelections; index as i"
         class="list-group-item d-flex justify-content-between align-items-center"
       >
-        {{ userCategory }}
+        <div class="form-check">
+          <label class="form-check-label">
+            <input
+              [(ngModel)]="userCategorySelection.isSelected"
+              class="form-check-input"
+              type="checkbox"
+            />
+            {{ userCategorySelection.text }}
+          </label>
+        </div>
         <a
           [routerLink]=""
           class="badge badge-danger badge-pill"

@@ -64,6 +64,8 @@ export interface ICreateUserCategory {
   text: string;
 }
 
+export type IUpdateUserCategory = ICreateUserCategory;
+
 export interface IApply {
   [feedUuid: string]: Set<string>;
 }
@@ -103,8 +105,13 @@ export class UserCategoryService {
     return queryAllFn(options, this.query.bind(this), toUserCategory, pageSize);
   }
 
-  create(userCategoryJson: ICreateUserCategory, options: CommonOptions = {}) {
-    const headers = commonToHeader(options, sessionToken);
+  create(
+    userCategoryJson: ICreateUserCategory,
+    options: GetOptions<Field> = {},
+  ) {
+    const headers = getToHeader(options, sessionToken);
+
+    const params = getToParams(options, () => ['uuid']);
 
     return this.http
       .post<JsonValue>(
@@ -112,10 +119,38 @@ export class UserCategoryService {
         userCategoryJson,
         {
           headers: headers,
+          params: params,
           responseType: 'json',
         },
       )
       .pipe(map(toUserCategory));
+  }
+
+  update(
+    userCategoryUuid: string,
+    userCategoryJson: IUpdateUserCategory,
+    options: CommonOptions = {},
+  ) {
+    const headers = commonToHeader(options, sessionToken);
+
+    return this.http.put<void>(
+      `${environment.apiHost}/api/usercategory`,
+      userCategoryJson,
+      {
+        headers: headers,
+      },
+    );
+  }
+
+  delete(userCategoryUuid: string, options: CommonOptions = {}) {
+    const headers = commonToHeader(options, sessionToken);
+
+    return this.http.delete<void>(
+      `${environment.apiHost}/api/usercategory/${userCategoryUuid}`,
+      {
+        headers: headers,
+      },
+    );
   }
 
   apply(apply: IApply, options: CommonOptions = {}) {
