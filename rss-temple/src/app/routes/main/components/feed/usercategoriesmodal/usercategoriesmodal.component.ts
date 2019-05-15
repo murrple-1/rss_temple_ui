@@ -12,6 +12,10 @@ export class UserCategoriesModalComponent {
   @Input()
   userCategories: string[] = [];
 
+  userCategorySelections: {
+    [name: string]: boolean;
+  } = {};
+
   constructor(private activeModal: NgbActiveModal) {}
 
   static beforeDismiss() {

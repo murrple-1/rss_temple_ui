@@ -22,7 +22,11 @@ import {
   CommonOptions,
   toHeader as commonToHeader,
 } from '@app/services/data/common.interface';
-import { JsonValue, isJsonObject } from '@app/services/data/json.type';
+import {
+  JsonValue,
+  isJsonObject,
+  JsonObject,
+} from '@app/services/data/json.type';
 
 import { environment } from '@environments/environment';
 
@@ -58,6 +62,10 @@ function toUserCategory(value: JsonValue) {
 
 export interface ICreateUserCategory {
   text: string;
+}
+
+export interface IApply {
+  [feedUuid: string]: Set<string>;
 }
 
 @Injectable()
@@ -108,5 +116,23 @@ export class UserCategoryService {
         },
       )
       .pipe(map(toUserCategory));
+  }
+
+  apply(apply: IApply, options: CommonOptions = {}) {
+    const headers = commonToHeader(options, sessionToken);
+
+    const body: JsonObject = {};
+
+    for (const feedUuid of Object.keys(apply)) {
+      body[feedUuid] = Array.from(apply[feedUuid]);
+    }
+
+    return this.http.put<void>(
+      `${environment.apiHost}/api/usercategories/apply`,
+      body,
+      {
+        headers: headers,
+      },
+    );
   }
 }
