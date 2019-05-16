@@ -338,10 +338,10 @@
     semver "5.6.0"
     semver-intersect "1.4.0"
 
-"@types/facebook-js-sdk@^3.2.1":
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/@types/facebook-js-sdk/-/facebook-js-sdk-3.2.1.tgz#d8ed7319d90d8d97037b5757c35ea46dfcf245c7"
-  integrity sha512-qtEgePYXvOisztYL79mkhEaawhlAAQLeg9bmsM616HDhqv2Tag1XQv8cTwTVLvKZ6TmBcBiqI5wiMljpzEfZgg==
+"@types/facebook-js-sdk@^3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@types/facebook-js-sdk/-/facebook-js-sdk-3.3.0.tgz#603d77a89be203d88f228810b54bb772fc25eedd"
+  integrity sha512-jSoLJd8g5cHHkbJc7MBebfiHYGYtFT8fbt5RUSGAPlpQWuzzi/LkwgpaC/F2pYLUDR7GSinXNbohsjKl2rc+9w==
 
 "@types/gapi.auth2@0.0.50":
   version "0.0.50"
@@ -377,10 +377,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.18.tgz#1d3ca764718915584fcd9f6344621b7672665c67"
   integrity sha512-fh+pAqt4xRzPfqA6eh3Z2y6fyZavRIumvjhaCL753+TVkGKGhpPeyrJG2JftD0T9q4GF00KjefsQ+PQNDdWQaQ==
 
-"@types/node@^12.0.1":
-  version "12.0.1"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.0.1.tgz#3dde31f8da274dfeb90e96abf55038fef46285f0"
-  integrity sha512-7sy7DKVJrCTbaAERJZq/CU12bzdmpjRr321/Ne9QmzhB3iZ//L16Cizcni5hHNbANxDbxwMb9EFoWkM8KPkp0A==
+"@types/node@^12.0.2":
+  version "12.0.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.0.2.tgz#3452a24edf9fea138b48fad4a0a028a683da1e40"
+  integrity sha512-5tabW/i+9mhrfEOUcLDu2xBPsHJ+X5Orqy9FKpale3SjDA17j5AEpYq5vfy3oAeAHGcvANRCO3NV3d2D6q3NiA==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -1606,14 +1606,14 @@ code-point-at@^1.0.0:
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
   integrity sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=
 
-codecov@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/codecov/-/codecov-3.4.0.tgz#7d16d9d82b0ce20efe5dbf66245a9740779ff61b"
-  integrity sha512-+vtyL1B11MWiRIBaPnsIALKKpLFck9m6QdyI20ZnG8WqLG2cxwCTW9x/LbG4Ht8b81equZWw5xLcr+0BIvmdJQ==
+codecov@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/codecov/-/codecov-3.5.0.tgz#3d0748932f9cb41e1ad7f21fa346ef1b2b1bed47"
+  integrity sha512-/OsWOfIHaQIr7aeZ4pY0UC1PZT6kimoKFOFYFNb6wxo3iw12nRrh+mNGH72rnXxNsq6SGfesVPizm/6Q3XqcFQ==
   dependencies:
     argv "^0.0.2"
     ignore-walk "^3.0.1"
-    js-yaml "^3.13.0"
+    js-yaml "^3.13.1"
     teeny-request "^3.11.3"
     urlgrey "^0.4.4"
 
@@ -3878,6 +3878,14 @@ js-yaml@^3.13.0:
   version "3.13.0"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.13.0.tgz#38ee7178ac0eea2c97ff6d96fff4b18c7d8cf98e"
   integrity sha512-pZZoSxcCYco+DIKBTimr67J6Hy+EYGZDY/HCWC+iAEA9h1ByhMXAIVUXMcMFpOCxQ/xjXmPI2MkDL5HRm5eFrQ==
+  dependencies:
+    argparse "^1.0.7"
+    esprima "^4.0.0"
+
+js-yaml@^3.13.1:
+  version "3.13.1"
+  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.13.1.tgz#aff151b30bfdfa8e49e05da22e7415e9dfa37847"
+  integrity sha512-YfbcO7jXDdyj0DGxYVSlSeQNHbD7XPWvrVWeVUujrQEoZzWJIRrCPoyk6kL6IAjAG2IolMK4T0hNUe0HOUs5Jw==
   dependencies:
     argparse "^1.0.7"
     esprima "^4.0.0"
