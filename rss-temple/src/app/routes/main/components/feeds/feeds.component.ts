@@ -143,7 +143,11 @@ export class FeedsComponent implements OnInit, OnDestroy {
       search: `feedUuid:"${this.feeds
         .map(feed => feed.uuid)
         .join('|')}" and isRead:"false"`,
-      sort: 'createdAt:DESC,publishedAt:DESC,updatedAt:DESC',
+      sort: {
+        createdAt: 'DESC',
+        publishedAt: 'DESC',
+        updatedAt: 'DESC',
+      },
     };
   }
 

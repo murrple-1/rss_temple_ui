@@ -106,7 +106,11 @@ export class FeedComponent implements OnInit, OnDestroy {
             returnTotalCount: false,
             count: count,
             search: `feedUuid:"${feed.uuid}"`,
-            sort: 'createdAt:DESC,publishedAt:DESC,updatedAt:DESC',
+            sort: {
+              createdAt: 'DESC',
+              publishedAt: 'DESC',
+              updatedAt: 'DESC',
+            },
           });
 
           if (feed.userCategoryUuids.length > 0) {
@@ -116,7 +120,9 @@ export class FeedComponent implements OnInit, OnDestroy {
                 fields: ['text'],
                 returnTotalCount: false,
                 search: `uuid:"${feed.userCategoryUuids.join('|')}"`,
-                sort: 'text:ASC',
+                sort: {
+                  text: 'ASC',
+                },
               }),
             )
               .pipe(

@@ -126,22 +126,6 @@ export class UserCategoryService {
       .pipe(map(toUserCategory));
   }
 
-  update(
-    userCategoryUuid: string,
-    userCategoryJson: IUpdateUserCategory,
-    options: CommonOptions = {},
-  ) {
-    const headers = commonToHeader(options, sessionToken);
-
-    return this.http.put<void>(
-      `${environment.apiHost}/api/usercategory`,
-      userCategoryJson,
-      {
-        headers: headers,
-      },
-    );
-  }
-
   delete(userCategoryUuid: string, options: CommonOptions = {}) {
     const headers = commonToHeader(options, sessionToken);
 

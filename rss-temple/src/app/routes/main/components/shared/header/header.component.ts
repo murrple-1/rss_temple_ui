@@ -162,13 +162,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
     zip(
       this.userCategoryService.queryAll({
         fields: ['text', 'feedUuids'],
-        sort: 'text:ASC',
+        sort: {
+          text: 'ASC',
+        },
         returnTotalCount: false,
       }),
       this.feedService.queryAll({
         fields: ['uuid', 'calculatedTitle', 'feedUrl'],
         search: 'subscribed:"true"',
-        sort: 'calculatedTitle:ASC',
+        sort: {
+          calculatedTitle: 'ASC',
+        },
         returnTotalCount: false,
       }),
     )
@@ -284,13 +288,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
         zip(
           this.userCategoryService.queryAll({
             fields: ['text', 'feedUuids'],
-            sort: 'text:ASC',
+            sort: {
+              text: 'ASC',
+            },
             returnTotalCount: false,
           }),
           this.feedService.queryAll({
             fields: ['uuid', 'calculatedTitle', 'feedUrl'],
             search: 'subscribed:"true"',
-            sort: 'calculatedTitle:ASC',
+            sort: {
+              calculatedTitle: 'ASC',
+            },
             returnTotalCount: false,
           }),
         )

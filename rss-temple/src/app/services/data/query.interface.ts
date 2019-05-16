@@ -2,13 +2,14 @@ import {
   CommonOptions,
   toHeader as commonToHeader,
 } from '@app/services/data/common.interface';
+import { Sort } from '@app/services/data/sort.interface';
 
 export interface QueryOptions<Field> extends CommonOptions {
   count?: number;
   skip?: number;
   fields?: Field[];
   search?: string;
-  sort?: string;
+  sort?: Sort;
   returnObjects?: boolean;
   returnTotalCount?: boolean;
 }
@@ -44,7 +45,14 @@ export function toBody<Field>(
   }
 
   if (options.sort !== undefined) {
-    body.sort = options.sort;
+    const sortParts: string[] = [];
+
+    for (const field of Object.keys(options.sort)) {
+      const direction = options.sort[field];
+      sortParts.push(`${field}:${direction}`);
+    }
+
+    body.sort = sortParts.join(',');
   }
 
   if (options.returnObjects !== undefined) {

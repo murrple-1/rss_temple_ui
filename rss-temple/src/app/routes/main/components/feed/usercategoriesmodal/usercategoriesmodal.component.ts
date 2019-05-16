@@ -58,7 +58,9 @@ export class UserCategoriesModalComponent implements OnInit, OnDestroy {
       .queryAll({
         fields: ['uuid', 'text'],
         returnTotalCount: false,
-        sort: 'text:ASC',
+        sort: {
+          text: 'ASC',
+        },
       })
       .pipe(
         takeUntil(this.unsubscribe$),
