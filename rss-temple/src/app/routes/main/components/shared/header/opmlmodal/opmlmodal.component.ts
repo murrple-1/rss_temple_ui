@@ -35,7 +35,7 @@ export class OPMLModalComponent implements OnDestroy {
 
   private readonly progressCheckInterval = 2000;
 
-  private unsubscribe$ = new Subject<void>();
+  private readonly unsubscribe$ = new Subject<void>();
 
   constructor(
     private zone: NgZone,

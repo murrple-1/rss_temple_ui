@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   gLoaded = false;
   fbLoaded = false;
 
-  private unsubscribe$ = new Subject<void>();
+  private readonly unsubscribe$ = new Subject<void>();
 
   constructor(
     private formBuilder: FormBuilder,

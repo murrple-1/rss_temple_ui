@@ -23,7 +23,7 @@ export class VerifyComponent implements OnInit, OnDestroy {
   readonly State = State;
   state = State.NotStarted;
 
-  private unsubscribe$ = new Subject<void>();
+  private readonly unsubscribe$ = new Subject<void>();
 
   constructor(
     private zone: NgZone,

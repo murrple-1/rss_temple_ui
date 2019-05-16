@@ -40,7 +40,7 @@ export class UserCategoriesModalComponent implements OnInit, OnDestroy {
 
   userCategorySelections: Selection[] = [];
 
-  private unsubscribe$ = new Subject<void>();
+  private readonly unsubscribe$ = new Subject<void>();
 
   constructor(
     private zone: NgZone,

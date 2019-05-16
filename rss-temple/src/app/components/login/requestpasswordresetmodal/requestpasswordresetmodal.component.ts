@@ -27,7 +27,7 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
   forgottenPasswordForm: FormGroup;
   forgottenPasswordFormErrors = new FormGroupErrors();
 
-  private unsubscribe$ = new Subject<void>();
+  private readonly unsubscribe$ = new Subject<void>();
 
   constructor(
     private formBuilder: FormBuilder,

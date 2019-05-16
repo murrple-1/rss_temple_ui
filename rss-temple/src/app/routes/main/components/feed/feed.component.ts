@@ -50,7 +50,7 @@ export class FeedComponent implements OnInit, OnDestroy {
   feedEntries: FeedEntryImpl[] = [];
   userCategories: UserCategoryImpl[] = [];
 
-  private unsubscribe$ = new Subject<void>();
+  private readonly unsubscribe$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,

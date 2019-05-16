@@ -78,7 +78,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @ViewChild('filterInput')
   private filterInput?: ElementRef<HTMLInputElement>;
 
-  private unsubscribe$ = new Subject<void>();
+  private readonly unsubscribe$ = new Subject<void>();
 
   constructor(
     private zone: NgZone,

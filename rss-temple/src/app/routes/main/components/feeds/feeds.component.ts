@@ -36,7 +36,7 @@ export class FeedsComponent implements OnInit, OnDestroy {
 
   private count = 15;
 
-  private unsubscribe$ = new Subject<void>();
+  private readonly unsubscribe$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,

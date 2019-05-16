@@ -33,7 +33,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   private g_token: string | null = null;
   private fb_token: string | null = null;
 
-  private unsubscribe$ = new Subject<void>();
+  private readonly unsubscribe$ = new Subject<void>();
 
   constructor(
     private formBuilder: FormBuilder,

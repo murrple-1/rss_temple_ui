@@ -43,7 +43,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     return passwordRequirementsText('en');
   }
 
-  private unsubscribe$ = new Subject<void>();
+  private readonly unsubscribe$ = new Subject<void>();
 
   constructor(
     private formBuilder: FormBuilder,

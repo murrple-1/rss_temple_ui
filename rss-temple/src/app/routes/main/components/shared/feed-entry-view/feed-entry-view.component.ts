@@ -23,7 +23,7 @@ export class FeedEntryViewComponent implements OnDestroy {
   @Input()
   feedEntry?: FeedEntryImpl;
 
-  private unsubscribe$ = new Subject<void>();
+  private readonly unsubscribe$ = new Subject<void>();
 
   constructor(
     private zone: NgZone,
