@@ -24,6 +24,7 @@ import { HttpErrorService, LoginService } from '@app/services';
 import { FeedObservableService } from '@app/routes/main/services';
 import { deleteSessionToken, sessionToken } from '@app/libs/session.lib';
 import { UserCategory, Feed } from '@app/models';
+import { Sort } from '@app/services/data/sort.interface';
 
 interface UserCategoryImpl extends UserCategory {
   text: string;
@@ -162,17 +163,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
     zip(
       this.userCategoryService.queryAll({
         fields: ['text', 'feedUuids'],
-        sort: {
-          text: 'ASC',
-        },
+        sort: new Sort([['text', 'ASC']]),
         returnTotalCount: false,
       }),
       this.feedService.queryAll({
         fields: ['uuid', 'calculatedTitle', 'feedUrl'],
         search: 'subscribed:"true"',
-        sort: {
-          calculatedTitle: 'ASC',
-        },
+        sort: new Sort([['calculatedTitle', 'ASC']]),
         returnTotalCount: false,
       }),
     )
@@ -288,17 +285,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
         zip(
           this.userCategoryService.queryAll({
             fields: ['text', 'feedUuids'],
-            sort: {
-              text: 'ASC',
-            },
+            sort: new Sort([['text', 'ASC']]),
             returnTotalCount: false,
           }),
           this.feedService.queryAll({
             fields: ['uuid', 'calculatedTitle', 'feedUrl'],
             search: 'subscribed:"true"',
-            sort: {
-              calculatedTitle: 'ASC',
-            },
+            sort: new Sort([['calculatedTitle', 'ASC']]),
             returnTotalCount: false,
           }),
         )

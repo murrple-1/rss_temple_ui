@@ -6,10 +6,9 @@ import { AllOptions } from '@app/services/data/all.interface';
 import { QueryOptions } from '@app/services/data/query.interface';
 import { JsonValue } from '@app/services/data/json.type';
 
-export function queryAllFn<Field, T>(
-  options: AllOptions<Field>,
-  queryFn: (options: QueryOptions<Field>) => Observable<Objects<T>>,
-  toFn: (t: JsonValue) => T,
+export function queryAllFn<Field, SortField extends string, T>(
+  options: AllOptions<Field, SortField>,
+  queryFn: (options: QueryOptions<Field, SortField>) => Observable<Objects<T>>,
   pageSize: number,
 ) {
   return queryFn({

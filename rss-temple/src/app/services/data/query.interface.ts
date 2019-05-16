@@ -4,12 +4,13 @@ import {
 } from '@app/services/data/common.interface';
 import { Sort } from '@app/services/data/sort.interface';
 
-export interface QueryOptions<Field> extends CommonOptions {
+export interface QueryOptions<Field, SortField extends string>
+  extends CommonOptions {
   count?: number;
   skip?: number;
   fields?: Field[];
   search?: string;
-  sort?: Sort;
+  sort?: Sort<SortField>;
   returnObjects?: boolean;
   returnTotalCount?: boolean;
 }
@@ -24,8 +25,8 @@ export interface QueryBody<Field> {
   totalCount?: boolean;
 }
 
-export function toBody<Field>(
-  options: QueryOptions<Field>,
+export function toBody<Field, SortField extends string>(
+  options: QueryOptions<Field, SortField>,
   fieldsFn: () => Field[],
 ) {
   const body: QueryBody<Field> = {
@@ -47,8 +48,7 @@ export function toBody<Field>(
   if (options.sort !== undefined) {
     const sortParts: string[] = [];
 
-    for (const field of Object.keys(options.sort)) {
-      const direction = options.sort[field];
+    for (const [field, direction] of options.sort) {
       sortParts.push(`${field}:${direction}`);
     }
 
@@ -66,8 +66,8 @@ export function toBody<Field>(
   return body;
 }
 
-export function toHeader<Field>(
-  options: QueryOptions<Field>,
+export function toHeader<Field, SortField extends string>(
+  options: QueryOptions<Field, SortField>,
   sessionTokenFn: () => string | null,
 ) {
   const headers = commonToHeader(options, sessionTokenFn);

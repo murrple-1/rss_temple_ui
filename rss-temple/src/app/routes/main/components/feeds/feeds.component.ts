@@ -6,7 +6,8 @@ import { takeUntil, map } from 'rxjs/operators';
 
 import { FeedService, FeedEntryService } from '@app/services/data';
 import { QueryOptions } from '@app/services/data/query.interface';
-import { Field } from '@app/services/data/feedentry.service';
+import { Sort } from '@app/services/data/sort.interface';
+import { Field, SortField } from '@app/services/data/feedentry.service';
 import { Feed, FeedEntry } from '@app/models';
 import { HttpErrorService } from '@app/services';
 import { FeedObservableService } from '@app/routes/main/services';
@@ -134,7 +135,7 @@ export class FeedsComponent implements OnInit, OnDestroy {
       });
   }
 
-  private feedEntryQueryOptions(skip?: number): QueryOptions<Field> {
+  private feedEntryQueryOptions(skip?: number): QueryOptions<Field, SortField> {
     return {
       fields: ['uuid', 'url', 'title', 'content', 'isRead'],
       returnTotalCount: false,
@@ -143,11 +144,11 @@ export class FeedsComponent implements OnInit, OnDestroy {
       search: `feedUuid:"${this.feeds
         .map(feed => feed.uuid)
         .join('|')}" and isRead:"false"`,
-      sort: {
-        createdAt: 'DESC',
-        publishedAt: 'DESC',
-        updatedAt: 'DESC',
-      },
+      sort: new Sort([
+        ['createdAt', 'DESC'],
+        ['publishedAt', 'DESC'],
+        ['updatedAt', 'DESC'],
+      ]),
     };
   }
 

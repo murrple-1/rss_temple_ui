@@ -18,6 +18,7 @@ import {
   ReturnData,
 } from '@app/routes/main/components/feed/usercategoriesmodal/usercategoriesmodal.component';
 import { IApply } from '@app/services/data/usercategory.service';
+import { Sort } from '@app/services/data/sort.interface';
 
 interface FeedImpl extends Feed {
   uuid: string;
@@ -106,11 +107,11 @@ export class FeedComponent implements OnInit, OnDestroy {
             returnTotalCount: false,
             count: count,
             search: `feedUuid:"${feed.uuid}"`,
-            sort: {
-              createdAt: 'DESC',
-              publishedAt: 'DESC',
-              updatedAt: 'DESC',
-            },
+            sort: new Sort([
+              ['createdAt', 'DESC'],
+              ['publishedAt', 'DESC'],
+              ['updatedAt', 'DESC'],
+            ]),
           });
 
           if (feed.userCategoryUuids.length > 0) {
@@ -120,9 +121,7 @@ export class FeedComponent implements OnInit, OnDestroy {
                 fields: ['text'],
                 returnTotalCount: false,
                 search: `uuid:"${feed.userCategoryUuids.join('|')}"`,
-                sort: {
-                  text: 'ASC',
-                },
+                sort: new Sort([['text', 'ASC']]),
               }),
             )
               .pipe(

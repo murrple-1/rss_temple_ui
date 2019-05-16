@@ -33,6 +33,7 @@ import {
 import { environment } from '@environments/environment';
 
 export type Field = keyof Feed;
+export type SortField = keyof Feed;
 
 function toFeed(value: JsonValue) {
   if (!isJsonObject(value)) {
@@ -176,7 +177,7 @@ export class FeedService {
       .pipe(map(toFeed));
   }
 
-  query(options: QueryOptions<Field> = {}) {
+  query(options: QueryOptions<Field, SortField> = {}) {
     const headers = queryToHeader(options, sessionToken);
     const body = queryToBody(options, () => ['uuid']);
 
@@ -187,8 +188,8 @@ export class FeedService {
       .pipe(map(retObj => toObjects<Feed>(retObj, toFeed)));
   }
 
-  queryAll(options: AllOptions<Field> = {}, pageSize = 1000) {
-    return queryAllFn(options, this.query.bind(this), toFeed, pageSize);
+  queryAll(options: AllOptions<Field, SortField> = {}, pageSize = 1000) {
+    return queryAllFn(options, this.query.bind(this), pageSize);
   }
 
   subscribe(url: string, customTitle?: string, options: CommonOptions = {}) {

@@ -29,6 +29,7 @@ import { JsonValue, isJsonObject } from '@app/services/data/json.type';
 import { environment } from '@environments/environment';
 
 export type Field = keyof FeedEntry;
+export type SortField = keyof FeedEntry;
 
 function toFeedEntry(value: JsonValue) {
   if (!isJsonObject(value)) {
@@ -198,7 +199,7 @@ export class FeedEntryService {
       .pipe(map(toFeedEntry));
   }
 
-  query(options: QueryOptions<Field> = {}) {
+  query(options: QueryOptions<Field, SortField> = {}) {
     const headers = queryToHeader(options, sessionToken);
     const body = queryToBody(options, () => ['uuid']);
 
@@ -209,8 +210,8 @@ export class FeedEntryService {
       .pipe(map(retObj => toObjects<FeedEntry>(retObj, toFeedEntry)));
   }
 
-  queryAll(options: AllOptions<Field> = {}, pageSize = 1000) {
-    return queryAllFn(options, this.query.bind(this), toFeedEntry, pageSize);
+  queryAll(options: AllOptions<Field, SortField> = {}, pageSize = 1000) {
+    return queryAllFn(options, this.query.bind(this), pageSize);
   }
 
   read(feedEntry: FeedEntry, options: CommonOptions = {}) {

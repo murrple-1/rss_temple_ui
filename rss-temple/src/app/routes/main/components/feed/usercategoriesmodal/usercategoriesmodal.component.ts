@@ -7,6 +7,7 @@ import { takeUntil, map, take } from 'rxjs/operators';
 
 import { UserCategoryService } from '@app/services/data';
 import { HttpErrorService } from '@app/services';
+import { Sort } from '@app/services/data/sort.interface';
 
 interface UserCategoryImpl1 {
   uuid: string;
@@ -58,9 +59,7 @@ export class UserCategoriesModalComponent implements OnInit, OnDestroy {
       .queryAll({
         fields: ['uuid', 'text'],
         returnTotalCount: false,
-        sort: {
-          text: 'ASC',
-        },
+        sort: new Sort([['text', 'ASC']]),
       })
       .pipe(
         takeUntil(this.unsubscribe$),

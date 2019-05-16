@@ -1,9 +1,10 @@
 import { CommonOptions } from '@app/services/data/common.interface';
 import { Sort } from '@app/services/data/sort.interface';
 
-export interface AllOptions<Field> extends CommonOptions {
+export interface AllOptions<Field, SortField extends string>
+  extends CommonOptions {
   fields?: Field[];
   search?: string;
-  sort?: Sort;
+  sort?: Sort<SortField>;
   returnTotalCount?: boolean;
 }

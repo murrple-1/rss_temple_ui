@@ -31,6 +31,7 @@ import {
 import { environment } from '@environments/environment';
 
 export type Field = keyof UserCategory;
+export type SortField = keyof UserCategory;
 
 function toUserCategory(value: JsonValue) {
   if (!isJsonObject(value)) {
@@ -86,7 +87,7 @@ export class UserCategoryService {
       .pipe(map(toUserCategory));
   }
 
-  query(options: QueryOptions<Field> = {}) {
+  query(options: QueryOptions<Field, SortField> = {}) {
     const headers = queryToHeader(options, sessionToken);
     const body = queryToBody(options, () => ['uuid']);
 
@@ -101,8 +102,8 @@ export class UserCategoryService {
       .pipe(map(retObj => toObjects(retObj, toUserCategory)));
   }
 
-  queryAll(options: AllOptions<Field> = {}, pageSize = 1000) {
-    return queryAllFn(options, this.query.bind(this), toUserCategory, pageSize);
+  queryAll(options: AllOptions<Field, SortField> = {}, pageSize = 1000) {
+    return queryAllFn(options, this.query.bind(this), pageSize);
   }
 
   create(
