@@ -1,4 +1,4 @@
-import { Component, Input, NgZone, OnDestroy } from '@angular/core';
+import { Component, Input, NgZone, OnDestroy, ElementRef } from '@angular/core';
 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -29,6 +29,7 @@ export class FeedEntryViewComponent implements OnDestroy {
 
   constructor(
     private zone: NgZone,
+    private elementRef: ElementRef,
     private feedEntryService: FeedEntryService,
   ) {}
 
@@ -125,11 +126,18 @@ export class FeedEntryViewComponent implements OnDestroy {
       });
   }
 
-  onClick(_: MouseEvent) {
-    this.flashing = false;
+  onClick(event: MouseEvent) {
+    const ref = this.elementRef.nativeElement as HTMLElement;
+    const ignoreClickNodes = Array.from<HTMLElement>(
+      ref.querySelectorAll('button'),
+    );
 
-    window.setTimeout(() => {
-      this.flashing = true;
-    }, 300);
+    if (!ignoreClickNodes.includes(event.srcElement as HTMLElement)) {
+      this.flashing = false;
+
+      window.setTimeout(() => {
+        this.flashing = true;
+      }, 300);
+    }
   }
 }

@@ -250,18 +250,33 @@ export class FeedsComponent implements OnInit, OnDestroy {
     if (event.key === 'm') {
       const currentFeedEntryFocus = this.currentFeedEntryFocus;
       if (currentFeedEntryFocus !== null) {
-        this.feedEntryService
-          .read(currentFeedEntryFocus)
-          .pipe(takeUntil(this.unsubscribe$))
-          .subscribe({
-            next: () => {
-              currentFeedEntryFocus.isRead = true;
-              this.changeDetectorRef.detectChanges();
-            },
-            error: error => {
-              this.httpErrorService.handleError(error);
-            },
-          });
+        if (!currentFeedEntryFocus.isRead) {
+          this.feedEntryService
+            .read(currentFeedEntryFocus)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+              next: () => {
+                currentFeedEntryFocus.isRead = true;
+                this.changeDetectorRef.detectChanges();
+              },
+              error: error => {
+                this.httpErrorService.handleError(error);
+              },
+            });
+        } else {
+          this.feedEntryService
+            .unread(currentFeedEntryFocus)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+              next: () => {
+                currentFeedEntryFocus.isRead = false;
+                this.changeDetectorRef.detectChanges();
+              },
+              error: error => {
+                this.httpErrorService.handleError(error);
+              },
+            });
+        }
       }
     }
   }
