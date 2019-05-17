@@ -12,6 +12,7 @@
       [feedEntry]="feedEntry"
       appInViewport
       (appInViewportWatch)="onEntryEnteredViewport($event, feedEntry)"
+      (click)="onEntryClicked($event, feedEntry)"
     >
     </app-feed-entry-view>
     <div *ngIf="isLoadingMore">Loading...</div>

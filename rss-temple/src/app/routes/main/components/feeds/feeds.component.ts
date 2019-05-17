@@ -1,7 +1,14 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  NgZone,
+  ChangeDetectorRef,
+  ElementRef,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { Subject } from 'rxjs';
+import { Subject, fromEvent } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 
 import { FeedService, FeedEntryService } from '@app/services/data';
@@ -10,10 +17,7 @@ import { Sort } from '@app/services/data/sort.interface';
 import { Field, SortField } from '@app/services/data/feedentry.service';
 import { Feed, FeedEntry } from '@app/models';
 import { HttpErrorService } from '@app/services';
-import {
-  FeedObservableService,
-  CurrentFeedEntryService,
-} from '@app/routes/main/services';
+import { FeedObservableService } from '@app/routes/main/services';
 import { InViewportEvent } from '@app/directives/inviewport.directive';
 
 interface FeedImpl extends Feed {
@@ -40,16 +44,18 @@ export class FeedsComponent implements OnInit, OnDestroy {
 
   private count = 15;
 
+  private currentFeedEntryFocus: FeedEntryImpl | null = null;
+
   private readonly unsubscribe$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
     private zone: NgZone,
+    private changeDetectorRef: ChangeDetectorRef,
     private feedService: FeedService,
     private feedObservableService: FeedObservableService,
     private feedEntryService: FeedEntryService,
     private httpErrorService: HttpErrorService,
-    private currentFeedEntryService: CurrentFeedEntryService,
   ) {}
 
   ngOnInit() {
@@ -103,6 +109,12 @@ export class FeedsComponent implements OnInit, OnDestroy {
         next: () => {
           this.getFeeds();
         },
+      });
+
+    fromEvent<KeyboardEvent>(document, 'keypress')
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: this.handleKeyPress.bind(this),
       });
   }
 
@@ -226,9 +238,31 @@ export class FeedsComponent implements OnInit, OnDestroy {
 
   onEntryEnteredViewport(event: InViewportEvent, feedEntry: FeedEntryImpl) {
     if (event.isInViewport) {
-      this.currentFeedEntryService.currentFeedEntry.next(feedEntry);
-      console.log(event);
-      console.log(feedEntry);
+      this.currentFeedEntryFocus = feedEntry;
+    }
+  }
+
+  onEntryClicked(_: MouseEvent, feedEntry: FeedEntryImpl) {
+    this.currentFeedEntryFocus = feedEntry;
+  }
+
+  private handleKeyPress(event: KeyboardEvent) {
+    if (event.key === 'm') {
+      const currentFeedEntryFocus = this.currentFeedEntryFocus;
+      if (currentFeedEntryFocus !== null) {
+        this.feedEntryService
+          .read(currentFeedEntryFocus)
+          .pipe(takeUntil(this.unsubscribe$))
+          .subscribe({
+            next: () => {
+              currentFeedEntryFocus.isRead = true;
+              this.changeDetectorRef.detectChanges();
+            },
+            error: error => {
+              this.httpErrorService.handleError(error);
+            },
+          });
+      }
     }
   }
 }

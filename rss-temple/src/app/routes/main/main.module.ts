@@ -21,10 +21,7 @@ import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-
 import { SubscribeModalComponent as HeaderSubscribeModalComponent } from '@app/routes/main/components/shared/header/subscribemodal/subscribemodal.component';
 import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/routes/main/components/shared/header/opmlmodal/opmlmodal.component';
 import { InViewportDirective } from '@app/directives/inviewport.directive';
-import {
-  FeedObservableService,
-  CurrentFeedEntryService,
-} from '@app/routes/main/services';
+import { FeedObservableService } from '@app/routes/main/services';
 
 @NgModule({
   imports: [
@@ -40,7 +37,7 @@ import {
 
     routing,
   ],
-  providers: [FeedObservableService, CurrentFeedEntryService],
+  providers: [FeedObservableService],
   declarations: [
     MainComponent,
     FeedsComponent,

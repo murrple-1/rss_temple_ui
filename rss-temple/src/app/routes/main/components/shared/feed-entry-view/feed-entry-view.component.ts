@@ -23,6 +23,8 @@ export class FeedEntryViewComponent implements OnDestroy {
   @Input()
   feedEntry?: FeedEntryImpl;
 
+  flashing = false;
+
   private readonly unsubscribe$ = new Subject<void>();
 
   constructor(
@@ -121,5 +123,13 @@ export class FeedEntryViewComponent implements OnDestroy {
           console.log(error);
         },
       });
+  }
+
+  onClick(_: MouseEvent) {
+    this.flashing = false;
+
+    window.setTimeout(() => {
+      this.flashing = true;
+    }, 300);
   }
 }
