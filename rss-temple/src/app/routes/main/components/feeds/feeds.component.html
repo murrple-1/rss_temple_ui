@@ -11,7 +11,7 @@
       *ngFor="let feedEntry of feedEntries"
       [feedEntry]="feedEntry"
       appInViewport
-      (appInViewportWatch)="onEntryEnteredViewport($event)"
+      (appInViewportWatch)="onEntryEnteredViewport($event, feedEntry)"
     >
     </app-feed-entry-view>
     <div *ngIf="isLoadingMore">Loading...</div>

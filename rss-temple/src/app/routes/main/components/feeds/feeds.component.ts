@@ -10,7 +10,10 @@ import { Sort } from '@app/services/data/sort.interface';
 import { Field, SortField } from '@app/services/data/feedentry.service';
 import { Feed, FeedEntry } from '@app/models';
 import { HttpErrorService } from '@app/services';
-import { FeedObservableService } from '@app/routes/main/services';
+import {
+  FeedObservableService,
+  CurrentFeedEntryService,
+} from '@app/routes/main/services';
 import { InViewportEvent } from '@app/directives/inviewport.directive';
 
 interface FeedImpl extends Feed {
@@ -46,6 +49,7 @@ export class FeedsComponent implements OnInit, OnDestroy {
     private feedObservableService: FeedObservableService,
     private feedEntryService: FeedEntryService,
     private httpErrorService: HttpErrorService,
+    private currentFeedEntryService: CurrentFeedEntryService,
   ) {}
 
   ngOnInit() {
@@ -220,9 +224,11 @@ export class FeedsComponent implements OnInit, OnDestroy {
     }
   }
 
-  onEntryEnteredViewport(event: InViewportEvent) {
+  onEntryEnteredViewport(event: InViewportEvent, feedEntry: FeedEntryImpl) {
     if (event.isInViewport) {
+      this.currentFeedEntryService.currentFeedEntry.next(feedEntry);
       console.log(event);
+      console.log(feedEntry);
     }
   }
 }
