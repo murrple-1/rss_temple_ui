@@ -1,63 +1,61 @@
 type Direction = 'ASC' | 'DESC';
 
-export class Sort<K extends string> implements Map<K, Direction> {
-  // Map should be ordered, per the docs: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map#Objects_and_maps_compared
-  private innerMap: Map<K, Direction>;
+export class Sort<K extends string> extends Map<K, Direction> {
+  private _orderedKeys: K[] | undefined;
 
-  // TODO this is more correct, but requires Angular update their typescript version
-  //constructor(entries?: ReadonlyArray<readonly [K, Direction]> | null) {
-  constructor(entries?: [K, Direction][] | null) {
-    this.innerMap = new Map<K, Direction>(entries);
+  get orderedKeys() {
+    if (this._orderedKeys === undefined) {
+      this._orderedKeys = [];
+    }
+
+    return this._orderedKeys;
+  }
+
+  set orderedKeys(orderedKeys: K[]) {
+    this._orderedKeys = orderedKeys;
   }
 
   clear() {
-    this.innerMap.clear();
+    super.clear();
+    this.orderedKeys = [];
   }
 
   delete(key: K) {
-    return this.innerMap.delete(key);
+    const success = super.delete(key);
+    this.orderedKeys = this.orderedKeys.filter(k => k !== key);
+    return success;
   }
 
   forEach(
     callbackfn: (value: Direction, key: K, map: Map<K, Direction>) => void,
     thisArg?: any,
   ) {
-    this.innerMap.forEach(callbackfn, thisArg);
-  }
-
-  get(key: K) {
-    return this.innerMap.get(key);
-  }
-
-  has(key: K) {
-    return this.innerMap.has(key);
+    this.orderedKeys.forEach(k =>
+      callbackfn.call(thisArg, super.get(k) as Direction, k, this),
+    );
   }
 
   set(key: K, value: Direction) {
-    this.innerMap.set(key, value);
+    super.set(key, value);
+    this.orderedKeys = [...this.orderedKeys.filter(k => k !== key), key];
     return this;
   }
 
-  get size() {
-    return this.innerMap.size;
-  }
-
   [Symbol.iterator]() {
-    return this.innerMap[Symbol.iterator]();
+    return this.entries();
   }
 
   entries() {
-    return this.innerMap.entries();
+    return this.orderedKeys
+      .map(k => [k, this.get(k)] as [K, Direction])
+      .values();
   }
 
   keys() {
-    return this.innerMap.keys();
-  }
-  values() {
-    return this.innerMap.values();
+    return this.orderedKeys.values();
   }
 
-  get [Symbol.toStringTag]() {
-    return this.innerMap[Symbol.toStringTag];
+  values() {
+    return this.orderedKeys.map(k => this.get(k) as Direction).values();
   }
 }
