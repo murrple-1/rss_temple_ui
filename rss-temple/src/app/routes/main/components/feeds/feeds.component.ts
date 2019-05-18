@@ -4,7 +4,6 @@ import {
   OnDestroy,
   NgZone,
   ChangeDetectorRef,
-  ElementRef,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
@@ -19,6 +18,7 @@ import { Feed, FeedEntry } from '@app/models';
 import { HttpErrorService } from '@app/services';
 import { FeedObservableService } from '@app/routes/main/services';
 import { InViewportEvent } from '@app/directives/inviewport.directive';
+import { FeedEntryViewComponent } from '../shared/feed-entry-view/feed-entry-view.component';
 
 interface FeedImpl extends Feed {
   uuid: string;
@@ -44,7 +44,7 @@ export class FeedsComponent implements OnInit, OnDestroy {
 
   private count = 15;
 
-  private currentFeedEntryFocus: FeedEntryImpl | null = null;
+  private focusedFeedEntryView: FeedEntryViewComponent | null = null;
 
   private readonly unsubscribe$ = new Subject<void>();
 
@@ -234,27 +234,39 @@ export class FeedsComponent implements OnInit, OnDestroy {
     }
   }
 
-  onEntryEnteredViewport(event: InViewportEvent, feedEntry: FeedEntryImpl) {
+  onEntryEnteredViewport(
+    event: InViewportEvent,
+    feedEntryView: FeedEntryViewComponent,
+  ) {
     if (event.isInViewport) {
-      this.currentFeedEntryFocus = feedEntry;
+      this.focusedFeedEntryView = feedEntryView;
+
+      feedEntryView.autoRead();
     }
   }
 
-  onEntryClicked(_: MouseEvent, feedEntry: FeedEntryImpl) {
-    this.currentFeedEntryFocus = feedEntry;
+  onEntryClicked(_: MouseEvent, feedEntryView: FeedEntryViewComponent) {
+    this.focusedFeedEntryView = feedEntryView;
+
+    feedEntryView.autoRead();
   }
 
   private handleKeyPress(event: KeyboardEvent) {
     if (event.key === 'm') {
-      const currentFeedEntryFocus = this.currentFeedEntryFocus;
-      if (currentFeedEntryFocus !== null) {
-        if (!currentFeedEntryFocus.isRead) {
+      const focusedFeedEntry = this.focusedFeedEntryView;
+      if (focusedFeedEntry !== null) {
+        const feedEntry = focusedFeedEntry.feedEntry;
+        if (feedEntry === undefined) {
+          return;
+        }
+
+        if (!feedEntry.isRead) {
           this.feedEntryService
-            .read(currentFeedEntryFocus)
+            .read(feedEntry)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
               next: () => {
-                currentFeedEntryFocus.isRead = true;
+                feedEntry.isRead = true;
                 this.changeDetectorRef.detectChanges();
               },
               error: error => {
@@ -263,11 +275,11 @@ export class FeedsComponent implements OnInit, OnDestroy {
             });
         } else {
           this.feedEntryService
-            .unread(currentFeedEntryFocus)
+            .unread(feedEntry)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
               next: () => {
-                currentFeedEntryFocus.isRead = false;
+                feedEntry.isRead = false;
                 this.changeDetectorRef.detectChanges();
               },
               error: error => {

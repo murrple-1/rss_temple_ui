@@ -25,6 +25,8 @@ export class FeedEntryViewComponent implements OnDestroy {
 
   flashing = false;
 
+  private hasAutoRead = false;
+
   private readonly unsubscribe$ = new Subject<void>();
 
   constructor(
@@ -58,6 +60,20 @@ export class FeedEntryViewComponent implements OnDestroy {
           console.log(error);
         },
       });
+  }
+
+  autoRead() {
+    if (this.feedEntry === undefined) {
+      return;
+    }
+
+    if (!this.hasAutoRead) {
+      if (!this.feedEntry.isRead) {
+        this.read();
+      }
+
+      this.hasAutoRead = true;
+    }
   }
 
   unread() {

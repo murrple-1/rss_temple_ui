@@ -2,12 +2,20 @@
   *ngIf="feedEntry !== undefined"
   class="app--view"
   [ngClass]="{
-    'app--flash': flashing
+    'app--flash': flashing,
+    'text-muted': feedEntry.isRead
   }"
   (click)="onClick($event)"
 >
   <h2>
-    <a href="{{ feedEntry.url }}" target="_blank">{{ feedEntry.title }}</a>
+    <a
+      href="{{ feedEntry.url }}"
+      target="_blank"
+      [ngClass]="{
+        'text-muted': feedEntry.isRead
+      }"
+      >{{ feedEntry.title }}</a
+    >
   </h2>
   <div [innerHtml]="feedEntry.content"></div>
   <button (click)="read()" *ngIf="!feedEntry.isRead">Read</button>
