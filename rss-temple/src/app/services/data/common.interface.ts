@@ -2,7 +2,7 @@ export interface CommonOptions {
   sessionToken?: string;
 }
 
-export function toHeader(
+export function toHeaders(
   options: CommonOptions,
   sessionTokenFn: () => string | null,
 ) {

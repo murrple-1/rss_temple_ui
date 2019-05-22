@@ -8,19 +8,19 @@ import { sessionToken } from '@app/libs/session.lib';
 import { toObjects } from '@app/services/data/objects';
 import {
   GetOptions,
-  toHeader as getToHeader,
+  toHeaders as getToHeaders,
   toParams as getToParams,
 } from '@app/services/data/get.interface';
 import {
   QueryOptions,
-  toHeader as queryToHeader,
+  toHeaders as queryToHeaders,
   toBody as queryToBody,
 } from '@app/services/data/query.interface';
 import { AllOptions } from '@app/services/data/all.interface';
 import { queryAllFn } from '@app/services/data/queryall.function';
 import {
   CommonOptions,
-  toHeader as commonToHeader,
+  toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 import {
   JsonValue,
@@ -76,7 +76,7 @@ export class UserCategoryService {
   constructor(private http: HttpClient) {}
 
   get(uuid: string, options: GetOptions<Field> = {}) {
-    const headers = getToHeader(options, sessionToken);
+    const headers = getToHeaders(options, sessionToken);
     const params = getToParams(options, () => ['uuid']);
 
     return this.http
@@ -88,7 +88,7 @@ export class UserCategoryService {
   }
 
   query(options: QueryOptions<Field, SortField> = {}) {
-    const headers = queryToHeader(options, sessionToken);
+    const headers = queryToHeaders(options, sessionToken);
     const body = queryToBody(options, () => ['uuid']);
 
     return this.http
@@ -110,7 +110,7 @@ export class UserCategoryService {
     userCategoryJson: ICreateUserCategory,
     options: GetOptions<Field> = {},
   ) {
-    const headers = getToHeader(options, sessionToken);
+    const headers = getToHeaders(options, sessionToken);
 
     const params = getToParams(options, () => ['uuid']);
 
@@ -128,7 +128,7 @@ export class UserCategoryService {
   }
 
   delete(userCategoryUuid: string, options: CommonOptions = {}) {
-    const headers = commonToHeader(options, sessionToken);
+    const headers = commonToHeaders(options, sessionToken);
 
     return this.http.delete<void>(
       `${environment.apiHost}/api/usercategory/${userCategoryUuid}`,
@@ -139,7 +139,7 @@ export class UserCategoryService {
   }
 
   apply(apply: IApply, options: CommonOptions = {}) {
-    const headers = commonToHeader(options, sessionToken);
+    const headers = commonToHeaders(options, sessionToken);
 
     const body: JsonObject = {};
 

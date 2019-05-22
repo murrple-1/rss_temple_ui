@@ -1,6 +1,6 @@
 import {
   CommonOptions,
-  toHeader as commonToHeader,
+  toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 import { Sort } from '@app/services/data/sort.interface';
 
@@ -66,10 +66,10 @@ export function toBody<Field, SortField extends string>(
   return body;
 }
 
-export function toHeader<Field, SortField extends string>(
+export function toHeaders<Field, SortField extends string>(
   options: QueryOptions<Field, SortField>,
   sessionTokenFn: () => string | null,
 ) {
-  const headers = commonToHeader(options, sessionTokenFn);
+  const headers = commonToHeaders(options, sessionTokenFn);
   return headers;
 }

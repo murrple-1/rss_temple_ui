@@ -7,10 +7,13 @@ import { User } from '@app/models';
 import { sessionToken } from '@app/libs/session.lib';
 import {
   GetOptions,
-  toHeader as getToHeader,
+  toHeaders as getToHeaders,
   toParams as getToParams,
 } from '@app/services/data/get.interface';
-import { CommonOptions, toHeader } from '@app/services/data/common.interface';
+import {
+  CommonOptions,
+  toHeaders as commonToHeaders,
+} from '@app/services/data/common.interface';
 import {
   JsonValue,
   isJsonObject,
@@ -101,7 +104,7 @@ export class UserService {
   constructor(private http: HttpClient) {}
 
   get(options: GetOptions<Field> = {}) {
-    const headers = getToHeader(options, sessionToken);
+    const headers = getToHeaders(options, sessionToken);
     const params = getToParams(options, () => ['uuid']);
 
     return this.http
@@ -113,7 +116,7 @@ export class UserService {
   }
 
   update(body: UpdateUserBody, options: CommonOptions = {}) {
-    const headers = toHeader(options, sessionToken);
+    const headers = commonToHeaders(options, sessionToken);
 
     return this.http.put<void>(`${environment.apiHost}/api/user`, body, {
       headers: headers,

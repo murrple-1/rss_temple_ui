@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 import { sessionToken } from '@app/libs/session.lib';
 import {
   CommonOptions,
-  toHeader as commonToHeader,
+  toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 import { JsonValue, isJsonObject } from '@app/services/data/json.type';
 
@@ -60,7 +60,7 @@ export class ProgressService {
   constructor(private http: HttpClient) {}
 
   checkProgress(uuid: string, options: CommonOptions = {}) {
-    const headers = commonToHeader(options, sessionToken);
+    const headers = commonToHeaders(options, sessionToken);
 
     return this.http
       .get<JsonValue>(

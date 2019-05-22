@@ -10,19 +10,19 @@ import { sessionToken } from '@app/libs/session.lib';
 import { toObjects } from '@app/services/data/objects';
 import {
   GetOptions,
-  toHeader as getToHeader,
+  toHeaders as getToHeaders,
   toParams as getToParams,
 } from '@app/services/data/get.interface';
 import {
   QueryOptions,
-  toHeader as queryToHeader,
+  toHeaders as queryToHeaders,
   toBody as queryToBody,
 } from '@app/services/data/query.interface';
 import { AllOptions } from '@app/services/data/all.interface';
 import { queryAllFn } from '@app/services/data/queryall.function';
 import {
   CommonOptions,
-  toHeader as commonToHeader,
+  toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 import { JsonValue, isJsonObject } from '@app/services/data/json.type';
 
@@ -188,7 +188,7 @@ export class FeedEntryService {
   constructor(private http: HttpClient) {}
 
   get(uuid: string, options: GetOptions<Field> = {}) {
-    const headers = getToHeader(options, sessionToken);
+    const headers = getToHeaders(options, sessionToken);
     const params = getToParams(options, () => ['uuid']);
 
     return this.http
@@ -200,7 +200,7 @@ export class FeedEntryService {
   }
 
   query(options: QueryOptions<Field, SortField> = {}) {
-    const headers = queryToHeader(options, sessionToken);
+    const headers = queryToHeaders(options, sessionToken);
     const body = queryToBody(options, () => ['uuid']);
 
     return this.http
@@ -215,7 +215,7 @@ export class FeedEntryService {
   }
 
   read(feedEntry: FeedEntry, options: CommonOptions = {}) {
-    const headers = commonToHeader(options, sessionToken);
+    const headers = commonToHeaders(options, sessionToken);
 
     return this.http.post<void>(
       `${environment.apiHost}/api/feedentry/${feedEntry.uuid}/read`,
@@ -227,7 +227,7 @@ export class FeedEntryService {
   }
 
   unread(feedEntry: FeedEntry, options: CommonOptions = {}) {
-    const headers = commonToHeader(options, sessionToken);
+    const headers = commonToHeaders(options, sessionToken);
 
     return this.http.delete<void>(
       `${environment.apiHost}/api/feedentry/${feedEntry.uuid}/read`,
@@ -238,7 +238,7 @@ export class FeedEntryService {
   }
 
   readSome(feedEntries: FeedEntry[], options: CommonOptions = {}) {
-    const headers = commonToHeader(options, sessionToken);
+    const headers = commonToHeaders(options, sessionToken);
 
     return this.http.post<void>(
       `${environment.apiHost}/api/feedentries/read/`,
@@ -250,7 +250,7 @@ export class FeedEntryService {
   }
 
   unreadSome(feedEntries: FeedEntry[], options: CommonOptions = {}) {
-    const headers = commonToHeader(options, sessionToken);
+    const headers = commonToHeaders(options, sessionToken);
 
     return this.http.request<void>(
       'DELETE',
@@ -263,7 +263,7 @@ export class FeedEntryService {
   }
 
   favorite(feedEntry: FeedEntry, options: CommonOptions = {}) {
-    const headers = commonToHeader(options, sessionToken);
+    const headers = commonToHeaders(options, sessionToken);
 
     return this.http.post<void>(
       `${environment.apiHost}/api/feedentry/${feedEntry.uuid}/favorite`,
@@ -275,7 +275,7 @@ export class FeedEntryService {
   }
 
   unfavorite(feedEntry: FeedEntry, options: CommonOptions = {}) {
-    const headers = commonToHeader(options, sessionToken);
+    const headers = commonToHeaders(options, sessionToken);
 
     return this.http.delete<void>(
       `${environment.apiHost}/api/feedentry/${feedEntry.uuid}/favorite`,
@@ -286,7 +286,7 @@ export class FeedEntryService {
   }
 
   favoriteSome(feedEntries: FeedEntry[], options: CommonOptions = {}) {
-    const headers = commonToHeader(options, sessionToken);
+    const headers = commonToHeaders(options, sessionToken);
 
     return this.http.post<void>(
       `${environment.apiHost}/api/feedentries/favorite/`,
@@ -298,7 +298,7 @@ export class FeedEntryService {
   }
 
   unfavoriteSome(feedEntries: FeedEntry[], options: CommonOptions = {}) {
-    const headers = commonToHeader(options, sessionToken);
+    const headers = commonToHeaders(options, sessionToken);
 
     return this.http.request<void>(
       'DELETE',

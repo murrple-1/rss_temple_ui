@@ -1,17 +1,17 @@
 import {
   CommonOptions,
-  toHeader as commonToHeader,
+  toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 
 export interface GetOptions<Field> extends CommonOptions {
   fields?: Field[];
 }
 
-export function toHeader<Field>(
+export function toHeaders<Field>(
   options: GetOptions<Field>,
   sessionTokenFn: () => string | null,
 ) {
-  const headers = commonToHeader(options, sessionTokenFn);
+  const headers = commonToHeaders(options, sessionTokenFn);
   return headers;
 }
 

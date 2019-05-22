@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '@environments/environment';
 import {
   CommonOptions,
-  toHeader as commonToHeader,
+  toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 import { sessionToken } from '@app/libs/session.lib';
 
@@ -73,7 +73,7 @@ export class LoginService {
   }
 
   deleteSessionToken(options: CommonOptions = {}) {
-    const headers = commonToHeader(options, sessionToken);
+    const headers = commonToHeaders(options, sessionToken);
 
     return this.http.delete<void>(`${environment.apiHost}/api/session`, {
       headers: headers,

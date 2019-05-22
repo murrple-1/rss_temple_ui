@@ -10,19 +10,19 @@ import { sessionToken } from '@app/libs/session.lib';
 import { toObjects } from '@app/services/data/objects';
 import {
   GetOptions,
-  toHeader as getToHeader,
+  toHeaders as getToHeaders,
   toParams as getToParams,
 } from '@app/services/data/get.interface';
 import {
   QueryOptions,
-  toHeader as queryToHeader,
+  toHeaders as queryToHeaders,
   toBody as queryToBody,
 } from '@app/services/data/query.interface';
 import { AllOptions } from '@app/services/data/all.interface';
 import { queryAllFn } from '@app/services/data/queryall.function';
 import {
   CommonOptions,
-  toHeader as commonToHeader,
+  toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 import {
   JsonValue,
@@ -165,7 +165,7 @@ export class FeedService {
   constructor(private http: HttpClient) {}
 
   get(feedUrl: string, options: GetOptions<Field> = {}) {
-    const headers = getToHeader(options, sessionToken);
+    const headers = getToHeaders(options, sessionToken);
     const params = getToParams(options, () => ['uuid']);
     params['url'] = feedUrl;
 
@@ -178,7 +178,7 @@ export class FeedService {
   }
 
   query(options: QueryOptions<Field, SortField> = {}) {
-    const headers = queryToHeader(options, sessionToken);
+    const headers = queryToHeaders(options, sessionToken);
     const body = queryToBody(options, () => ['uuid']);
 
     return this.http
@@ -193,7 +193,7 @@ export class FeedService {
   }
 
   subscribe(url: string, customTitle?: string, options: CommonOptions = {}) {
-    const headers = commonToHeader(options, sessionToken);
+    const headers = commonToHeaders(options, sessionToken);
     const params: {
       [header: string]: string | string[];
     } = {
@@ -215,7 +215,7 @@ export class FeedService {
   }
 
   unsubscribe(url: string, options: CommonOptions = {}) {
-    const headers = commonToHeader(options, sessionToken);
+    const headers = commonToHeaders(options, sessionToken);
     const params: {
       [header: string]: string | string[];
     } = {

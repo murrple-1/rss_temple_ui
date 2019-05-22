@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { sessionToken } from '@app/libs/session.lib';
 import {
   CommonOptions,
-  toHeader as commonToHeader,
+  toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 
 import { environment } from '@environments/environment';
@@ -14,7 +14,7 @@ export class OPMLService {
   constructor(private http: HttpClient) {}
 
   download(options: CommonOptions = {}) {
-    const headers = commonToHeader(options, sessionToken);
+    const headers = commonToHeaders(options, sessionToken);
 
     return this.http.get(`${environment.apiHost}/api/opml`, {
       headers: headers,
@@ -23,7 +23,7 @@ export class OPMLService {
   }
 
   upload(opmlText: string | ArrayBuffer, options: CommonOptions = {}) {
-    const headers = commonToHeader(options, sessionToken);
+    const headers = commonToHeaders(options, sessionToken);
 
     return this.http.post(`${environment.apiHost}/api/opml`, opmlText, {
       headers: headers,
