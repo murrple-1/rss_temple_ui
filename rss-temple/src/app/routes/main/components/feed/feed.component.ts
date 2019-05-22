@@ -94,9 +94,7 @@ export class FeedComponent implements OnInit, OnDestroy {
       })
       .pipe(
         takeUntil(this.unsubscribe$),
-        map(feed => {
-          return feed as FeedImpl;
-        }),
+        map(feed => feed as FeedImpl),
       )
       .subscribe({
         next: feed => {

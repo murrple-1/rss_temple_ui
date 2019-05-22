@@ -124,9 +124,7 @@ export class UserCategoriesModalComponent implements OnInit, OnDestroy {
         .pipe(
           takeUntil(this.unsubscribe$),
           take(1),
-          map(userCategory => {
-            return userCategory as UserCategoryImpl2;
-          }),
+          map(userCategory => userCategory as UserCategoryImpl2),
         )
         .subscribe({
           next: userCategory => {

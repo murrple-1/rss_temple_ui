@@ -221,9 +221,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
           })
           .pipe(
             takeUntil(this.unsubscribe$),
-            map(feed => {
-              return feed as FeedImpl2;
-            }),
+            map(feed => feed as FeedImpl2),
           )
           .subscribe({
             next: feed_ => {

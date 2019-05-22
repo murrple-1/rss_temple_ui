@@ -4,7 +4,6 @@ import { map, flatMap } from 'rxjs/operators';
 import { Objects } from '@app/services/data/objects';
 import { AllOptions } from '@app/services/data/all.interface';
 import { QueryOptions } from '@app/services/data/query.interface';
-import { JsonValue } from '@app/services/data/json.type';
 
 export function queryAllFn<Field, SortField extends string, T>(
   options: AllOptions<Field, SortField>,

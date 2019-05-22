@@ -75,9 +75,7 @@ export class FeedsComponent implements OnInit, OnDestroy {
     this.feedObservableService.feedAdded
       .pipe(
         takeUntil(this.unsubscribe$),
-        map(feed => {
-          return feed as FeedImpl;
-        }),
+        map(feed => feed as FeedImpl),
       )
       .subscribe({
         next: feed => {
