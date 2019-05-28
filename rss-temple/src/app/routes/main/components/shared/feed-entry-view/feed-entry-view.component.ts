@@ -148,7 +148,7 @@ export class FeedEntryViewComponent implements OnDestroy {
       ref.querySelectorAll('button'),
     );
 
-    if (!ignoreClickNodes.includes(event.srcElement as HTMLElement)) {
+    if (!ignoreClickNodes.includes(event.target as HTMLElement)) {
       this.flashing = false;
 
       window.setTimeout(() => {
