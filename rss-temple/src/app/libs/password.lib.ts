@@ -22,22 +22,22 @@ export function isValidPassword(): ValidatorFn | null {
 
       if (!/[a-z]/.test(value)) {
         validationErrors = validationErrors || {};
-        validationErrors['nolowercase'] = true;
+        validationErrors.nolowercase = true;
       }
 
       if (!/[A-Z]/.test(value)) {
         validationErrors = validationErrors || {};
-        validationErrors['nouppercase'] = true;
+        validationErrors.nouppercase = true;
       }
 
       if (!/[0-9]/.test(value)) {
         validationErrors = validationErrors || {};
-        validationErrors['nodigit'] = true;
+        validationErrors.nodigit = true;
       }
 
       if (!/[!@#\$%\^&]/.test(value)) {
         validationErrors = validationErrors || {};
-        validationErrors['nospecialcharacter'] = true;
+        validationErrors.nospecialcharacter = true;
       }
 
       return validationErrors;
@@ -54,7 +54,7 @@ export function doPasswordsMatch(password1Name: string, password2Name: string) {
 
     if (password1 !== password2) {
       validationErrors = validationErrors || {};
-      validationErrors['passwordsdonotmatch'] = true;
+      validationErrors.passwordsdonotmatch = true;
     }
 
     return validationErrors;

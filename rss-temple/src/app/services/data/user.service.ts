@@ -31,8 +31,8 @@ function toUser(value: JsonValue) {
 
   const user = new User();
 
-  if (value['uuid'] !== undefined) {
-    const uuid = value['uuid'];
+  if (value.uuid !== undefined) {
+    const uuid = value.uuid;
     if (typeof uuid === 'string') {
       user.uuid = uuid;
     } else {
@@ -40,8 +40,8 @@ function toUser(value: JsonValue) {
     }
   }
 
-  if (value['email'] !== undefined) {
-    const email = value['email'];
+  if (value.email !== undefined) {
+    const email = value.email;
     if (typeof email === 'string') {
       user.email = email;
     } else {
@@ -49,8 +49,8 @@ function toUser(value: JsonValue) {
     }
   }
 
-  if (value['hasGoogleLogin'] !== undefined) {
-    const hasGoogleLogin = value['hasGoogleLogin'];
+  if (value.hasGoogleLogin !== undefined) {
+    const hasGoogleLogin = value.hasGoogleLogin;
     if (typeof hasGoogleLogin === 'boolean') {
       user.hasGoogleLogin = hasGoogleLogin;
     } else {
@@ -58,8 +58,8 @@ function toUser(value: JsonValue) {
     }
   }
 
-  if (value['hasFacebookLogin'] !== undefined) {
-    const hasFacebookLogin = value['hasFacebookLogin'];
+  if (value.hasFacebookLogin !== undefined) {
+    const hasFacebookLogin = value.hasFacebookLogin;
     if (typeof hasFacebookLogin === 'boolean') {
       user.hasFacebookLogin = hasFacebookLogin;
     } else {
@@ -67,8 +67,8 @@ function toUser(value: JsonValue) {
     }
   }
 
-  if (value['subscribedFeedUuids'] !== undefined) {
-    const subscribedFeedUuids = value['subscribedFeedUuids'];
+  if (value.subscribedFeedUuids !== undefined) {
+    const subscribedFeedUuids = value.subscribedFeedUuids;
     if (isJsonArray(subscribedFeedUuids)) {
       if (subscribedFeedUuids.some(elem => typeof elem !== 'string')) {
         throw new Error("'subscribedFeedUuids' element must be string");
@@ -109,8 +109,8 @@ export class UserService {
 
     return this.http
       .get<JsonValue>(`${environment.apiHost}/api/user`, {
-        headers: headers,
-        params: params,
+        headers,
+        params,
       })
       .pipe(map(toUser));
   }
@@ -119,7 +119,7 @@ export class UserService {
     const headers = commonToHeaders(options, sessionToken);
 
     return this.http.put<void>(`${environment.apiHost}/api/user`, body, {
-      headers: headers,
+      headers,
     });
   }
 

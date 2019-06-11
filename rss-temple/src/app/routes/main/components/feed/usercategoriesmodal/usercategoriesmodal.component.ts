@@ -105,7 +105,7 @@ export class UserCategoriesModalComponent implements OnInit, OnDestroy {
     if (newUserCategoryText !== '') {
       if (
         this.userCategorySelections.some(
-          selection_ => selection_.text === newUserCategoryText,
+          _selection => _selection.text === newUserCategoryText,
         )
       ) {
         this.newUserCategoryText = '';
@@ -160,7 +160,7 @@ export class UserCategoriesModalComponent implements OnInit, OnDestroy {
       .subscribe({
         next: () => {
           this.userCategorySelections = this.userCategorySelections.filter(
-            (_, index_) => index_ !== index,
+            (_, _index) => _index !== index,
           );
         },
         error: error => {
@@ -171,11 +171,11 @@ export class UserCategoriesModalComponent implements OnInit, OnDestroy {
 
   finish() {
     const returnData = this.userCategorySelections
-      .filter(selection_ => selection_.isSelected)
-      .map<ReturnData>(selection_ => {
+      .filter(_selection => _selection.isSelected)
+      .map<ReturnData>(_selection => {
         return {
-          uuid: selection_._uuid,
-          text: selection_.text,
+          uuid: _selection._uuid,
+          text: _selection.text,
         };
       });
     this.activeModal.close(returnData);

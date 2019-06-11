@@ -38,8 +38,8 @@ function toFeedEntry(value: JsonValue) {
 
   const feedEntry = new FeedEntry();
 
-  if (value['uuid'] !== undefined) {
-    const uuid = value['uuid'];
+  if (value.uuid !== undefined) {
+    const uuid = value.uuid;
     if (typeof uuid === 'string') {
       feedEntry.uuid = uuid;
     } else {
@@ -47,8 +47,8 @@ function toFeedEntry(value: JsonValue) {
     }
   }
 
-  if (value['id'] !== undefined) {
-    const id = value['id'];
+  if (value.id !== undefined) {
+    const id = value.id;
     if (id === null) {
       feedEntry.id = null;
     } else if (typeof id === 'string') {
@@ -58,8 +58,8 @@ function toFeedEntry(value: JsonValue) {
     }
   }
 
-  if (value['createdAt'] !== undefined) {
-    const createdAt = value['createdAt'];
+  if (value.createdAt !== undefined) {
+    const createdAt = value.createdAt;
     if (createdAt === null) {
       feedEntry.createdAt = null;
     } else if (typeof createdAt === 'string') {
@@ -77,8 +77,8 @@ function toFeedEntry(value: JsonValue) {
     }
   }
 
-  if (value['publishedAt'] !== undefined) {
-    const publishedAt = value['publishedAt'];
+  if (value.publishedAt !== undefined) {
+    const publishedAt = value.publishedAt;
     if (typeof publishedAt === 'string') {
       const _dayjs = dayjs(publishedAt, {
         format: 'YYYY-MM-DD HH:mm:ss',
@@ -94,8 +94,8 @@ function toFeedEntry(value: JsonValue) {
     }
   }
 
-  if (value['updatedAt'] !== undefined) {
-    const updatedAt = value['updatedAt'];
+  if (value.updatedAt !== undefined) {
+    const updatedAt = value.updatedAt;
     if (updatedAt === null) {
       feedEntry.updatedAt = null;
     } else if (typeof updatedAt === 'string') {
@@ -113,8 +113,8 @@ function toFeedEntry(value: JsonValue) {
     }
   }
 
-  if (value['title'] !== undefined) {
-    const title = value['title'];
+  if (value.title !== undefined) {
+    const title = value.title;
     if (typeof title === 'string') {
       feedEntry.title = title;
     } else {
@@ -122,8 +122,8 @@ function toFeedEntry(value: JsonValue) {
     }
   }
 
-  if (value['url'] !== undefined) {
-    const url = value['url'];
+  if (value.url !== undefined) {
+    const url = value.url;
     if (typeof url === 'string') {
       feedEntry.url = url;
     } else {
@@ -131,8 +131,8 @@ function toFeedEntry(value: JsonValue) {
     }
   }
 
-  if (value['content'] !== undefined) {
-    const content = value['content'];
+  if (value.content !== undefined) {
+    const content = value.content;
     if (content === null) {
       feedEntry.content = null;
     } else if (typeof content === 'string') {
@@ -142,8 +142,8 @@ function toFeedEntry(value: JsonValue) {
     }
   }
 
-  if (value['authorName'] !== undefined) {
-    const authorName = value['authorName'];
+  if (value.authorName !== undefined) {
+    const authorName = value.authorName;
     if (authorName === null) {
       feedEntry.authorName = null;
     } else if (typeof authorName === 'string') {
@@ -153,8 +153,8 @@ function toFeedEntry(value: JsonValue) {
     }
   }
 
-  if (value['fromSubscription'] !== undefined) {
-    const fromSubscription = value['fromSubscription'];
+  if (value.fromSubscription !== undefined) {
+    const fromSubscription = value.fromSubscription;
     if (typeof fromSubscription === 'boolean') {
       feedEntry.fromSubscription = fromSubscription;
     } else {
@@ -162,8 +162,8 @@ function toFeedEntry(value: JsonValue) {
     }
   }
 
-  if (value['isRead'] !== undefined) {
-    const isRead = value['isRead'];
+  if (value.isRead !== undefined) {
+    const isRead = value.isRead;
     if (typeof isRead === 'boolean') {
       feedEntry.fromSubscription = isRead;
     } else {
@@ -171,8 +171,8 @@ function toFeedEntry(value: JsonValue) {
     }
   }
 
-  if (value['isFavorite'] !== undefined) {
-    const isFavorite = value['isFavorite'];
+  if (value.isFavorite !== undefined) {
+    const isFavorite = value.isFavorite;
     if (typeof isFavorite === 'boolean') {
       feedEntry.fromSubscription = isFavorite;
     } else {
@@ -193,8 +193,8 @@ export class FeedEntryService {
 
     return this.http
       .get<JsonValue>(`${environment.apiHost}/api/feedentry/${uuid}`, {
-        headers: headers,
-        params: params,
+        headers,
+        params,
       })
       .pipe(map(toFeedEntry));
   }
@@ -205,7 +205,7 @@ export class FeedEntryService {
 
     return this.http
       .post<JsonValue>(`${environment.apiHost}/api/feedentries/query`, body, {
-        headers: headers,
+        headers,
       })
       .pipe(map(retObj => toObjects<FeedEntry>(retObj, toFeedEntry)));
   }
@@ -221,7 +221,7 @@ export class FeedEntryService {
       `${environment.apiHost}/api/feedentry/${feedEntry.uuid}/read`,
       null,
       {
-        headers: headers,
+        headers,
       },
     );
   }
@@ -232,7 +232,7 @@ export class FeedEntryService {
     return this.http.delete<void>(
       `${environment.apiHost}/api/feedentry/${feedEntry.uuid}/read`,
       {
-        headers: headers,
+        headers,
       },
     );
   }
@@ -244,7 +244,7 @@ export class FeedEntryService {
       `${environment.apiHost}/api/feedentries/read/`,
       feedEntries.map(feedEntry => feedEntry.uuid),
       {
-        headers: headers,
+        headers,
       },
     );
   }
@@ -256,7 +256,7 @@ export class FeedEntryService {
       'DELETE',
       `${environment.apiHost}/api/feedentries/read/`,
       {
-        headers: headers,
+        headers,
         body: feedEntries.map(feedEntry => feedEntry.uuid),
       },
     );
@@ -269,7 +269,7 @@ export class FeedEntryService {
       `${environment.apiHost}/api/feedentry/${feedEntry.uuid}/favorite`,
       null,
       {
-        headers: headers,
+        headers,
       },
     );
   }
@@ -280,7 +280,7 @@ export class FeedEntryService {
     return this.http.delete<void>(
       `${environment.apiHost}/api/feedentry/${feedEntry.uuid}/favorite`,
       {
-        headers: headers,
+        headers,
       },
     );
   }
@@ -292,7 +292,7 @@ export class FeedEntryService {
       `${environment.apiHost}/api/feedentries/favorite/`,
       feedEntries.map(feedEntry => feedEntry.uuid),
       {
-        headers: headers,
+        headers,
       },
     );
   }
@@ -304,7 +304,7 @@ export class FeedEntryService {
       'DELETE',
       `${environment.apiHost}/api/feedentries/favorite/`,
       {
-        headers: headers,
+        headers,
         body: feedEntries.map(feedEntry => feedEntry.uuid),
       },
     );

@@ -1,4 +1,4 @@
-﻿import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 
 import { SnackbarService } from 'ngx-snackbar';
 
@@ -25,7 +25,7 @@ export class AlertService {
   ) {
     this.snackbarService.add({
       msg: text,
-      customClass: customClass,
+      customClass,
       action: {
         text: 'Dismiss',
       },

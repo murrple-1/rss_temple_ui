@@ -50,9 +50,9 @@ export class SubscribeModalComponent {
     }
 
     let customName: string | undefined;
-    const customName_ = this.subscribeForm.controls.customName.value as string;
-    if (customName_.trim() !== '') {
-      customName = customName_;
+    const _customName = this.subscribeForm.controls.customName.value as string;
+    if (_customName.trim() !== '') {
+      customName = _customName;
     }
 
     const result: SubscriptionDetails = {

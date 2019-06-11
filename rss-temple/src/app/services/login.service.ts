@@ -1,4 +1,4 @@
-﻿import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { environment } from '@environments/environment';
@@ -14,24 +14,24 @@ export class LoginService {
 
   createMyLogin(email: string, password: string) {
     return this.http.post<void>(`${environment.apiHost}/api/login/my`, {
-      email: email,
-      password: password,
+      email,
+      password,
     });
   }
 
   createGoogleLogin(email: string, password: string, token: string) {
     return this.http.post<void>(`${environment.apiHost}/api/login/google`, {
-      email: email,
-      password: password,
-      token: token,
+      email,
+      password,
+      token,
     });
   }
 
   createFacebookLogin(email: string, password: string, token: string) {
     return this.http.post<void>(`${environment.apiHost}/api/login/facebook`, {
-      email: email,
-      password: password,
-      token: token,
+      email,
+      password,
+      token,
     });
   }
 
@@ -39,8 +39,8 @@ export class LoginService {
     return this.http.post<string | object>(
       `${environment.apiHost}/api/login/my/session`,
       {
-        email: email,
-        password: password,
+        email,
+        password,
       },
       {
         responseType: 'json',
@@ -76,7 +76,7 @@ export class LoginService {
     const headers = commonToHeaders(options, sessionToken);
 
     return this.http.delete<void>(`${environment.apiHost}/api/session`, {
-      headers: headers,
+      headers,
     });
   }
 }

@@ -23,11 +23,11 @@ function toProgressInterface(value: JsonValue): ProgressInterface {
     throw new Error('JSON must be object');
   }
 
-  if (value['state'] === undefined) {
+  if (value.state === undefined) {
     throw new Error("'state' missing");
   }
 
-  const state = value['state'];
+  const state = value.state;
   if (typeof state !== 'string') {
     throw new Error("'state' must be string");
   }
@@ -36,19 +36,19 @@ function toProgressInterface(value: JsonValue): ProgressInterface {
     throw new Error("'state' malformed");
   }
 
-  if (value['totalCount'] === undefined) {
+  if (value.totalCount === undefined) {
     throw new Error("'totalCount' missing");
   }
 
-  if (typeof value['totalCount'] !== 'number') {
+  if (typeof value.totalCount !== 'number') {
     throw new Error("'totalCount' must be number");
   }
 
-  if (value['finishedCount'] === undefined) {
+  if (value.finishedCount === undefined) {
     throw new Error("'finishedCount' missing");
   }
 
-  if (typeof value['finishedCount'] !== 'number') {
+  if (typeof value.finishedCount !== 'number') {
     throw new Error("'finishedCount' must be number");
   }
 

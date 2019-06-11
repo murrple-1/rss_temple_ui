@@ -30,8 +30,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
   registerForm: FormGroup;
   registerFormErrors = new FormGroupErrors();
 
-  private g_token: string | null = null;
-  private fb_token: string | null = null;
+  private googleToken: string | null = null;
+  private facebookToken: string | null = null;
 
   private readonly unsubscribe$ = new Subject<void>();
 
@@ -61,8 +61,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.g_token = this.route.snapshot.paramMap.get('g_token');
-    this.fb_token = this.route.snapshot.paramMap.get('fb_token');
+    this.googleToken = this.route.snapshot.paramMap.get('g_token');
+    this.facebookToken = this.route.snapshot.paramMap.get('fb_token');
   }
 
   ngOnDestroy() {
@@ -126,24 +126,24 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
     this.state = State.IsRegistering;
 
-    if (this.g_token !== null) {
+    if (this.googleToken !== null) {
       this.loginService
         .createGoogleLogin(
           this.registerForm.controls.email.value as string,
           this.registerForm.controls.password.value as string,
-          this.g_token,
+          this.googleToken,
         )
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: this.handleRegisterSuccess.bind(this),
           error: this.handleRegisterError.bind(this),
         });
-    } else if (this.fb_token !== null) {
+    } else if (this.facebookToken !== null) {
       this.loginService
         .createFacebookLogin(
           this.registerForm.controls.email.value as string,
           this.registerForm.controls.password.value as string,
-          this.fb_token,
+          this.facebookToken,
         )
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({

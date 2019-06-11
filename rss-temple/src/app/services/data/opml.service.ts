@@ -17,7 +17,7 @@ export class OPMLService {
     const headers = commonToHeaders(options, sessionToken);
 
     return this.http.get(`${environment.apiHost}/api/opml`, {
-      headers: headers,
+      headers,
       responseType: 'text',
     });
   }
@@ -26,7 +26,7 @@ export class OPMLService {
     const headers = commonToHeaders(options, sessionToken);
 
     return this.http.post(`${environment.apiHost}/api/opml`, opmlText, {
-      headers: headers,
+      headers,
       observe: 'response',
     });
   }

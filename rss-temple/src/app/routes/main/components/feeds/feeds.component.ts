@@ -154,7 +154,7 @@ export class FeedsComponent implements OnInit, OnDestroy {
       fields: ['uuid', 'url', 'title', 'content', 'isRead'],
       returnTotalCount: false,
       count: this.count,
-      skip: skip,
+      skip,
       search: `feedUuid:"${this.feeds
         .map(feed => feed.uuid)
         .join('|')}" and isRead:"false"`,

@@ -19,8 +19,8 @@ export function toObjects<T>(
 
   const objs = new Objects<T>();
 
-  if (value['totalCount'] !== undefined) {
-    const totalCount = value['totalCount'];
+  if (value.totalCount !== undefined) {
+    const totalCount = value.totalCount;
     if (typeof totalCount === 'number') {
       objs.totalCount = totalCount;
     } else {
@@ -28,8 +28,8 @@ export function toObjects<T>(
     }
   }
 
-  if (value['objects'] !== undefined) {
-    const objects = value['objects'];
+  if (value.objects !== undefined) {
+    const objects = value.objects;
     if (isJsonArray(objects)) {
       objs.objects = objects.map(fn);
     } else {

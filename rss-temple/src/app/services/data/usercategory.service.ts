@@ -40,8 +40,8 @@ function toUserCategory(value: JsonValue) {
 
   const userCategory = new UserCategory();
 
-  if (value['uuid'] !== undefined) {
-    const uuid = value['uuid'];
+  if (value.uuid !== undefined) {
+    const uuid = value.uuid;
     if (typeof uuid === 'string') {
       userCategory.uuid = uuid;
     } else {
@@ -49,8 +49,8 @@ function toUserCategory(value: JsonValue) {
     }
   }
 
-  if (value['text'] !== undefined) {
-    const text = value['text'];
+  if (value.text !== undefined) {
+    const text = value.text;
     if (typeof text === 'string') {
       userCategory.text = text;
     } else {
@@ -81,8 +81,8 @@ export class UserCategoryService {
 
     return this.http
       .get<JsonValue>(`${environment.apiHost}/api/usercategory/${uuid}`, {
-        headers: headers,
-        params: params,
+        headers,
+        params,
       })
       .pipe(map(toUserCategory));
   }
@@ -96,7 +96,7 @@ export class UserCategoryService {
         `${environment.apiHost}/api/usercategories/query`,
         body,
         {
-          headers: headers,
+          headers,
         },
       )
       .pipe(map(retObj => toObjects(retObj, toUserCategory)));
@@ -119,8 +119,8 @@ export class UserCategoryService {
         `${environment.apiHost}/api/usercategory`,
         userCategoryJson,
         {
-          headers: headers,
-          params: params,
+          headers,
+          params,
           responseType: 'json',
         },
       )
@@ -133,7 +133,7 @@ export class UserCategoryService {
     return this.http.delete<void>(
       `${environment.apiHost}/api/usercategory/${userCategoryUuid}`,
       {
-        headers: headers,
+        headers,
       },
     );
   }
@@ -151,7 +151,7 @@ export class UserCategoryService {
       `${environment.apiHost}/api/usercategories/apply`,
       body,
       {
-        headers: headers,
+        headers,
       },
     );
   }

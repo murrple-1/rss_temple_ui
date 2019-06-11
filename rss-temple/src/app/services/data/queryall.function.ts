@@ -40,7 +40,7 @@ export function queryAllFn<Field, SortField extends string, T>(
             returnObjects: true,
             returnTotalCount: false,
             search: options.search,
-            skip: skip,
+            skip,
             sort: options.sort,
             sessionToken: options.sessionToken,
           }),

@@ -104,9 +104,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     feeds: FeedImpl[],
   ) {
     const allCategorizedFeedUuids = new Set<string>(
-      userCategories.flatMap(userCategory_ => {
-        if (userCategory_.feedUuids !== undefined) {
-          return userCategory_.feedUuids;
+      userCategories.flatMap(_userCategory => {
+        if (_userCategory.feedUuids !== undefined) {
+          return _userCategory.feedUuids;
         } else {
           return [];
         }
@@ -114,9 +114,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     );
 
     const allCategorizedFeeds: CategorizedFeeds = {
-      noCategory: feeds.filter(feed_ => {
-        if (feed_.uuid !== undefined) {
-          return !allCategorizedFeedUuids.has(feed_.uuid);
+      noCategory: feeds.filter(_feed => {
+        if (_feed.uuid !== undefined) {
+          return !allCategorizedFeedUuids.has(_feed.uuid);
         } else {
           return false;
         }
@@ -133,9 +133,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
         allCategorizedFeeds.category.push({
           name: userCategory.text,
-          feeds: feeds.filter(feed_ => {
-            if (feed_.uuid !== undefined) {
-              return feedUuids.has(feed_.uuid);
+          feeds: feeds.filter(_feed => {
+            if (_feed.uuid !== undefined) {
+              return feedUuids.has(_feed.uuid);
             } else {
               return false;
             }
@@ -182,7 +182,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
           ) {
             return [userCategories.objects, feeds.objects] as [
               UserCategoryImpl[],
-              FeedImpl[]
+              FeedImpl[],
             ];
           }
           throw new Error('malformed response');
@@ -224,13 +224,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
             map(feed => feed as FeedImpl2),
           )
           .subscribe({
-            next: feed_ => {
+            next: _feed => {
               const feed: FeedImpl = {
-                uuid: feed_.uuid,
+                uuid: _feed.uuid,
                 feedUrl: result.feedUrl,
-                calculatedTitle: feed_.title,
+                calculatedTitle: _feed.title,
               };
-              if (!feed_.subscribed) {
+              if (!_feed.subscribed) {
                 this.feedService
                   .subscribe(result.feedUrl, result.customTitle)
                   .pipe(takeUntil(this.unsubscribe$))
@@ -302,7 +302,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
               ) {
                 return [userCategories.objects, feeds.objects] as [
                   UserCategoryImpl[],
-                  FeedImpl[]
+                  FeedImpl[],
                 ];
               }
               throw new Error('malformed response');

@@ -42,8 +42,8 @@ function toFeed(value: JsonValue) {
 
   const feed = new Feed();
 
-  if (value['uuid'] !== undefined) {
-    const uuid = value['uuid'];
+  if (value.uuid !== undefined) {
+    const uuid = value.uuid;
     if (typeof uuid === 'string') {
       feed.uuid = uuid;
     } else {
@@ -51,8 +51,8 @@ function toFeed(value: JsonValue) {
     }
   }
 
-  if (value['title'] !== undefined) {
-    const title = value['title'];
+  if (value.title !== undefined) {
+    const title = value.title;
     if (typeof title === 'string') {
       feed.title = title;
     } else {
@@ -60,8 +60,8 @@ function toFeed(value: JsonValue) {
     }
   }
 
-  if (value['feedUrl'] !== undefined) {
-    const feedUrl = value['feedUrl'];
+  if (value.feedUrl !== undefined) {
+    const feedUrl = value.feedUrl;
     if (typeof feedUrl === 'string') {
       feed.feedUrl = feedUrl;
     } else {
@@ -69,8 +69,8 @@ function toFeed(value: JsonValue) {
     }
   }
 
-  if (value['homeUrl'] !== undefined) {
-    const homeUrl = value['homeUrl'];
+  if (value.homeUrl !== undefined) {
+    const homeUrl = value.homeUrl;
     if (homeUrl === null || typeof homeUrl === 'string') {
       feed.homeUrl = homeUrl;
     } else {
@@ -78,8 +78,8 @@ function toFeed(value: JsonValue) {
     }
   }
 
-  if (value['publishedAt'] !== undefined) {
-    const publishedAt = value['publishedAt'];
+  if (value.publishedAt !== undefined) {
+    const publishedAt = value.publishedAt;
     if (typeof publishedAt === 'string') {
       const _dayjs = dayjs(publishedAt, {
         format: 'YYYY-MM-DD HH:mm:ss',
@@ -95,8 +95,8 @@ function toFeed(value: JsonValue) {
     }
   }
 
-  if (value['updatedAt'] !== undefined) {
-    const updatedAt = value['updatedAt'];
+  if (value.updatedAt !== undefined) {
+    const updatedAt = value.updatedAt;
     if (updatedAt === null) {
       feed.updatedAt = null;
     } else if (typeof updatedAt === 'string') {
@@ -114,8 +114,8 @@ function toFeed(value: JsonValue) {
     }
   }
 
-  if (value['subscribed'] !== undefined) {
-    const subscribed = value['subscribed'];
+  if (value.subscribed !== undefined) {
+    const subscribed = value.subscribed;
     if (typeof subscribed === 'boolean') {
       feed.subscribed = subscribed;
     } else {
@@ -123,8 +123,8 @@ function toFeed(value: JsonValue) {
     }
   }
 
-  if (value['customTitle'] !== undefined) {
-    const customTitle = value['customTitle'];
+  if (value.customTitle !== undefined) {
+    const customTitle = value.customTitle;
     if (customTitle === null || typeof customTitle === 'string') {
       feed.customTitle = customTitle;
     } else {
@@ -132,8 +132,8 @@ function toFeed(value: JsonValue) {
     }
   }
 
-  if (value['calculatedTitle'] !== undefined) {
-    const calculatedTitle = value['calculatedTitle'];
+  if (value.calculatedTitle !== undefined) {
+    const calculatedTitle = value.calculatedTitle;
     if (typeof calculatedTitle === 'string') {
       feed.calculatedTitle = calculatedTitle;
     } else {
@@ -141,8 +141,8 @@ function toFeed(value: JsonValue) {
     }
   }
 
-  if (value['userCategoryUuids'] !== undefined) {
-    const userCategoryUuids = value['userCategoryUuids'];
+  if (value.userCategoryUuids !== undefined) {
+    const userCategoryUuids = value.userCategoryUuids;
 
     if (isJsonArray(userCategoryUuids)) {
       for (const userCategoryUuid of userCategoryUuids) {
@@ -167,12 +167,12 @@ export class FeedService {
   get(feedUrl: string, options: GetOptions<Field> = {}) {
     const headers = getToHeaders(options, sessionToken);
     const params = getToParams(options, () => ['uuid']);
-    params['url'] = feedUrl;
+    params.url = feedUrl;
 
     return this.http
       .get<JsonValue>(`${environment.apiHost}/api/feed`, {
-        headers: headers,
-        params: params,
+        headers,
+        params,
       })
       .pipe(map(toFeed));
   }
@@ -183,7 +183,7 @@ export class FeedService {
 
     return this.http
       .post<JsonValue>(`${environment.apiHost}/api/feeds/query`, body, {
-        headers: headers,
+        headers,
       })
       .pipe(map(retObj => toObjects<Feed>(retObj, toFeed)));
   }
@@ -197,19 +197,19 @@ export class FeedService {
     const params: {
       [header: string]: string | string[];
     } = {
-      url: url,
+      url,
     };
 
     if (customTitle !== undefined) {
-      params['customtitle'] = customTitle;
+      params.customtitle = customTitle;
     }
 
     return this.http.post<void>(
       `${environment.apiHost}/api/feed/subscribe`,
       null,
       {
-        headers: headers,
-        params: params,
+        headers,
+        params,
       },
     );
   }
@@ -219,12 +219,12 @@ export class FeedService {
     const params: {
       [header: string]: string | string[];
     } = {
-      url: url,
+      url,
     };
 
     return this.http.delete<void>(`${environment.apiHost}/api/feed/subscribe`, {
-      headers: headers,
-      params: params,
+      headers,
+      params,
     });
   }
 }
