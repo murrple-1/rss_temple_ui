@@ -76,7 +76,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     category: [],
   };
 
-  @ViewChild('filterInput')
+  @ViewChild('filterInput', { static: true })
   private filterInput?: ElementRef<HTMLInputElement>;
 
   private readonly unsubscribe$ = new Subject<void>();
