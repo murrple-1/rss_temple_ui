@@ -198,7 +198,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       });
   }
 
-  private handleLoginSuccess(data: string | Object) {
+  private handleLoginSuccess(data: string | object) {
     if (typeof data === 'string') {
       this.zone.run(() => {
         setSessionToken(data);

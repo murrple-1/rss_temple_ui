@@ -103,7 +103,7 @@ export class FeedComponent implements OnInit, OnDestroy {
           const feedEntryObservable = this.feedEntryService.query({
             fields: ['uuid', 'url', 'title', 'content', 'isRead', 'isFavorite'],
             returnTotalCount: false,
-            count: count,
+            count,
             search: `feedUuid:"${feed.uuid}"`,
             sort: new Sort([
               ['createdAt', 'DESC'],

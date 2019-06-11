@@ -82,7 +82,7 @@ export class InViewportDirective implements OnInit, OnDestroy {
       event = {
         target: nativeElement,
         isInViewport: true,
-        boundingRect: boundingRect,
+        boundingRect,
       };
     } else {
       event = {

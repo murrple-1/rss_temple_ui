@@ -36,7 +36,7 @@ export class LoginService {
   }
 
   getMyLoginSession(email: string, password: string) {
-    return this.http.post<string | Object>(
+    return this.http.post<string | object>(
       `${environment.apiHost}/api/login/my/session`,
       {
         email: email,
@@ -49,7 +49,7 @@ export class LoginService {
   }
 
   getGoogleLoginSession(user: gapi.auth2.GoogleUser) {
-    return this.http.post<string | Object>(
+    return this.http.post<string | object>(
       `${environment.apiHost}/api/login/google/session`,
       {
         token: user.getAuthResponse().id_token,
@@ -61,7 +61,7 @@ export class LoginService {
   }
 
   getFacebookLoginSession(user: facebook.AuthResponse) {
-    return this.http.post<string | Object>(
+    return this.http.post<string | object>(
       `${environment.apiHost}/api/login/facebook/session`,
       {
         token: user.accessToken,

@@ -65,9 +65,7 @@ export class ProgressService {
     return this.http
       .get<JsonValue>(
         `${environment.apiHost}/api/feed/subscribe/progress/${uuid}`,
-        {
-          headers: headers,
-        },
+        { headers },
       )
       .pipe(map(toProgressInterface));
   }

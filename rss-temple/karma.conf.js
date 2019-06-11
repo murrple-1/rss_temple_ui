@@ -29,12 +29,12 @@ module.exports = function(config) {
       clearContext: false, // leave Jasmine Spec Runner output visible in browser
     },
     coverageIstanbulReporter: {
-      dir: path.join(__dirname, '../coverage/'),
+      dir: path.join(__dirname, './coverage/'),
       reports: ['html', 'lcovonly'],
       fixWebpackSourcePaths: true,
     },
     junitReporter: {
-      outputDir: path.join(__dirname, '../test-results/'),
+      outputDir: path.join(__dirname, './test-results/'),
     },
     reporters: reporters,
     port: 9876,
@@ -43,5 +43,6 @@ module.exports = function(config) {
     autoWatch: true,
     browsers: ['ChromeHeadless'],
     singleRun: true,
+    restartOnFileChange: true,
   });
 };
