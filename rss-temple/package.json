@@ -29,7 +29,6 @@
     "@angular/compiler": "^7.2.15",
     "@angular/core": "^7.2.15",
     "@angular/forms": "^7.2.15",
-    "@angular/http": "^7.2.15",
     "@angular/platform-browser": "^7.2.15",
     "@angular/platform-browser-dynamic": "^7.2.15",
     "@angular/router": "^7.2.15",
@@ -44,11 +43,11 @@
     "rxjs": "^6.5.2",
     "sprintf-js": "^1.1.2",
     "tslib": "^1.9.0",
-    "zone.js": "^0.8.26"
+    "zone.js": "~0.9.1"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.13.9",
-    "@angular/cli": "~7.3.9",
+    "@angular-devkit/build-angular": "~0.800.0",
+    "@angular/cli": "~8.0.2",
     "@angular/compiler-cli": "^7.2.15",
     "@angular/language-service": "^7.2.15",
     "@types/facebook-js-sdk": "^3.3.0",
@@ -75,6 +74,6 @@
     "protractor": "^5.4.2",
     "ts-node": "~8.2.0",
     "tslint": "^5.16.0",
-    "typescript": "^3.2.4"
+    "typescript": "<3.5.0"
   }
 }

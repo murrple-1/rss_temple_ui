@@ -2,21 +2,8 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/spec",
-    "module": "commonjs",
-    "types": [
-      "jasmine",
-      "node",
-      "gapi",
-      "gapi.auth2",
-      "facebook-js-sdk"
-    ]
+    "types": ["jasmine", "node", "gapi", "gapi.auth2", "facebook-js-sdk"]
   },
-  "files": [
-    "test.ts",
-    "polyfills.ts"
-  ],
-  "include": [
-    "**/*.spec.ts",
-    "**/*.d.ts"
-  ]
+  "files": ["test.ts", "polyfills.ts"],
+  "include": ["**/*.spec.ts", "**/*.d.ts"]
 }

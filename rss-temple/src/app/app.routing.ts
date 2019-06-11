@@ -24,7 +24,8 @@ const routes: Routes = [
   {
     path: 'main',
     canActivate: [AuthGuard],
-    loadChildren: './routes/main/main.module#MainModule',
+    loadChildren: () =>
+      import('./routes/main/main.module').then(m => m.MainModule),
   },
 
   { path: '**', redirectTo: 'login' },

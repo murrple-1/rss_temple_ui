@@ -2,15 +2,7 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/app",
-    "module": "es2015",
-    "types": [
-      "gapi",
-      "gapi.auth2",
-      "facebook-js-sdk"
-    ]
+    "types": ["gapi", "gapi.auth2", "facebook-js-sdk"]
   },
-  "exclude": [
-    "src/test.ts",
-    "**/*.spec.ts"
-  ]
+  "exclude": ["src/test.ts", "**/*.spec.ts"]
 }
