@@ -3,6 +3,8 @@ import { Component, Input, NgZone, OnDestroy, ElementRef } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+import * as dayjs from 'dayjs';
+
 import { FeedEntryService } from '@app/services/data';
 import { FeedEntry } from '@app/models';
 
@@ -12,6 +14,10 @@ interface FeedEntryImpl extends FeedEntry {
   content: string;
   isRead: boolean;
   isFavorite: boolean;
+  authorName: string | null;
+  publishedAt: dayjs.Dayjs;
+  // TODO use feed title/URL in details
+  feedUuid: string;
 }
 
 @Component({

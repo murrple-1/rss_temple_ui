@@ -2,8 +2,22 @@
   width: 100%;
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 3px;
-  text-align: center;
   margin-bottom: 10px;
+}
+
+h2.app--entry-title {
+  width: 100%;
+  text-align: center;
+}
+
+div.app--entry-details {
+  width: 100%;
+  text-align: center;
+  font-size: 0.8em;
+}
+
+div.app--entry-text {
+  margin: 0 10px;
 }
 
 @keyframes flash {

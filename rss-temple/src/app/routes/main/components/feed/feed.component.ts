@@ -3,6 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
+import * as dayjs from 'dayjs';
+
 import { Subject, zip } from 'rxjs';
 import { takeUntil, map, take } from 'rxjs/operators';
 
@@ -36,6 +38,9 @@ interface FeedEntryImpl extends FeedEntry {
   content: string;
   isRead: boolean;
   isFavorite: boolean;
+  authorName: string | null;
+  publishedAt: dayjs.Dayjs;
+  feedUuid: string;
 }
 
 interface UserCategoryImpl extends UserCategory {
@@ -101,7 +106,17 @@ export class FeedComponent implements OnInit, OnDestroy {
           feed.feedUrl = url;
 
           const feedEntryObservable = this.feedEntryService.query({
-            fields: ['uuid', 'url', 'title', 'content', 'isRead', 'isFavorite'],
+            fields: [
+              'uuid',
+              'url',
+              'title',
+              'content',
+              'isRead',
+              'isFavorite',
+              'authorName',
+              'publishedAt',
+              'feedUuid',
+            ],
             returnTotalCount: false,
             count,
             search: `feedUuid:"${feed.uuid}"`,
@@ -131,7 +146,7 @@ export class FeedComponent implements OnInit, OnDestroy {
                   ) {
                     return [feedEntries.objects, userCategories.objects] as [
                       FeedEntryImpl[],
-                      UserCategoryImpl[]
+                      UserCategoryImpl[],
                     ];
                   }
                   throw new Error('malformed response');

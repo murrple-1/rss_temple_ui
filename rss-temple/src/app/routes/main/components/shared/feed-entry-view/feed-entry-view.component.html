@@ -7,7 +7,7 @@
   }"
   (click)="onClick($event)"
 >
-  <h2>
+  <h2 class="app--entry-title">
     <a
       href="{{ feedEntry.url }}"
       target="_blank"
@@ -17,7 +17,8 @@
       >{{ feedEntry.title }}</a
     >
   </h2>
-  <div [innerHtml]="feedEntry.content"></div>
+  <div class="app--entry-details">{{ feedEntry.authorName }}</div>
+  <div class="app--entry-text" [innerHtml]="feedEntry.content"></div>
   <button (click)="read()" *ngIf="!feedEntry.isRead">Read</button>
   <button (click)="unread()" *ngIf="feedEntry.isRead">Unread</button>
   <button (click)="favorite()" *ngIf="!feedEntry.isFavorite">Favorite</button>

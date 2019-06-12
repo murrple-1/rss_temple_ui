@@ -10,6 +10,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Subject, fromEvent } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 
+import * as dayjs from 'dayjs';
+
 import { FeedService, FeedEntryService } from '@app/services/data';
 import { QueryOptions } from '@app/services/data/query.interface';
 import { Sort } from '@app/services/data/sort.interface';
@@ -30,6 +32,9 @@ interface FeedEntryImpl extends FeedEntry {
   title: string;
   content: string;
   isRead: boolean;
+  authorName: string | null;
+  publishedAt: dayjs.Dayjs;
+  feedUuid: string;
 }
 
 @Component({
@@ -151,7 +156,16 @@ export class FeedsComponent implements OnInit, OnDestroy {
 
   private feedEntryQueryOptions(skip?: number): QueryOptions<Field, SortField> {
     return {
-      fields: ['uuid', 'url', 'title', 'content', 'isRead'],
+      fields: [
+        'uuid',
+        'url',
+        'title',
+        'content',
+        'isRead',
+        'authorName',
+        'publishedAt',
+        'feedUuid',
+      ],
       returnTotalCount: false,
       count: this.count,
       skip,
