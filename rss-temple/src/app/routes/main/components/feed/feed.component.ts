@@ -25,10 +25,12 @@ import { Sort } from '@app/services/data/sort.interface';
 interface FeedImpl extends Feed {
   uuid: string;
   title: string;
+  homeUrl: string | null;
   feedUrl: string;
   customTitle: string | null;
   subscribed: boolean;
   userCategoryUuids: string[];
+  calculatedTitle: string;
 }
 
 interface FeedEntryImpl extends FeedEntry {
@@ -92,9 +94,11 @@ export class FeedComponent implements OnInit, OnDestroy {
         fields: [
           'uuid',
           'title',
+          'homeUrl',
           'customTitle',
           'subscribed',
           'userCategoryUuids',
+          'calculatedTitle',
         ],
       })
       .pipe(

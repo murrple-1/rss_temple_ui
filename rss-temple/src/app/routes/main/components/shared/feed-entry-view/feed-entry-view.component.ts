@@ -6,7 +6,12 @@ import { takeUntil } from 'rxjs/operators';
 import * as dayjs from 'dayjs';
 
 import { FeedEntryService } from '@app/services/data';
-import { FeedEntry } from '@app/models';
+import { FeedEntry, Feed } from '@app/models';
+
+interface FeedImpl extends Feed {
+  calculatedTitle: string;
+  homeUrl: string | null;
+}
 
 interface FeedEntryImpl extends FeedEntry {
   url: string;
@@ -16,8 +21,6 @@ interface FeedEntryImpl extends FeedEntry {
   isFavorite: boolean;
   authorName: string | null;
   publishedAt: dayjs.Dayjs;
-  // TODO use feed title/URL in details
-  feedUuid: string;
 }
 
 @Component({
@@ -26,6 +29,9 @@ interface FeedEntryImpl extends FeedEntry {
   styleUrls: ['./feed-entry-view.component.scss'],
 })
 export class FeedEntryViewComponent implements OnDestroy {
+  @Input()
+  feed?: FeedImpl;
+
   @Input()
   feedEntry?: FeedEntryImpl;
 

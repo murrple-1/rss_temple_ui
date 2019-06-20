@@ -1,5 +1,5 @@
 <div
-  *ngIf="feedEntry !== undefined"
+  *ngIf="feed !== undefined && feedEntry !== undefined"
   class="app--view"
   [ngClass]="{
     'app--flash': flashing,
@@ -9,7 +9,7 @@
 >
   <h2 class="app--entry-title">
     <a
-      href="{{ feedEntry.url }}"
+      [attr.href]="feedEntry.url"
       target="_blank"
       [ngClass]="{
         'text-muted': feedEntry.isRead
@@ -17,7 +17,10 @@
       >{{ feedEntry.title }}</a
     >
   </h2>
-  <div class="app--entry-details">{{ feedEntry.authorName }}</div>
+  <div class="app--entry-details">
+    From <a [attr.href]="feed.homeUrl">{{ feed.calculatedTitle }}</a> by
+    {{ feedEntry.authorName }}
+  </div>
   <div class="app--entry-text" [innerHtml]="feedEntry.content"></div>
   <button (click)="read()" *ngIf="!feedEntry.isRead">Read</button>
   <button (click)="unread()" *ngIf="feedEntry.isRead">Unread</button>
