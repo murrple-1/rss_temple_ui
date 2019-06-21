@@ -1,11 +1,9 @@
-import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
+import { Component, NgZone, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import * as dayjs from 'dayjs';
-
-import { Subject, zip } from 'rxjs';
+import { zip } from 'rxjs';
 import { takeUntil, map, take } from 'rxjs/operators';
 
 import {
@@ -13,17 +11,22 @@ import {
   FeedEntryService,
   UserCategoryService,
 } from '@app/services/data';
-import { HttpErrorService } from '@app/services';
-import { Feed, FeedEntry, UserCategory } from '@app/models';
+import { UserCategory } from '@app/models';
 import {
   UserCategoriesModalComponent,
   ReturnData,
 } from '@app/routes/main/components/feed/usercategoriesmodal/usercategoriesmodal.component';
 import { IApply } from '@app/services/data/usercategory.service';
 import { Sort } from '@app/services/data/sort.interface';
+import {
+  AbstractFeedsComponent,
+  DEFAULT_COUNT,
+  FeedImpl,
+  FeedEntryImpl,
+} from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
+import { HttpErrorService } from '@app/services';
 
-interface FeedImpl extends Feed {
-  uuid: string;
+interface FeedImpl2 extends FeedImpl {
   title: string;
   homeUrl: string | null;
   feedUrl: string;
@@ -31,18 +34,6 @@ interface FeedImpl extends Feed {
   subscribed: boolean;
   userCategoryUuids: string[];
   calculatedTitle: string;
-}
-
-interface FeedEntryImpl extends FeedEntry {
-  uuid: string;
-  url: string;
-  title: string;
-  content: string;
-  isRead: boolean;
-  isFavorite: boolean;
-  authorName: string | null;
-  publishedAt: dayjs.Dayjs;
-  feedUuid: string;
 }
 
 interface UserCategoryImpl extends UserCategory {
@@ -53,42 +44,50 @@ interface UserCategoryImpl extends UserCategory {
   templateUrl: 'feed.component.html',
   styleUrls: ['feed.component.scss'],
 })
-export class FeedComponent implements OnInit, OnDestroy {
+export class FeedComponent extends AbstractFeedsComponent {
   feed: FeedImpl | null = null;
-  feedEntries: FeedEntryImpl[] = [];
   userCategories: UserCategoryImpl[] = [];
 
-  private readonly unsubscribe$ = new Subject<void>();
+  private count = DEFAULT_COUNT;
+
+  get feeds() {
+    if (this.feed !== null) {
+      return [this.feed];
+    } else {
+      return [];
+    }
+  }
 
   constructor(
     private route: ActivatedRoute,
-    private zone: NgZone,
     private modal: NgbModal,
     private feedService: FeedService,
-    private feedEntryService: FeedEntryService,
     private userCategoryService: UserCategoryService,
-    private httpErrorService: HttpErrorService,
-  ) {}
+
+    zone: NgZone,
+    changeDetectorRef: ChangeDetectorRef,
+    feedEntryService: FeedEntryService,
+    httpErrorService: HttpErrorService,
+  ) {
+    super(zone, changeDetectorRef, feedEntryService, httpErrorService);
+  }
 
   ngOnInit() {
+    super.ngOnInit();
+
     this.route.paramMap.pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: paramMap => {
         const url = paramMap.get('url');
-        const count = parseInt(paramMap.get('count') || '5', 10);
+        this.count = parseInt(paramMap.get('count') || '5', DEFAULT_COUNT);
 
         if (url) {
-          this.getFeed(url, count);
+          this.getFeed(url);
         }
       },
     });
   }
 
-  ngOnDestroy() {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
-  }
-
-  private getFeed(url: string, count: number) {
+  private getFeed(url: string) {
     this.feedService
       .get(url, {
         fields: [
@@ -103,33 +102,15 @@ export class FeedComponent implements OnInit, OnDestroy {
       })
       .pipe(
         takeUntil(this.unsubscribe$),
-        map(feed => feed as FeedImpl),
+        map(feed => feed as FeedImpl2),
       )
       .subscribe({
         next: feed => {
           feed.feedUrl = url;
 
-          const feedEntryObservable = this.feedEntryService.query({
-            fields: [
-              'uuid',
-              'url',
-              'title',
-              'content',
-              'isRead',
-              'isFavorite',
-              'authorName',
-              'publishedAt',
-              'feedUuid',
-            ],
-            returnTotalCount: false,
-            count,
-            search: `feedUuid:"${feed.uuid}"`,
-            sort: new Sort([
-              ['createdAt', 'DESC'],
-              ['publishedAt', 'DESC'],
-              ['updatedAt', 'DESC'],
-            ]),
-          });
+          const feedEntryObservable = this.feedEntryService.query(
+            this.feedEntryQueryOptions(this.count),
+          );
 
           if (feed.userCategoryUuids.length > 0) {
             zip(

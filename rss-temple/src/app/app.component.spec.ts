@@ -4,7 +4,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { APP_BASE_HREF } from '@angular/common';
 
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { SnackbarModule } from 'ngx-snackbar';
 
@@ -29,10 +29,6 @@ import {
 } from '@app/services/data';
 import { LoginComponent } from '@app/components/login/login.component';
 import { RegisterComponent } from '@app/components/register/register.component';
-import { MainComponent } from '@app/routes/main/main.component';
-import { FeedComponent } from '@app/routes/main/components/feed/feed.component';
-import { HeaderComponent } from '@app/routes/main/components/shared/header/header.component';
-import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
 import { ResetPasswordComponent } from '@app/components/resetpassword/resetpassword.component';
 import { VerifyComponent } from '@app/components/verify/verify.component';
 
@@ -45,7 +41,8 @@ describe('AppComponent', () => {
         ReactiveFormsModule,
         HttpClientModule,
 
-        NgbModule,
+        NgbDropdownModule,
+        NgbModalModule,
 
         SnackbarModule.forRoot(),
 
@@ -57,10 +54,6 @@ describe('AppComponent', () => {
         RegisterComponent,
         ResetPasswordComponent,
         VerifyComponent,
-        MainComponent,
-        FeedComponent,
-        HeaderComponent,
-        FeedEntryViewComponent,
       ],
       providers: [
         {

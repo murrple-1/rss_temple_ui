@@ -1,6 +1,10 @@
-<!-- TODO need the infinite scroll and auto-read -->
 <main role="main">
-  <div class="container">
+  <div
+    class="container"
+    infinite-scroll
+    [infiniteScrollDisabled]="isLoadingMore"
+    (scrolled)="onApproachingBottom()"
+  >
     <h2 *ngIf="!feed">No Feed</h2>
     <ng-container *ngIf="feed">
       <h2 *ngIf="!feed.customTitle; else customTitleHeader">
@@ -11,7 +15,6 @@
         <h3>{{ feed.title }}</h3>
       </ng-template>
     </ng-container>
-    <h2 *ngIf="feed">{{ feed.calculatedTitle }}</h2>
 
     <button (click)="onSubscribe()" *ngIf="feed && !feed.subscribed">
       Subscribe
@@ -34,8 +37,14 @@
 
     <app-feed-entry-view
       *ngFor="let feedEntry of feedEntries"
+      #feedEntryView
       [feed]="feed"
       [feedEntry]="feedEntry"
+      appInViewport
+      (appInViewportWatch)="onEntryEnteredViewport($event, feedEntryView)"
+      (click)="onEntryClicked($event, feedEntryView)"
     ></app-feed-entry-view>
+    <div *ngIf="isLoadingMore">Loading...</div>
+    <div *ngIf="!isLoadingMore">Load More</div>
   </div>
 </main>
