@@ -46,8 +46,8 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
     this.route.paramMap.pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: paramMap => {
         this.count = parseInt(
-          paramMap.get('count') || this.count.toString(),
-          DEFAULT_COUNT,
+          paramMap.get('count') || DEFAULT_COUNT.toString(10),
+          10,
         );
 
         this._getFeedEntries();
