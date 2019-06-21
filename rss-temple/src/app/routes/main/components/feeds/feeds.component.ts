@@ -1,4 +1,4 @@
-import { Component, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, NgZone, ChangeDetectorRef, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { takeUntil, map } from 'rxjs/operators';
@@ -8,18 +8,24 @@ import { FeedObservableService } from '@app/routes/main/services';
 import {
   AbstractFeedsComponent,
   DEFAULT_COUNT,
-  FeedImpl,
+  FeedImpl as _FeedImpl,
+  FeedEntryImpl as _FeedEntryImpl,
 } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 import { HttpErrorService } from '@app/services';
+
+interface FeedImpl extends _FeedImpl {
+  calculatedTitle: string;
+  homeUrl: string | null;
+}
+
+type FeedEntryImpl = _FeedEntryImpl;
 
 @Component({
   templateUrl: 'feeds.component.html',
   styleUrls: ['feeds.component.scss'],
 })
-export class FeedsComponent extends AbstractFeedsComponent {
+export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
   feeds: FeedImpl[] = [];
-
-  private count = DEFAULT_COUNT;
 
   constructor(
     private route: ActivatedRoute,
@@ -44,7 +50,7 @@ export class FeedsComponent extends AbstractFeedsComponent {
           DEFAULT_COUNT,
         );
 
-        this.getFeedEntries();
+        this._getFeedEntries();
       },
     });
 
@@ -59,7 +65,7 @@ export class FeedsComponent extends AbstractFeedsComponent {
         next: feed => {
           this.feeds.push(feed);
 
-          this.getFeedEntries();
+          this._getFeedEntries();
         },
       });
 
@@ -75,7 +81,7 @@ export class FeedsComponent extends AbstractFeedsComponent {
             }
           });
 
-          this.getFeedEntries();
+          this._getFeedEntries();
         },
       });
 
@@ -89,7 +95,7 @@ export class FeedsComponent extends AbstractFeedsComponent {
   private getFeeds() {
     this.feedService
       .queryAll({
-        fields: ['uuid'],
+        fields: ['uuid', 'calculatedTitle', 'homeUrl'],
         search: 'subscribed:"true"',
         returnTotalCount: false,
       })
@@ -106,7 +112,7 @@ export class FeedsComponent extends AbstractFeedsComponent {
         next: feeds => {
           this.feeds = feeds;
 
-          this.getFeedEntries();
+          this._getFeedEntries();
         },
         error: error => {
           this.httpErrorService.handleError(error);
@@ -114,12 +120,30 @@ export class FeedsComponent extends AbstractFeedsComponent {
       });
   }
 
+  private _getFeedEntries() {
+    this.getFeedEntries()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: feedEntries => {
+          this.zone.run(() => {
+            this.feedEntries = feedEntries;
+          });
+        },
+        error: error => {
+          this.httpErrorService.handleError(error);
+        },
+      });
+  }
+
+  findFeed(feedEntry: FeedEntryImpl) {
+    const feed = this.feeds.find(_feed => _feed.uuid === feedEntry.feedUuid);
+    return feed;
+  }
+
   feedAdded(feed: FeedImpl) {
     this.feeds.push(feed);
 
-    this.changeDetectorRef.detectChanges();
-
-    this.getFeedEntries();
+    this._getFeedEntries();
   }
 
   opmlUploaded() {

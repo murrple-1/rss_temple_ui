@@ -7,10 +7,10 @@
   >
     <h2>All Entries</h2>
     <span *ngIf="feedEntries.length === 0">No Entries</span>
-    <!-- TODO missing feed data -->
     <app-feed-entry-view
       *ngFor="let feedEntry of feedEntries"
       #feedEntryView
+      [feed]="findFeed(feedEntry)"
       [feedEntry]="feedEntry"
       appInViewport
       (appInViewportWatch)="onEntryEnteredViewport($event, feedEntryView)"

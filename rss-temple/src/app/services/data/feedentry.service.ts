@@ -180,6 +180,15 @@ function toFeedEntry(value: JsonValue) {
     }
   }
 
+  if (value.feedUuid !== undefined) {
+    const feedUuid = value.feedUuid;
+    if (typeof feedUuid === 'string') {
+      feedEntry.feedUuid = feedUuid;
+    } else {
+      throw new Error("'feedUuid' must be string");
+    }
+  }
+
   return feedEntry;
 }
 

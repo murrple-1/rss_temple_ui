@@ -1,10 +1,10 @@
-import { Component, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, NgZone, ChangeDetectorRef, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { zip } from 'rxjs';
-import { takeUntil, map, take } from 'rxjs/operators';
+import { takeUntil, map } from 'rxjs/operators';
 
 import {
   FeedService,
@@ -21,12 +21,11 @@ import { Sort } from '@app/services/data/sort.interface';
 import {
   AbstractFeedsComponent,
   DEFAULT_COUNT,
-  FeedImpl,
-  FeedEntryImpl,
+  FeedImpl as _FeedImpl,
 } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 import { HttpErrorService } from '@app/services';
 
-interface FeedImpl2 extends FeedImpl {
+interface FeedImpl extends _FeedImpl {
   title: string;
   homeUrl: string | null;
   feedUrl: string;
@@ -44,11 +43,9 @@ interface UserCategoryImpl extends UserCategory {
   templateUrl: 'feed.component.html',
   styleUrls: ['feed.component.scss'],
 })
-export class FeedComponent extends AbstractFeedsComponent {
+export class FeedComponent extends AbstractFeedsComponent implements OnInit {
   feed: FeedImpl | null = null;
   userCategories: UserCategoryImpl[] = [];
-
-  private count = DEFAULT_COUNT;
 
   get feeds() {
     if (this.feed !== null) {
@@ -102,41 +99,34 @@ export class FeedComponent extends AbstractFeedsComponent {
       })
       .pipe(
         takeUntil(this.unsubscribe$),
-        map(feed => feed as FeedImpl2),
+        map(feed => {
+          feed.feedUrl = url;
+          return feed as FeedImpl;
+        }),
       )
       .subscribe({
         next: feed => {
-          feed.feedUrl = url;
-
-          const feedEntryObservable = this.feedEntryService.query(
-            this.feedEntryQueryOptions(this.count),
-          );
-
+          const feedEntryObservable = this.getFeedEntries();
           if (feed.userCategoryUuids.length > 0) {
             zip(
               feedEntryObservable,
-              this.userCategoryService.queryAll({
-                fields: ['text'],
-                returnTotalCount: false,
-                search: `uuid:"${feed.userCategoryUuids.join('|')}"`,
-                sort: new Sort([['text', 'ASC']]),
-              }),
+              this.userCategoryService
+                .queryAll({
+                  fields: ['text'],
+                  returnTotalCount: false,
+                  search: `uuid:"${feed.userCategoryUuids.join('|')}"`,
+                  sort: new Sort([['text', 'ASC']]),
+                })
+                .pipe(
+                  map(userCategories => {
+                    if (userCategories.objects !== undefined) {
+                      return userCategories.objects as UserCategoryImpl[];
+                    }
+                    throw new Error('malformed response');
+                  }),
+                ),
             )
-              .pipe(
-                takeUntil(this.unsubscribe$),
-                map(([feedEntries, userCategories]) => {
-                  if (
-                    feedEntries.objects !== undefined &&
-                    userCategories.objects !== undefined
-                  ) {
-                    return [feedEntries.objects, userCategories.objects] as [
-                      FeedEntryImpl[],
-                      UserCategoryImpl[],
-                    ];
-                  }
-                  throw new Error('malformed response');
-                }),
-              )
+              .pipe(takeUntil(this.unsubscribe$))
               .subscribe({
                 next: ([feedEntries, userCategories]) => {
                   this.zone.run(() => {
@@ -150,28 +140,18 @@ export class FeedComponent extends AbstractFeedsComponent {
                 },
               });
           } else {
-            feedEntryObservable
-              .pipe(
-                takeUntil(this.unsubscribe$),
-                map(feedEntries => {
-                  if (feedEntries.objects !== undefined) {
-                    return feedEntries.objects as FeedEntryImpl[];
-                  }
-                  throw new Error('malformed response');
-                }),
-              )
-              .subscribe({
-                next: feedEntries => {
-                  this.zone.run(() => {
-                    this.feed = feed;
-                    this.feedEntries = feedEntries;
-                    this.userCategories = [];
-                  });
-                },
-                error: error => {
-                  this.httpErrorService.handleError(error);
-                },
-              });
+            feedEntryObservable.pipe(takeUntil(this.unsubscribe$)).subscribe({
+              next: feedEntries => {
+                this.zone.run(() => {
+                  this.feed = feed;
+                  this.feedEntries = feedEntries;
+                  this.userCategories = [];
+                });
+              },
+              error: error => {
+                this.httpErrorService.handleError(error);
+              },
+            });
           }
         },
         error: error => {
@@ -181,42 +161,44 @@ export class FeedComponent extends AbstractFeedsComponent {
   }
 
   onSubscribe() {
-    if (this.feed && this.feed.feedUrl) {
-      this.feedService
-        .subscribe(this.feed.feedUrl)
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe({
-          next: () => {
-            this.zone.run(() => {
-              if (this.feed !== null) {
-                this.feed.subscribed = true;
-              }
-            });
-          },
-          error: error => {
-            this.httpErrorService.handleError(error);
-          },
-        });
+    if (this.feed !== null) {
+      const feed = this.feed;
+      if (feed.feedUrl !== undefined) {
+        this.feedService
+          .subscribe(feed.feedUrl)
+          .pipe(takeUntil(this.unsubscribe$))
+          .subscribe({
+            next: () => {
+              this.zone.run(() => {
+                feed.subscribed = true;
+              });
+            },
+            error: error => {
+              this.httpErrorService.handleError(error);
+            },
+          });
+      }
     }
   }
 
   onUnsubscribe() {
-    if (this.feed && this.feed.feedUrl) {
-      this.feedService
-        .unsubscribe(this.feed.feedUrl)
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe({
-          next: () => {
-            this.zone.run(() => {
-              if (this.feed !== null) {
-                this.feed.subscribed = false;
-              }
-            });
-          },
-          error: error => {
-            this.httpErrorService.handleError(error);
-          },
-        });
+    if (this.feed !== null && this.feed.feedUrl) {
+      const feed = this.feed;
+      if (feed.feedUrl !== undefined) {
+        this.feedService
+          .unsubscribe(feed.feedUrl)
+          .pipe(takeUntil(this.unsubscribe$))
+          .subscribe({
+            next: () => {
+              this.zone.run(() => {
+                feed.subscribed = false;
+              });
+            },
+            error: error => {
+              this.httpErrorService.handleError(error);
+            },
+          });
+      }
     }
   }
 
@@ -239,10 +221,7 @@ export class FeedComponent extends AbstractFeedsComponent {
 
         this.userCategoryService
           .apply(applyBody)
-          .pipe(
-            takeUntil(this.unsubscribe$),
-            take(1),
-          )
+          .pipe(takeUntil(this.unsubscribe$))
           .subscribe({
             next: () => {
               this.zone.run(() => {

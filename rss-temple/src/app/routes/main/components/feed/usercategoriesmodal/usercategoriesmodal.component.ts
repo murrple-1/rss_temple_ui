@@ -3,7 +3,7 @@ import { Component, Input, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { Subject } from 'rxjs';
-import { takeUntil, map, take } from 'rxjs/operators';
+import { takeUntil, map } from 'rxjs/operators';
 
 import { UserCategoryService } from '@app/services/data';
 import { HttpErrorService } from '@app/services';
@@ -123,7 +123,6 @@ export class UserCategoriesModalComponent implements OnInit, OnDestroy {
         )
         .pipe(
           takeUntil(this.unsubscribe$),
-          take(1),
           map(userCategory => userCategory as UserCategoryImpl2),
         )
         .subscribe({
@@ -153,10 +152,7 @@ export class UserCategoriesModalComponent implements OnInit, OnDestroy {
 
     this.userCategoryService
       .delete(userCategorySelection._uuid)
-      .pipe(
-        takeUntil(this.unsubscribe$),
-        take(1),
-      )
+      .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => {
           this.userCategorySelections = this.userCategorySelections.filter(

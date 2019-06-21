@@ -37,9 +37,13 @@ export abstract class AbstractFeedsComponent implements OnInit, OnDestroy {
 
   isLoadingMore = false;
 
+  protected count = DEFAULT_COUNT;
+
   private focusedFeedEntryView: FeedEntryViewComponent | null = null;
 
   protected readonly unsubscribe$ = new Subject<void>();
+
+  abstract get feeds(): FeedImpl[];
 
   constructor(
     protected zone: NgZone,
@@ -48,25 +52,20 @@ export abstract class AbstractFeedsComponent implements OnInit, OnDestroy {
     protected httpErrorService: HttpErrorService,
   ) {}
 
-  ngOnInit() {
-    fromEvent<KeyboardEvent>(document, 'keypress')
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe({
-        next: this.handleKeyPress.bind(this),
-      });
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
-  }
-
-  abstract get feeds(): FeedImpl[];
-
-  protected feedEntryQueryOptions(
+  protected static feedEntryQueryOptions(
+    feeds: FeedImpl[],
     count: number,
     skip?: number,
   ): QueryOptions<Field, SortField> {
+    let search: string;
+    if (feeds.length < 1) {
+      search = 'isRead:"false"';
+    } else {
+      search = `feedUuid:"${feeds
+        .map(feed => feed.uuid)
+        .join('|')}" and isRead:"false"`;
+    }
+
     return {
       fields: [
         'uuid',
@@ -82,9 +81,7 @@ export abstract class AbstractFeedsComponent implements OnInit, OnDestroy {
       returnTotalCount: false,
       count,
       skip,
-      search: `feedUuid:"${this.feeds
-        .map(feed => feed.uuid)
-        .join('|')}" and isRead:"false"`,
+      search,
       sort: new Sort([
         ['createdAt', 'DESC'],
         ['publishedAt', 'DESC'],
@@ -93,50 +90,49 @@ export abstract class AbstractFeedsComponent implements OnInit, OnDestroy {
     };
   }
 
-  protected getFeedEntries(count = DEFAULT_COUNT, skip?: number) {
-    if (this.feeds.length > 0) {
-      this.feedEntryService
-        .query(this.feedEntryQueryOptions(count, skip))
-        .pipe(
-          takeUntil(this.unsubscribe$),
-          map(feedEntries => {
-            if (feedEntries.objects !== undefined) {
-              return feedEntries.objects as FeedEntryImpl[];
-            }
-            throw new Error('malformed response');
-          }),
-        )
-        .subscribe({
-          next: feedEntries => {
-            this.feedEntries = feedEntries;
-          },
-          error: error => {
-            this.httpErrorService.handleError(error);
-          },
-        });
-    }
+  ngOnInit() {
+    fromEvent<KeyboardEvent>(document, 'keypress')
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: this.handleKeyPress.bind(this),
+      });
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
+
+  protected getFeedEntries(skip?: number) {
+    return this.feedEntryService
+      .query(
+        AbstractFeedsComponent.feedEntryQueryOptions(
+          this.feeds,
+          this.count,
+          skip,
+        ),
+      )
+      .pipe(
+        map(feedEntries => {
+          if (feedEntries.objects !== undefined) {
+            return feedEntries.objects as FeedEntryImpl[];
+          }
+          throw new Error('malformed response');
+        }),
+      );
   }
 
   onApproachingBottom() {
     if (this.feedEntries && this.feedEntries.length > 0) {
       this.isLoadingMore = true;
 
-      this.feedEntryService
-        .query(this.feedEntryQueryOptions(this.feedEntries.length))
-        .pipe(
-          takeUntil(this.unsubscribe$),
-          map(feedEntries => {
-            if (feedEntries.objects !== undefined) {
-              return feedEntries.objects as FeedEntryImpl[];
-            }
-            throw new Error('malformed response');
-          }),
-        )
+      this.getFeedEntries(this.feedEntries.length)
+        .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: feedEntries => {
-            this.feedEntries = this.feedEntries.concat(feedEntries);
-
             this.zone.run(() => {
+              this.feedEntries = this.feedEntries.concat(...feedEntries);
+
               this.isLoadingMore = false;
             });
           },

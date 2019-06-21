@@ -35,12 +35,14 @@ interface FeedImpl extends Feed {
   uuid: string;
   calculatedTitle: string;
   feedUrl: string;
+  homeUrl: string | null;
 }
 
 interface FeedImpl2 extends Feed {
   uuid: string;
   title: string;
   subscribed: boolean;
+  homeUrl: string | null;
 }
 
 interface CategorizedFeeds {
@@ -167,7 +169,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         returnTotalCount: false,
       }),
       this.feedService.queryAll({
-        fields: ['uuid', 'calculatedTitle', 'feedUrl'],
+        fields: ['uuid', 'calculatedTitle', 'feedUrl', 'homeUrl'],
         search: 'subscribed:"true"',
         sort: new Sort([['calculatedTitle', 'ASC']]),
         returnTotalCount: false,
@@ -217,7 +219,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       (result: SubscriptionDetails) => {
         this.feedService
           .get(result.feedUrl, {
-            fields: ['uuid', 'title', 'subscribed'],
+            fields: ['uuid', 'title', 'subscribed', 'homeUrl'],
           })
           .pipe(
             takeUntil(this.unsubscribe$),
@@ -229,6 +231,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 uuid: _feed.uuid,
                 feedUrl: result.feedUrl,
                 calculatedTitle: _feed.title,
+                homeUrl: _feed.homeUrl,
               };
               if (!_feed.subscribed) {
                 this.feedService
@@ -287,7 +290,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
             returnTotalCount: false,
           }),
           this.feedService.queryAll({
-            fields: ['uuid', 'calculatedTitle', 'feedUrl'],
+            fields: ['uuid', 'calculatedTitle', 'feedUrl', 'homeUrl'],
             search: 'subscribed:"true"',
             sort: new Sort([['calculatedTitle', 'ASC']]),
             returnTotalCount: false,
