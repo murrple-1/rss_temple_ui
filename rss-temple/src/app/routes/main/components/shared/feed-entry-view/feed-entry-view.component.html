@@ -29,11 +29,43 @@
       N/A
     </ng-template>
   </div>
+  <div class="app--entry-buttons">
+    <ng-container
+      *ngIf="feedEntry.isRead; then unreadButton; else readButton"
+    ></ng-container>
+    <ng-container
+      *ngIf="feedEntry.isFavorite; then unfavoriteButton; else favoriteButton"
+    ></ng-container>
+
+    <ng-template #readButton>
+      <button class="btn btn-outline-primary btn-sm app--read" (click)="read()">
+        Read
+      </button>
+    </ng-template>
+    <ng-template #unreadButton>
+      <button
+        class="btn btn-outline-primary btn-sm app--unread"
+        (click)="unread()"
+      >
+        Unread
+      </button>
+    </ng-template>
+    <ng-template #favoriteButton>
+      <button
+        class="btn btn-outline-success btn-sm app--favorite"
+        (click)="favorite()"
+      >
+        Favorite
+      </button>
+    </ng-template>
+    <ng-template #unfavoriteButton>
+      <button
+        class="btn btn-outline-success btn-sm app--unfavorite"
+        (click)="unfavorite()"
+      >
+        Unfavorite
+      </button>
+    </ng-template>
+  </div>
   <div class="app--entry-text" [innerHtml]="feedEntry.content"></div>
-  <button (click)="read()" *ngIf="!feedEntry.isRead">Read</button>
-  <button (click)="unread()" *ngIf="feedEntry.isRead">Unread</button>
-  <button (click)="favorite()" *ngIf="!feedEntry.isFavorite">Favorite</button>
-  <button (click)="unfavorite()" *ngIf="feedEntry.isFavorite">
-    Unfavorite
-  </button>
 </div>
