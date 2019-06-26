@@ -19,7 +19,15 @@
   </h2>
   <div class="app--entry-details">
     From <a [attr.href]="feed.homeUrl">{{ feed.calculatedTitle }}</a> by
-    {{ feedEntry.authorName }}
+    <ng-container
+      *ngIf="feedEntry.authorName; then authorName; else noAuthorName"
+    ></ng-container>
+    <ng-template #authorName>
+      {{ feedEntry.authorName }}
+    </ng-template>
+    <ng-template #noAuthorName>
+      N/A
+    </ng-template>
   </div>
   <div class="app--entry-text" [innerHtml]="feedEntry.content"></div>
   <button (click)="read()" *ngIf="!feedEntry.isRead">Read</button>
