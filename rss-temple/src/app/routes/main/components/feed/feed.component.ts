@@ -50,9 +50,9 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
   get feeds() {
     if (this.feed !== null) {
       return [this.feed];
-    } else {
-      return [];
     }
+
+    throw new Error('feeds cannot be setup');
   }
 
   constructor(
