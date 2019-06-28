@@ -117,7 +117,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
                 .queryAll({
                   fields: ['text'],
                   returnTotalCount: false,
-                  search: `uuid:"${feed.userCategoryUuids.join('|')}"`,
+                  search: `uuid:"${feed.userCategoryUuids.join(',')}"`,
                   sort: new Sort([['text', 'ASC']]),
                 })
                 .pipe(

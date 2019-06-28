@@ -63,7 +63,7 @@ export abstract class AbstractFeedsComponent implements OnInit, OnDestroy {
     } else {
       search = `feedUuid:"${feeds
         .map(feed => feed.uuid)
-        .join('|')}" and isRead:"false"`;
+        .join(',')}" and isRead:"false"`;
     }
 
     return {
