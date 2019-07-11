@@ -18,10 +18,14 @@ import { UserCategoriesModalComponent } from '@app/routes/main/components/feed/u
 import { ProfileComponent } from '@app/routes/main/components/profile/profile.component';
 import { HeaderComponent } from '@app/routes/main/components/shared/header/header.component';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
+import { DisplayOptionsViewComponent } from '@app/routes/main/components/shared/display-options/display-options.component';
 import { SubscribeModalComponent as HeaderSubscribeModalComponent } from '@app/routes/main/components/shared/header/subscribemodal/subscribemodal.component';
 import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/routes/main/components/shared/header/opmlmodal/opmlmodal.component';
 import { InViewportDirective } from '@app/directives/inviewport.directive';
-import { FeedObservableService } from '@app/routes/main/services';
+import {
+  FeedObservableService,
+  DisplayObservableService,
+} from '@app/routes/main/services';
 
 @NgModule({
   imports: [
@@ -37,7 +41,7 @@ import { FeedObservableService } from '@app/routes/main/services';
 
     routing,
   ],
-  providers: [FeedObservableService],
+  providers: [FeedObservableService, DisplayObservableService],
   declarations: [
     MainComponent,
     FeedsComponent,
@@ -46,6 +50,7 @@ import { FeedObservableService } from '@app/routes/main/services';
     ProfileComponent,
     HeaderComponent,
     FeedEntryViewComponent,
+    DisplayOptionsViewComponent,
     HeaderSubscribeModalComponent,
     HeaderOPMLModalComponent,
 
