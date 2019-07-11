@@ -109,6 +109,10 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
       )
       .subscribe({
         next: feed => {
+          this.zone.run(() => {
+            this.feed = feed;
+          });
+
           const feedEntryObservable = this.getFeedEntries();
           if (feed.userCategoryUuids.length > 0) {
             zip(
@@ -133,7 +137,6 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
               .subscribe({
                 next: ([feedEntries, userCategories]) => {
                   this.zone.run(() => {
-                    this.feed = feed;
                     this.feedEntries = feedEntries;
                     this.userCategories = userCategories;
                   });
@@ -146,7 +149,6 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
             feedEntryObservable.pipe(takeUntil(this.unsubscribe$)).subscribe({
               next: feedEntries => {
                 this.zone.run(() => {
-                  this.feed = feed;
                   this.feedEntries = feedEntries;
                   this.userCategories = [];
                 });
