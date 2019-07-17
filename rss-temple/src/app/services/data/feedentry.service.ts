@@ -192,7 +192,9 @@ function toFeedEntry(value: JsonValue) {
   return feedEntry;
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class FeedEntryService {
   constructor(private http: HttpClient) {}
 

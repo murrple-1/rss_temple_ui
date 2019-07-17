@@ -71,7 +71,9 @@ export interface IApply {
   [feedUuid: string]: Set<string>;
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class UserCategoryService {
   constructor(private http: HttpClient) {}
 

@@ -5,7 +5,9 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { AlertService } from '@app/services/alert.service';
 import { deleteSessionToken } from '@app/libs/session.lib';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class HttpErrorService {
   constructor(private router: Router, private alertService: AlertService) {}
 

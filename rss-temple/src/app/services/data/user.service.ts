@@ -99,7 +99,9 @@ export interface UpdateUserBody {
   } | null;
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class UserService {
   constructor(private http: HttpClient) {}
 

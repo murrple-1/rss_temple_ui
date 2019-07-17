@@ -4,7 +4,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class GAuthService {
   private auth2: gapi.auth2.GoogleAuth | null = null;
 

@@ -160,7 +160,9 @@ function toFeed(value: JsonValue) {
   return feed;
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class FeedService {
   constructor(private http: HttpClient) {}
 

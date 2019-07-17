@@ -4,7 +4,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class FBAuthService {
   private _user$ = new BehaviorSubject<facebook.AuthResponse | null>(null);
   private _isLoaded$ = new BehaviorSubject<boolean>(false);

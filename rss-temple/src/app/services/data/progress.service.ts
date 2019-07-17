@@ -55,7 +55,9 @@ function toProgressInterface(value: JsonValue): ProgressInterface {
   return (value as unknown) as ProgressInterface;
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class ProgressService {
   constructor(private http: HttpClient) {}
 

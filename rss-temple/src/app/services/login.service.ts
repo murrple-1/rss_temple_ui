@@ -8,7 +8,9 @@ import {
 } from '@app/services/data/common.interface';
 import { sessionToken } from '@app/libs/session.lib';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class LoginService {
   constructor(private http: HttpClient) {}
 

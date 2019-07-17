@@ -8,7 +8,9 @@ import {
 
 import { sessionToken } from '@app/libs/session.lib';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class AuthGuard implements CanActivate {
   constructor(private router: Router) {}
 
@@ -22,7 +24,9 @@ export class AuthGuard implements CanActivate {
   }
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class NoAuthGuard implements CanActivate {
   constructor(private router: Router) {}
 

@@ -8,7 +8,9 @@ export interface ResetOptions {
   password: string;
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class PasswordResetTokenService {
   constructor(private http: HttpClient) {}
 

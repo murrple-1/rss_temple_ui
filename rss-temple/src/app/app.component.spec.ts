@@ -10,23 +10,6 @@ import { SnackbarModule } from 'ngx-snackbar';
 
 import { AppComponent } from '@app/app.component';
 import { routing } from '@app/app.routing';
-import { AuthGuard, NoAuthGuard } from '@app/guards/auth.guard';
-import {
-  LoginService,
-  AlertService,
-  GAuthService,
-  FBAuthService,
-  HttpErrorService,
-} from '@app/services';
-import {
-  UserService,
-  FeedService,
-  FeedEntryService,
-  OPMLService,
-  ProgressService,
-  UserCategoryService,
-  PasswordResetTokenService,
-} from '@app/services/data';
 import { LoginComponent } from '@app/components/login/login.component';
 import { RegisterComponent } from '@app/components/register/register.component';
 import { ResetPasswordComponent } from '@app/components/resetpassword/resetpassword.component';
@@ -60,21 +43,6 @@ describe('AppComponent', () => {
           provide: APP_BASE_HREF,
           useValue: '/',
         },
-
-        AuthGuard,
-        NoAuthGuard,
-        AlertService,
-        LoginService,
-        UserService,
-        FeedService,
-        FeedEntryService,
-        OPMLService,
-        ProgressService,
-        UserCategoryService,
-        PasswordResetTokenService,
-        GAuthService,
-        FBAuthService,
-        HttpErrorService,
       ],
     }).compileComponents();
   }));

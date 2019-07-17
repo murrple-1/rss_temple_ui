@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 
 import { SnackbarService } from 'ngx-snackbar';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class AlertService {
   constructor(private snackbarService: SnackbarService) {}
 

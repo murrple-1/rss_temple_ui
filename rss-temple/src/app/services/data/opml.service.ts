@@ -9,7 +9,9 @@ import {
 
 import { environment } from '@environments/environment';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class OPMLService {
   constructor(private http: HttpClient) {}
 
