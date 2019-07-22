@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { zip } from 'rxjs';
+import { zip, Observable } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 
 import {
@@ -113,51 +113,45 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
             this.feed = feed;
           });
 
-          const feedEntryObservable = this.getFeedEntries();
+          let userCategoriesObservable: Observable<UserCategoryImpl[]>;
           if (feed.userCategoryUuids.length > 0) {
-            zip(
-              feedEntryObservable,
-              this.userCategoryService
-                .queryAll({
-                  fields: ['text'],
-                  returnTotalCount: false,
-                  search: `uuid:"${feed.userCategoryUuids.join(',')}"`,
-                  sort: new Sort([['text', 'ASC']]),
-                })
-                .pipe(
-                  map(userCategories => {
-                    if (userCategories.objects !== undefined) {
-                      return userCategories.objects as UserCategoryImpl[];
-                    }
-                    throw new Error('malformed response');
-                  }),
-                ),
-            )
-              .pipe(takeUntil(this.unsubscribe$))
-              .subscribe({
-                next: ([feedEntries, userCategories]) => {
-                  this.zone.run(() => {
-                    this.feedEntries = feedEntries;
-                    this.userCategories = userCategories;
-                  });
-                },
-                error: error => {
-                  this.httpErrorService.handleError(error);
-                },
-              });
+            userCategoriesObservable = this.userCategoryService
+              .queryAll({
+                fields: ['text'],
+                returnTotalCount: false,
+                search: `uuid:"${feed.userCategoryUuids.join(',')}"`,
+                sort: new Sort([['text', 'ASC']]),
+              })
+              .pipe(
+                map(userCategories => {
+                  if (userCategories.objects !== undefined) {
+                    return userCategories.objects as UserCategoryImpl[];
+                  }
+                  throw new Error('malformed response');
+                }),
+              );
           } else {
-            feedEntryObservable.pipe(takeUntil(this.unsubscribe$)).subscribe({
-              next: feedEntries => {
+            userCategoriesObservable = new Observable<UserCategoryImpl[]>(
+              subscriber => {
+                subscriber.next([]);
+                subscriber.complete();
+              },
+            );
+          }
+
+          zip(this.getFeedEntries(), userCategoriesObservable)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+              next: ([feedEntries, userCategories]) => {
                 this.zone.run(() => {
                   this.feedEntries = feedEntries;
-                  this.userCategories = [];
+                  this.userCategories = userCategories;
                 });
               },
               error: error => {
                 this.httpErrorService.handleError(error);
               },
             });
-          }
         },
         error: error => {
           this.httpErrorService.handleError(error);
