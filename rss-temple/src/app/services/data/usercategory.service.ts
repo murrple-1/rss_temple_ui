@@ -15,6 +15,7 @@ import {
   QueryOptions,
   toHeaders as queryToHeaders,
   toBody as queryToBody,
+  toParams as queryToParams,
 } from '@app/services/data/query.interface';
 import { AllOptions } from '@app/services/data/all.interface';
 import { queryAllFn } from '@app/services/data/queryall.function';
@@ -91,6 +92,7 @@ export class UserCategoryService {
 
   query(options: QueryOptions<Field, SortField> = {}) {
     const headers = queryToHeaders(options, sessionToken);
+    const params = queryToParams('usercategories');
     const body = queryToBody(options, () => ['uuid']);
 
     return this.http
@@ -99,6 +101,7 @@ export class UserCategoryService {
         body,
         {
           headers,
+          params,
         },
       )
       .pipe(map(retObj => toObjects(retObj, toUserCategory)));

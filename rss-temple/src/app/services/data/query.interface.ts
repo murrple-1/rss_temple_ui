@@ -1,3 +1,5 @@
+import { HttpParams } from '@angular/common/http';
+
 import {
   CommonOptions,
   toHeaders as commonToHeaders,
@@ -72,4 +74,14 @@ export function toHeaders<Field, SortField extends string>(
 ) {
   const headers = commonToHeaders(options, sessionTokenFn);
   return headers;
+}
+
+export function toParams(descriptor?: string) {
+  let params = new HttpParams();
+
+  if (descriptor !== undefined) {
+    params = params.set('_', descriptor);
+  }
+
+  return params;
 }
