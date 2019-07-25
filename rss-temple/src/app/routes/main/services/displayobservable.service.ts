@@ -9,5 +9,5 @@ export enum DisplayType {
 
 @Injectable()
 export class DisplayObservableService {
-  display = new BehaviorSubject<DisplayType>(DisplayType.Compact);
+  display = new BehaviorSubject<DisplayType>(DisplayType.Comfy);
 }

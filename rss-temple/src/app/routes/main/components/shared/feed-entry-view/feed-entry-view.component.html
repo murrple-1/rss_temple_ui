@@ -7,6 +7,16 @@
   }"
   (click)="onClick($event)"
 >
+  <ng-container
+    *ngIf="
+      (display | async) === DisplayType.Comfy;
+      then comfyView;
+      else compactView
+    "
+  ></ng-container>
+</div>
+
+<ng-template #comfyView>
   <h2 class="app--entry-title">
     <a
       [attr.href]="feedEntry.url"
@@ -22,12 +32,6 @@
     <ng-container
       *ngIf="feedEntry.authorName; then authorName; else noAuthorName"
     ></ng-container>
-    <ng-template #authorName>
-      {{ feedEntry.authorName }}
-    </ng-template>
-    <ng-template #noAuthorName>
-      N/A
-    </ng-template>
   </div>
   <div class="app--entry-buttons">
     <ng-container
@@ -36,36 +40,68 @@
     <ng-container
       *ngIf="feedEntry.isFavorite; then unfavoriteButton; else favoriteButton"
     ></ng-container>
-
-    <ng-template #readButton>
-      <button class="btn btn-outline-primary btn-sm app--read" (click)="read()">
-        Read
-      </button>
-    </ng-template>
-    <ng-template #unreadButton>
-      <button
-        class="btn btn-outline-primary btn-sm app--unread"
-        (click)="unread()"
-      >
-        Unread
-      </button>
-    </ng-template>
-    <ng-template #favoriteButton>
-      <button
-        class="btn btn-outline-success btn-sm app--favorite"
-        (click)="favorite()"
-      >
-        Favorite
-      </button>
-    </ng-template>
-    <ng-template #unfavoriteButton>
-      <button
-        class="btn btn-outline-success btn-sm app--unfavorite"
-        (click)="unfavorite()"
-      >
-        Unfavorite
-      </button>
-    </ng-template>
   </div>
   <div class="app--entry-text" [innerHtml]="feedEntry.content"></div>
-</div>
+</ng-template>
+
+<ng-template #compactView>
+  <h2 class="app--entry-title">
+    <a
+      [attr.href]="feedEntry.url"
+      target="_blank"
+      [ngClass]="{
+        'text-muted': feedEntry.isRead
+      }"
+      >{{ feedEntry.title }}</a
+    >
+  </h2>
+  <div class="app--entry-details">
+    From <a [attr.href]="feed.homeUrl">{{ feed.calculatedTitle }}</a> by
+    <ng-container
+      *ngIf="feedEntry.authorName; then authorName; else noAuthorName"
+    ></ng-container>
+  </div>
+  <div class="app--entry-buttons">
+    <ng-container
+      *ngIf="feedEntry.isRead; then unreadButton; else readButton"
+    ></ng-container>
+    <ng-container
+      *ngIf="feedEntry.isFavorite; then unfavoriteButton; else favoriteButton"
+    ></ng-container>
+  </div>
+</ng-template>
+
+<ng-template #authorName>
+  {{ feedEntry.authorName }}
+</ng-template>
+<ng-template #noAuthorName>
+  N/A
+</ng-template>
+
+<ng-template #readButton>
+  <button class="btn btn-outline-primary btn-sm app--read" (click)="read()">
+    Read
+  </button>
+</ng-template>
+<ng-template #unreadButton>
+  <button class="btn btn-outline-primary btn-sm app--unread" (click)="unread()">
+    Unread
+  </button>
+</ng-template>
+
+<ng-template #favoriteButton>
+  <button
+    class="btn btn-outline-success btn-sm app--favorite"
+    (click)="favorite()"
+  >
+    Favorite
+  </button>
+</ng-template>
+<ng-template #unfavoriteButton>
+  <button
+    class="btn btn-outline-success btn-sm app--unfavorite"
+    (click)="unfavorite()"
+  >
+    Unfavorite
+  </button>
+</ng-template>
