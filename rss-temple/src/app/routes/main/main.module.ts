@@ -18,6 +18,8 @@ import { UserCategoriesModalComponent } from '@app/routes/main/components/feed/u
 import { ProfileComponent } from '@app/routes/main/components/profile/profile.component';
 import { HeaderComponent } from '@app/routes/main/components/shared/header/header.component';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
+import { ComfyInnerViewComponent } from '@app/routes/main/components/shared/feed-entry-view/inner-view/comfy-inner-view/comfy-inner-view.component';
+import { CompactInnerViewComponent } from '@app/routes/main/components/shared/feed-entry-view/inner-view/compact-inner-view/compact-inner-view.component';
 import { DisplayOptionsViewComponent } from '@app/routes/main/components/shared/display-options/display-options.component';
 import { SubscribeModalComponent as HeaderSubscribeModalComponent } from '@app/routes/main/components/shared/header/subscribemodal/subscribemodal.component';
 import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/routes/main/components/shared/header/opmlmodal/opmlmodal.component';
@@ -50,6 +52,8 @@ import {
     ProfileComponent,
     HeaderComponent,
     FeedEntryViewComponent,
+    ComfyInnerViewComponent,
+    CompactInnerViewComponent,
     DisplayOptionsViewComponent,
     HeaderSubscribeModalComponent,
     HeaderOPMLModalComponent,

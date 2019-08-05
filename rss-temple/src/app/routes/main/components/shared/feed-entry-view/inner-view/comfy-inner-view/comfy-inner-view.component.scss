@@ -1,0 +1,26 @@
+h2.app--entry-title {
+  width: 100%;
+  text-align: center;
+}
+
+div.app--entry-details {
+  width: 100%;
+  text-align: center;
+  font-size: 0.8em;
+}
+
+div.app--entry-buttons {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  .app--read,
+  .app--unread {
+    margin-right: 4px;
+  }
+}
+
+div.app--entry-text {
+  margin: 0 10px;
+}
