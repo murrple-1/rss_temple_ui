@@ -12,6 +12,10 @@ jobs:
           name: install-dependencies
           command: yarn install --frozen-lockfile
           working_directory: ~/rss_temple_http/rss-temple/
+      - run:
+          name: webdriver-update
+          command: yarn run webdriver-update-ci
+          working_directory: ~/rss_temple_http/rss-temple/
       - save_cache:
           key: dependency-cache-{{ checksum "~/rss_temple_http/rss-temple/yarn.lock" }}
           paths:
