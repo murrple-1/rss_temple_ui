@@ -1,8 +1,4 @@
-import {
-  JsonValue,
-  isJsonObject,
-  isJsonArray,
-} from '@app/services/data/json.type';
+import { JsonValue, isJsonObject, isJsonArray } from '@app/libs/json.lib';
 
 export class Objects<T> {
   totalCount?: number;

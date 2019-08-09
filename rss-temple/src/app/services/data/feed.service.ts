@@ -25,11 +25,7 @@ import {
   CommonOptions,
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
-import {
-  JsonValue,
-  isJsonObject,
-  isJsonArray,
-} from '@app/services/data/json.type';
+import { JsonValue, isJsonObject, isJsonArray } from '@app/libs/json.lib';
 
 import { environment } from '@environments/environment';
 
