@@ -21,7 +21,9 @@ export class HttpErrorService {
         case 401:
           errorMessage = 'Session expired';
           deleteSessionToken();
-          this.router.navigate(['/login']);
+          this.router.navigate(['/login'], {
+            replaceUrl: true,
+          });
           break;
       }
     }
