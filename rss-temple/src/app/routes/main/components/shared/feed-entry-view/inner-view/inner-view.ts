@@ -1,4 +1,4 @@
-import { Input } from '@angular/core';
+import { Input, Directive } from '@angular/core';
 
 import * as dayjs from 'dayjs';
 
@@ -19,7 +19,8 @@ interface FeedEntryImpl extends FeedEntry {
   publishedAt: dayjs.Dayjs;
 }
 
-export abstract class InnerView {
+@Directive()
+export abstract class InnerViewDirective {
   @Input()
   feed?: FeedImpl;
 
