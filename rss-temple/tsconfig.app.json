@@ -5,5 +5,9 @@
     "types": ["gapi", "gapi.auth2", "facebook-js-sdk"]
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["src/test.ts", "src/**/*.spec.ts"]
+  "exclude": [
+    "src/test.ts",
+    "src/**/*.spec.ts",
+    "src/environments/environment.*.ts"
+  ]
 }
