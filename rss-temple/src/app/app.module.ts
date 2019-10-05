@@ -3,12 +3,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { RouterModule } from '@angular/router';
 
 import { NgbDropdownModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { SnackbarModule } from 'ngx-snackbar';
 
-import { routing } from '@app/app.routing';
+import { routes } from '@app/app.routing';
 import { AppComponent } from '@app/app.component';
 import { LoginComponent } from '@app/components/login/login.component';
 import { RequestPasswordResetModalComponent as LoginRequestPasswordResetModalComponent } from '@app/components/login/requestpasswordresetmodal/requestpasswordresetmodal.component';
@@ -29,7 +30,7 @@ import { VerifyComponent } from '@app/components/verify/verify.component';
 
     SnackbarModule.forRoot(),
 
-    routing,
+    RouterModule.forRoot(routes),
   ],
   declarations: [
     AppComponent,

@@ -3,13 +3,15 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { APP_BASE_HREF } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 import { NgbDropdownModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { SnackbarModule } from 'ngx-snackbar';
 
+import { routes } from '@app/app.routing';
+
 import { AppComponent } from '@app/app.component';
-import { routing } from '@app/app.routing';
 import { LoginComponent } from '@app/components/login/login.component';
 import { RegisterComponent } from '@app/components/register/register.component';
 import { ResetPasswordComponent } from '@app/components/resetpassword/resetpassword.component';
@@ -29,7 +31,7 @@ describe('AppComponent', () => {
 
         SnackbarModule.forRoot(),
 
-        routing,
+        RouterModule.forRoot(routes),
       ],
       declarations: [
         AppComponent,
