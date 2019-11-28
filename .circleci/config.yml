@@ -14,7 +14,7 @@ jobs:
           working_directory: ~/rss_temple_http/rss-temple/
       - run:
           name: webdriver-update
-          command: yarn run webdriver-update-ci
+          command: yarn run webdriver-manager update --standalone false --gecko false --versions.chrome 2.37
           working_directory: ~/rss_temple_http/rss-temple/
       - save_cache:
           key: dependency-cache-{{ checksum "~/rss_temple_http/rss-temple/yarn.lock" }}
@@ -23,11 +23,11 @@ jobs:
             - ./node_modules
       - run:
           name: angular-test
-          command: yarn run test-ci
+          command: yarn run cross-env TEST_TYPE=xml ng test --code-coverage
           working_directory: ~/rss_temple_http/rss-temple/
       - run:
           name: angular-e2e
-          command: yarn run e2e-ci
+          command: yarn run ng e2e --webdriver-update=false
           working_directory: ~/rss_temple_http/rss-temple/
       - store_test_results:
           path: ~/rss_temple_http/rss-temple/test-results/
@@ -35,5 +35,5 @@ jobs:
           path: ~/rss_temple_http/rss-temple/test-results/
       - run:
           name: codecov
-          command: yarn codecov -- --disable=gcov
+          command: yarn run codecov -- --disable=gcov
           working_directory: ~/rss_temple_http/rss-temple/

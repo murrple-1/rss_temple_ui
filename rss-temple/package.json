@@ -8,10 +8,7 @@
     "build": "ng build --prod",
     "test": "cross-env TEST_TYPE=standard ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e",
-    "test-ci": "cross-env TEST_TYPE=xml ng test --code-coverage",
-    "webdriver-update-ci": "webdriver-manager update --standalone false --gecko false --versions.chrome 2.37",
-    "e2e-ci": "ng e2e --webdriver-update=false"
+    "e2e": "ng e2e"
   },
   "private": true,
   "husky": {
