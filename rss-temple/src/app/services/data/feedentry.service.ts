@@ -110,7 +110,7 @@ function toFeedEntry(value: JsonValue) {
         throw new Error("'updatedAt' invalid");
       }
     } else {
-      throw new Error("'publishedAt' must be datetime or null");
+      throw new Error("'updatedAt' must be datetime or null");
     }
   }
 
