@@ -8,17 +8,15 @@ import { FeedObservableService } from '@app/routes/main/services';
 import {
   AbstractFeedsComponent,
   DEFAULT_COUNT,
-  FeedImpl as _FeedImpl,
-  FeedEntryImpl as _FeedEntryImpl,
+  FeedImpl as BaseFeedImpl,
+  FeedEntryImpl as BaseFeedEntryImpl,
 } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 import { HttpErrorService } from '@app/services';
+import { Feed } from '@app/models';
 
-interface FeedImpl extends _FeedImpl {
-  calculatedTitle: string;
-  homeUrl: string | null;
-}
-
-type FeedEntryImpl = _FeedEntryImpl;
+type FeedImpl = BaseFeedImpl &
+  Required<Pick<Feed, 'homeUrl' | 'calculatedTitle'>>;
+type FeedEntryImpl = BaseFeedEntryImpl;
 
 @Component({
   templateUrl: 'feeds.component.html',

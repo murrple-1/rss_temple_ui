@@ -16,21 +16,21 @@ import { Field, SortField } from '@app/services/data/feedentry.service';
 
 export const DEFAULT_COUNT = 10;
 
-export interface FeedImpl extends Feed {
-  uuid: string;
-}
-
-export interface FeedEntryImpl extends FeedEntry {
-  uuid: string;
-  url: string;
-  title: string;
-  content: string;
-  isRead: boolean;
-  isFavorite: boolean;
-  authorName: string | null;
-  publishedAt: dayjs.Dayjs;
-  feedUuid: string;
-}
+export type FeedImpl = Required<Pick<Feed, 'uuid'>>;
+export type FeedEntryImpl = Required<
+  Pick<
+    FeedEntry,
+    | 'uuid'
+    | 'url'
+    | 'title'
+    | 'content'
+    | 'isRead'
+    | 'isFavorite'
+    | 'authorName'
+    | 'publishedAt'
+    | 'feedUuid'
+  >
+>;
 
 export abstract class AbstractFeedsComponent implements OnInit, OnDestroy {
   feedEntries: FeedEntryImpl[] = [];

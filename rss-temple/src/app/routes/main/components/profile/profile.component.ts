@@ -21,11 +21,9 @@ import {
 import { FormGroupErrors } from '@app/libs/formgrouperrors.lib';
 import { User } from '@app/models';
 
-interface UserImpl extends User {
-  email: string;
-  hasGoogleLogin: boolean;
-  hasFacebookLogin: boolean;
-}
+type UserImpl = Required<
+  Pick<User, 'email' | 'hasGoogleLogin' | 'hasFacebookLogin'>
+>;
 
 enum State {
   IsLoading,

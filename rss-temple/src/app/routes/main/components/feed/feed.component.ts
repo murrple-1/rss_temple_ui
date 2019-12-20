@@ -11,7 +11,7 @@ import {
   FeedEntryService,
   UserCategoryService,
 } from '@app/services/data';
-import { UserCategory } from '@app/models';
+import { UserCategory, Feed } from '@app/models';
 import {
   UserCategoriesModalComponent,
   ReturnData,
@@ -21,23 +21,24 @@ import { Sort } from '@app/services/data/sort.interface';
 import {
   AbstractFeedsComponent,
   DEFAULT_COUNT,
-  FeedImpl as _FeedImpl,
+  FeedImpl as BaseFeedImpl,
 } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 import { HttpErrorService } from '@app/services';
 
-interface FeedImpl extends _FeedImpl {
-  title: string;
-  homeUrl: string | null;
-  feedUrl: string;
-  customTitle: string | null;
-  subscribed: boolean;
-  userCategoryUuids: string[];
-  calculatedTitle: string;
-}
-
-interface UserCategoryImpl extends UserCategory {
-  text: string;
-}
+type FeedImpl = BaseFeedImpl &
+  Required<
+    Pick<
+      Feed,
+      | 'title'
+      | 'homeUrl'
+      | 'feedUrl'
+      | 'customTitle'
+      | 'subscribed'
+      | 'userCategoryUuids'
+      | 'calculatedTitle'
+    >
+  >;
+type UserCategoryImpl = Required<Pick<UserCategory, 'text'>>;
 
 @Component({
   templateUrl: 'feed.component.html',

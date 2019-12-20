@@ -26,24 +26,13 @@ import { deleteSessionToken, sessionToken } from '@app/libs/session.lib';
 import { UserCategory, Feed } from '@app/models';
 import { Sort } from '@app/services/data/sort.interface';
 
-interface UserCategoryImpl extends UserCategory {
-  text: string;
-  feedUuids: string[];
-}
-
-interface FeedImpl extends Feed {
-  uuid: string;
-  calculatedTitle: string;
-  feedUrl: string;
-  homeUrl: string | null;
-}
-
-interface FeedImpl2 extends Feed {
-  uuid: string;
-  title: string;
-  subscribed: boolean;
-  homeUrl: string | null;
-}
+type UserCategoryImpl = Required<Pick<UserCategory, 'text' | 'feedUuids'>>;
+type FeedImpl = Required<
+  Pick<Feed, 'uuid' | 'calculatedTitle' | 'feedUrl' | 'homeUrl'>
+>;
+type FeedImpl2 = Required<
+  Pick<Feed, 'uuid' | 'title' | 'subscribed' | 'homeUrl'>
+>;
 
 interface CategorizedFeeds {
   noCategory: FeedImpl[];

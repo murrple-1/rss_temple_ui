@@ -10,20 +10,19 @@ import { FeedEntry, Feed } from '@app/models';
 import { DisplayObservableService } from '@app/routes/main/services';
 import { DisplayType } from '@app/routes/main/services/displayobservable.service';
 
-interface FeedImpl extends Feed {
-  calculatedTitle: string;
-  homeUrl: string | null;
-}
-
-interface FeedEntryImpl extends FeedEntry {
-  url: string;
-  title: string;
-  content: string;
-  isRead: boolean;
-  isFavorite: boolean;
-  authorName: string | null;
-  publishedAt: dayjs.Dayjs;
-}
+type FeedImpl = Required<Pick<Feed, 'calculatedTitle' | 'homeUrl'>>;
+type FeedEntryImpl = Required<
+  Pick<
+    FeedEntry,
+    | 'url'
+    | 'title'
+    | 'content'
+    | 'isRead'
+    | 'isFavorite'
+    | 'authorName'
+    | 'publishedAt'
+  >
+>;
 
 @Component({
   selector: 'app-feed-entry-view',
