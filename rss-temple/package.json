@@ -54,7 +54,7 @@
     "@types/jasminewd2": "~2.0.8",
     "@types/node": "~13.1.7",
     "@types/sprintf-js": "^1.1.2",
-    "codecov": "^3.6.1",
+    "codecov": "^3.6.5",
     "codelyzer": "^5.2.1",
     "cross-env": "^6.0.3",
     "husky": "^4.0.10",
