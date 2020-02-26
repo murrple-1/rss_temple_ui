@@ -31,7 +31,7 @@
     "@angular/platform-browser-dynamic": "~9.0.2",
     "@angular/router": "~9.0.2",
     "@fortawesome/fontawesome-free": "^5.12.0",
-    "@ng-bootstrap/ng-bootstrap": "^5.1.5",
+    "@ng-bootstrap/ng-bootstrap": "^6.0.0",
     "bootstrap": "^4.4.1",
     "bootstrap-float-label": "4.0.2",
     "dayjs": "^1.8.19",
@@ -52,11 +52,11 @@
     "@types/gapi.auth2": "0.0.51",
     "@types/jasmine": "~3.5.0",
     "@types/jasminewd2": "~2.0.8",
-    "@types/node": "^12.11.1",
+    "@types/node": "^13.7.6",
     "@types/sprintf-js": "^1.1.2",
     "codecov": "^3.6.5",
     "codelyzer": "^5.2.1",
-    "cross-env": "^6.0.3",
+    "cross-env": "^7.0.0",
     "husky": "^4.0.10",
     "jasmine-core": "~3.5.0",
     "jasmine-spec-reporter": "~4.2.1",
@@ -70,7 +70,7 @@
     "pretty-quick": "^2.0.1",
     "protractor": "~5.4.0",
     "ts-node": "~8.6.2",
-    "tslint": "~5.20.1",
+    "tslint": "~6.0.0",
     "typescript": "~3.7.5"
   }
 }
