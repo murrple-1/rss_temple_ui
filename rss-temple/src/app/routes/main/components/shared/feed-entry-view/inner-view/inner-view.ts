@@ -1,4 +1,4 @@
-import { Input } from '@angular/core';
+import { Input, Directive } from '@angular/core';
 
 import { FeedEntry, Feed } from '@app/models';
 
@@ -16,6 +16,7 @@ type FeedEntryImpl = Required<
   >
 >;
 
+@Directive()
 export abstract class InnerView {
   @Input()
   feed?: FeedImpl;
