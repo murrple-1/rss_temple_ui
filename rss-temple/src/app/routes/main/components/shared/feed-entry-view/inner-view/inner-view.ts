@@ -16,8 +16,8 @@ type FeedEntryImpl = Required<
   >
 >;
 
-@Directive()
-export abstract class InnerView {
+@Directive({})
+export abstract class InnerViewDirective {
   @Input()
   feed?: FeedImpl;
 
