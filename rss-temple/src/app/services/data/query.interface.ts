@@ -50,7 +50,7 @@ export function toBody<Field, SortField extends string>(
   if (options.sort !== undefined) {
     const sortParts: string[] = [];
 
-    for (const [field, direction] of options.sort) {
+    for (const [field, direction] of options.sort.entries()) {
       sortParts.push(`${field}:${direction}`);
     }
 
