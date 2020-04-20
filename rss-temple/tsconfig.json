@@ -2,6 +2,8 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./src/",
+    "downlevelIteration": true,
+    "importHelpers": true,
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
@@ -9,7 +11,6 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "importHelpers": true,
     "target": "es2015",
     "strict": true,
     "typeRoots": ["node_modules/@types"],
@@ -18,5 +19,9 @@
       "@app/*": ["app/*"],
       "@environments/*": ["environments/*"]
     }
+  },
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true
   }
 }

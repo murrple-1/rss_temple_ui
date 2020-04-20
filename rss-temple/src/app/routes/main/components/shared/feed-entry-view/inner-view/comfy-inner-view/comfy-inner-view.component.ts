@@ -7,4 +7,20 @@ import { InnerViewDirective } from '@app/routes/main/components/shared/feed-entr
   templateUrl: './comfy-inner-view.component.html',
   styleUrls: ['./comfy-inner-view.component.scss'],
 })
-export class ComfyInnerViewComponent extends InnerViewDirective {}
+export class ComfyInnerViewComponent extends InnerViewDirective {
+  read() {
+    throw new Error('Method not implemented.');
+  }
+
+  unread() {
+    throw new Error('Method not implemented.');
+  }
+
+  favorite() {
+    throw new Error('Method not implemented.');
+  }
+
+  unfavorite() {
+    throw new Error('Method not implemented.');
+  }
+}

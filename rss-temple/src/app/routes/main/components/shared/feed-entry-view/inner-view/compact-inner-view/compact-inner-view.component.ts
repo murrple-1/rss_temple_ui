@@ -7,4 +7,20 @@ import { InnerViewDirective } from '@app/routes/main/components/shared/feed-entr
   templateUrl: './compact-inner-view.component.html',
   styleUrls: ['./compact-inner-view.component.scss'],
 })
-export class CompactInnerViewComponent extends InnerViewDirective {}
+export class CompactInnerViewComponent extends InnerViewDirective {
+  read() {
+    throw new Error('Method not implemented.');
+  }
+
+  unread() {
+    throw new Error('Method not implemented.');
+  }
+
+  favorite() {
+    throw new Error('Method not implemented.');
+  }
+
+  unfavorite() {
+    throw new Error('Method not implemented.');
+  }
+}

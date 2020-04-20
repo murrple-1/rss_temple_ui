@@ -19,7 +19,8 @@
   "prettier": {
     "singleQuote": true,
     "trailingComma": "all",
-    "endOfLine": "lf"
+    "endOfLine": "lf",
+    "arrowParens": "avoid"
   },
   "dependencies": {
     "@angular/animations": "~9.1.2",

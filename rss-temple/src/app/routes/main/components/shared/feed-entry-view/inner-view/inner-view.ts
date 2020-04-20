@@ -23,4 +23,9 @@ export abstract class InnerViewDirective {
 
   @Input()
   feedEntry?: FeedEntryImpl;
+
+  abstract read(): void;
+  abstract unread(): void;
+  abstract favorite(): void;
+  abstract unfavorite(): void;
 }

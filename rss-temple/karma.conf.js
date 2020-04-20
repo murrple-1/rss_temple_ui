@@ -3,6 +3,11 @@
 
 var path = require('path');
 
+var browsers = ['ChromeHeadless'];
+if (process.env.CI !== undefined) {
+  browsers = ['ChromeHeadlessNoSandbox'];
+}
+
 var reporters = ['progress', 'kjhtml'];
 var _test_type = (process.env.TEST_TYPE || 'standard').toLowerCase();
 if (_test_type === 'standard') {
@@ -13,7 +18,7 @@ if (_test_type === 'standard') {
   throw new Error("unknown 'TEST_TYPE'");
 }
 
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
     basePath: '',
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
@@ -36,13 +41,18 @@ module.exports = function(config) {
     junitReporter: {
       outputDir: path.join(__dirname, './test-results/'),
     },
-    reporters: reporters,
+    reporters,
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['ChromeHeadless'],
+    browsers,
+    customLaunchers: {
+      ChromeHeadlessNoSandbox: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox'],
+      },
+    },
     singleRun: true,
-    restartOnFileChange: true,
   });
 };
