@@ -84,35 +84,40 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     zip(
-      this.userService.get({
-        fields: ['email', 'hasGoogleLogin', 'hasFacebookLogin'],
-      }),
-      this.feedService.query({
-        returnObjects: false,
-        returnTotalCount: true,
-      }),
-      this.feedEntryService.query({
-        returnObjects: false,
-        returnTotalCount: true,
-        search: 'isRead:"true"',
-      }),
+      this.userService
+        .get({
+          fields: ['email', 'hasGoogleLogin', 'hasFacebookLogin'],
+        })
+        .pipe(map(response => response as UserImpl)),
+      this.feedService
+        .query({
+          returnObjects: false,
+          returnTotalCount: true,
+        })
+        .pipe(
+          map(response => {
+            if (response.totalCount !== undefined) {
+              return response.totalCount;
+            }
+            throw new Error('malformed response');
+          }),
+        ),
+      this.feedEntryService
+        .query({
+          returnObjects: false,
+          returnTotalCount: true,
+          search: 'isRead:"true"',
+        })
+        .pipe(
+          map(response => {
+            if (response.totalCount !== undefined) {
+              return response.totalCount;
+            }
+            throw new Error('malformed response');
+          }),
+        ),
     )
-      .pipe(
-        takeUntil(this.unsubscribe$),
-        map(([user, feedsObjects, feedEntriesObject]) => {
-          if (
-            feedsObjects.totalCount !== undefined &&
-            feedEntriesObject.totalCount !== undefined
-          ) {
-            return [
-              user as UserImpl,
-              feedsObjects.totalCount,
-              feedEntriesObject.totalCount,
-            ] as [UserImpl, number, number];
-          }
-          throw new Error('malformed response');
-        }),
-      )
+      .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: ([user, feedsCount, readFeedEntriesCount]) => {
           this.zone.run(() => {
@@ -158,10 +163,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
 
     this.gAuthService.user$
-      .pipe(
-        skip(1),
-        takeUntil(this.unsubscribe$),
-      )
+      .pipe(skip(1), takeUntil(this.unsubscribe$))
       .subscribe({
         next: user => {
           if (user !== null) {
@@ -189,10 +191,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
 
     this.fbAuthService.user$
-      .pipe(
-        skip(1),
-        takeUntil(this.unsubscribe$),
-      )
+      .pipe(skip(1), takeUntil(this.unsubscribe$))
       .subscribe({
         next: user => {
           if (user !== null) {

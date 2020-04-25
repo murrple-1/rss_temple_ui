@@ -82,10 +82,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     this.gAuthService.user$
-      .pipe(
-        skip(1),
-        takeUntil(this.unsubscribe$),
-      )
+      .pipe(skip(1), takeUntil(this.unsubscribe$))
       .subscribe({
         next: user => {
           this.zone.run(() => {
@@ -117,10 +114,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     this.fbAuthService.user$
-      .pipe(
-        skip(1),
-        takeUntil(this.unsubscribe$),
-      )
+      .pipe(skip(1), takeUntil(this.unsubscribe$))
       .subscribe({
         next: user => {
           this.zone.run(() => {
@@ -308,16 +302,13 @@ export class LoginComponent implements OnInit, OnDestroy {
       });
   }
 
-  onForgottenPassword() {
+  async onForgottenPassword() {
     const modalRef = this.modal.open(RequestPasswordResetModalComponent);
 
-    modalRef.result.then(
-      () => {
-        // done, no-op
-      },
-      error => {
-        // dialog dismissed, no-op
-      },
-    );
+    try {
+      await modalRef.result;
+    } catch {
+      // do nothing
+    }
   }
 }

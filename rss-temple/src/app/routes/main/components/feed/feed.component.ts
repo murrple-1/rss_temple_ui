@@ -202,7 +202,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
     }
   }
 
-  onAddUserCategory() {
+  async onAddUserCategory() {
     const modalRef = this.modal.open(UserCategoriesModalComponent, {
       beforeDismiss: UserCategoriesModalComponent.beforeDismiss,
     });
@@ -212,31 +212,30 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
       this.userCategories.map(userCategory => userCategory.text),
     );
 
-    modalRef.result.then((returnData: ReturnData[]) => {
-      if (this.feed !== null) {
-        const applyBody: IApply = {};
-        applyBody[this.feed.uuid] = new Set<string>(
-          returnData.map(data => data.uuid),
-        );
+    const returnData = (await modalRef.result) as ReturnData[];
+    if (this.feed !== null) {
+      const applyBody: IApply = {};
+      applyBody[this.feed.uuid] = new Set<string>(
+        returnData.map(data => data.uuid),
+      );
 
-        this.userCategoryService
-          .apply(applyBody)
-          .pipe(takeUntil(this.unsubscribe$))
-          .subscribe({
-            next: () => {
-              this.zone.run(() => {
-                this.userCategories = returnData.map<UserCategoryImpl>(data => {
-                  return {
-                    text: data.text,
-                  };
-                });
+      this.userCategoryService
+        .apply(applyBody)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe({
+          next: () => {
+            this.zone.run(() => {
+              this.userCategories = returnData.map<UserCategoryImpl>(data => {
+                return {
+                  text: data.text,
+                };
               });
-            },
-            error: error => {
-              this.httpErrorService.handleError(error);
-            },
-          });
-      }
-    });
+            });
+          },
+          error: error => {
+            this.httpErrorService.handleError(error);
+          },
+        });
+    }
   }
 }
