@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
+import { APP_BASE_HREF } from '@angular/common';
 
 import { SnackbarModule } from 'ngx-snackbar';
 
@@ -12,6 +13,12 @@ describe('AppComponent', () => {
     TestBed.configureTestingModule({
       imports: [SnackbarModule.forRoot(), RouterModule.forRoot(routes)],
       declarations: [AppComponent],
+      providers: [
+        {
+          provide: APP_BASE_HREF,
+          useValue: '/',
+        },
+      ],
     }).compileComponents();
   });
   it('should create the app', () => {

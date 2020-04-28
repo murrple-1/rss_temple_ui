@@ -1,6 +1,6 @@
 import { ValidatorFn, FormControl } from '@angular/forms';
 
-import { isValidPassword } from './password.lib';
+import { isValidPassword, passwordRequirementsText } from './password.lib';
 
 describe('AppComponent', () => {
   it('should create a validator function', () => {
@@ -59,5 +59,10 @@ describe('AppComponent', () => {
     expect(validator(formControl)).toEqual({
       nospecialcharacter: true,
     });
+  });
+
+  it('should describe password requirements in plain English', () => {
+    const text = passwordRequirementsText('en');
+    expect(typeof text).toEqual('string');
   });
 });

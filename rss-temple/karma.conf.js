@@ -3,11 +3,6 @@
 
 var path = require('path');
 
-var browsers = ['ChromeHeadless'];
-if (process.env.CI !== undefined) {
-  browsers = ['ChromeHeadlessNoSandbox'];
-}
-
 var reporters = ['progress', 'kjhtml'];
 var _test_type = (process.env.TEST_TYPE || 'standard').toLowerCase();
 if (_test_type === 'standard') {
@@ -46,13 +41,12 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers,
+    browsers: ['ChromeHeadless'],
     customLaunchers: {
-      ChromeHeadlessNoSandbox: {
+      ChromeHeadlessCI: {
         base: 'ChromeHeadless',
         flags: ['--no-sandbox'],
       },
     },
-    singleRun: true,
   });
 };

@@ -22,7 +22,7 @@ jobs:
             - ~/.cache/yarn
       - run:
           name: angular-test
-          command: yarn run cross-env TEST_TYPE=xml ng test --code-coverage
+          command: yarn run cross-env TEST_TYPE=xml ng test --code-coverage --no-watch --no-progress --browsers=ChromeHeadlessCI
           working_directory: ~/rss_temple_http/rss-temple/
       - run:
           name: angular-e2e
