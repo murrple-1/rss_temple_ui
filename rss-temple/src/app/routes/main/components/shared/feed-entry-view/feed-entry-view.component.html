@@ -11,10 +11,18 @@
     *ngIf="(display | async) === DisplayType.Comfy"
     [feed]="feed"
     [feedEntry]="feedEntry"
+    (didRead)="read()"
+    (didUnread)="unread()"
+    (didFavorite)="favorite()"
+    (didUnfavorite)="unfavorite()"
   ></app-comfy-inner-view>
   <app-compact-inner-view
     *ngIf="(display | async) === DisplayType.Compact"
     [feed]="feed"
     [feedEntry]="feedEntry"
+    (didRead)="read()"
+    (didUnread)="unread()"
+    (didFavorite)="favorite()"
+    (didUnfavorite)="unfavorite()"
   ></app-compact-inner-view>
 </div>

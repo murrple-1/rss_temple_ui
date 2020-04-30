@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 
 import { InnerViewDirective } from '@app/routes/main/components/shared/feed-entry-view/inner-view/inner-view';
 
@@ -8,19 +8,31 @@ import { InnerViewDirective } from '@app/routes/main/components/shared/feed-entr
   styleUrls: ['./comfy-inner-view.component.scss'],
 })
 export class ComfyInnerViewComponent extends InnerViewDirective {
+  @Output()
+  didRead = new EventEmitter<void>();
+
+  @Output()
+  didUnread = new EventEmitter<void>();
+
+  @Output()
+  didFavorite = new EventEmitter<void>();
+
+  @Output()
+  didUnfavorite = new EventEmitter<void>();
+
   read() {
-    throw new Error('Method not implemented.');
+    this.didRead.emit();
   }
 
   unread() {
-    throw new Error('Method not implemented.');
+    this.didUnread.emit();
   }
 
   favorite() {
-    throw new Error('Method not implemented.');
+    this.didFavorite.emit();
   }
 
   unfavorite() {
-    throw new Error('Method not implemented.');
+    this.didUnfavorite.emit();
   }
 }
