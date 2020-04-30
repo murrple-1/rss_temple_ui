@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { APP_BASE_HREF } from '@angular/common';
 
 import { SnackbarModule } from 'ngx-snackbar';
@@ -11,7 +11,11 @@ import { AppComponent } from './app.component';
 describe('AppComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SnackbarModule.forRoot(), RouterModule.forRoot(routes)],
+      imports: [
+        SnackbarModule.forRoot(),
+
+        RouterTestingModule.withRoutes(routes),
+      ],
       declarations: [AppComponent],
       providers: [
         {
@@ -22,8 +26,9 @@ describe('AppComponent', () => {
     }).compileComponents();
   });
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance as AppComponent;
-    expect(app).toBeTruthy();
+    const componentFixture = TestBed.createComponent(AppComponent);
+    const component = componentFixture.debugElement
+      .componentInstance as AppComponent;
+    expect(component).toBeTruthy();
   });
 });

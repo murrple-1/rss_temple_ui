@@ -24,8 +24,10 @@ export const routes: Routes = [
   {
     path: 'main',
     canActivate: [AuthGuard],
-    loadChildren: () =>
-      import('./routes/main/main.module').then(m => m.MainModule),
+    loadChildren: async () => {
+      const m = await import('./routes/main/main.module');
+      return m.MainModule;
+    },
   },
   { path: '**', redirectTo: 'login' },
 ];

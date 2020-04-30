@@ -1,11 +1,11 @@
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 
 import { MainComponent } from '@app/routes/main/main.component';
 import { FeedsComponent } from '@app/routes/main/components/feeds/feeds.component';
 import { FeedComponent } from '@app/routes/main/components/feed/feed.component';
 import { ProfileComponent } from '@app/routes/main/components/profile/profile.component';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     component: MainComponent,
@@ -16,5 +16,3 @@ const routes: Routes = [
     ],
   },
 ];
-
-export const routing = RouterModule.forChild(routes);

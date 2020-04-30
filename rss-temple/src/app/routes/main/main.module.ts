@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import {
@@ -10,7 +11,15 @@ import {
 
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
-import { routing } from '@app/routes/main/main.routing';
+import { routes } from '@app/routes/main/main.routing';
+
+import {
+  FeedObservableService,
+  DisplayObservableService,
+} from '@app/routes/main/services';
+
+import { InViewportDirective } from '@app/directives/inviewport.directive';
+
 import { MainComponent } from '@app/routes/main/main.component';
 import { FeedsComponent } from '@app/routes/main/components/feeds/feeds.component';
 import { FeedComponent } from '@app/routes/main/components/feed/feed.component';
@@ -23,11 +32,6 @@ import { CompactInnerViewComponent } from '@app/routes/main/components/shared/fe
 import { DisplayOptionsViewComponent } from '@app/routes/main/components/shared/display-options/display-options.component';
 import { SubscribeModalComponent as HeaderSubscribeModalComponent } from '@app/routes/main/components/shared/header/subscribemodal/subscribemodal.component';
 import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/routes/main/components/shared/header/opmlmodal/opmlmodal.component';
-import { InViewportDirective } from '@app/directives/inviewport.directive';
-import {
-  FeedObservableService,
-  DisplayObservableService,
-} from '@app/routes/main/services';
 
 @NgModule({
   imports: [
@@ -41,7 +45,7 @@ import {
 
     InfiniteScrollModule,
 
-    routing,
+    RouterModule.forChild(routes),
   ],
   providers: [FeedObservableService, DisplayObservableService],
   declarations: [
