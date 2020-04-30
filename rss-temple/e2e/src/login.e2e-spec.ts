@@ -1,19 +1,8 @@
 import { browser, logging } from 'protractor';
 
-import { AppPage } from './app.po';
+import { LoginPage } from './login.po';
 
-describe('workspace-project App', () => {
-  let page: AppPage;
-
-  beforeEach(() => {
-    page = new AppPage();
-  });
-
-  it('should display login page', async () => {
-    page.navigateTo();
-    expect(await page.getParagraphText()).toEqual('Login');
-  });
-
+describe('LoginPage', () => {
   afterEach(async () => {
     // Assert that there are no errors emitted from the browser
     const logs = await browser.manage().logs().get(logging.Type.BROWSER);
@@ -22,5 +11,10 @@ describe('workspace-project App', () => {
         level: logging.Level.SEVERE,
       }),
     );
+  });
+
+  it('should display login page', async () => {
+    await LoginPage.navigateTo();
+    expect(await LoginPage.getHeaderElement().getText()).toEqual('Login');
   });
 });
