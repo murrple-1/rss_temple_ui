@@ -7,6 +7,7 @@ import {
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 import { sessionToken } from '@app/libs/session.lib';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -38,43 +39,79 @@ export class LoginService {
   }
 
   getMyLoginSession(email: string, password: string) {
-    return this.http.post<string | object>(
-      `${environment.apiHost}/api/login/my/session`,
-      {
-        email,
-        password,
-      },
-      {
-        responseType: 'json',
-      },
-    );
+    return this.http
+      .post<string>(
+        `${environment.apiHost}/api/login/my/session`,
+        {
+          email,
+          password,
+        },
+        {
+          responseType: 'json',
+        },
+      )
+      .pipe(
+        map(response => {
+          /* istanbul ignore else */
+          if (typeof response === 'string') {
+            return response;
+          } else {
+            throw new Error('malformed response');
+          }
+        }),
+      );
   }
 
   getGoogleLoginSession(user: gapi.auth2.GoogleUser) {
-    return this.http.post<string | object>(
-      `${environment.apiHost}/api/login/google/session`,
-      {
-        token: user.getAuthResponse().id_token,
-      },
-      {
-        responseType: 'json',
-      },
-    );
+    return this.http
+      .post<string>(
+        `${environment.apiHost}/api/login/google/session`,
+        {
+          token: user.getAuthResponse().id_token,
+        },
+        {
+          responseType: 'json',
+        },
+      )
+      .pipe(
+        map(response => {
+          /* istanbul ignore else */
+          if (typeof response === 'string') {
+            return response;
+          } else {
+            throw new Error('malformed response');
+          }
+        }),
+      );
   }
 
   getFacebookLoginSession(user: facebook.AuthResponse) {
-    return this.http.post<string | object>(
-      `${environment.apiHost}/api/login/facebook/session`,
-      {
-        token: user.accessToken,
-      },
-      {
-        responseType: 'json',
-      },
-    );
+    return this.http
+      .post<string>(
+        `${environment.apiHost}/api/login/facebook/session`,
+        {
+          token: user.accessToken,
+        },
+        {
+          responseType: 'json',
+        },
+      )
+      .pipe(
+        map(response => {
+          /* istanbul ignore else */
+          if (typeof response === 'string') {
+            return response;
+          } else {
+            throw new Error('malformed response');
+          }
+        }),
+      );
   }
 
-  deleteSessionToken(options: CommonOptions = {}) {
+  deleteSessionToken(
+    options: Required<Pick<CommonOptions, 'sessionToken'>> &
+      Omit<CommonOptions, 'sessionToken'>,
+  ) {
     const headers = commonToHeaders(options, sessionToken);
 
     return this.http.delete<void>(`${environment.apiHost}/api/session`, {

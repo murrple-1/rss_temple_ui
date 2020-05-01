@@ -8,24 +8,23 @@ import { routes } from '@app/app.routing';
 
 import { AppComponent } from './app.component';
 
-describe('AppComponent', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        SnackbarModule.forRoot(),
+function setup() {
+  TestBed.configureTestingModule({
+    imports: [SnackbarModule.forRoot(), RouterTestingModule.withRoutes(routes)],
+    declarations: [AppComponent],
+    providers: [
+      {
+        provide: APP_BASE_HREF,
+        useValue: '/',
+      },
+    ],
+  }).compileComponents();
+}
 
-        RouterTestingModule.withRoutes(routes),
-      ],
-      declarations: [AppComponent],
-      providers: [
-        {
-          provide: APP_BASE_HREF,
-          useValue: '/',
-        },
-      ],
-    }).compileComponents();
-  });
+describe('AppComponent', () => {
   it('should create the app', () => {
+    setup();
+
     const componentFixture = TestBed.createComponent(AppComponent);
     const component = componentFixture.debugElement
       .componentInstance as AppComponent;

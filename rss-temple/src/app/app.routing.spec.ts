@@ -7,7 +7,7 @@ import { routes } from './app.routing';
 describe('app.routing', () => {
   it('should load lazy children', async(async () => {
     async function recurseRoutes(route: Route) {
-      expect(typeof route.path).toBe('string');
+      expect(route.path).toEqual(jasmine.any(String));
 
       if (route.children !== undefined) {
         for (const innerRoute of route.children) {
