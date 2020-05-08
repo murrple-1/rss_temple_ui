@@ -15,11 +15,11 @@ export class FBAuthService {
   isLoaded$: Observable<boolean>;
 
   get user() {
-    return this._user$.value;
+    return this._user$.getValue();
   }
 
   get isLoaded() {
-    return this._isLoaded$.value;
+    return this._isLoaded$.getValue();
   }
 
   constructor() {
