@@ -192,16 +192,12 @@ export class LoginComponent implements OnInit, OnDestroy {
       });
   }
 
-  private handleLoginSuccess(data: string | object) {
-    if (typeof data === 'string') {
-      this.zone.run(() => {
-        setSessionToken(data);
+  private handleLoginSuccess(sessionToken: string) {
+    this.zone.run(() => {
+      setSessionToken(sessionToken);
 
-        this.router.navigate([this.returnUrl]);
-      });
-    } else {
-      throw new Error('data is not a string');
-    }
+      this.router.navigate([this.returnUrl]);
+    });
   }
 
   onGoogleLogin() {

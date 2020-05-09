@@ -1,19 +1,24 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, async } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   HttpClientTestingModule,
   HttpTestingController,
 } from '@angular/common/http/testing';
-import { Injectable } from '@angular/core';
+import { Injectable, Component } from '@angular/core';
 
 import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { SnackbarModule } from 'ngx-snackbar';
 
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 
-import { GAuthService, FBAuthService } from '@app/services';
+import {
+  GAuthService,
+  FBAuthService,
+  LoginService,
+  AlertService,
+} from '@app/services';
 
 import { LoginComponent } from './login.component';
 
@@ -79,8 +84,20 @@ class MockFBAuthService extends FBAuthService {
   }
 }
 
-function setup() {
-  TestBed.configureTestingModule({
+@Component({})
+class MockComponent {}
+
+async function setup() {
+  const mockLoginService = jasmine.createSpyObj<LoginService>('LoginService', [
+    'getMyLoginSession',
+    'getGoogleLoginSession',
+    'getFacebookLoginSession',
+  ]);
+  const mockAlertService = jasmine.createSpyObj<AlertService>('AlertService', [
+    'error',
+  ]);
+
+  await TestBed.configureTestingModule({
     imports: [
       ReactiveFormsModule,
       HttpClientTestingModule,
@@ -89,7 +106,12 @@ function setup() {
 
       SnackbarModule.forRoot(),
 
-      RouterTestingModule.withRoutes([]),
+      RouterTestingModule.withRoutes([
+        {
+          path: 'main',
+          component: MockComponent,
+        },
+      ]),
     ],
     declarations: [LoginComponent],
     providers: [
@@ -101,36 +123,108 @@ function setup() {
         provide: FBAuthService,
         useClass: MockFBAuthService,
       },
+      {
+        provide: LoginService,
+        useValue: mockLoginService,
+      },
+      {
+        provide: AlertService,
+        useValue: mockAlertService,
+      },
     ],
   }).compileComponents();
 
-  const httpMock = TestBed.inject(HttpTestingController);
-
   return {
-    httpMock,
+    loginService: mockLoginService,
+    alertService: mockAlertService,
   };
 }
 
 describe('AppComponent', () => {
-  it('should create the component', () => {
-    setup();
+  it('should create the component', async(async () => {
+    await setup();
 
     const componentFixture = TestBed.createComponent(LoginComponent);
     const component = componentFixture.debugElement
       .componentInstance as LoginComponent;
     expect(component).toBeTruthy();
-  });
+  }));
 
-  it('can run ngOnInit', () => {
-    setup();
+  it('can run ngOnInit', async(async () => {
+    await setup();
 
     const componentFixture = TestBed.createComponent(LoginComponent);
     const component = componentFixture.debugElement
       .componentInstance as LoginComponent;
 
     component.ngOnInit();
+    await componentFixture.whenStable();
     expect().nothing();
-  });
+  }));
+
+  it('should handle Google login', async(async () => {
+    const { loginService } = await setup();
+    loginService.getGoogleLoginSession.and.returnValue(of('atoken'));
+
+    const componentFixture = TestBed.createComponent(LoginComponent);
+    const component = componentFixture.debugElement
+      .componentInstance as LoginComponent;
+
+    component.ngOnInit();
+
+    const gAuthService = TestBed.inject(GAuthService);
+    gAuthService.signIn();
+    await componentFixture.whenStable();
+    expect().nothing();
+  }));
+
+  it('should handle Facebook login', async(async () => {
+    const { loginService } = await setup();
+    loginService.getFacebookLoginSession.and.returnValue(of('atoken'));
+
+    const componentFixture = TestBed.createComponent(LoginComponent);
+    const component = componentFixture.debugElement
+      .componentInstance as LoginComponent;
+
+    component.ngOnInit();
+
+    const fbAuthService = TestBed.inject(FBAuthService);
+    fbAuthService.signIn();
+    await componentFixture.whenStable();
+    expect().nothing();
+  }));
+
+  it('should logout Google if already logged in', async(async () => {
+    await setup();
+
+    const componentFixture = TestBed.createComponent(LoginComponent);
+    const component = componentFixture.debugElement
+      .componentInstance as LoginComponent;
+
+    const gAuthService = TestBed.inject(GAuthService);
+    gAuthService.signIn();
+
+    component.ngOnInit();
+
+    await componentFixture.whenStable();
+    expect().nothing();
+  }));
+
+  it('should logout Facebook if already logged in', async(async () => {
+    await setup();
+
+    const componentFixture = TestBed.createComponent(LoginComponent);
+    const component = componentFixture.debugElement
+      .componentInstance as LoginComponent;
+
+    const fbAuthService = TestBed.inject(FBAuthService);
+    fbAuthService.signIn();
+
+    component.ngOnInit();
+
+    await componentFixture.whenStable();
+    expect().nothing();
+  }));
 
   // TODO more tests
 });
