@@ -1,11 +1,9 @@
 import { TestBed, async } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import {
-  HttpClientTestingModule,
-  HttpTestingController,
-} from '@angular/common/http/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Injectable, Component } from '@angular/core';
+import { By } from '@angular/platform-browser';
 
 import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -99,6 +97,7 @@ async function setup() {
 
   await TestBed.configureTestingModule({
     imports: [
+      FormsModule,
       ReactiveFormsModule,
       HttpClientTestingModule,
 
@@ -113,7 +112,7 @@ async function setup() {
         },
       ]),
     ],
-    declarations: [LoginComponent],
+    declarations: [MockComponent, LoginComponent],
     providers: [
       {
         provide: GAuthService,
@@ -140,7 +139,7 @@ async function setup() {
   };
 }
 
-describe('AppComponent', () => {
+describe('LoginComponent', () => {
   it('should create the component', async(async () => {
     await setup();
 
@@ -224,6 +223,138 @@ describe('AppComponent', () => {
 
     await componentFixture.whenStable();
     expect().nothing();
+  }));
+
+  it('should handle missing email', async(async () => {
+    await setup();
+
+    const componentFixture = TestBed.createComponent(LoginComponent);
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+
+    const component = componentFixture.debugElement
+      .componentInstance as LoginComponent;
+    component.ngOnInit();
+
+    const debugElement = componentFixture.debugElement;
+
+    const emailInput = debugElement.query(By.css('input[type="email"]'))
+      .nativeElement as HTMLInputElement;
+    emailInput.value = '';
+    emailInput.dispatchEvent(new Event('input'));
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+
+    const loginButton = debugElement.query(By.css('button[type="submit"]'))
+      .nativeElement as HTMLButtonElement;
+    loginButton.click();
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+
+    expect(component.loginFormErrors.controls['email']).toEqual([
+      'Email required',
+    ]);
+  }));
+
+  it('should handle malformed email', async(async () => {
+    await setup();
+
+    const componentFixture = TestBed.createComponent(LoginComponent);
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+
+    const component = componentFixture.debugElement
+      .componentInstance as LoginComponent;
+    component.ngOnInit();
+
+    const debugElement = componentFixture.debugElement;
+
+    const emailInput = debugElement.query(By.css('input[type="email"]'))
+      .nativeElement as HTMLInputElement;
+    emailInput.value = 'bademail';
+    emailInput.dispatchEvent(new Event('input'));
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+
+    const loginButton = debugElement.query(By.css('button[type="submit"]'))
+      .nativeElement as HTMLButtonElement;
+    loginButton.click();
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+
+    expect(component.loginFormErrors.controls['email']).toEqual([
+      'Email malformed',
+    ]);
+  }));
+
+  it('should handle missing password', async(async () => {
+    await setup();
+
+    const componentFixture = TestBed.createComponent(LoginComponent);
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+
+    const component = componentFixture.debugElement
+      .componentInstance as LoginComponent;
+    component.ngOnInit();
+
+    const debugElement = componentFixture.debugElement;
+
+    const passwordInput = debugElement.query(By.css('input[type="password"]'))
+      .nativeElement as HTMLInputElement;
+    passwordInput.value = '';
+    passwordInput.dispatchEvent(new Event('input'));
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+
+    const loginButton = debugElement.query(By.css('button[type="submit"]'))
+      .nativeElement as HTMLButtonElement;
+    loginButton.click();
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+
+    expect(component.loginFormErrors.controls['password']).toEqual([
+      'Password required',
+    ]);
+  }));
+
+  it('should be able to log in', async(async () => {
+    const { loginService } = await setup();
+    loginService.getMyLoginSession.and.returnValue(of('atoken'));
+
+    const componentFixture = TestBed.createComponent(LoginComponent);
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+
+    const component = componentFixture.debugElement
+      .componentInstance as LoginComponent;
+    component.ngOnInit();
+
+    const debugElement = componentFixture.debugElement;
+
+    const emailInput = debugElement.query(By.css('input[type="email"]'))
+      .nativeElement as HTMLInputElement;
+    emailInput.value = 'test@test.com';
+    emailInput.dispatchEvent(new Event('input'));
+
+    const passwordInput = debugElement.query(By.css('input[type="password"]'))
+      .nativeElement as HTMLInputElement;
+    passwordInput.value = 'password';
+    passwordInput.dispatchEvent(new Event('input'));
+
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+
+    const loginButton = debugElement.query(By.css('button[type="submit"]'))
+      .nativeElement as HTMLButtonElement;
+    loginButton.click();
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+
+    expect(loginService.getMyLoginSession).toHaveBeenCalledWith(
+      'test@test.com',
+      'password',
+    );
   }));
 
   // TODO more tests

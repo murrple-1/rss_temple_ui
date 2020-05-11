@@ -43,7 +43,7 @@ export class SubscribeModalComponent {
       const urlErrors = this.subscribeForm.controls.feedUrl.errors;
       if (urlErrors !== null) {
         if (urlErrors.required) {
-          this.subscribeFormErrors.controls.feedUrl.push('URL required');
+          this.subscribeFormErrors.controls['feedUrl'].push('URL required');
         }
       }
       return;

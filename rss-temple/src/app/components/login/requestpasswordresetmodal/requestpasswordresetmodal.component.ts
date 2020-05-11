@@ -64,13 +64,13 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
       const emailErrors = this.forgottenPasswordForm.controls.email.errors;
       if (emailErrors !== null) {
         if (emailErrors.required) {
-          this.forgottenPasswordFormErrors.controls.email.push(
+          this.forgottenPasswordFormErrors.controls['email'].push(
             'Email required',
           );
         }
 
         if (emailErrors.email) {
-          this.forgottenPasswordFormErrors.controls.email.push(
+          this.forgottenPasswordFormErrors.controls['email'].push(
             'Email malformed',
           );
         }

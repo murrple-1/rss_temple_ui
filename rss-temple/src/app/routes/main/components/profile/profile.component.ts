@@ -315,7 +315,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       const emailErrors = this.profileForm.controls.email.errors;
       if (emailErrors !== null) {
         if (emailErrors.email) {
-          this.profileFormErrors.controls.email.push('Email malformed');
+          this.profileFormErrors.controls['email'].push('Email malformed');
         }
       }
 
@@ -327,7 +327,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           newPasswordErrors.nodigit ||
           newPasswordErrors.nospecialcharacter
         ) {
-          this.profileFormErrors.controls.newPassword.push(
+          this.profileFormErrors.controls['newPassword'].push(
             passwordRequirementsText('en'),
           );
         }

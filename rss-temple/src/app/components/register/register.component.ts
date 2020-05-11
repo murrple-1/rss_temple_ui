@@ -85,18 +85,20 @@ export class RegisterComponent implements OnInit, OnDestroy {
       const emailErrors = this.registerForm.controls.email.errors;
       if (emailErrors !== null) {
         if (emailErrors.required) {
-          this.registerFormErrors.controls.email.push('Email required');
+          this.registerFormErrors.controls['email'].push('Email required');
         }
 
         if (emailErrors.email) {
-          this.registerFormErrors.controls.email.push('Email malformed');
+          this.registerFormErrors.controls['email'].push('Email malformed');
         }
       }
 
       const passwordErrors = this.registerForm.controls.password.errors;
       if (passwordErrors !== null) {
         if (passwordErrors.required) {
-          this.registerFormErrors.controls.password.push('Password required');
+          this.registerFormErrors.controls['password'].push(
+            'Password required',
+          );
         }
 
         if (
@@ -106,7 +108,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
           passwordErrors.nodigit ||
           passwordErrors.nospecialcharacter
         ) {
-          this.registerFormErrors.controls.password.push(
+          this.registerFormErrors.controls['password'].push(
             passwordRequirementsText('en'),
           );
         }
@@ -116,7 +118,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
         .errors;
       if (passwordCheckErrors !== null) {
         if (passwordCheckErrors.required) {
-          this.registerFormErrors.controls.passwordCheck.push(
+          this.registerFormErrors.controls['passwordCheck'].push(
             'Password required',
           );
         }

@@ -99,7 +99,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
         .errors;
       if (newPasswordErrors !== null) {
         if (newPasswordErrors.required) {
-          this.resetPasswordFormErrors.controls.newPassword.push(
+          this.resetPasswordFormErrors.controls['newPassword'].push(
             'Password required',
           );
         }
@@ -110,7 +110,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
           newPasswordErrors.nodigit ||
           newPasswordErrors.nospecialcharacters
         ) {
-          this.resetPasswordFormErrors.controls.newPassword.push(
+          this.resetPasswordFormErrors.controls['newPassword'].push(
             passwordRequirementsText('en'),
           );
         }
@@ -120,7 +120,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
         .newPasswordCheck.errors;
       if (newPasswordCheckErrors !== null) {
         if (newPasswordCheckErrors.required) {
-          this.resetPasswordFormErrors.controls.newPasswordCheck.push(
+          this.resetPasswordFormErrors.controls['newPasswordCheck'].push(
             'Password required',
           );
         }
