@@ -1,8 +1,12 @@
-import { ValidatorFn, FormControl } from '@angular/forms';
+import { ValidatorFn, FormControl, FormGroup } from '@angular/forms';
 
-import { isValidPassword, passwordRequirementsText } from './password.lib';
+import {
+  isValidPassword,
+  passwordRequirementsText,
+  doPasswordsMatch,
+} from './password.lib';
 
-describe('AppComponent', () => {
+describe('password.lib', () => {
   it('should create a validator function', () => {
     const validator = isValidPassword();
     expect(validator).not.toBeNull();
@@ -64,5 +68,24 @@ describe('AppComponent', () => {
   it('should describe password requirements in plain English', () => {
     const text = passwordRequirementsText('en');
     expect(typeof text).toEqual('string');
+  });
+
+  it('should check that passwords match', () => {
+    const validator = doPasswordsMatch('password1', 'password2');
+
+    const formGroup = new FormGroup({
+      password1: new FormControl(),
+      password2: new FormControl(),
+    });
+
+    formGroup.controls['password1'].setValue('a_password');
+    formGroup.controls['password2'].setValue('a_password');
+
+    expect(validator(formGroup)).toBeNull();
+
+    formGroup.controls['password1'].setValue('a_different_password');
+    expect(validator(formGroup)).toEqual({
+      passwordsdonotmatch: true,
+    });
   });
 });
