@@ -1,4 +1,4 @@
-import { HttpResponse, HttpClient } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { fakeAsync } from '@angular/core/testing';
 
 import { of } from 'rxjs';

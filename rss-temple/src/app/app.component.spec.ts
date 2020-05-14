@@ -4,13 +4,11 @@ import { APP_BASE_HREF } from '@angular/common';
 
 import { SnackbarModule } from 'ngx-snackbar';
 
-import { routes } from '@app/app.routing';
-
 import { AppComponent } from './app.component';
 
 function setup() {
   TestBed.configureTestingModule({
-    imports: [SnackbarModule.forRoot(), RouterTestingModule.withRoutes(routes)],
+    imports: [SnackbarModule.forRoot(), RouterTestingModule.withRoutes([])],
     declarations: [AppComponent],
     providers: [
       {

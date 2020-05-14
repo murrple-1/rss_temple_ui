@@ -2,14 +2,12 @@ import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { APP_BASE_HREF } from '@angular/common';
 
-import { routes } from '@app/app.routing';
-
 import { MainComponent } from './main.component';
 
 describe('MainComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes(routes)],
+      imports: [RouterTestingModule.withRoutes([])],
       declarations: [MainComponent],
       providers: [
         {
