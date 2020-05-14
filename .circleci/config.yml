@@ -37,10 +37,6 @@ jobs:
           name: install-dependencies
           command: yarn install --frozen-lockfile
           working_directory: ~/rss_temple_http/rss-temple/
-      - run:
-          name: webdriver-update
-          command: yarn run webdriver-manager update --standalone false --gecko false --versions.chrome 2.37
-          working_directory: ~/rss_temple_http/rss-temple/
       - save_cache:
           key: dependency-cache-{{ checksum "~/rss_temple_http/rss-temple/yarn.lock" }}
           paths:
@@ -48,10 +44,6 @@ jobs:
       - run:
           name: angular-test
           command: yarn run cross-env TEST_TYPE=xml ng test --code-coverage --no-watch --no-progress --browsers=ChromeHeadlessCI
-          working_directory: ~/rss_temple_http/rss-temple/
-      - run:
-          name: angular-e2e
-          command: yarn run ng e2e --webdriver-update=false
           working_directory: ~/rss_temple_http/rss-temple/
       - store_test_results:
           path: ~/rss_temple_http/rss-temple/test-results/
@@ -61,9 +53,34 @@ jobs:
           name: codecov
           command: yarn run codecov -- --disable=gcov
           working_directory: ~/rss_temple_http/rss-temple/
+  e2e:
+    working_directory: ~/rss_temple_http/
+    docker:
+      - image: circleci/node:10-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "~/rss_temple_http/rss-temple/yarn.lock" }}
+      - run:
+          name: install-dependencies
+          command: yarn install --frozen-lockfile
+          working_directory: ~/rss_temple_http/rss-temple/
+      - run:
+          name: webdriver-update
+          command: yarn run webdriver-manager update --standalone false --gecko false --versions.chrome 2.37
+          working_directory: ~/rss_temple_http/rss-temple/
+      - save_cache:
+          key: dependency-cache-{{ checksum "~/rss_temple_http/rss-temple/yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+      - run:
+          name: angular-e2e
+          command: yarn run ng e2e --webdriver-update=false
+          working_directory: ~/rss_temple_http/rss-temple/
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build
       - test
+      - e2e
