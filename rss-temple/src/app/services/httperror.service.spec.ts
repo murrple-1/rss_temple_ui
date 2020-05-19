@@ -1,9 +1,9 @@
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { AlertService } from '@app/services/alert.service';
 
 import { HttpErrorService } from './httperror.service';
-import { HttpErrorResponse } from '@angular/common/http';
 
 function setup() {
   const routerSpy = jasmine.createSpyObj<Router>('Router', ['navigate']);
