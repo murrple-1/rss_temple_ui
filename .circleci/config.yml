@@ -51,7 +51,7 @@ jobs:
           path: ~/rss_temple_http/rss-temple/test-results/
       - run:
           name: codecov
-          command: yarn run codecov -- --disable=gcov
+          command: yarn run codecov --disable=gcov
           working_directory: ~/rss_temple_http/rss-temple/
   e2e:
     working_directory: ~/rss_temple_http/
