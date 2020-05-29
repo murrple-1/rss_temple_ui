@@ -6,6 +6,8 @@ import { AlertService } from '@app/services/alert.service';
 import { HttpErrorService } from './httperror.service';
 
 function setup() {
+  spyOn(console, 'log').and.callFake(() => undefined);
+
   const routerSpy = jasmine.createSpyObj<Router>('Router', ['navigate']);
   const alertServiceSpy = jasmine.createSpyObj<AlertService>('AlertService', [
     'error',

@@ -59,7 +59,7 @@ export class FBAuthService {
       this._isLoaded$.next(true);
     };
 
-    if (document.getElementById(id)) {
+    if (document.getElementById(id) !== null) {
       return;
     }
 
