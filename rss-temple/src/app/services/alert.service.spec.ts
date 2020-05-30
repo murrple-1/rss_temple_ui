@@ -20,8 +20,8 @@ describe('AlertService', () => {
   it('should call `error`', () => {
     const { snackbarServiceSpy, alertService } = setup();
 
-    let text = 'text';
-    let timeoutMilliseconds: number | undefined = undefined;
+    const text = 'text';
+    let timeoutMilliseconds: number | undefined;
     alertService.error(text, timeoutMilliseconds);
 
     expect(snackbarServiceSpy.add).toHaveBeenCalledWith(
@@ -49,8 +49,8 @@ describe('AlertService', () => {
   it('should call `success`', () => {
     const { snackbarServiceSpy, alertService } = setup();
 
-    let text = 'text';
-    let timeoutMilliseconds: number | undefined = undefined;
+    const text = 'text';
+    let timeoutMilliseconds: number | undefined;
     alertService.success(text, timeoutMilliseconds);
 
     expect(snackbarServiceSpy.add).toHaveBeenCalledWith(
@@ -78,8 +78,8 @@ describe('AlertService', () => {
   it('should call `info`', () => {
     const { snackbarServiceSpy, alertService } = setup();
 
-    let text = 'text';
-    let timeoutMilliseconds: number | undefined = undefined;
+    const text = 'text';
+    let timeoutMilliseconds: number | undefined;
     alertService.info(text, timeoutMilliseconds);
 
     expect(snackbarServiceSpy.add).toHaveBeenCalledWith(
