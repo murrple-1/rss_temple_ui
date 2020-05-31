@@ -141,4 +141,20 @@ describe('FBAuthService', () => {
 
     expect(gAuthService.user).toBeNull();
   });
+
+  it('should be possible to call sign in without loading', () => {
+    const { gAuthService } = setup();
+
+    gAuthService.signIn();
+
+    expect().nothing();
+  });
+
+  it('should be possible to call sign out without loading', () => {
+    const { gAuthService } = setup();
+
+    gAuthService.signOut();
+
+    expect().nothing();
+  });
 });
