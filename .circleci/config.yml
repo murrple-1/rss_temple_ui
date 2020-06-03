@@ -1,3 +1,10 @@
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test
+      - e2e
 jobs:
   build:
     working_directory: ~/rss_temple_http/
@@ -77,10 +84,3 @@ jobs:
           name: angular-e2e
           command: yarn run ng e2e --webdriver-update=false
           working_directory: ~/rss_temple_http/rss-temple/
-workflows:
-  version: 2
-  build_and_test:
-    jobs:
-      - build
-      - test
-      - e2e
