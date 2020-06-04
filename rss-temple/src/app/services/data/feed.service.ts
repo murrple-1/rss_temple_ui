@@ -107,7 +107,7 @@ function toFeed(value: JsonValue) {
         throw new Error("'updatedAt' invalid");
       }
     } else {
-      throw new Error("'publishedAt' must be datetime or null");
+      throw new Error("'updatedAt' must be datetime or null");
     }
   }
 
@@ -122,7 +122,9 @@ function toFeed(value: JsonValue) {
 
   if (value.customTitle !== undefined) {
     const customTitle = value.customTitle;
-    if (customTitle === null || typeof customTitle === 'string') {
+    if (customTitle === null) {
+      feed.customTitle = null;
+    } else if (typeof customTitle === 'string') {
       feed.customTitle = customTitle;
     } else {
       throw new Error("'customTitle' must be string or null");
