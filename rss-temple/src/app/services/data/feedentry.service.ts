@@ -74,7 +74,7 @@ function toFeedEntry(value: JsonValue) {
         throw new Error("'createdAt' invalid");
       }
     } else {
-      throw new Error("'publishedAt' must be datetime or null");
+      throw new Error("'createdAt' must be datetime or null");
     }
   }
 
@@ -150,7 +150,7 @@ function toFeedEntry(value: JsonValue) {
     } else if (typeof authorName === 'string') {
       feedEntry.authorName = authorName;
     } else {
-      throw new Error("'authorName' must be string");
+      throw new Error("'authorName' must be string or null");
     }
   }
 
@@ -166,7 +166,7 @@ function toFeedEntry(value: JsonValue) {
   if (value.isRead !== undefined) {
     const isRead = value.isRead;
     if (typeof isRead === 'boolean') {
-      feedEntry.fromSubscription = isRead;
+      feedEntry.isRead = isRead;
     } else {
       throw new Error("'isRead' must be boolean");
     }
@@ -175,7 +175,7 @@ function toFeedEntry(value: JsonValue) {
   if (value.isFavorite !== undefined) {
     const isFavorite = value.isFavorite;
     if (typeof isFavorite === 'boolean') {
-      feedEntry.fromSubscription = isFavorite;
+      feedEntry.isFavorite = isFavorite;
     } else {
       throw new Error("'isFavorite' must be boolean");
     }

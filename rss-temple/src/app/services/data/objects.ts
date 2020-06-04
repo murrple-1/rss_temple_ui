@@ -29,7 +29,7 @@ export function toObjects<T>(
     if (isJsonArray(objects)) {
       objs.objects = objects.map(fn);
     } else {
-      throw new Error("'objects' must be number");
+      throw new Error("'objects' must be array");
     }
   }
 

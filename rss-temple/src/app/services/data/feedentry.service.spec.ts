@@ -236,6 +236,8 @@ describe('feedentry.service', () => {
       .get('123e4567-e89b-12d3-a456-426614174000')
       .toPromise();
 
+    expect(feedEntry.id).toBe(id);
+
     httpClientSpy.get.and.returnValue(
       of({
         id: null,
@@ -261,5 +263,456 @@ describe('feedentry.service', () => {
     expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
     ).toBeRejectedWithError(Error, /id.*?must be string/);
+  }));
+
+  it('should `createdAt`', fakeAsync(async () => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    const createdAt = dayjs('2020-01-01 00:00:00', {
+      format: 'YYYY-MM-DD HH:mm:ss',
+      utc: true,
+    });
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        createdAt: createdAt.format('YYYY-MM-DD HH:mm:ss'),
+      }),
+    );
+
+    let feedEntry = await feedEntryService
+      .get('123e4567-e89b-12d3-a456-426614174000')
+      .toPromise();
+
+    expect(feedEntry.createdAt).toEqual(createdAt);
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        createdAt: null,
+      }),
+    );
+
+    feedEntry = await feedEntryService
+      .get('123e4567-e89b-12d3-a456-426614174000')
+      .toPromise();
+
+    expect(feedEntry.createdAt).toBeNull();
+  }));
+
+  it('should `createdAt` type error', fakeAsync(() => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        createdAt: 0,
+      }),
+    );
+
+    expectAsync(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+    ).toBeRejectedWithError(Error, /createdAt.*?must be datetime or null/);
+  }));
+
+  it('should `createdAt` malformed', fakeAsync(() => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        createdAt: 'bad datetime',
+      }),
+    );
+
+    expectAsync(
+      feedEntryService.get('http://www.fake.com/rss.xml').toPromise(),
+    ).toBeRejectedWithError(Error, /createdAt.*?invalid/);
+  }));
+
+  it('should `publishedAt`', fakeAsync(async () => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    const publishedAt = dayjs('2020-01-01 00:00:00', {
+      format: 'YYYY-MM-DD HH:mm:ss',
+      utc: true,
+    });
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        publishedAt: publishedAt.format('YYYY-MM-DD HH:mm:ss'),
+      }),
+    );
+
+    const feedEntry = await feedEntryService
+      .get('123e4567-e89b-12d3-a456-426614174000')
+      .toPromise();
+
+    expect(feedEntry.publishedAt).toEqual(publishedAt);
+  }));
+
+  it('should `publishedAt` type error', fakeAsync(() => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        publishedAt: 0,
+      }),
+    );
+
+    expectAsync(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+    ).toBeRejectedWithError(Error, /publishedAt.*?must be datetime/);
+  }));
+
+  it('should `publishedAt` malformed', fakeAsync(() => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        publishedAt: 'bad datetime',
+      }),
+    );
+
+    expectAsync(
+      feedEntryService.get('http://www.fake.com/rss.xml').toPromise(),
+    ).toBeRejectedWithError(Error, /publishedAt.*?invalid/);
+  }));
+
+  it('should `updatedAt`', fakeAsync(async () => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    const updatedAt = dayjs('2020-01-01 00:00:00', {
+      format: 'YYYY-MM-DD HH:mm:ss',
+      utc: true,
+    });
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        updatedAt: updatedAt.format('YYYY-MM-DD HH:mm:ss'),
+      }),
+    );
+
+    let feedEntry = await feedEntryService
+      .get('123e4567-e89b-12d3-a456-426614174000')
+      .toPromise();
+
+    expect(feedEntry.updatedAt).toEqual(updatedAt);
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        updatedAt: null,
+      }),
+    );
+
+    feedEntry = await feedEntryService
+      .get('123e4567-e89b-12d3-a456-426614174000')
+      .toPromise();
+
+    expect(feedEntry.updatedAt).toBeNull();
+  }));
+
+  it('should `updatedAt` type error', fakeAsync(() => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        updatedAt: 0,
+      }),
+    );
+
+    expectAsync(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+    ).toBeRejectedWithError(Error, /updatedAt.*?must be datetime or null/);
+  }));
+
+  it('should `updatedAt` malformed', fakeAsync(() => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        updatedAt: 'bad datetime',
+      }),
+    );
+
+    expectAsync(
+      feedEntryService.get('http://www.fake.com/rss.xml').toPromise(),
+    ).toBeRejectedWithError(Error, /updatedAt.*?invalid/);
+  }));
+
+  it('should `title`', fakeAsync(async () => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    const title = 'A Title';
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        title,
+      }),
+    );
+
+    const feedEntry = await feedEntryService
+      .get('123e4567-e89b-12d3-a456-426614174000')
+      .toPromise();
+
+    expect(feedEntry.title).toBe(title);
+  }));
+
+  it('should `title` type error', fakeAsync(() => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        title: 0,
+      }),
+    );
+
+    expectAsync(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+    ).toBeRejectedWithError(Error, /title.*?must be string/);
+  }));
+
+  it('should `url`', fakeAsync(async () => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    const url = 'http://www.fake.com/entry/1';
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        url,
+      }),
+    );
+
+    const feedEntry = await feedEntryService
+      .get('123e4567-e89b-12d3-a456-426614174000')
+      .toPromise();
+
+    expect(feedEntry.url).toBe(url);
+  }));
+
+  it('should `url` type error', fakeAsync(() => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        url: 0,
+      }),
+    );
+
+    expectAsync(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+    ).toBeRejectedWithError(Error, /url.*?must be string/);
+  }));
+
+  it('should `content`', fakeAsync(async () => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    const content = '<div>Some Content</div>';
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        content,
+      }),
+    );
+
+    let feedEntry = await feedEntryService
+      .get('123e4567-e89b-12d3-a456-426614174000')
+      .toPromise();
+
+    expect(feedEntry.content).toBe(content);
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        content: null,
+      }),
+    );
+
+    feedEntry = await feedEntryService
+      .get('123e4567-e89b-12d3-a456-426614174000')
+      .toPromise();
+
+    expect(feedEntry.content).toBeNull();
+  }));
+
+  it('should `content` type error', fakeAsync(() => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        content: 0,
+      }),
+    );
+
+    expectAsync(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+    ).toBeRejectedWithError(Error, /content.*?must be string/);
+  }));
+
+  it('should `authorName`', fakeAsync(async () => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    const authorName = 'John Doe';
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        authorName,
+      }),
+    );
+
+    let feedEntry = await feedEntryService
+      .get('123e4567-e89b-12d3-a456-426614174000')
+      .toPromise();
+
+    expect(feedEntry.authorName).toBe(authorName);
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        authorName: null,
+      }),
+    );
+
+    feedEntry = await feedEntryService
+      .get('123e4567-e89b-12d3-a456-426614174000')
+      .toPromise();
+
+    expect(feedEntry.authorName).toBeNull();
+  }));
+
+  it('should `authorName` type error', fakeAsync(() => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        authorName: 0,
+      }),
+    );
+
+    expectAsync(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+    ).toBeRejectedWithError(Error, /authorName.*?must be string or null/);
+  }));
+
+  it('should `fromSubscription`', fakeAsync(async () => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    const fromSubscription = true;
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        fromSubscription,
+      }),
+    );
+
+    const feedEntry = await feedEntryService
+      .get('123e4567-e89b-12d3-a456-426614174000')
+      .toPromise();
+
+    expect(feedEntry.fromSubscription).toBe(fromSubscription);
+  }));
+
+  it('should `fromSubscription` type error', fakeAsync(() => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        fromSubscription: 0,
+      }),
+    );
+
+    expectAsync(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+    ).toBeRejectedWithError(Error, /fromSubscription.*?must be boolean/);
+  }));
+
+  it('should `isRead`', fakeAsync(async () => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    const isRead = true;
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        isRead,
+      }),
+    );
+
+    const feedEntry = await feedEntryService
+      .get('123e4567-e89b-12d3-a456-426614174000')
+      .toPromise();
+
+    expect(feedEntry.isRead).toBe(isRead);
+  }));
+
+  it('should `isRead` type error', fakeAsync(() => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        isRead: 0,
+      }),
+    );
+
+    expectAsync(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+    ).toBeRejectedWithError(Error, /isRead.*?must be boolean/);
+  }));
+
+  it('should `isFavorite`', fakeAsync(async () => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    const isFavorite = true;
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        isFavorite,
+      }),
+    );
+
+    const feedEntry = await feedEntryService
+      .get('123e4567-e89b-12d3-a456-426614174000')
+      .toPromise();
+
+    expect(feedEntry.isFavorite).toBe(isFavorite);
+  }));
+
+  it('should `isFavorite` type error', fakeAsync(() => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        isFavorite: 0,
+      }),
+    );
+
+    expectAsync(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+    ).toBeRejectedWithError(Error, /isFavorite.*?must be boolean/);
+  }));
+
+  it('should `feedUuid`', fakeAsync(async () => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    const feedUuid = '123e4567-e89b-12d3-a456-426614174000';
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        feedUuid,
+      }),
+    );
+
+    const feedEntry = await feedEntryService
+      .get('123e4567-e89b-12d3-a456-426614174000')
+      .toPromise();
+
+    expect(feedEntry.feedUuid).toBe(feedUuid);
+  }));
+
+  it('should `feedUuid` type error', fakeAsync(() => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        feedUuid: 0,
+      }),
+    );
+
+    expectAsync(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+    ).toBeRejectedWithError(Error, /feedUuid.*?must be string/);
   }));
 });
