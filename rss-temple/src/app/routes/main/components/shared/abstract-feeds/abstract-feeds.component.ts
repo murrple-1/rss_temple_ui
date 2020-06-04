@@ -175,7 +175,7 @@ export abstract class AbstractFeedsComponent implements OnInit, OnDestroy {
 
         if (!feedEntry.isRead) {
           this.feedEntryService
-            .read(feedEntry)
+            .read(feedEntry.uuid)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
               next: () => {
@@ -188,7 +188,7 @@ export abstract class AbstractFeedsComponent implements OnInit, OnDestroy {
             });
         } else {
           this.feedEntryService
-            .unread(feedEntry)
+            .unread(feedEntry.uuid)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
               next: () => {

@@ -228,11 +228,11 @@ export class FeedEntryService {
     return queryAllFn(options, this.query.bind(this), pageSize);
   }
 
-  read(feedEntry: FeedEntry, options: CommonOptions = {}) {
+  read(feedEntryUuid: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, sessionToken);
 
     return this.http.post<void>(
-      `${environment.apiHost}/api/feedentry/${feedEntry.uuid}/read`,
+      `${environment.apiHost}/api/feedentry/${feedEntryUuid}/read`,
       null,
       {
         headers,
@@ -240,30 +240,30 @@ export class FeedEntryService {
     );
   }
 
-  unread(feedEntry: FeedEntry, options: CommonOptions = {}) {
+  unread(feedEntryUuid: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, sessionToken);
 
     return this.http.delete<void>(
-      `${environment.apiHost}/api/feedentry/${feedEntry.uuid}/read`,
+      `${environment.apiHost}/api/feedentry/${feedEntryUuid}/read`,
       {
         headers,
       },
     );
   }
 
-  readSome(feedEntries: FeedEntry[], options: CommonOptions = {}) {
+  readSome(feedEntryUuids: string[], options: CommonOptions = {}) {
     const headers = commonToHeaders(options, sessionToken);
 
     return this.http.post<void>(
       `${environment.apiHost}/api/feedentries/read/`,
-      feedEntries.map(feedEntry => feedEntry.uuid),
+      feedEntryUuids,
       {
         headers,
       },
     );
   }
 
-  unreadSome(feedEntries: FeedEntry[], options: CommonOptions = {}) {
+  unreadSome(feedEntryUuids: string[], options: CommonOptions = {}) {
     const headers = commonToHeaders(options, sessionToken);
 
     return this.http.request<void>(
@@ -271,16 +271,16 @@ export class FeedEntryService {
       `${environment.apiHost}/api/feedentries/read/`,
       {
         headers,
-        body: feedEntries.map(feedEntry => feedEntry.uuid),
+        body: feedEntryUuids,
       },
     );
   }
 
-  favorite(feedEntry: FeedEntry, options: CommonOptions = {}) {
+  favorite(feedEntryUuid: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, sessionToken);
 
     return this.http.post<void>(
-      `${environment.apiHost}/api/feedentry/${feedEntry.uuid}/favorite`,
+      `${environment.apiHost}/api/feedentry/${feedEntryUuid}/favorite`,
       null,
       {
         headers,
@@ -288,30 +288,30 @@ export class FeedEntryService {
     );
   }
 
-  unfavorite(feedEntry: FeedEntry, options: CommonOptions = {}) {
+  unfavorite(feedEntryUuid: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, sessionToken);
 
     return this.http.delete<void>(
-      `${environment.apiHost}/api/feedentry/${feedEntry.uuid}/favorite`,
+      `${environment.apiHost}/api/feedentry/${feedEntryUuid}/favorite`,
       {
         headers,
       },
     );
   }
 
-  favoriteSome(feedEntries: FeedEntry[], options: CommonOptions = {}) {
+  favoriteSome(feedEntryUuids: string[], options: CommonOptions = {}) {
     const headers = commonToHeaders(options, sessionToken);
 
     return this.http.post<void>(
       `${environment.apiHost}/api/feedentries/favorite/`,
-      feedEntries.map(feedEntry => feedEntry.uuid),
+      feedEntryUuids,
       {
         headers,
       },
     );
   }
 
-  unfavoriteSome(feedEntries: FeedEntry[], options: CommonOptions = {}) {
+  unfavoriteSome(feedEntryUuids: string[], options: CommonOptions = {}) {
     const headers = commonToHeaders(options, sessionToken);
 
     return this.http.request<void>(
@@ -319,7 +319,7 @@ export class FeedEntryService {
       `${environment.apiHost}/api/feedentries/favorite/`,
       {
         headers,
-        body: feedEntries.map(feedEntry => feedEntry.uuid),
+        body: feedEntryUuids,
       },
     );
   }

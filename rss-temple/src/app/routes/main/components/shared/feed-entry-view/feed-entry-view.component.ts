@@ -3,8 +3,6 @@ import { Component, Input, NgZone, OnDestroy, ElementRef } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import * as dayjs from 'dayjs';
-
 import { FeedEntryService } from '@app/services/data';
 import { FeedEntry, Feed } from '@app/models';
 import { DisplayObservableService } from '@app/routes/main/services';
@@ -14,6 +12,7 @@ type FeedImpl = Required<Pick<Feed, 'calculatedTitle' | 'homeUrl'>>;
 type FeedEntryImpl = Required<
   Pick<
     FeedEntry,
+    | 'uuid'
     | 'url'
     | 'title'
     | 'content'
@@ -67,7 +66,7 @@ export class FeedEntryViewComponent implements OnDestroy {
     }
 
     this.feedEntryService
-      .read(this.feedEntry)
+      .read(this.feedEntry.uuid)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => {
@@ -103,7 +102,7 @@ export class FeedEntryViewComponent implements OnDestroy {
     }
 
     this.feedEntryService
-      .unread(this.feedEntry)
+      .unread(this.feedEntry.uuid)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => {
@@ -125,7 +124,7 @@ export class FeedEntryViewComponent implements OnDestroy {
     }
 
     this.feedEntryService
-      .favorite(this.feedEntry)
+      .favorite(this.feedEntry.uuid)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => {
@@ -147,7 +146,7 @@ export class FeedEntryViewComponent implements OnDestroy {
     }
 
     this.feedEntryService
-      .unfavorite(this.feedEntry)
+      .unfavorite(this.feedEntry.uuid)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => {
