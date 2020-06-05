@@ -10,7 +10,7 @@ export function toHeaders(
     [param: string]: string | string[];
   } = {};
 
-  const sessionToken = options.sessionToken || sessionTokenFn();
+  const sessionToken = options.sessionToken ?? sessionTokenFn();
   if (sessionToken !== null) {
     headers['X-Session-Token'] = sessionToken;
   }

@@ -32,7 +32,7 @@ export function toBody<Field, SortField extends string>(
   fieldsFn: () => Field[],
 ) {
   const body: QueryBody<Field> = {
-    fields: options.fields || fieldsFn(),
+    fields: options.fields ?? fieldsFn(),
   };
 
   if (options.count !== undefined) {

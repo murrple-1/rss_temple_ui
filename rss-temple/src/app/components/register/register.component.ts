@@ -46,7 +46,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.registerForm = this.formBuilder.group(
       {
         email: [
-          this.route.snapshot.paramMap.get('email') || '',
+          this.route.snapshot.paramMap.get('email') ?? '',
           [Validators.required, Validators.email],
         ],
         password: ['', [Validators.required, isValidPassword()]],

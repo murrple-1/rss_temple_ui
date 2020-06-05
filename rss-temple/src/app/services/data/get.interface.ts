@@ -22,7 +22,7 @@ export function toParams<Field>(
   const params: {
     [header: string]: string | string[];
   } = {
-    fields: (options.fields || fieldsFn()).join(','),
+    fields: (options.fields ?? fieldsFn()).join(','),
   };
 
   return params;

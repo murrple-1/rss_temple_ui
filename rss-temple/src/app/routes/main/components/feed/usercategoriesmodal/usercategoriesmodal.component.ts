@@ -75,7 +75,7 @@ export class UserCategoriesModalComponent implements OnInit, OnDestroy {
           const userCategorySelections: Selection[] = [];
 
           const initialUserCategories =
-            this.initialUserCategories || new Set<string>();
+            this.initialUserCategories ?? new Set<string>();
 
           for (const userCategory of userCategories) {
             userCategorySelections.push({

@@ -53,9 +53,13 @@ export function queryAllFn<Field, SortField extends string, T>(
         map(allRetObjs => {
           const objs = new Objects<T>();
 
-          objs.objects = allRetObjs.flatMap(_retObj =>
-            _retObj.objects ? _retObj.objects : [],
-          );
+          objs.objects = allRetObjs.flatMap(_retObj => {
+            /* istanbul ignore if  */
+            if (_retObj.objects === undefined) {
+              return [];
+            }
+            return _retObj.objects;
+          });
 
           if (options.returnTotalCount) {
             objs.totalCount = objs.objects.length;

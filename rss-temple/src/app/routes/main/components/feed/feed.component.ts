@@ -77,7 +77,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
       next: paramMap => {
         const url = paramMap.get('url');
         this.count = parseInt(
-          paramMap.get('count') || DEFAULT_COUNT.toString(10),
+          paramMap.get('count') ?? DEFAULT_COUNT.toString(10),
           10,
         );
 

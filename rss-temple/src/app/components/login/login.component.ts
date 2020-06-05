@@ -61,7 +61,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.returnUrl = this.route.snapshot.paramMap.get('returnUrl') || '/main';
+    this.returnUrl = this.route.snapshot.paramMap.get('returnUrl') ?? '/main';
 
     this.gAuthService.isLoaded$.pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: isLoaded => {
