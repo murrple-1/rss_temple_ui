@@ -3,6 +3,13 @@
 
 var path = require('path');
 
+var browsers;
+if (process.env.CI !== undefined) {
+  browsers = ['ChromeHeadlessCI', 'FirefoxHeadlessCI'];
+} else {
+  browsers = ['ChromeHeadless'];
+}
+
 var reporters = ['progress', 'kjhtml'];
 var _test_type = (process.env.TEST_TYPE || 'standard').toLowerCase();
 if (_test_type === 'standard') {
@@ -20,6 +27,7 @@ module.exports = function (config) {
     plugins: [
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
+      require('karma-firefox-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage-istanbul-reporter'),
       require('karma-junit-reporter'),
@@ -41,11 +49,14 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['ChromeHeadless'],
+    browsers,
     customLaunchers: {
       ChromeHeadlessCI: {
         base: 'ChromeHeadless',
         flags: ['--no-sandbox'],
+      },
+      FirefoxHeadlessCI: {
+        base: 'FirefoxHeadless',
       },
     },
   });

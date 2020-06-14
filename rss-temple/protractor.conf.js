@@ -3,23 +3,43 @@
 
 const { SpecReporter, StacktraceOption } = require('jasmine-spec-reporter');
 
+var multiCapabilities;
+
 var chromeOptions = {
   args: ['--headless', '--disable-gpu', '--window-size=1920,1080'],
 };
+var firefoxOptions = {};
 
 if (process.env.CI !== undefined) {
+  multiCapabilities = [
+    {
+      browserName: 'chrome',
+      shardTestFiles: false,
+      maxInstances: 10,
+      chromeOptions,
+    },
+    {
+      browserName: 'firefox',
+      'moz:firefoxOptions': firefoxOptions,
+    },
+  ];
+} else {
   chromeOptions.args.push('--no-sandbox');
+
+  multiCapabilities = [
+    {
+      browserName: 'chrome',
+      shardTestFiles: false,
+      maxInstances: 10,
+      chromeOptions,
+    },
+  ];
 }
 
 exports.config = {
   allScriptsTimeout: 30 * 1000,
   specs: ['./e2e/**/*.e2e-spec.ts'],
-  capabilities: {
-    browserName: 'chrome',
-    shardTestFiles: false,
-    maxInstances: 10,
-    chromeOptions,
-  },
+  multiCapabilities,
   directConnect: true,
   framework: 'jasmine',
   jasmineNodeOpts: {
@@ -27,18 +47,15 @@ exports.config = {
     defaultTimeoutInterval: 30000,
     print: function () {},
   },
-  beforeLaunch: function () {
+  onPrepare() {
     require('ts-node').register({
       project: 'e2e/tsconfig.e2e.json',
     });
-  },
-  onPrepare() {
-    jasmine
-      .getEnv()
-      .addReporter(
-        new SpecReporter({
-          spec: { displayStacktrace: StacktraceOption.PRETTY },
-        }),
-      );
+
+    jasmine.getEnv().addReporter(
+      new SpecReporter({
+        spec: { displayStacktrace: StacktraceOption.PRETTY },
+      }),
+    );
   },
 };

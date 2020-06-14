@@ -50,7 +50,7 @@ jobs:
             - ~/.cache/yarn
       - run:
           name: angular-test
-          command: yarn run cross-env TEST_TYPE=xml ng test --code-coverage --no-watch --no-progress --browsers=ChromeHeadlessCI
+          command: yarn run cross-env TEST_TYPE=xml ng test --code-coverage --no-watch --no-progress
           working_directory: ~/rss_temple_http/rss-temple/
       - store_test_results:
           path: ~/rss_temple_http/rss-temple/test-results/
@@ -74,7 +74,7 @@ jobs:
           working_directory: ~/rss_temple_http/rss-temple/
       - run:
           name: webdriver-update
-          command: yarn run webdriver-manager update --standalone false --gecko false --versions.chrome 2.37
+          command: yarn run webdriver-manager update --standalone false --versions.chrome 2.37
           working_directory: ~/rss_temple_http/rss-temple/
       - save_cache:
           key: dependency-cache-{{ checksum "~/rss_temple_http/rss-temple/yarn.lock" }}
