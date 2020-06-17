@@ -17,6 +17,7 @@ function setup() {
   };
 }
 
+// TODO write tests
 describe('usercategory.service', () => {
   it('should', fakeAsync(async () => {
     const { httpClientSpy, userCategoryService } = setup();
