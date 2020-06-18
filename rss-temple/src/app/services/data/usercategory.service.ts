@@ -128,11 +128,11 @@ export class UserCategoryService {
       .pipe(map(toUserCategory));
   }
 
-  delete(userCategoryUuid: string, options: CommonOptions = {}) {
+  delete(uuid: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, sessionToken);
 
     return this.http.delete<void>(
-      `${environment.apiHost}/api/usercategory/${userCategoryUuid}`,
+      `${environment.apiHost}/api/usercategory/${uuid}`,
       {
         headers,
       },
