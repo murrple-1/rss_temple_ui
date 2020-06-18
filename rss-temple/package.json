@@ -42,7 +42,7 @@
     "ngx-snackbar": "^2.0.1",
     "rxjs": "~6.5.5",
     "sprintf-js": "^1.1.2",
-    "tslib": "^2.0.0",
+    "tslib": "^1.10.0",
     "zone.js": "~0.10.3"
   },
   "devDependencies": {
