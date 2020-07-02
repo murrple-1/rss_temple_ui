@@ -72,7 +72,7 @@ export class InViewportDirective implements OnInit, OnDestroy {
       left: 0,
       right: window.innerWidth,
       width: window.innerWidth,
-      height: window.innerHeight + 2 * this.appInViewportOffset,
+      height: window.innerHeight + this.appInViewportOffset * 2,
     };
 
     const boundingRect = nativeElement.getBoundingClientRect();
