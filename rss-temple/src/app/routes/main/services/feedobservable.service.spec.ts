@@ -10,7 +10,7 @@ function setup() {
   };
 }
 
-describe('feedobservable.service', () => {
+describe('FeedObservableService', () => {
   it('should fire feedAdded', () => {
     const { feedObservableService } = setup();
 

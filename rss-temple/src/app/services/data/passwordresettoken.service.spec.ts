@@ -22,13 +22,13 @@ function setup() {
   };
 }
 
-describe('opml.service', () => {
+describe('PasswordResetTokenService', () => {
   it('should request', fakeAsync(async () => {
     const { httpClientSpy, passwordResetTokenService } = setup();
 
     httpClientSpy.post.and.returnValue(of());
 
-    expectAsync(
+    await expectAsync(
       passwordResetTokenService.request('test@example.com').toPromise(),
     ).toBeResolved();
   }));
@@ -38,7 +38,7 @@ describe('opml.service', () => {
 
     httpClientSpy.post.and.returnValue(of());
 
-    expectAsync(
+    await expectAsync(
       passwordResetTokenService
         .reset({
           token: 'a-token',

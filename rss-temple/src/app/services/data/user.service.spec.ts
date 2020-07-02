@@ -23,7 +23,7 @@ function setup() {
   };
 }
 
-describe('user.service', () => {
+describe('UserService', () => {
   it('should get', fakeAsync(async () => {
     const { httpClientSpy, userService } = setup();
 
@@ -38,7 +38,7 @@ describe('user.service', () => {
 
     httpClientSpy.put.and.returnValue(of());
 
-    expectAsync(userService.update({}).toPromise()).toBeResolved();
+    await expectAsync(userService.update({}).toPromise()).toBeResolved();
   }));
 
   it('should verify', fakeAsync(async () => {
@@ -46,7 +46,7 @@ describe('user.service', () => {
 
     httpClientSpy.post.and.returnValue(of());
 
-    expectAsync(userService.verify('a-token').toPromise()).toBeResolved();
+    await expectAsync(userService.verify('a-token').toPromise()).toBeResolved();
   }));
 
   it('should error JSON not object', fakeAsync(async () => {
@@ -54,7 +54,7 @@ describe('user.service', () => {
 
     httpClientSpy.get.and.returnValue(of([]));
 
-    expectAsync(userService.get().toPromise()).toBeRejectedWithError(
+    await expectAsync(userService.get().toPromise()).toBeRejectedWithError(
       Error,
       /must be object/,
     );
@@ -82,7 +82,7 @@ describe('user.service', () => {
       }),
     );
 
-    expectAsync(userService.get().toPromise()).toBeRejectedWithError(
+    await expectAsync(userService.get().toPromise()).toBeRejectedWithError(
       Error,
       /uuid.*?must be string/,
     );
@@ -110,7 +110,7 @@ describe('user.service', () => {
       }),
     );
 
-    expectAsync(userService.get().toPromise()).toBeRejectedWithError(
+    await expectAsync(userService.get().toPromise()).toBeRejectedWithError(
       Error,
       /email.*?must be string/,
     );
@@ -138,7 +138,7 @@ describe('user.service', () => {
       }),
     );
 
-    expectAsync(userService.get().toPromise()).toBeRejectedWithError(
+    await expectAsync(userService.get().toPromise()).toBeRejectedWithError(
       Error,
       /hasGoogleLogin.*?must be boolean/,
     );
@@ -166,7 +166,7 @@ describe('user.service', () => {
       }),
     );
 
-    expectAsync(userService.get().toPromise()).toBeRejectedWithError(
+    await expectAsync(userService.get().toPromise()).toBeRejectedWithError(
       Error,
       /hasFacebookLogin.*?must be boolean/,
     );
@@ -205,7 +205,7 @@ describe('user.service', () => {
       }),
     );
 
-    expectAsync(userService.get().toPromise()).toBeRejectedWithError(
+    await expectAsync(userService.get().toPromise()).toBeRejectedWithError(
       Error,
       /subscribedFeedUuids.*?must be array/,
     );
@@ -216,7 +216,7 @@ describe('user.service', () => {
       }),
     );
 
-    expectAsync(userService.get().toPromise()).toBeRejectedWithError(
+    await expectAsync(userService.get().toPromise()).toBeRejectedWithError(
       Error,
       /subscribedFeedUuids.*?element.*?must be string/,
     );

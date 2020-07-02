@@ -17,7 +17,7 @@ function setup() {
   };
 }
 
-describe('progress.service', () => {
+describe('ProgressService', () => {
   it('should check progress', fakeAsync(async () => {
     const { httpClientSpy, progressService } = setup();
 
@@ -87,7 +87,7 @@ describe('progress.service', () => {
 
     httpClientSpy.get.and.returnValue(of([1]));
 
-    expectAsync(
+    await expectAsync(
       progressService
         .checkProgress('123e4567-e89b-12d3-a456-426614174000')
         .toPromise(),
@@ -104,7 +104,7 @@ describe('progress.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       progressService
         .checkProgress('123e4567-e89b-12d3-a456-426614174000')
         .toPromise(),
@@ -122,7 +122,7 @@ describe('progress.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       progressService
         .checkProgress('123e4567-e89b-12d3-a456-426614174000')
         .toPromise(),
@@ -140,7 +140,7 @@ describe('progress.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       progressService
         .checkProgress('123e4567-e89b-12d3-a456-426614174000')
         .toPromise(),
@@ -157,7 +157,7 @@ describe('progress.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       progressService
         .checkProgress('123e4567-e89b-12d3-a456-426614174000')
         .toPromise(),
@@ -175,7 +175,7 @@ describe('progress.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       progressService
         .checkProgress('123e4567-e89b-12d3-a456-426614174000')
         .toPromise(),
@@ -192,7 +192,7 @@ describe('progress.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       progressService
         .checkProgress('123e4567-e89b-12d3-a456-426614174000')
         .toPromise(),
@@ -210,7 +210,7 @@ describe('progress.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       progressService
         .checkProgress('123e4567-e89b-12d3-a456-426614174000')
         .toPromise(),

@@ -11,7 +11,7 @@ function setup() {
   };
 }
 
-describe('displayobservable.service', () => {
+describe('DisplayObservableService', () => {
   it('should set display', () => {
     const { displayObservableService } = setup();
 

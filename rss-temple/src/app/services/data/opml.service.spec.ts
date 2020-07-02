@@ -20,7 +20,7 @@ function setup() {
   };
 }
 
-describe('opml.service', () => {
+describe('OPMLService', () => {
   it('should download', fakeAsync(async () => {
     const { httpClientSpy, opmlService } = setup();
 

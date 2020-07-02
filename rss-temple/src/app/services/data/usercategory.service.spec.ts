@@ -24,8 +24,7 @@ function setup() {
   };
 }
 
-// TODO write tests
-describe('usercategory.service', () => {
+describe('UserCategoryService', () => {
   it('should get', fakeAsync(async () => {
     const { httpClientSpy, userCategoryService } = setup();
 
@@ -83,7 +82,7 @@ describe('usercategory.service', () => {
 
     httpClientSpy.delete.and.returnValue(of());
 
-    expectAsync(
+    await expectAsync(
       userCategoryService
         .delete('123e4567-e89b-12d3-a456-426614174000')
         .toPromise(),
@@ -95,7 +94,7 @@ describe('usercategory.service', () => {
 
     httpClientSpy.put.and.returnValue(of());
 
-    expectAsync(
+    await expectAsync(
       userCategoryService
         .apply({
           '123e4567-e89b-12d3-a456-426614174000': new Set([
@@ -111,7 +110,7 @@ describe('usercategory.service', () => {
 
     httpClientSpy.get.and.returnValue(of([]));
 
-    expectAsync(
+    await expectAsync(
       userCategoryService
         .get('123e4567-e89b-12d3-a456-426614174000')
         .toPromise(),
@@ -142,7 +141,7 @@ describe('usercategory.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       userCategoryService
         .get('123e4567-e89b-12d3-a456-426614174000')
         .toPromise(),
@@ -173,7 +172,7 @@ describe('usercategory.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       userCategoryService
         .get('123e4567-e89b-12d3-a456-426614174000')
         .toPromise(),

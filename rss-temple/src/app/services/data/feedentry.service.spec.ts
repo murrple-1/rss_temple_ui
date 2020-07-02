@@ -28,7 +28,7 @@ function setup() {
   };
 }
 
-describe('feedentry.service', () => {
+describe('FeedEntryService', () => {
   it('should get', fakeAsync(async () => {
     const { httpClientSpy, feedEntryService } = setup();
 
@@ -179,12 +179,12 @@ describe('feedentry.service', () => {
     expect().nothing();
   }));
 
-  it('should fail get when response is not JSON object', fakeAsync(() => {
+  it('should fail get when response is not JSON object', fakeAsync(async () => {
     const { httpClientSpy, feedEntryService } = setup();
 
     httpClientSpy.get.and.returnValue(of(4));
 
-    expectAsync(
+    await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
     ).toBeRejectedWithError(Error, 'JSON must be object');
   }));
@@ -207,7 +207,7 @@ describe('feedentry.service', () => {
     expect(feedEntry.uuid).toBe(uuid);
   }));
 
-  it('should `uuid` type error', fakeAsync(() => {
+  it('should `uuid` type error', fakeAsync(async () => {
     const { httpClientSpy, feedEntryService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -216,7 +216,7 @@ describe('feedentry.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
     ).toBeRejectedWithError(Error, /uuid.*?must be string/);
   }));
@@ -251,7 +251,7 @@ describe('feedentry.service', () => {
     expect(feedEntry.id).toBeNull();
   }));
 
-  it('should `id` type error', fakeAsync(() => {
+  it('should `id` type error', fakeAsync(async () => {
     const { httpClientSpy, feedEntryService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -260,7 +260,7 @@ describe('feedentry.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
     ).toBeRejectedWithError(Error, /id.*?must be string/);
   }));
@@ -298,7 +298,7 @@ describe('feedentry.service', () => {
     expect(feedEntry.createdAt).toBeNull();
   }));
 
-  it('should `createdAt` type error', fakeAsync(() => {
+  it('should `createdAt` type error', fakeAsync(async () => {
     const { httpClientSpy, feedEntryService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -307,12 +307,12 @@ describe('feedentry.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
     ).toBeRejectedWithError(Error, /createdAt.*?must be datetime or null/);
   }));
 
-  it('should `createdAt` malformed', fakeAsync(() => {
+  it('should `createdAt` malformed', fakeAsync(async () => {
     const { httpClientSpy, feedEntryService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -321,7 +321,7 @@ describe('feedentry.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedEntryService.get('http://www.fake.com/rss.xml').toPromise(),
     ).toBeRejectedWithError(Error, /createdAt.*?invalid/);
   }));
@@ -347,7 +347,7 @@ describe('feedentry.service', () => {
     expect(feedEntry.publishedAt).toEqual(publishedAt);
   }));
 
-  it('should `publishedAt` type error', fakeAsync(() => {
+  it('should `publishedAt` type error', fakeAsync(async () => {
     const { httpClientSpy, feedEntryService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -356,12 +356,12 @@ describe('feedentry.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
     ).toBeRejectedWithError(Error, /publishedAt.*?must be datetime/);
   }));
 
-  it('should `publishedAt` malformed', fakeAsync(() => {
+  it('should `publishedAt` malformed', fakeAsync(async () => {
     const { httpClientSpy, feedEntryService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -370,7 +370,7 @@ describe('feedentry.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedEntryService.get('http://www.fake.com/rss.xml').toPromise(),
     ).toBeRejectedWithError(Error, /publishedAt.*?invalid/);
   }));
@@ -408,7 +408,7 @@ describe('feedentry.service', () => {
     expect(feedEntry.updatedAt).toBeNull();
   }));
 
-  it('should `updatedAt` type error', fakeAsync(() => {
+  it('should `updatedAt` type error', fakeAsync(async () => {
     const { httpClientSpy, feedEntryService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -417,12 +417,12 @@ describe('feedentry.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
     ).toBeRejectedWithError(Error, /updatedAt.*?must be datetime or null/);
   }));
 
-  it('should `updatedAt` malformed', fakeAsync(() => {
+  it('should `updatedAt` malformed', fakeAsync(async () => {
     const { httpClientSpy, feedEntryService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -431,7 +431,7 @@ describe('feedentry.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedEntryService.get('http://www.fake.com/rss.xml').toPromise(),
     ).toBeRejectedWithError(Error, /updatedAt.*?invalid/);
   }));
@@ -454,7 +454,7 @@ describe('feedentry.service', () => {
     expect(feedEntry.title).toBe(title);
   }));
 
-  it('should `title` type error', fakeAsync(() => {
+  it('should `title` type error', fakeAsync(async () => {
     const { httpClientSpy, feedEntryService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -463,7 +463,7 @@ describe('feedentry.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
     ).toBeRejectedWithError(Error, /title.*?must be string/);
   }));
@@ -486,7 +486,7 @@ describe('feedentry.service', () => {
     expect(feedEntry.url).toBe(url);
   }));
 
-  it('should `url` type error', fakeAsync(() => {
+  it('should `url` type error', fakeAsync(async () => {
     const { httpClientSpy, feedEntryService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -495,7 +495,7 @@ describe('feedentry.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
     ).toBeRejectedWithError(Error, /url.*?must be string/);
   }));
@@ -530,7 +530,7 @@ describe('feedentry.service', () => {
     expect(feedEntry.content).toBeNull();
   }));
 
-  it('should `content` type error', fakeAsync(() => {
+  it('should `content` type error', fakeAsync(async () => {
     const { httpClientSpy, feedEntryService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -539,7 +539,7 @@ describe('feedentry.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
     ).toBeRejectedWithError(Error, /content.*?must be string/);
   }));
@@ -574,7 +574,7 @@ describe('feedentry.service', () => {
     expect(feedEntry.authorName).toBeNull();
   }));
 
-  it('should `authorName` type error', fakeAsync(() => {
+  it('should `authorName` type error', fakeAsync(async () => {
     const { httpClientSpy, feedEntryService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -583,7 +583,7 @@ describe('feedentry.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
     ).toBeRejectedWithError(Error, /authorName.*?must be string or null/);
   }));
@@ -606,7 +606,7 @@ describe('feedentry.service', () => {
     expect(feedEntry.fromSubscription).toBe(fromSubscription);
   }));
 
-  it('should `fromSubscription` type error', fakeAsync(() => {
+  it('should `fromSubscription` type error', fakeAsync(async () => {
     const { httpClientSpy, feedEntryService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -615,7 +615,7 @@ describe('feedentry.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
     ).toBeRejectedWithError(Error, /fromSubscription.*?must be boolean/);
   }));
@@ -638,7 +638,7 @@ describe('feedentry.service', () => {
     expect(feedEntry.isRead).toBe(isRead);
   }));
 
-  it('should `isRead` type error', fakeAsync(() => {
+  it('should `isRead` type error', fakeAsync(async () => {
     const { httpClientSpy, feedEntryService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -647,7 +647,7 @@ describe('feedentry.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
     ).toBeRejectedWithError(Error, /isRead.*?must be boolean/);
   }));
@@ -670,7 +670,7 @@ describe('feedentry.service', () => {
     expect(feedEntry.isFavorite).toBe(isFavorite);
   }));
 
-  it('should `isFavorite` type error', fakeAsync(() => {
+  it('should `isFavorite` type error', fakeAsync(async () => {
     const { httpClientSpy, feedEntryService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -679,7 +679,7 @@ describe('feedentry.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
     ).toBeRejectedWithError(Error, /isFavorite.*?must be boolean/);
   }));
@@ -702,7 +702,7 @@ describe('feedentry.service', () => {
     expect(feedEntry.feedUuid).toBe(feedUuid);
   }));
 
-  it('should `feedUuid` type error', fakeAsync(() => {
+  it('should `feedUuid` type error', fakeAsync(async () => {
     const { httpClientSpy, feedEntryService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -711,7 +711,7 @@ describe('feedentry.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
     ).toBeRejectedWithError(Error, /feedUuid.*?must be string/);
   }));

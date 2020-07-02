@@ -27,7 +27,7 @@ function setup() {
   };
 }
 
-describe('feed.service', () => {
+describe('FeedService', () => {
   it('should get', fakeAsync(async () => {
     const { httpClientSpy, feedService } = setup();
 
@@ -102,12 +102,12 @@ describe('feed.service', () => {
     expect().nothing();
   }));
 
-  it('should fail get when response is not JSON object', fakeAsync(() => {
+  it('should fail get when response is not JSON object', fakeAsync(async () => {
     const { httpClientSpy, feedService } = setup();
 
     httpClientSpy.get.and.returnValue(of(4));
 
-    expectAsync(
+    await expectAsync(
       feedService.get('http://www.fake.com/rss.xml').toPromise(),
     ).toBeRejectedWithError(Error, 'JSON must be object');
   }));
@@ -130,7 +130,7 @@ describe('feed.service', () => {
     expect(feed.uuid).toBe(uuid);
   }));
 
-  it('should `uuid` type error', fakeAsync(() => {
+  it('should `uuid` type error', fakeAsync(async () => {
     const { httpClientSpy, feedService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -139,7 +139,7 @@ describe('feed.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedService.get('http://www.fake.com/rss.xml').toPromise(),
     ).toBeRejectedWithError(Error, /uuid.*?must be string/);
   }));
@@ -162,7 +162,7 @@ describe('feed.service', () => {
     expect(feed.title).toBe(title);
   }));
 
-  it('should `title` type error', fakeAsync(() => {
+  it('should `title` type error', fakeAsync(async () => {
     const { httpClientSpy, feedService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -171,7 +171,7 @@ describe('feed.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedService.get('http://www.fake.com/rss.xml').toPromise(),
     ).toBeRejectedWithError(Error, /title.*?must be string/);
   }));
@@ -194,7 +194,7 @@ describe('feed.service', () => {
     expect(feed.feedUrl).toBe(feedUrl);
   }));
 
-  it('should `feedUrl` type error', fakeAsync(() => {
+  it('should `feedUrl` type error', fakeAsync(async () => {
     const { httpClientSpy, feedService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -203,7 +203,7 @@ describe('feed.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedService.get('http://www.fake.com/rss.xml').toPromise(),
     ).toBeRejectedWithError(Error, /feedUrl.*?must be string/);
   }));
@@ -226,7 +226,7 @@ describe('feed.service', () => {
     expect(feed.homeUrl).toBe(homeUrl);
   }));
 
-  it('should `homeUrl` type error', fakeAsync(() => {
+  it('should `homeUrl` type error', fakeAsync(async () => {
     const { httpClientSpy, feedService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -235,7 +235,7 @@ describe('feed.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedService.get('http://www.fake.com/rss.xml').toPromise(),
     ).toBeRejectedWithError(Error, /homeUrl.*?must be string/);
   }));
@@ -261,7 +261,7 @@ describe('feed.service', () => {
     expect(feed.publishedAt).toEqual(publishedAt);
   }));
 
-  it('should `publishedAt` type error', fakeAsync(() => {
+  it('should `publishedAt` type error', fakeAsync(async () => {
     const { httpClientSpy, feedService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -270,12 +270,12 @@ describe('feed.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedService.get('http://www.fake.com/rss.xml').toPromise(),
     ).toBeRejectedWithError(Error, /publishedAt.*?must be datetime/);
   }));
 
-  it('should `publishedAt` malformed', fakeAsync(() => {
+  it('should `publishedAt` malformed', fakeAsync(async () => {
     const { httpClientSpy, feedService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -284,7 +284,7 @@ describe('feed.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedService.get('http://www.fake.com/rss.xml').toPromise(),
     ).toBeRejectedWithError(Error, /publishedAt.*?invalid/);
   }));
@@ -318,7 +318,7 @@ describe('feed.service', () => {
     expect(feed.updatedAt).toBeNull();
   }));
 
-  it('should `updatedAt` type error', fakeAsync(() => {
+  it('should `updatedAt` type error', fakeAsync(async () => {
     const { httpClientSpy, feedService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -327,12 +327,12 @@ describe('feed.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedService.get('http://www.fake.com/rss.xml').toPromise(),
     ).toBeRejectedWithError(Error, /updatedAt.*?must be datetime/);
   }));
 
-  it('should `updatedAt` malformed', fakeAsync(() => {
+  it('should `updatedAt` malformed', fakeAsync(async () => {
     const { httpClientSpy, feedService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -341,7 +341,7 @@ describe('feed.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedService.get('http://www.fake.com/rss.xml').toPromise(),
     ).toBeRejectedWithError(Error, /updatedAt.*?invalid/);
   }));
@@ -364,7 +364,7 @@ describe('feed.service', () => {
     expect(feed.subscribed).toBe(subscribed);
   }));
 
-  it('should `subscribed` type error', fakeAsync(() => {
+  it('should `subscribed` type error', fakeAsync(async () => {
     const { httpClientSpy, feedService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -373,7 +373,7 @@ describe('feed.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedService.get('http://www.fake.com/rss.xml').toPromise(),
     ).toBeRejectedWithError(Error, /subscribed.*?must be boolean/);
   }));
@@ -404,7 +404,7 @@ describe('feed.service', () => {
     expect(feed.customTitle).toBeNull();
   }));
 
-  it('should `customTitle` type error', fakeAsync(() => {
+  it('should `customTitle` type error', fakeAsync(async () => {
     const { httpClientSpy, feedService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -413,7 +413,7 @@ describe('feed.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedService.get('http://www.fake.com/rss.xml').toPromise(),
     ).toBeRejectedWithError(Error, /customTitle.*?must be string or null/);
   }));
@@ -436,7 +436,7 @@ describe('feed.service', () => {
     expect(feed.calculatedTitle).toBe(calculatedTitle);
   }));
 
-  it('should `calculatedTitle` type error', fakeAsync(() => {
+  it('should `calculatedTitle` type error', fakeAsync(async () => {
     const { httpClientSpy, feedService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -445,7 +445,7 @@ describe('feed.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedService.get('http://www.fake.com/rss.xml').toPromise(),
     ).toBeRejectedWithError(Error, /calculatedTitle.*?must be string/);
   }));
@@ -468,7 +468,7 @@ describe('feed.service', () => {
     expect(feed.userCategoryUuids).toBe(userCategoryUuids);
   }));
 
-  it('should `userCategoryUuids` type error', fakeAsync(() => {
+  it('should `userCategoryUuids` type error', fakeAsync(async () => {
     const { httpClientSpy, feedService } = setup();
 
     httpClientSpy.get.and.returnValue(
@@ -477,7 +477,7 @@ describe('feed.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedService.get('http://www.fake.com/rss.xml').toPromise(),
     ).toBeRejectedWithError(Error, /userCategoryUuids.*?must be array/);
 
@@ -487,7 +487,7 @@ describe('feed.service', () => {
       }),
     );
 
-    expectAsync(
+    await expectAsync(
       feedService.get('http://www.fake.com/rss.xml').toPromise(),
     ).toBeRejectedWithError(
       Error,
