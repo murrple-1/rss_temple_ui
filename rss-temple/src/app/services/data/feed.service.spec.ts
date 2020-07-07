@@ -453,7 +453,7 @@ describe('FeedService', () => {
   it('should `userCategoryUuids', fakeAsync(async () => {
     const { httpClientSpy, feedService } = setup();
 
-    let userCategoryUuids = ['123e4567-e89b-12d3-a456-426614174000'];
+    const userCategoryUuids = ['123e4567-e89b-12d3-a456-426614174000'];
 
     httpClientSpy.get.and.returnValue(
       of({

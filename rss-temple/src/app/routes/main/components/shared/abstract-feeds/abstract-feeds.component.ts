@@ -1,3 +1,4 @@
+/* tslint:disable:directive-class-suffix */
 import {
   OnInit,
   OnDestroy,
@@ -8,8 +9,6 @@ import {
 
 import { Subject, fromEvent } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
-
-import * as dayjs from 'dayjs';
 
 import { HttpErrorService } from '@app/services';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';

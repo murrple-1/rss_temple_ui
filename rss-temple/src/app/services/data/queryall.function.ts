@@ -1,5 +1,5 @@
 import { Observable, forkJoin } from 'rxjs';
-import { map, flatMap } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 
 import { Objects } from '@app/services/data/objects';
 import { AllOptions } from '@app/services/data/all.interface';
@@ -20,7 +20,7 @@ export function queryAllFn<Field, SortField extends string, T>(
     sort: options.sort,
     sessionToken: options.sessionToken,
   }).pipe(
-    flatMap(retObj => {
+    mergeMap(retObj => {
       const allCalls: Observable<Objects<T>>[] = [];
 
       allCalls.push(
