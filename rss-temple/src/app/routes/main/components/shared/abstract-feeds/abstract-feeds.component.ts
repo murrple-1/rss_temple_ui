@@ -1,4 +1,10 @@
-import { OnInit, OnDestroy, ChangeDetectorRef, NgZone } from '@angular/core';
+import {
+  OnInit,
+  OnDestroy,
+  ChangeDetectorRef,
+  NgZone,
+  Directive,
+} from '@angular/core';
 
 import { Subject, fromEvent } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
@@ -32,6 +38,7 @@ export type FeedEntryImpl = Required<
   >
 >;
 
+@Directive()
 export abstract class AbstractFeedsComponent implements OnInit, OnDestroy {
   feedEntries: FeedEntryImpl[] = [];
 

@@ -6,8 +6,6 @@ import {
   FormGroup,
 } from '@angular/forms';
 
-import { sprintf } from 'sprintf-js';
-
 export const MinLength = 6;
 
 export const SpecialCharacters = ['!', '@', '#', '$', '%', '^', '&'];
@@ -67,12 +65,7 @@ export function doPasswordsMatch(password1Name: string, password2Name: string) {
 }
 
 export function passwordRequirementsText(_lang: string) {
-  return sprintf(
-    'Your password must be 6 or more characters long, ' +
-      'contain 1 uppercase and 1 lowercase letters, 1 number, and 1 special character ' +
-      '(%(specialCharacters)s)',
-    {
-      specialCharacters: SpecialCharacters.join(''),
-    },
-  );
+  return `Your password must be 6 or more characters long, contain 1 uppercase and 1 lowercase letters, 1 number, and 1 special character (${SpecialCharacters.join(
+    '',
+  )})`;
 }
