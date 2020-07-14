@@ -17,7 +17,7 @@ import { RequestPasswordResetModalComponent } from '@app/components/login/reques
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormGroupErrors } from '@app/libs/formgrouperrors.lib';
 
-enum State {
+export enum State {
   Ready,
   IsLoggingIn,
   LoginFailed,
@@ -151,6 +151,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
       const passwordErrors = this.loginForm.controls.password.errors;
       if (passwordErrors !== null) {
+        /* istanbul ignore else */
         if (passwordErrors.required) {
           this.loginFormErrors.controls['password'].push('Password required');
         }
@@ -182,7 +183,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             }
           }
 
-          console.log(errorMessage, error);
+          console.error(errorMessage, error);
           this.alertService.error(errorMessage, 5000);
 
           this.zone.run(() => {
@@ -228,7 +229,7 @@ export class LoginComponent implements OnInit, OnDestroy {
                   break;
               }
 
-              console.log(errorMessage, error);
+              console.error(errorMessage, error);
 
               this.alertService.error(errorMessage, 5000);
 
@@ -239,7 +240,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           } else {
             const errorMessage = 'Unknown Error';
 
-            console.log(errorMessage, error);
+            console.error(errorMessage, error);
 
             this.alertService.error(errorMessage, 5000);
 
@@ -286,7 +287,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           } else {
             const errorMessage = 'Unknown Error';
 
-            console.log(errorMessage, error);
+            console.error(errorMessage, error);
 
             this.alertService.error(errorMessage, 5000);
 

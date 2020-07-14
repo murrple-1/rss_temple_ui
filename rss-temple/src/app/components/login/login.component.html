@@ -76,6 +76,7 @@
     <div class="col-md-4 offset-md-4">
       <fieldset [disabled]="state === State.IsLoggingIn">
         <button
+          id="google-login"
           [disabled]="!gLoaded"
           class="btn btn-primary"
           (click)="onGoogleLogin()"
@@ -83,6 +84,7 @@
           Login with Google
         </button>
         <button
+          id="facebook-login"
           [disabled]="!fbLoaded"
           class="btn btn-primary"
           (click)="onFacebookLogin()"
@@ -95,7 +97,9 @@
   <hr />
   <div class="row">
     <div class="col-md-4 offset-md-4">
-      <a routerLink="" (click)="onForgottenPassword()">Forgot your Password?</a>
+      <a id="forgotten-password" routerLink="" (click)="onForgottenPassword()"
+        >Forgot your Password?</a
+      >
     </div>
   </div>
 </div>
