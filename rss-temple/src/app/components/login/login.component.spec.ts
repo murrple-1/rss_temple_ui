@@ -1,6 +1,6 @@
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,
@@ -11,7 +11,6 @@ import {
   ParamMap,
   Router,
 } from '@angular/router';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Injectable, Component, Type } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -232,9 +231,7 @@ async function setup() {
 
   await TestBed.configureTestingModule({
     imports: [
-      FormsModule,
       ReactiveFormsModule,
-      HttpClientTestingModule,
 
       NgbModalModule,
 
@@ -251,7 +248,7 @@ async function setup() {
         },
       ]),
     ],
-    declarations: [MockComponent, LoginComponent],
+    declarations: [LoginComponent, MockComponent],
     providers: [
       {
         provide: ActivatedRoute,
