@@ -20,8 +20,8 @@ enum State {
 }
 
 @Component({
-  templateUrl: 'register.component.html',
-  styleUrls: ['register.component.scss'],
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent implements OnInit, OnDestroy {
   state = State.Ready;

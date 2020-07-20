@@ -10,8 +10,8 @@ export interface SubscriptionDetails {
 }
 
 @Component({
-  templateUrl: 'subscribemodal.component.html',
-  styleUrls: ['subscribemodal.component.scss'],
+  templateUrl: './subscribemodal.component.html',
+  styleUrls: ['./subscribemodal.component.scss'],
 })
 export class SubscribeModalComponent {
   submitted = false;

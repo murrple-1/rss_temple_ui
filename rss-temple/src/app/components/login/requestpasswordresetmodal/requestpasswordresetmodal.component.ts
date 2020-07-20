@@ -17,8 +17,8 @@ enum State {
 }
 
 @Component({
-  templateUrl: 'requestpasswordresetmodal.component.html',
-  styleUrls: ['requestpasswordresetmodal.component.scss'],
+  templateUrl: './requestpasswordresetmodal.component.html',
+  styleUrls: ['./requestpasswordresetmodal.component.scss'],
 })
 export class RequestPasswordResetModalComponent implements OnDestroy {
   state = State.NotStarted;

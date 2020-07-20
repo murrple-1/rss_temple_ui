@@ -25,8 +25,8 @@ enum State {
 }
 
 @Component({
-  templateUrl: 'resetpassword.component.html',
-  styleUrls: ['resetpassword.component.scss'],
+  templateUrl: './resetpassword.component.html',
+  styleUrls: ['./resetpassword.component.scss'],
 })
 export class ResetPasswordComponent implements OnInit, OnDestroy {
   private static readonly timeoutInterval = 2000;

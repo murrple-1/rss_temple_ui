@@ -1,30 +1,18 @@
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import {
-  ActivatedRoute,
-  ActivatedRouteSnapshot,
-  UrlSegment,
-  Params,
-  Data,
-  Route,
-  ParamMap,
-  Router,
-} from '@angular/router';
-import { Injectable, Component, Type } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Component } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { HttpErrorResponse } from '@angular/common/http';
 
-import {
-  NgbModalModule,
-  NgbModal,
-  NgbModalRef,
-} from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
-import { SnackbarModule } from 'ngx-snackbar';
+import { of, Observable } from 'rxjs';
 
-import { BehaviorSubject, of, Observable } from 'rxjs';
-
+import { MockActivatedRoute } from '@app/test/activatedroute.mock';
+import { MockGAuthService } from '@app/test/gauth.service.mock';
+import { MockFBAuthService } from '@app/test/fbauth.service.mock';
 import {
   GAuthService,
   FBAuthService,
@@ -33,185 +21,6 @@ import {
 } from '@app/services';
 
 import { LoginComponent, State } from './login.component';
-
-class MockParamMap implements ParamMap {
-  _map = new Map<string, string>();
-
-  get keys(): string[] {
-    return Array.from(this._map.keys());
-  }
-
-  has(name: string): boolean {
-    throw new Error('Method not implemented.');
-  }
-
-  get(name: string): string | null {
-    const value = this._map.get(name);
-    if (value !== undefined) {
-      return value;
-    } else {
-      return null;
-    }
-  }
-
-  getAll(name: string): string[] {
-    throw new Error('Method not implemented.');
-  }
-}
-
-class MockActivatedRouteSnapshot implements ActivatedRouteSnapshot {
-  url: UrlSegment[] = [];
-  params: Params = {};
-  queryParams: Params = {};
-  fragment = '';
-  data: Data = {};
-  outlet = '';
-  component: string | Type<any> | null = null;
-  routeConfig: Route | null = null;
-
-  _paramMap = new MockParamMap();
-
-  get root(): ActivatedRouteSnapshot {
-    throw new Error('Method not implemented.');
-  }
-
-  get parent(): ActivatedRouteSnapshot | null {
-    throw new Error('Method not implemented.');
-  }
-
-  get firstChild(): ActivatedRouteSnapshot | null {
-    throw new Error('Method not implemented.');
-  }
-
-  get children(): ActivatedRouteSnapshot[] {
-    throw new Error('Method not implemented.');
-  }
-
-  get pathFromRoot(): ActivatedRouteSnapshot[] {
-    throw new Error('Method not implemented.');
-  }
-
-  get paramMap(): ParamMap {
-    return this._paramMap;
-  }
-
-  get queryParamMap(): ParamMap {
-    throw new Error('Method not implemented.');
-  }
-
-  toString(): string {
-    throw new Error('Method not implemented.');
-  }
-}
-
-class MockActivatedRoute implements ActivatedRoute {
-  url = new Observable<UrlSegment[]>(_subscriber => {});
-  params = new Observable<Params>(_subscriber => {});
-  queryParams = new Observable<Params>(_subscriber => {});
-  fragment = new Observable<string>(_subscriber => {});
-  data = new Observable<Data>(_subscriber => {});
-  outlet = '';
-  component: string | Type<any> | null = null;
-  snapshot = new MockActivatedRouteSnapshot();
-
-  get routeConfig(): Route | null {
-    throw new Error('Method not implemented.');
-  }
-
-  get root(): ActivatedRoute {
-    throw new Error('Method not implemented.');
-  }
-
-  get parent(): ActivatedRoute | null {
-    throw new Error('Method not implemented.');
-  }
-
-  get firstChild(): ActivatedRoute | null {
-    throw new Error('Method not implemented.');
-  }
-
-  get children(): ActivatedRoute[] {
-    throw new Error('Method not implemented.');
-  }
-
-  get pathFromRoot(): ActivatedRoute[] {
-    throw new Error('Method not implemented.');
-  }
-
-  get paramMap(): Observable<ParamMap> {
-    throw new Error('Method not implemented.');
-  }
-
-  get queryParamMap(): Observable<ParamMap> {
-    throw new Error('Method not implemented.');
-  }
-
-  toString(): string {
-    throw new Error('Method not implemented.');
-  }
-}
-
-@Injectable()
-class MockGAuthService extends GAuthService {
-  user$ = new BehaviorSubject<gapi.auth2.GoogleUser | null>(null);
-  isLoaded$ = new BehaviorSubject<boolean>(false);
-
-  get user() {
-    return this.user$.getValue();
-  }
-
-  get isLoaded() {
-    return this.isLoaded$.getValue();
-  }
-
-  load() {
-    this.isLoaded$.next(true);
-  }
-
-  signIn() {
-    const user = {
-      getAuthResponse: () => {
-        return {
-          id_token: 'id_token',
-        };
-      },
-    } as gapi.auth2.GoogleUser;
-    this.user$.next(user);
-  }
-
-  signOut() {
-    this.user$.next(null);
-  }
-}
-
-@Injectable()
-class MockFBAuthService extends FBAuthService {
-  user$ = new BehaviorSubject<facebook.AuthResponse | null>(null);
-  isLoaded$ = new BehaviorSubject<boolean>(false);
-
-  get user() {
-    return this.user$.getValue();
-  }
-
-  get isLoaded() {
-    return this.isLoaded$.getValue();
-  }
-
-  load() {
-    this.isLoaded$.next(true);
-  }
-
-  signIn() {
-    const user = {
-      accessToken: 'accessToken',
-    } as facebook.AuthResponse;
-    this.user$.next(user);
-  }
-
-  signOut() {
-    this.user$.next(null);
-  }
-}
 
 @Component({})
 class MockComponent {}
@@ -232,10 +41,6 @@ async function setup() {
   await TestBed.configureTestingModule({
     imports: [
       ReactiveFormsModule,
-
-      NgbModalModule,
-
-      SnackbarModule.forRoot(),
 
       RouterTestingModule.withRoutes([
         {

@@ -20,8 +20,8 @@ interface ProgressStatus {
 }
 
 @Component({
-  templateUrl: 'opmlmodal.component.html',
-  styleUrls: ['opmlmodal.component.scss'],
+  templateUrl: './opmlmodal.component.html',
+  styleUrls: ['./opmlmodal.component.scss'],
 })
 export class OPMLModalComponent implements OnDestroy {
   @ViewChild('opmlFileInput', { static: true })

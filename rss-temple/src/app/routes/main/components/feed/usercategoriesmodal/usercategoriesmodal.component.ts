@@ -30,8 +30,8 @@ export interface ReturnData {
 }
 
 @Component({
-  templateUrl: 'usercategoriesmodal.component.html',
-  styleUrls: ['usercategoriesmodal.component.scss'],
+  templateUrl: './usercategoriesmodal.component.html',
+  styleUrls: ['./usercategoriesmodal.component.scss'],
 })
 export class UserCategoriesModalComponent implements OnInit, OnDestroy {
   newUserCategoryText = '';

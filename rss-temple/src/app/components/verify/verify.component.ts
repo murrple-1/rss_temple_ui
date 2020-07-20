@@ -16,8 +16,8 @@ enum State {
 }
 
 @Component({
-  templateUrl: 'verify.component.html',
-  styleUrls: ['verify.component.scss'],
+  templateUrl: './verify.component.html',
+  styleUrls: ['./verify.component.scss'],
 })
 export class VerifyComponent implements OnInit, OnDestroy {
   readonly State = State;
