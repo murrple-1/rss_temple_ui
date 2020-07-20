@@ -69,5 +69,17 @@ describe('FeedComponent', () => {
     expect(component).toBeTruthy();
   }));
 
+  it('can run ngOnInit', async(async () => {
+    await setup();
+
+    const componentFixture = TestBed.createComponent(FeedComponent);
+    const component = componentFixture.debugElement
+      .componentInstance as FeedComponent;
+
+    component.ngOnInit();
+    await componentFixture.whenStable();
+    expect().nothing();
+  }));
+
   // TODO more tests
 });

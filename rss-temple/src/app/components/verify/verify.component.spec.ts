@@ -38,5 +38,17 @@ describe('VerifyComponent', () => {
     expect(component).toBeTruthy();
   }));
 
+  it('can run ngOnInit', async(async () => {
+    await setup();
+
+    const componentFixture = TestBed.createComponent(VerifyComponent);
+    const component = componentFixture.debugElement
+      .componentInstance as VerifyComponent;
+
+    component.ngOnInit();
+    await componentFixture.whenStable();
+    expect().nothing();
+  }));
+
   // TODO more tests
 });

@@ -9,7 +9,7 @@ import {
 } from '@angular/router';
 import { Type } from '@angular/core';
 
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 class MockParamMap implements ParamMap {
   _map = new Map<string, string>();
@@ -115,9 +115,7 @@ export class MockActivatedRoute implements ActivatedRoute {
     throw new Error('Method not implemented.');
   }
 
-  get paramMap(): Observable<ParamMap> {
-    throw new Error('Method not implemented.');
-  }
+  readonly paramMap = new Subject<ParamMap>();
 
   get queryParamMap(): Observable<ParamMap> {
     throw new Error('Method not implemented.');

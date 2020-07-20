@@ -1,11 +1,15 @@
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
+import { of } from 'rxjs';
+
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { SnackbarModule } from 'ngx-snackbar';
 
 import { UserCategoryService } from '@app/services/data';
+import { Objects } from '@app/services/data/objects';
+import { UserCategory } from '@app/models';
 
 import { UserCategoriesModalComponent } from './usercategoriesmodal.component';
 
@@ -52,6 +56,26 @@ describe('UserCategoriesModalComponent', () => {
     const component = componentFixture.debugElement
       .componentInstance as UserCategoriesModalComponent;
     expect(component).toBeTruthy();
+  }));
+
+  it('can run ngOnInit', async(async () => {
+    const { mockUserCategoryService } = await setup();
+    mockUserCategoryService.queryAll.and.returnValue(
+      of<Objects<UserCategory>>({
+        objects: [],
+        totalCount: 0,
+      }),
+    );
+
+    const componentFixture = TestBed.createComponent(
+      UserCategoriesModalComponent,
+    );
+    const component = componentFixture.debugElement
+      .componentInstance as UserCategoriesModalComponent;
+
+    component.ngOnInit();
+    await componentFixture.whenStable();
+    expect().nothing();
   }));
 
   // TODO more tests
