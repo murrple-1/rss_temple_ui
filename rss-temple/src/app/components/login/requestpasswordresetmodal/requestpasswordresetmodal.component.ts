@@ -10,7 +10,7 @@ import { takeUntil } from 'rxjs/operators';
 import { HttpErrorService } from '@app/services';
 import { FormGroupErrors } from '@app/libs/formgrouperrors.lib';
 
-enum State {
+export enum State {
   NotStarted,
   Sending,
   Error,
@@ -62,6 +62,7 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
       this.state = State.Error;
 
       const emailErrors = this.forgottenPasswordForm.controls.email.errors;
+      /* istanbul ignore else */
       if (emailErrors !== null) {
         if (emailErrors.required) {
           this.forgottenPasswordFormErrors.controls['email'].push(

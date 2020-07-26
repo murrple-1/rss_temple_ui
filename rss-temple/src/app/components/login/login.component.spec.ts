@@ -341,6 +341,7 @@ describe('LoginComponent', () => {
     componentFixture.detectChanges();
     await componentFixture.whenStable();
 
+    expect(component.state).not.toBe(State.LoginFailed);
     expect(mockLoginService.getMyLoginSession).toHaveBeenCalledWith(
       'test@test.com',
       'password',
