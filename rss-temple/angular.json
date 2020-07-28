@@ -105,7 +105,11 @@
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": ["src/styles.scss"],
             "scripts": [],
-            "codeCoverageExclude": ["src/test.ts", "src/polyfill.ts"],
+            "codeCoverageExclude": [
+              "src/test.ts",
+              "src/polyfill.ts",
+              "src/app/test/**"
+            ],
             "progress": false
           }
         },
