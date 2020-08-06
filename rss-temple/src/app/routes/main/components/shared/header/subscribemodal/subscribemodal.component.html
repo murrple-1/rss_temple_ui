@@ -3,7 +3,10 @@
   <button type="button" class="close" (click)="dismiss()">X</button>
 </div>
 <div class="modal-body">
-  <form [formGroup]="subscribeForm" [ngClass]="{ 'is-submitted': submitted }">
+  <form
+    [formGroup]="subscribeForm"
+    [ngClass]="{ 'app--is-submitted': submitted }"
+  >
     <fieldset>
       <div class="form-group">
         <div class="input-group">

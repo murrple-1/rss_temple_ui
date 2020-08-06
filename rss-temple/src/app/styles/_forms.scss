@@ -2,10 +2,10 @@ form.ng-invalid div.app--error-group {
   display: none;
 }
 
-form.ng-invalid.is-submitted div.app--error-group {
+form.ng-invalid.app--is-submitted div.app--error-group {
   display: block;
 }
 
-form.is-submitted input.ng-invalid {
+form.app--is-submitted input.ng-invalid {
   border-color: #dc3545;
 }

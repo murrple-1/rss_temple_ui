@@ -9,7 +9,7 @@
     <div class="col-md-4 offset-md-4">
       <form
         [formGroup]="registerForm"
-        [ngClass]="{ 'is-submitted': state !== State.Ready }"
+        [ngClass]="{ 'app--is-submitted': state !== State.Ready }"
         (ngSubmit)="onRegister()"
       >
         <fieldset [disabled]="state === State.IsRegistering">
