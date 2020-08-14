@@ -1,6 +1,10 @@
 import { Component, Input, OnInit, OnDestroy, NgZone } from '@angular/core';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import {
+  NgbActiveModal,
+  NgbModal,
+  NgbModalOptions,
+} from '@ng-bootstrap/ng-bootstrap';
 
 import { Subject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
@@ -8,6 +12,7 @@ import { takeUntil, map } from 'rxjs/operators';
 import { UserCategoryService } from '@app/services/data';
 import { HttpErrorService } from '@app/services';
 import { Sort } from '@app/services/data/sort.interface';
+import { NgbModalRef } from '@app/libs/ngb-modal.lib';
 
 interface UserCategoryImpl1 {
   uuid: string;
@@ -49,10 +54,6 @@ export class UserCategoriesModalComponent implements OnInit, OnDestroy {
     private userCategoryService: UserCategoryService,
     private httpErrorService: HttpErrorService,
   ) {}
-
-  static beforeDismiss() {
-    return false;
-  }
 
   ngOnInit() {
     this.userCategoryService
@@ -176,4 +177,25 @@ export class UserCategoriesModalComponent implements OnInit, OnDestroy {
       });
     this.activeModal.close(returnData);
   }
+}
+
+export function openModal(
+  modal: NgbModal,
+  initialUserCategories: Set<string>,
+  options: NgbModalOptions = {},
+) {
+  const defaultOptions: NgbModalOptions = {
+    beforeDismiss: () => false,
+  };
+
+  options = { ...defaultOptions, ...options };
+
+  const modalRef = modal.open(
+    UserCategoriesModalComponent,
+    options,
+  ) as NgbModalRef<ReturnData[], UserCategoriesModalComponent>;
+  const componentInstance = modalRef.componentInstance;
+  componentInstance.initialUserCategories = initialUserCategories;
+
+  return modalRef;
 }

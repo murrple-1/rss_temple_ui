@@ -1,8 +1,13 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import {
+  NgbActiveModal,
+  NgbModal,
+  NgbModalOptions,
+} from '@ng-bootstrap/ng-bootstrap';
 import { FormGroupErrors } from '@app/libs/formgrouperrors.lib';
+import { NgbModalRef } from '@app/libs/ngb-modal.lib';
 
 export interface SubscriptionDetails {
   feedUrl: string;
@@ -61,4 +66,17 @@ export class SubscribeModalComponent {
     };
     this.activeModal.close(result);
   }
+}
+
+export function openModal(modal: NgbModal, options: NgbModalOptions = {}) {
+  const defaultOptions: NgbModalOptions = {};
+
+  options = { ...defaultOptions, ...options };
+
+  const modalRef = modal.open(SubscribeModalComponent, options) as NgbModalRef<
+    SubscriptionDetails,
+    SubscribeModalComponent
+  >;
+
+  return modalRef;
 }

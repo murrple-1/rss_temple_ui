@@ -1,7 +1,11 @@
 import { Component, OnDestroy, NgZone } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import {
+  NgbActiveModal,
+  NgbModal,
+  NgbModalOptions,
+} from '@ng-bootstrap/ng-bootstrap';
 
 import { Subject } from 'rxjs';
 
@@ -9,6 +13,7 @@ import { PasswordResetTokenService } from '@app/services/data';
 import { takeUntil } from 'rxjs/operators';
 import { HttpErrorService } from '@app/services';
 import { FormGroupErrors } from '@app/libs/formgrouperrors.lib';
+import { NgbModalRef } from '@app/libs/ngb-modal.lib';
 
 export enum State {
   NotStarted,
@@ -95,4 +100,17 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
         },
       });
   }
+}
+
+export function openModal(modal: NgbModal, options: NgbModalOptions = {}) {
+  const defaultOptions: NgbModalOptions = {};
+
+  options = { ...defaultOptions, ...options };
+
+  const modalRef = modal.open(
+    RequestPasswordResetModalComponent,
+    options,
+  ) as NgbModalRef<void, RequestPasswordResetModalComponent>;
+
+  return modalRef;
 }

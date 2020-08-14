@@ -13,7 +13,7 @@ import {
 } from '@app/services/data';
 import { UserCategory, Feed } from '@app/models';
 import {
-  UserCategoriesModalComponent,
+  openModal as openUserCategoriesModal,
   ReturnData,
 } from '@app/routes/main/components/feed/usercategoriesmodal/usercategoriesmodal.component';
 import { IApply } from '@app/services/data/usercategory.service';
@@ -203,16 +203,14 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
   }
 
   async onAddUserCategory() {
-    const modalRef = this.modal.open(UserCategoriesModalComponent, {
-      beforeDismiss: UserCategoriesModalComponent.beforeDismiss,
-    });
-
-    const component = modalRef.componentInstance as UserCategoriesModalComponent;
-    component.initialUserCategories = new Set<string>(
-      this.userCategories.map(userCategory => userCategory.text),
+    const modalRef = openUserCategoriesModal(
+      this.modal,
+      new Set<string>(
+        this.userCategories.map(userCategory => userCategory.text),
+      ),
     );
 
-    const returnData = (await modalRef.result) as ReturnData[];
+    const returnData = await modalRef.result;
     if (this.feed !== null) {
       const applyBody: IApply = {};
       applyBody[this.feed.uuid] = new Set<string>(

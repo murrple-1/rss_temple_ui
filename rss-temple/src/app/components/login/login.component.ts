@@ -13,7 +13,7 @@ import {
   FBAuthService,
 } from '@app/services';
 import { setSessionToken } from '@app/libs/session.lib';
-import { RequestPasswordResetModalComponent } from '@app/components/login/requestpasswordresetmodal/requestpasswordresetmodal.component';
+import { openModal as openPasswordResetModal } from '@app/components/login/requestpasswordresetmodal/requestpasswordresetmodal.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormGroupErrors } from '@app/libs/formgrouperrors.lib';
 
@@ -300,7 +300,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   async onForgottenPassword() {
-    const modalRef = this.modal.open(RequestPasswordResetModalComponent);
+    const modalRef = openPasswordResetModal(this.modal);
 
     try {
       await modalRef.result;

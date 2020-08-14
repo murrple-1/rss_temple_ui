@@ -15,10 +15,10 @@ import { Subject, zip } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 
 import {
-  SubscribeModalComponent,
+  openModal as openSubscribeModal,
   SubscriptionDetails,
 } from '@app/routes/main/components/shared/header/subscribemodal/subscribemodal.component';
-import { OPMLModalComponent } from '@app/routes/main/components/shared/header/opmlmodal/opmlmodal.component';
+import { openModal as openOPMLModal } from '@app/routes/main/components/shared/header/opmlmodal/opmlmodal.component';
 import { FeedService, UserCategoryService } from '@app/services/data';
 import { HttpErrorService, LoginService } from '@app/services';
 import { FeedObservableService } from '@app/routes/main/services';
@@ -206,10 +206,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   async addFeed() {
-    const modalRef = this.modal.open(SubscribeModalComponent);
+    const modalRef = openSubscribeModal(this.modal);
 
     try {
-      const result = (await modalRef.result) as SubscriptionDetails;
+      const result = await modalRef.result;
       this.feedService
         .get(result.feedUrl, {
           fields: ['uuid', 'title', 'subscribed', 'homeUrl'],
@@ -266,7 +266,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   async uploadOPML() {
-    const modalRef = this.modal.open(OPMLModalComponent);
+    const modalRef = openOPMLModal(this.modal);
 
     try {
       await modalRef.result;

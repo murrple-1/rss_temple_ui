@@ -6,13 +6,18 @@ import {
   OnDestroy,
 } from '@angular/core';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import {
+  NgbActiveModal,
+  NgbModal,
+  NgbModalOptions,
+} from '@ng-bootstrap/ng-bootstrap';
 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { OPMLService, ProgressService } from '@app/services/data';
 import { HttpErrorService } from '@app/services';
+import { NgbModalRef } from '@app/libs/ngb-modal.lib';
 
 interface ProgressStatus {
   totalCount: number;
@@ -142,4 +147,17 @@ export class OPMLModalComponent implements OnDestroy {
         },
       });
   }
+}
+
+export function openModal(modal: NgbModal, options: NgbModalOptions = {}) {
+  const defaultOptions: NgbModalOptions = {};
+
+  options = { ...defaultOptions, ...options };
+
+  const modalRef = modal.open(OPMLModalComponent, options) as NgbModalRef<
+    void,
+    OPMLModalComponent
+  >;
+
+  return modalRef;
 }
