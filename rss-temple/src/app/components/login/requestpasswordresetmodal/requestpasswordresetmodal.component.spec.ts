@@ -147,7 +147,7 @@ describe('RequestPasswordResetModalComponent', () => {
 
   it('should request a password reset', async(async () => {
     const { mockPasswordResetTokenService } = await setup();
-    mockPasswordResetTokenService.request.and.returnValue(of<void>(undefined));
+    mockPasswordResetTokenService.request.and.returnValue(of(undefined));
 
     const componentFixture = TestBed.createComponent(
       RequestPasswordResetModalComponent,

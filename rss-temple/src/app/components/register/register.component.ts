@@ -13,7 +13,7 @@ import {
 } from '@app/libs/password.lib';
 import { FormGroupErrors } from '@app/libs/formgrouperrors.lib';
 
-enum State {
+export enum State {
   Ready,
   IsRegistering,
   RegisterFailed,
@@ -72,11 +72,13 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   onRegister() {
     this.registerFormErrors.clearErrors();
+    /* istanbul ignore else */
     if (this.registerForm.invalid) {
       this.state = State.RegisterFailed;
 
       const errors = this.registerForm.errors;
       if (errors !== null) {
+        /* istanbul ignore else */
         if (errors.passwordsdonotmatch) {
           this.registerFormErrors.errors.push('Passwords do not match');
         }
@@ -101,6 +103,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
           );
         }
 
+        /* istanbul ignore else */
         if (
           passwordErrors.minlength ||
           passwordErrors.nolowercase ||
@@ -117,6 +120,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
       const passwordCheckErrors = this.registerForm.controls.passwordCheck
         .errors;
       if (passwordCheckErrors !== null) {
+        /* istanbul ignore else */
         if (passwordCheckErrors.required) {
           this.registerFormErrors.controls['passwordCheck'].push(
             'Password required',
