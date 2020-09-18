@@ -393,7 +393,7 @@ describe('RegisterComponent', () => {
       const debugElement = componentFixture.debugElement;
 
       const router = debugElement.injector.get(Router);
-      spyOn(router, 'navigate').and.resolveTo(true);
+      spyOn(router, 'navigate');
 
       const emailInput = debugElement.query(By.css('input[type="email"]'))
         .nativeElement as HTMLInputElement;
@@ -449,7 +449,7 @@ describe('RegisterComponent', () => {
       const debugElement = componentFixture.debugElement;
 
       const router = debugElement.injector.get(Router);
-      spyOn(router, 'navigate').and.resolveTo(true);
+      spyOn(router, 'navigate');
 
       const emailInput = debugElement.query(By.css('input[type="email"]'))
         .nativeElement as HTMLInputElement;
@@ -505,7 +505,7 @@ describe('RegisterComponent', () => {
       const debugElement = componentFixture.debugElement;
 
       const router = debugElement.injector.get(Router);
-      spyOn(router, 'navigate').and.resolveTo(true);
+      spyOn(router, 'navigate');
 
       const emailInput = debugElement.query(By.css('input[type="email"]'))
         .nativeElement as HTMLInputElement;
@@ -564,6 +564,7 @@ describe('RegisterComponent', () => {
           );
         }),
       );
+      spyOn(console, 'error');
 
       const debugElement = componentFixture.debugElement;
 

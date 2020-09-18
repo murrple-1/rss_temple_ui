@@ -206,6 +206,7 @@ describe('RequestPasswordResetModalComponent', () => {
           );
         }),
       );
+      spyOn(console, 'error');
 
       const componentFixture = TestBed.createComponent(
         RequestPasswordResetModalComponent,

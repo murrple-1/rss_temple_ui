@@ -153,7 +153,7 @@ describe('LoginComponent', () => {
       const debugElement = componentFixture.debugElement;
 
       const router = debugElement.injector.get(Router);
-      spyOn(router, 'navigate').and.resolveTo(true);
+      spyOn(router, 'navigate');
 
       const gAuthService = TestBed.inject(GAuthService);
       gAuthService.signIn();
@@ -177,7 +177,7 @@ describe('LoginComponent', () => {
       const debugElement = componentFixture.debugElement;
 
       const router = debugElement.injector.get(Router);
-      spyOn(router, 'navigate').and.resolveTo(true);
+      spyOn(router, 'navigate');
 
       const fbAuthService = TestBed.inject(FBAuthService);
       fbAuthService.signIn();
@@ -364,7 +364,7 @@ describe('LoginComponent', () => {
       const debugElement = componentFixture.debugElement;
 
       const router = debugElement.injector.get(Router);
-      spyOn(router, 'navigate').and.resolveTo(true);
+      spyOn(router, 'navigate');
 
       const emailInput = debugElement.query(By.css('input[type="email"]'))
         .nativeElement as HTMLInputElement;
@@ -411,7 +411,7 @@ describe('LoginComponent', () => {
       const debugElement = componentFixture.debugElement;
 
       const router = debugElement.injector.get(Router);
-      spyOn(router, 'navigate').and.resolveTo(true);
+      spyOn(router, 'navigate');
 
       const gAuthService = debugElement.injector.get(
         GAuthService,
@@ -443,7 +443,7 @@ describe('LoginComponent', () => {
       const debugElement = componentFixture.debugElement;
 
       const router = debugElement.injector.get(Router);
-      spyOn(router, 'navigate').and.resolveTo(true);
+      spyOn(router, 'navigate');
 
       const fbAuthService = debugElement.injector.get(
         FBAuthService,
@@ -502,7 +502,7 @@ describe('LoginComponent', () => {
       const debugElement = componentFixture.debugElement;
 
       const router = debugElement.injector.get(Router);
-      spyOn(router, 'navigate').and.resolveTo(true);
+      spyOn(router, 'navigate');
 
       const gAuthService = debugElement.injector.get(
         GAuthService,
@@ -531,7 +531,7 @@ describe('LoginComponent', () => {
       const debugElement = componentFixture.debugElement;
 
       const router = debugElement.injector.get(Router);
-      spyOn(router, 'navigate').and.resolveTo(true);
+      spyOn(router, 'navigate');
 
       const fbAuthService = debugElement.injector.get(
         FBAuthService,
@@ -767,7 +767,7 @@ describe('LoginComponent', () => {
       const debugElement = componentFixture.debugElement;
 
       const router = debugElement.injector.get(Router);
-      spyOn(router, 'navigate').and.resolveTo(true);
+      spyOn(router, 'navigate');
 
       const googleButton = debugElement.query(By.css('button#google-login'))
         .nativeElement as HTMLButtonElement;
@@ -885,7 +885,7 @@ describe('LoginComponent', () => {
       const debugElement = componentFixture.debugElement;
 
       const router = debugElement.injector.get(Router);
-      spyOn(router, 'navigate').and.resolveTo(true);
+      spyOn(router, 'navigate');
 
       const facebookButton = debugElement.query(By.css('button#facebook-login'))
         .nativeElement as HTMLButtonElement;
