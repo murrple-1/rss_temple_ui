@@ -28,7 +28,7 @@ export class HttpErrorService {
       }
     }
 
-    console.log(errorMessage, error);
+    console.error(errorMessage, error);
 
     this.alertService.error(errorMessage, 5000);
   }

@@ -1,4 +1,4 @@
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { SnackbarModule } from 'ngx-snackbar';
@@ -60,26 +60,32 @@ async function setup() {
 }
 
 describe('FeedComponent', () => {
-  it('should create the component', async(async () => {
-    await setup();
+  it(
+    'should create the component',
+    waitForAsync(async () => {
+      await setup();
 
-    const componentFixture = TestBed.createComponent(FeedComponent);
-    const component = componentFixture.debugElement
-      .componentInstance as FeedComponent;
-    expect(component).toBeTruthy();
-  }));
+      const componentFixture = TestBed.createComponent(FeedComponent);
+      const component = componentFixture.debugElement
+        .componentInstance as FeedComponent;
+      expect(component).toBeTruthy();
+    }),
+  );
 
-  it('can run ngOnInit', async(async () => {
-    await setup();
+  it(
+    'can run ngOnInit',
+    waitForAsync(async () => {
+      await setup();
 
-    const componentFixture = TestBed.createComponent(FeedComponent);
-    const component = componentFixture.debugElement
-      .componentInstance as FeedComponent;
+      const componentFixture = TestBed.createComponent(FeedComponent);
+      const component = componentFixture.debugElement
+        .componentInstance as FeedComponent;
 
-    component.ngOnInit();
-    await componentFixture.whenStable();
-    expect().nothing();
-  }));
+      component.ngOnInit();
+      await componentFixture.whenStable();
+      expect().nothing();
+    }),
+  );
 
   // TODO more tests
 });

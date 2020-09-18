@@ -1,4 +1,4 @@
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { of } from 'rxjs';
@@ -47,36 +47,42 @@ async function setup() {
 }
 
 describe('UserCategoriesModalComponent', () => {
-  it('should create the component', async(async () => {
-    await setup();
+  it(
+    'should create the component',
+    waitForAsync(async () => {
+      await setup();
 
-    const componentFixture = TestBed.createComponent(
-      UserCategoriesModalComponent,
-    );
-    const component = componentFixture.debugElement
-      .componentInstance as UserCategoriesModalComponent;
-    expect(component).toBeTruthy();
-  }));
+      const componentFixture = TestBed.createComponent(
+        UserCategoriesModalComponent,
+      );
+      const component = componentFixture.debugElement
+        .componentInstance as UserCategoriesModalComponent;
+      expect(component).toBeTruthy();
+    }),
+  );
 
-  it('can run ngOnInit', async(async () => {
-    const { mockUserCategoryService } = await setup();
-    mockUserCategoryService.queryAll.and.returnValue(
-      of<Objects<UserCategory>>({
-        objects: [],
-        totalCount: 0,
-      }),
-    );
+  it(
+    'can run ngOnInit',
+    waitForAsync(async () => {
+      const { mockUserCategoryService } = await setup();
+      mockUserCategoryService.queryAll.and.returnValue(
+        of<Objects<UserCategory>>({
+          objects: [],
+          totalCount: 0,
+        }),
+      );
 
-    const componentFixture = TestBed.createComponent(
-      UserCategoriesModalComponent,
-    );
-    const component = componentFixture.debugElement
-      .componentInstance as UserCategoriesModalComponent;
+      const componentFixture = TestBed.createComponent(
+        UserCategoriesModalComponent,
+      );
+      const component = componentFixture.debugElement
+        .componentInstance as UserCategoriesModalComponent;
 
-    component.ngOnInit();
-    await componentFixture.whenStable();
-    expect().nothing();
-  }));
+      component.ngOnInit();
+      await componentFixture.whenStable();
+      expect().nothing();
+    }),
+  );
 
   // TODO more tests
 });

@@ -1,4 +1,4 @@
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -51,14 +51,17 @@ async function setup() {
 }
 
 describe('OPMLModalComponent', () => {
-  it('should create the component', async(async () => {
-    await setup();
+  it(
+    'should create the component',
+    waitForAsync(async () => {
+      await setup();
 
-    const componentFixture = TestBed.createComponent(OPMLModalComponent);
-    const component = componentFixture.debugElement
-      .componentInstance as OPMLModalComponent;
-    expect(component).toBeTruthy();
-  }));
+      const componentFixture = TestBed.createComponent(OPMLModalComponent);
+      const component = componentFixture.debugElement
+        .componentInstance as OPMLModalComponent;
+      expect(component).toBeTruthy();
+    }),
+  );
 
   // TODO more tests
 });

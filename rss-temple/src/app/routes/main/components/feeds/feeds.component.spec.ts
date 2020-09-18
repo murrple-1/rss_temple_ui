@@ -1,4 +1,4 @@
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
 
@@ -58,38 +58,44 @@ async function setup() {
 }
 
 describe('FeedsComponent', () => {
-  it('should create the component', async(async () => {
-    await setup();
+  it(
+    'should create the component',
+    waitForAsync(async () => {
+      await setup();
 
-    const componentFixture = TestBed.createComponent(FeedsComponent);
-    const component = componentFixture.debugElement
-      .componentInstance as FeedsComponent;
-    expect(component).toBeTruthy();
-  }));
+      const componentFixture = TestBed.createComponent(FeedsComponent);
+      const component = componentFixture.debugElement
+        .componentInstance as FeedsComponent;
+      expect(component).toBeTruthy();
+    }),
+  );
 
-  it('can run ngOnInit', async(async () => {
-    const { mockFeedService, mockFeedEntryService } = await setup();
-    mockFeedService.queryAll.and.returnValue(
-      of({
-        objects: [],
-        totalCount: 0,
-      }),
-    );
-    mockFeedEntryService.query.and.returnValue(
-      of({
-        objects: [],
-        totalCount: 0,
-      }),
-    );
+  it(
+    'can run ngOnInit',
+    waitForAsync(async () => {
+      const { mockFeedService, mockFeedEntryService } = await setup();
+      mockFeedService.queryAll.and.returnValue(
+        of({
+          objects: [],
+          totalCount: 0,
+        }),
+      );
+      mockFeedEntryService.query.and.returnValue(
+        of({
+          objects: [],
+          totalCount: 0,
+        }),
+      );
 
-    const componentFixture = TestBed.createComponent(FeedsComponent);
-    const component = componentFixture.debugElement
-      .componentInstance as FeedsComponent;
+      const componentFixture = TestBed.createComponent(FeedsComponent);
+      const component = componentFixture.debugElement
+        .componentInstance as FeedsComponent;
 
-    component.ngOnInit();
-    await componentFixture.whenStable();
-    expect().nothing();
-  }));
+      component.ngOnInit();
+      await componentFixture.whenStable();
+      expect().nothing();
+    }),
+  );
 
   // TODO more tests
 });

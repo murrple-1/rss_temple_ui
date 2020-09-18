@@ -1,4 +1,4 @@
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -67,43 +67,49 @@ async function setup() {
 }
 
 describe('ProfileComponent', () => {
-  it('should create the component', async(async () => {
-    await setup();
+  it(
+    'should create the component',
+    waitForAsync(async () => {
+      await setup();
 
-    const componentFixture = TestBed.createComponent(ProfileComponent);
-    const component = componentFixture.debugElement
-      .componentInstance as ProfileComponent;
-    expect(component).toBeTruthy();
-  }));
+      const componentFixture = TestBed.createComponent(ProfileComponent);
+      const component = componentFixture.debugElement
+        .componentInstance as ProfileComponent;
+      expect(component).toBeTruthy();
+    }),
+  );
 
-  it('can run ngOnInit', async(async () => {
-    const {
-      mockUserService,
-      mockFeedService,
-      mockFeedEntryService,
-    } = await setup();
-    mockUserService.get.and.returnValue(of({}));
-    mockFeedService.query.and.returnValue(
-      of({
-        objects: [],
-        totalCount: 0,
-      }),
-    );
-    mockFeedEntryService.query.and.returnValue(
-      of({
-        objects: [],
-        totalCount: 0,
-      }),
-    );
+  it(
+    'can run ngOnInit',
+    waitForAsync(async () => {
+      const {
+        mockUserService,
+        mockFeedService,
+        mockFeedEntryService,
+      } = await setup();
+      mockUserService.get.and.returnValue(of({}));
+      mockFeedService.query.and.returnValue(
+        of({
+          objects: [],
+          totalCount: 0,
+        }),
+      );
+      mockFeedEntryService.query.and.returnValue(
+        of({
+          objects: [],
+          totalCount: 0,
+        }),
+      );
 
-    const componentFixture = TestBed.createComponent(ProfileComponent);
-    const component = componentFixture.debugElement
-      .componentInstance as ProfileComponent;
+      const componentFixture = TestBed.createComponent(ProfileComponent);
+      const component = componentFixture.debugElement
+        .componentInstance as ProfileComponent;
 
-    component.ngOnInit();
-    await componentFixture.whenStable();
-    expect().nothing();
-  }));
+      component.ngOnInit();
+      await componentFixture.whenStable();
+      expect().nothing();
+    }),
+  );
 
   // TODO more tests
 });

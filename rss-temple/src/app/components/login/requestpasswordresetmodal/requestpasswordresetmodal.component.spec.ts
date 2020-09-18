@@ -1,4 +1,4 @@
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
@@ -56,166 +56,184 @@ async function setup() {
 }
 
 describe('RequestPasswordResetModalComponent', () => {
-  it('should create the component', async(async () => {
-    await setup();
+  it(
+    'should create the component',
+    waitForAsync(async () => {
+      await setup();
 
-    const componentFixture = TestBed.createComponent(
-      RequestPasswordResetModalComponent,
-    );
-    const component = componentFixture.debugElement
-      .componentInstance as RequestPasswordResetModalComponent;
-    expect(component).toBeTruthy();
-  }));
+      const componentFixture = TestBed.createComponent(
+        RequestPasswordResetModalComponent,
+      );
+      const component = componentFixture.debugElement
+        .componentInstance as RequestPasswordResetModalComponent;
+      expect(component).toBeTruthy();
+    }),
+  );
 
-  it('should dismiss', async(async () => {
-    const { mockActiveModal } = await setup();
+  it(
+    'should dismiss',
+    waitForAsync(async () => {
+      const { mockActiveModal } = await setup();
 
-    const componentFixture = TestBed.createComponent(
-      RequestPasswordResetModalComponent,
-    );
-    const component = componentFixture.debugElement
-      .componentInstance as RequestPasswordResetModalComponent;
+      const componentFixture = TestBed.createComponent(
+        RequestPasswordResetModalComponent,
+      );
+      const component = componentFixture.debugElement
+        .componentInstance as RequestPasswordResetModalComponent;
 
-    component.dismiss();
+      component.dismiss();
 
-    expect(mockActiveModal.dismiss).toHaveBeenCalled();
-  }));
+      expect(mockActiveModal.dismiss).toHaveBeenCalled();
+    }),
+  );
 
-  it('should handle missing email', async(async () => {
-    await setup();
+  it(
+    'should handle missing email',
+    waitForAsync(async () => {
+      await setup();
 
-    const componentFixture = TestBed.createComponent(
-      RequestPasswordResetModalComponent,
-    );
-    componentFixture.detectChanges();
-    await componentFixture.whenStable();
+      const componentFixture = TestBed.createComponent(
+        RequestPasswordResetModalComponent,
+      );
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
-    const component = componentFixture.debugElement
-      .componentInstance as RequestPasswordResetModalComponent;
+      const component = componentFixture.debugElement
+        .componentInstance as RequestPasswordResetModalComponent;
 
-    const debugElement = componentFixture.debugElement;
+      const debugElement = componentFixture.debugElement;
 
-    const emailInput = debugElement.query(By.css('input[type="email"]'))
-      .nativeElement as HTMLInputElement;
-    emailInput.value = '';
-    emailInput.dispatchEvent(new Event('input'));
-    componentFixture.detectChanges();
-    await componentFixture.whenStable();
+      const emailInput = debugElement.query(By.css('input[type="email"]'))
+        .nativeElement as HTMLInputElement;
+      emailInput.value = '';
+      emailInput.dispatchEvent(new Event('input'));
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
-    const requestButton = debugElement.query(By.css('button[type="submit"]'))
-      .nativeElement as HTMLButtonElement;
-    requestButton.click();
-    componentFixture.detectChanges();
-    await componentFixture.whenStable();
+      const requestButton = debugElement.query(By.css('button[type="submit"]'))
+        .nativeElement as HTMLButtonElement;
+      requestButton.click();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
-    expect(component.forgottenPasswordFormErrors.controls['email']).toEqual([
-      'Email required',
-    ]);
-  }));
+      expect(component.forgottenPasswordFormErrors.controls['email']).toEqual([
+        'Email required',
+      ]);
+    }),
+  );
 
-  it('should handle malformed email', async(async () => {
-    await setup();
+  it(
+    'should handle malformed email',
+    waitForAsync(async () => {
+      await setup();
 
-    const componentFixture = TestBed.createComponent(
-      RequestPasswordResetModalComponent,
-    );
-    componentFixture.detectChanges();
-    await componentFixture.whenStable();
+      const componentFixture = TestBed.createComponent(
+        RequestPasswordResetModalComponent,
+      );
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
-    const component = componentFixture.debugElement
-      .componentInstance as RequestPasswordResetModalComponent;
+      const component = componentFixture.debugElement
+        .componentInstance as RequestPasswordResetModalComponent;
 
-    const debugElement = componentFixture.debugElement;
+      const debugElement = componentFixture.debugElement;
 
-    const emailInput = debugElement.query(By.css('input[type="email"]'))
-      .nativeElement as HTMLInputElement;
-    emailInput.value = 'bademail';
-    emailInput.dispatchEvent(new Event('input'));
-    componentFixture.detectChanges();
-    await componentFixture.whenStable();
+      const emailInput = debugElement.query(By.css('input[type="email"]'))
+        .nativeElement as HTMLInputElement;
+      emailInput.value = 'bademail';
+      emailInput.dispatchEvent(new Event('input'));
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
-    const requestButton = debugElement.query(By.css('button[type="submit"]'))
-      .nativeElement as HTMLButtonElement;
-    requestButton.click();
-    componentFixture.detectChanges();
-    await componentFixture.whenStable();
+      const requestButton = debugElement.query(By.css('button[type="submit"]'))
+        .nativeElement as HTMLButtonElement;
+      requestButton.click();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
-    expect(component.forgottenPasswordFormErrors.controls['email']).toEqual([
-      'Email malformed',
-    ]);
-  }));
+      expect(component.forgottenPasswordFormErrors.controls['email']).toEqual([
+        'Email malformed',
+      ]);
+    }),
+  );
 
-  it('should request a password reset', async(async () => {
-    const { mockPasswordResetTokenService } = await setup();
-    mockPasswordResetTokenService.request.and.returnValue(of(undefined));
+  it(
+    'should request a password reset',
+    waitForAsync(async () => {
+      const { mockPasswordResetTokenService } = await setup();
+      mockPasswordResetTokenService.request.and.returnValue(of(undefined));
 
-    const componentFixture = TestBed.createComponent(
-      RequestPasswordResetModalComponent,
-    );
-    componentFixture.detectChanges();
-    await componentFixture.whenStable();
+      const componentFixture = TestBed.createComponent(
+        RequestPasswordResetModalComponent,
+      );
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
-    const component = componentFixture.componentInstance as RequestPasswordResetModalComponent;
+      const component = componentFixture.componentInstance as RequestPasswordResetModalComponent;
 
-    const debugElement = componentFixture.debugElement;
+      const debugElement = componentFixture.debugElement;
 
-    const emailInput = debugElement.query(By.css('input[type="email"]'))
-      .nativeElement as HTMLInputElement;
-    emailInput.value = 'test@test.com';
-    emailInput.dispatchEvent(new Event('input'));
-    componentFixture.detectChanges();
-    await componentFixture.whenStable();
+      const emailInput = debugElement.query(By.css('input[type="email"]'))
+        .nativeElement as HTMLInputElement;
+      emailInput.value = 'test@test.com';
+      emailInput.dispatchEvent(new Event('input'));
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
-    const requestButton = debugElement.query(By.css('button[type="submit"]'))
-      .nativeElement as HTMLButtonElement;
-    requestButton.click();
-    componentFixture.detectChanges();
-    await componentFixture.whenStable();
+      const requestButton = debugElement.query(By.css('button[type="submit"]'))
+        .nativeElement as HTMLButtonElement;
+      requestButton.click();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
-    expect(component.state).not.toBe(State.Error);
-    expect(mockPasswordResetTokenService.request).toHaveBeenCalledWith(
-      'test@test.com',
-    );
-  }));
+      expect(component.state).not.toBe(State.Error);
+      expect(mockPasswordResetTokenService.request).toHaveBeenCalledWith(
+        'test@test.com',
+      );
+    }),
+  );
 
-  it('should handle failed requests', async(async () => {
-    const { mockPasswordResetTokenService } = await setup();
-    mockPasswordResetTokenService.request.and.returnValue(
-      new Observable<void>(subscriber => {
-        subscriber.error(
-          new HttpErrorResponse({
-            status: 0,
-          }),
-        );
-      }),
-    );
+  it(
+    'should handle failed requests',
+    waitForAsync(async () => {
+      const { mockPasswordResetTokenService } = await setup();
+      mockPasswordResetTokenService.request.and.returnValue(
+        new Observable<void>(subscriber => {
+          subscriber.error(
+            new HttpErrorResponse({
+              status: 0,
+            }),
+          );
+        }),
+      );
 
-    const componentFixture = TestBed.createComponent(
-      RequestPasswordResetModalComponent,
-    );
-    componentFixture.detectChanges();
-    await componentFixture.whenStable();
+      const componentFixture = TestBed.createComponent(
+        RequestPasswordResetModalComponent,
+      );
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
-    const component = componentFixture.componentInstance as RequestPasswordResetModalComponent;
+      const component = componentFixture.componentInstance as RequestPasswordResetModalComponent;
 
-    const debugElement = componentFixture.debugElement;
+      const debugElement = componentFixture.debugElement;
 
-    const emailInput = debugElement.query(By.css('input[type="email"]'))
-      .nativeElement as HTMLInputElement;
-    emailInput.value = 'test@test.com';
-    emailInput.dispatchEvent(new Event('input'));
-    componentFixture.detectChanges();
-    await componentFixture.whenStable();
+      const emailInput = debugElement.query(By.css('input[type="email"]'))
+        .nativeElement as HTMLInputElement;
+      emailInput.value = 'test@test.com';
+      emailInput.dispatchEvent(new Event('input'));
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
-    const requestButton = debugElement.query(By.css('button[type="submit"]'))
-      .nativeElement as HTMLButtonElement;
-    requestButton.click();
-    componentFixture.detectChanges();
-    await componentFixture.whenStable();
+      const requestButton = debugElement.query(By.css('button[type="submit"]'))
+        .nativeElement as HTMLButtonElement;
+      requestButton.click();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
-    expect(component.state).toBe(State.Error);
-    expect(mockPasswordResetTokenService.request).toHaveBeenCalledWith(
-      'test@test.com',
-    );
-  }));
+      expect(component.state).toBe(State.Error);
+      expect(mockPasswordResetTokenService.request).toHaveBeenCalledWith(
+        'test@test.com',
+      );
+    }),
+  );
 });

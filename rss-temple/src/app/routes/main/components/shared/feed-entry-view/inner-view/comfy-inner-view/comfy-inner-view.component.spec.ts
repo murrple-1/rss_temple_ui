@@ -1,4 +1,4 @@
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ComfyInnerViewComponent } from './comfy-inner-view.component';
 
@@ -11,14 +11,17 @@ async function setup() {
 }
 
 describe('ComfyInnerViewComponent', () => {
-  it('should create the component', async(async () => {
-    await setup();
+  it(
+    'should create the component',
+    waitForAsync(async () => {
+      await setup();
 
-    const componentFixture = TestBed.createComponent(ComfyInnerViewComponent);
-    const component = componentFixture.debugElement
-      .componentInstance as ComfyInnerViewComponent;
-    expect(component).toBeTruthy();
-  }));
+      const componentFixture = TestBed.createComponent(ComfyInnerViewComponent);
+      const component = componentFixture.debugElement
+        .componentInstance as ComfyInnerViewComponent;
+      expect(component).toBeTruthy();
+    }),
+  );
 
   // TODO more tests
 });

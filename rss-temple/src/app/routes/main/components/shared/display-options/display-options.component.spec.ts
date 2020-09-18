@@ -1,4 +1,4 @@
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DisplayObservableService } from '@app/routes/main/services';
 
@@ -14,16 +14,19 @@ async function setup() {
 }
 
 describe('DisplayOptionsViewComponent', () => {
-  it('should create the component', async(async () => {
-    await setup();
+  it(
+    'should create the component',
+    waitForAsync(async () => {
+      await setup();
 
-    const componentFixture = TestBed.createComponent(
-      DisplayOptionsViewComponent,
-    );
-    const component = componentFixture.debugElement
-      .componentInstance as DisplayOptionsViewComponent;
-    expect(component).toBeTruthy();
-  }));
+      const componentFixture = TestBed.createComponent(
+        DisplayOptionsViewComponent,
+      );
+      const component = componentFixture.debugElement
+        .componentInstance as DisplayOptionsViewComponent;
+      expect(component).toBeTruthy();
+    }),
+  );
 
   // TODO more tests
 });
