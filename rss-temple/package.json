@@ -20,7 +20,8 @@
     "singleQuote": true,
     "trailingComma": "all",
     "endOfLine": "lf",
-    "arrowParens": "avoid"
+    "arrowParens": "avoid",
+    "quoteProps": "preserve"
   },
   "dependencies": {
     "@angular/animations": "~10.1.3",
