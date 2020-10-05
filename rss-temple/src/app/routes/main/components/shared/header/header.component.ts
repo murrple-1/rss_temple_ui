@@ -8,7 +8,6 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -56,7 +55,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   isCollapsed = true;
 
-  searchForm: FormGroup;
+  searchAllText = '';
 
   private allCategorizedFeeds: CategorizedFeeds = {
     noCategory: [],
@@ -77,7 +76,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private elementRef: ElementRef,
     private renderer: Renderer2,
     private router: Router,
-    private formBuilder: FormBuilder,
     private modal: NgbModal,
     private feedService: FeedService,
     private userCategoryService: UserCategoryService,
@@ -89,10 +87,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     for (const _class of this._classes) {
       this.renderer.addClass(elem, _class);
     }
-
-    this.searchForm = this.formBuilder.group({
-      searchText: [''],
-    });
   }
 
   private static buildAllCategorizedFeeds(
@@ -258,7 +252,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
                   },
                 });
             } else {
-              // TODO something?
+              // TODO already subscribed. do anything?
             }
           },
           error: error => {
@@ -363,7 +357,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   onSearch() {
     // TODO searching?
-    console.log(this.searchForm.controls['searchText'].value as string);
+    console.log(this.searchAllText);
   }
 
   logOut(event: Event) {
