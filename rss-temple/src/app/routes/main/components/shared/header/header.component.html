@@ -76,7 +76,7 @@
   <span class="navbar-toggler-icon"></span>
 </button>
 <div class="navbar-collapse col-6" [ngbCollapse]="isCollapsed">
-  <ul class="navbar-nav ml-auto">
+  <ul class="navbar-nav ml-auto mr-3">
     <li class="nav-item">
       <a class="nav-link" routerLink="/main"
         ><i class="fas fa-home"></i>&nbsp;Home</a
@@ -93,12 +93,16 @@
       >
     </li>
   </ul>
-  <form class="form-inline">
+  <form class="form-inline" [formGroup]="searchForm">
     <input
-      class="form-control mr-2"
+      class="form-control"
       type="search"
       placeholder="Search"
-      (keydown.enter)="onSearch($event)"
+      formControlName="searchText"
+      (keydown.enter)="onSearch()"
     />
+    <a class="nav-link" routerLink="" (click)="onSearch()"
+      ><i class="fas fa-search"></i
+    ></a>
   </form>
 </div>

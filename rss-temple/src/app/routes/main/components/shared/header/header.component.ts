@@ -8,16 +8,14 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { Subject, zip } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 
-import {
-  openModal as openSubscribeModal,
-  SubscriptionDetails,
-} from '@app/routes/main/components/shared/header/subscribemodal/subscribemodal.component';
+import { openModal as openSubscribeModal } from '@app/routes/main/components/shared/header/subscribemodal/subscribemodal.component';
 import { openModal as openOPMLModal } from '@app/routes/main/components/shared/header/opmlmodal/opmlmodal.component';
 import { FeedService, UserCategoryService } from '@app/services/data';
 import { HttpErrorService, LoginService } from '@app/services';
@@ -58,6 +56,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   isCollapsed = true;
 
+  searchForm: FormGroup;
+
   private allCategorizedFeeds: CategorizedFeeds = {
     noCategory: [],
     category: [],
@@ -77,6 +77,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private elementRef: ElementRef,
     private renderer: Renderer2,
     private router: Router,
+    private formBuilder: FormBuilder,
     private modal: NgbModal,
     private feedService: FeedService,
     private userCategoryService: UserCategoryService,
@@ -88,6 +89,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     for (const _class of this._classes) {
       this.renderer.addClass(elem, _class);
     }
+
+    this.searchForm = this.formBuilder.group({
+      searchText: [''],
+    });
   }
 
   private static buildAllCategorizedFeeds(
@@ -356,12 +361,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.filteredCategorizedFeeds = filteredCategorizedFeeds;
   }
 
-  onSearch(event: Event) {
+  onSearch() {
     // TODO searching?
-
-    const value = (event.target as HTMLInputElement).value;
-
-    console.log(value);
+    console.log(this.searchForm.controls['searchText'].value as string);
   }
 
   logOut(event: Event) {
