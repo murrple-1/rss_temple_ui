@@ -66,7 +66,7 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
     if (this.forgottenPasswordForm.invalid) {
       this.state = State.Error;
 
-      const emailErrors = this.forgottenPasswordForm.controls.email.errors;
+      const emailErrors = this.forgottenPasswordForm.controls['email'].errors;
       /* istanbul ignore else */
       if (emailErrors !== null) {
         if (emailErrors.required) {
@@ -85,7 +85,7 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
     }
 
     this.passwordResetTokenService
-      .request(this.forgottenPasswordForm.controls.email.value as string)
+      .request(this.forgottenPasswordForm.controls['email'].value as string)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => {

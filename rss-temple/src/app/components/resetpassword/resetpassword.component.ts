@@ -95,7 +95,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
         }
       }
 
-      const newPasswordErrors = this.resetPasswordForm.controls.newPassword
+      const newPasswordErrors = this.resetPasswordForm.controls['newPassword']
         .errors;
       if (newPasswordErrors !== null) {
         if (newPasswordErrors.required) {
@@ -134,7 +134,8 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     this.passwordResetTokenService
       .reset({
         token: this.token,
-        password: this.resetPasswordForm.controls.newPassword.value as string,
+        password: this.resetPasswordForm.controls['newPassword']
+          .value as string,
       })
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({

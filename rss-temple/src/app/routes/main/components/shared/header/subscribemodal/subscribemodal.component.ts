@@ -45,7 +45,7 @@ export class SubscribeModalComponent {
 
     this.subscribeFormErrors.clearErrors();
     if (this.subscribeForm.invalid) {
-      const urlErrors = this.subscribeForm.controls.feedUrl.errors;
+      const urlErrors = this.subscribeForm.controls['feedUrl'].errors;
       if (urlErrors !== null) {
         if (urlErrors.required) {
           this.subscribeFormErrors.controls['feedUrl'].push('URL required');
@@ -55,13 +55,14 @@ export class SubscribeModalComponent {
     }
 
     let customName: string | undefined;
-    const _customName = this.subscribeForm.controls.customName.value as string;
+    const _customName = this.subscribeForm.controls['customName']
+      .value as string;
     if (_customName.trim() !== '') {
       customName = _customName;
     }
 
     const result: SubscriptionDetails = {
-      feedUrl: this.subscribeForm.controls.feedUrl.value as string,
+      feedUrl: this.subscribeForm.controls['feedUrl'].value as string,
       customTitle: customName,
     };
     this.activeModal.close(result);

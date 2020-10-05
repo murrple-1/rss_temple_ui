@@ -121,8 +121,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
       .subscribe({
         next: ([user, feedsCount, readFeedEntriesCount]) => {
           this.zone.run(() => {
-            this.profileForm.controls.email.setValue(user.email);
-            this.profileForm.controls.email.markAsPristine();
+            this.profileForm.controls['email'].setValue(user.email);
+            this.profileForm.controls['email'].markAsPristine();
 
             this.hasGoogleLogin = user.hasGoogleLogin;
 
@@ -312,14 +312,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
         }
       }
 
-      const emailErrors = this.profileForm.controls.email.errors;
+      const emailErrors = this.profileForm.controls['email'].errors;
       if (emailErrors !== null) {
         if (emailErrors.email) {
           this.profileFormErrors.controls['email'].push('Email malformed');
         }
       }
 
-      const newPasswordErrors = this.profileForm.controls.newPassword.errors;
+      const newPasswordErrors = this.profileForm.controls['newPassword'].errors;
       if (newPasswordErrors !== null) {
         if (
           newPasswordErrors.nolowercase ||
@@ -339,15 +339,17 @@ export class ProfileComponent implements OnInit, OnDestroy {
     let hasUpdates = false;
     const updateUserBody: UpdateUserBody = {};
 
-    const emailControl = this.profileForm.controls.email;
+    const emailControl = this.profileForm.controls['email'];
     if (emailControl.dirty) {
       updateUserBody.email = emailControl.value as string;
       hasUpdates = true;
     }
 
-    const oldPasswordControl = this.profileForm.controls.oldPassword;
-    const newPasswordControl = this.profileForm.controls.newPassword;
-    const newPasswordCheckControl = this.profileForm.controls.newPasswordCheck;
+    const oldPasswordControl = this.profileForm.controls['oldPassword'];
+    const newPasswordControl = this.profileForm.controls['newPassword'];
+    const newPasswordCheckControl = this.profileForm.controls[
+      'newPasswordCheck'
+    ];
     if (
       oldPasswordControl.dirty &&
       newPasswordControl.dirty &&

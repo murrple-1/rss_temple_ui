@@ -40,7 +40,7 @@
             </label>
           </div>
           <small
-            *ngFor="let errorString of profileFormErrors.controls.email"
+            *ngFor="let errorString of profileFormErrors.controls['email']"
             class="form-text text-muted"
             >{{ errorString }}</small
           >
@@ -58,7 +58,9 @@
             </label>
           </div>
           <small
-            *ngFor="let errorString of profileFormErrors.controls.oldPassword"
+            *ngFor="
+              let errorString of profileFormErrors.controls['oldPassword']
+            "
             class="form-text text-muted"
             >{{ errorString }}</small
           >
@@ -76,7 +78,9 @@
             </label>
           </div>
           <small
-            *ngFor="let errorString of profileFormErrors.controls.newPassword"
+            *ngFor="
+              let errorString of profileFormErrors.controls['newPassword']
+            "
             class="form-text text-muted"
             >{{ errorString }}</small
           >
@@ -95,7 +99,7 @@
           </div>
           <small
             *ngFor="
-              let errorString of profileFormErrors.controls.newPasswordCheck
+              let errorString of profileFormErrors.controls['newPasswordCheck']
             "
             class="form-text text-muted"
             >{{ errorString }}</small

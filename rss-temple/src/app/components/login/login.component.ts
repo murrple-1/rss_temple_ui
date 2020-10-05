@@ -138,7 +138,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (this.loginForm.invalid) {
       this.state = State.LoginFailed;
 
-      const emailErrors = this.loginForm.controls.email.errors;
+      const emailErrors = this.loginForm.controls['email'].errors;
       if (emailErrors !== null) {
         if (emailErrors.required) {
           this.loginFormErrors.controls['email'].push('Email required');
@@ -149,7 +149,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
       }
 
-      const passwordErrors = this.loginForm.controls.password.errors;
+      const passwordErrors = this.loginForm.controls['password'].errors;
       if (passwordErrors !== null) {
         /* istanbul ignore else */
         if (passwordErrors.required) {
@@ -164,8 +164,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     this.loginService
       .getMyLoginSession(
-        this.loginForm.controls.email.value as string,
-        this.loginForm.controls.password.value as string,
+        this.loginForm.controls['email'].value as string,
+        this.loginForm.controls['password'].value as string,
       )
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({

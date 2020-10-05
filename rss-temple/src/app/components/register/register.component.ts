@@ -84,7 +84,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
         }
       }
 
-      const emailErrors = this.registerForm.controls.email.errors;
+      const emailErrors = this.registerForm.controls['email'].errors;
       if (emailErrors !== null) {
         if (emailErrors.required) {
           this.registerFormErrors.controls['email'].push('Email required');
@@ -95,7 +95,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
         }
       }
 
-      const passwordErrors = this.registerForm.controls.password.errors;
+      const passwordErrors = this.registerForm.controls['password'].errors;
       if (passwordErrors !== null) {
         if (passwordErrors.required) {
           this.registerFormErrors.controls['password'].push(
@@ -117,7 +117,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
         }
       }
 
-      const passwordCheckErrors = this.registerForm.controls.passwordCheck
+      const passwordCheckErrors = this.registerForm.controls['passwordCheck']
         .errors;
       if (passwordCheckErrors !== null) {
         /* istanbul ignore else */
@@ -135,8 +135,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
     if (this.googleToken !== null) {
       this.loginService
         .createGoogleLogin(
-          this.registerForm.controls.email.value as string,
-          this.registerForm.controls.password.value as string,
+          this.registerForm.controls['email'].value as string,
+          this.registerForm.controls['password'].value as string,
           this.googleToken,
         )
         .pipe(takeUntil(this.unsubscribe$))
@@ -147,8 +147,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
     } else if (this.facebookToken !== null) {
       this.loginService
         .createFacebookLogin(
-          this.registerForm.controls.email.value as string,
-          this.registerForm.controls.password.value as string,
+          this.registerForm.controls['email'].value as string,
+          this.registerForm.controls['password'].value as string,
           this.facebookToken,
         )
         .pipe(takeUntil(this.unsubscribe$))
@@ -159,8 +159,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
     } else {
       this.loginService
         .createMyLogin(
-          this.registerForm.controls.email.value as string,
-          this.registerForm.controls.password.value as string,
+          this.registerForm.controls['email'].value as string,
+          this.registerForm.controls['password'].value as string,
         )
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({

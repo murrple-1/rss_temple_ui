@@ -32,7 +32,7 @@
               </label>
             </div>
             <small
-              *ngFor="let errorString of loginFormErrors.controls.email"
+              *ngFor="let errorString of loginFormErrors.controls['email']"
               class="form-text text-muted"
               >{{ errorString }}</small
             >
@@ -50,7 +50,7 @@
               </label>
             </div>
             <small
-              *ngFor="let errorString of loginFormErrors.controls.password"
+              *ngFor="let errorString of loginFormErrors.controls['password']"
               class="form-text text-muted"
               >{{ errorString }}</small
             >
