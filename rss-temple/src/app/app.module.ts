@@ -29,7 +29,7 @@ import { VerifyComponent } from '@app/components/verify/verify.component';
 
     SnackbarModule.forRoot(),
 
-    RouterModule.forRoot(routes),
+    RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' }),
   ],
   declarations: [
     AppComponent,
