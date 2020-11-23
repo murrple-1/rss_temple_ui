@@ -7,7 +7,7 @@ import { QueryOptions } from '@app/services/data/query.interface';
 
 export function queryAllFn<Field, SortField extends string, T>(
   options: AllOptions<Field, SortField>,
-  queryFn: (options: QueryOptions<Field, SortField>) => Observable<Objects<T>>,
+  queryFn: (options_: QueryOptions<Field, SortField>) => Observable<Objects<T>>,
   pageSize: number,
 ) {
   return queryFn({

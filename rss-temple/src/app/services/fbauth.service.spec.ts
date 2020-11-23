@@ -1,5 +1,3 @@
-/* tslint:disable:deprecation */
-
 import { skip } from 'rxjs/operators';
 
 import { FBAuthService } from './fbauth.service';

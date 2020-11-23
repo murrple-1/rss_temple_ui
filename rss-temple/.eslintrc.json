@@ -5,7 +5,7 @@
     {
       "files": ["*.ts"],
       "parserOptions": {
-        "project": ["tsconfig.json", "e2e/tsconfig.json"],
+        "project": ["tsconfig.json"],
         "createDefaultProgram": true
       },
       "extends": [
@@ -29,6 +29,8 @@
         ],
         "@typescript-eslint/naming-convention": "off",
         "@typescript-eslint/member-ordering": "off",
+        "@typescript-eslint/no-shadow": ["error"],
+        "prefer-arrow/prefer-arrow-functions": "off",
         "brace-style": ["error", "1tbs"],
         "id-blacklist": "off",
         "id-match": "off",
@@ -41,7 +43,7 @@
         ],
         "no-underscore-dangle": "off",
         "arrow-body-style": ["error", "as-needed"],
-        "prefer-arrow/prefer-arrow-functions": "off"
+        "no-shadow": "off"
       }
     },
     {

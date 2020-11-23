@@ -169,12 +169,10 @@ export class UserCategoriesModalComponent implements OnInit, OnDestroy {
   finish() {
     const returnData = this.userCategorySelections
       .filter(_selection => _selection.isSelected)
-      .map<ReturnData>(_selection => {
-        return {
-          uuid: _selection._uuid,
-          text: _selection.text,
-        };
-      });
+      .map<ReturnData>(_selection => ({
+        uuid: _selection._uuid,
+        text: _selection.text,
+      }));
     this.activeModal.close(returnData);
   }
 }

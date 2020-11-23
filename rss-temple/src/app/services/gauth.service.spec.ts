@@ -23,22 +23,23 @@ describe('FBAuthService', () => {
           callback();
         }),
       auth2: {
-        init: jasmine.createSpy('gapi.auth2.init').and.callFake(() => {
-          return ({
-            then: (onInit: (googleAuth: gapi.auth2.GoogleAuth) => any) => {
-              onInit(({
-                isSignedIn: {
-                  listen: (_listener: (isSignedIn: boolean) => void) => {},
-                },
-                currentUser: {
-                  listen: (
-                    _listener: (currentUser: gapi.auth2.GoogleUser) => void,
-                  ) => {},
-                },
-              } as any) as gapi.auth2.GoogleAuth);
-            },
-          } as any) as gapi.auth2.GoogleAuth;
-        }),
+        init: jasmine.createSpy('gapi.auth2.init').and.callFake(
+          () =>
+            (({
+              then: (onInit: (googleAuth: gapi.auth2.GoogleAuth) => any) => {
+                onInit(({
+                  isSignedIn: {
+                    listen: (_listener: (isSignedIn: boolean) => void) => {},
+                  },
+                  currentUser: {
+                    listen: (
+                      _listener: (currentUser: gapi.auth2.GoogleUser) => void,
+                    ) => {},
+                  },
+                } as any) as gapi.auth2.GoogleAuth);
+              },
+            } as any) as gapi.auth2.GoogleAuth),
+        ),
       },
     };
 
@@ -61,35 +62,36 @@ describe('FBAuthService', () => {
           callback();
         }),
       auth2: {
-        init: jasmine.createSpy('gapi.auth2.init').and.callFake(() => {
-          return ({
-            then: (onInit: (googleAuth: gapi.auth2.GoogleAuth) => any) => {
-              onInit(({
-                isSignedIn: {
-                  listen: (listener: (isSignedIn: boolean) => void) => {
-                    isSignedInListener = listener;
+        init: jasmine.createSpy('gapi.auth2.init').and.callFake(
+          () =>
+            (({
+              then: (onInit: (googleAuth: gapi.auth2.GoogleAuth) => any) => {
+                onInit(({
+                  isSignedIn: {
+                    listen: (listener: (isSignedIn: boolean) => void) => {
+                      isSignedInListener = listener;
+                    },
                   },
-                },
-                currentUser: {
-                  listen: (
-                    listener: (currentUser: gapi.auth2.GoogleUser) => void,
-                  ) => {
-                    currentUserListener = listener;
+                  currentUser: {
+                    listen: (
+                      listener: (currentUser: gapi.auth2.GoogleUser) => void,
+                    ) => {
+                      currentUserListener = listener;
+                    },
                   },
-                },
-                signIn: () => {
-                  if (isSignedInListener !== null) {
-                    isSignedInListener(true);
-                  }
+                  signIn: () => {
+                    if (isSignedInListener !== null) {
+                      isSignedInListener(true);
+                    }
 
-                  if (currentUserListener !== null) {
-                    currentUserListener(({} as any) as gapi.auth2.GoogleUser);
-                  }
-                },
-              } as any) as gapi.auth2.GoogleAuth);
-            },
-          } as any) as gapi.auth2.GoogleAuth;
-        }),
+                    if (currentUserListener !== null) {
+                      currentUserListener(({} as any) as gapi.auth2.GoogleUser);
+                    }
+                  },
+                } as any) as gapi.auth2.GoogleAuth);
+              },
+            } as any) as gapi.auth2.GoogleAuth),
+        ),
       },
     };
 
@@ -110,29 +112,30 @@ describe('FBAuthService', () => {
           callback();
         }),
       auth2: {
-        init: jasmine.createSpy('gapi.auth2.init').and.callFake(() => {
-          return ({
-            then: (onInit: (googleAuth: gapi.auth2.GoogleAuth) => any) => {
-              onInit(({
-                isSignedIn: {
-                  listen: (listener: (isSignedIn: boolean) => void) => {
-                    isSignedInListener = listener;
+        init: jasmine.createSpy('gapi.auth2.init').and.callFake(
+          () =>
+            (({
+              then: (onInit: (googleAuth: gapi.auth2.GoogleAuth) => any) => {
+                onInit(({
+                  isSignedIn: {
+                    listen: (listener: (isSignedIn: boolean) => void) => {
+                      isSignedInListener = listener;
+                    },
                   },
-                },
-                currentUser: {
-                  listen: (
-                    _listener: (isSignedIn: gapi.auth2.GoogleUser) => void,
-                  ) => {},
-                },
-                signOut: () => {
-                  if (isSignedInListener !== null) {
-                    isSignedInListener(false);
-                  }
-                },
-              } as any) as gapi.auth2.GoogleAuth);
-            },
-          } as any) as gapi.auth2.GoogleAuth;
-        }),
+                  currentUser: {
+                    listen: (
+                      _listener: (isSignedIn: gapi.auth2.GoogleUser) => void,
+                    ) => {},
+                  },
+                  signOut: () => {
+                    if (isSignedInListener !== null) {
+                      isSignedInListener(false);
+                    }
+                  },
+                } as any) as gapi.auth2.GoogleAuth);
+              },
+            } as any) as gapi.auth2.GoogleAuth),
+        ),
       },
     };
 

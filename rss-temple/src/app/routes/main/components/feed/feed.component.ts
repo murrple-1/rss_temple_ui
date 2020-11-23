@@ -223,11 +223,9 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
         .subscribe({
           next: () => {
             this.zone.run(() => {
-              this.userCategories = returnData.map<UserCategoryImpl>(data => {
-                return {
-                  text: data.text,
-                };
-              });
+              this.userCategories = returnData.map<UserCategoryImpl>(data => ({
+                text: data.text,
+              }));
             });
           },
           error: error => {

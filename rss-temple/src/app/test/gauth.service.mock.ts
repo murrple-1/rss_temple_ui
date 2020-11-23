@@ -23,11 +23,9 @@ export class MockGAuthService extends GAuthService {
 
   signIn() {
     const user = {
-      getAuthResponse: () => {
-        return {
-          id_token: 'id_token',
-        };
-      },
+      getAuthResponse: () => ({
+        id_token: 'id_token',
+      }),
     } as gapi.auth2.GoogleUser;
     this.user$.next(user);
   }

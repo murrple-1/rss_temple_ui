@@ -2,7 +2,7 @@ import { JsonValue } from '@app/libs/json.lib';
 
 import { toObjects, Objects } from './objects';
 
-interface Type {}
+type Type = Record<string, unknown>;
 
 function toType(_value: JsonValue): Type {
   return {};

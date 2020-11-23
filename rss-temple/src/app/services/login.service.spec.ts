@@ -95,11 +95,9 @@ describe('LoginService', () => {
     httpClientSpy.post.and.returnValue(of('sessiontoken'));
 
     const user = {
-      getAuthResponse: () => {
-        return {
-          id_token: 'id_token',
-        };
-      },
+      getAuthResponse: () => ({
+        id_token: 'id_token',
+      }),
     } as gapi.auth2.GoogleUser;
     const response = await loginService.getGoogleLoginSession(user).toPromise();
     expect(httpClientSpy.post).toHaveBeenCalledTimes(1);

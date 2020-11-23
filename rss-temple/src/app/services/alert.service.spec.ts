@@ -22,6 +22,7 @@ describe('AlertService', () => {
 
     const text = 'text';
     let timeoutMilliseconds: number | undefined;
+    timeoutMilliseconds = undefined;
     alertService.error(text, timeoutMilliseconds);
 
     expect(snackbarServiceSpy.add).toHaveBeenCalledWith(
@@ -51,6 +52,7 @@ describe('AlertService', () => {
 
     const text = 'text';
     let timeoutMilliseconds: number | undefined;
+    timeoutMilliseconds = undefined;
     alertService.success(text, timeoutMilliseconds);
 
     expect(snackbarServiceSpy.add).toHaveBeenCalledWith(
@@ -80,6 +82,7 @@ describe('AlertService', () => {
 
     const text = 'text';
     let timeoutMilliseconds: number | undefined;
+    timeoutMilliseconds = undefined;
     alertService.info(text, timeoutMilliseconds);
 
     expect(snackbarServiceSpy.add).toHaveBeenCalledWith(
