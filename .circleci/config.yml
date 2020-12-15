@@ -3,11 +3,12 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - build
-      - test
-      - e2e
+      - build_app
+      - test_app
+      - e2e_app
+      - build_home
 jobs:
-  build:
+  build_app:
     working_directory: ~/rss_temple_http/
     docker:
       - image: circleci/node:10-browsers
@@ -29,11 +30,11 @@ jobs:
           working_directory: ~/rss_temple_http/rss-temple/
       - run:
           name: tarball
-          command: tar -czf ../build.tar.gz *
+          command: tar -czf ../build_app.tar.gz *
           working_directory: ~/rss_temple_http/rss-temple/dist/
       - store_artifacts:
-          path: ~/rss_temple_http/rss-temple/build.tar.gz
-  test:
+          path: ~/rss_temple_http/rss-temple/build_app.tar.gz
+  test_app:
     working_directory: ~/rss_temple_http/
     docker:
       - image: circleci/node:10-browsers
@@ -61,7 +62,7 @@ jobs:
           name: codecov
           command: yarn run codecov --disable=gcov
           working_directory: ~/rss_temple_http/rss-temple/
-  e2e:
+  e2e_app:
     working_directory: ~/rss_temple_http/
     docker:
       - image: circleci/node:10-browsers
@@ -85,3 +86,29 @@ jobs:
           name: angular-e2e
           command: yarn run ng e2e --webdriver-update=false
           working_directory: ~/rss_temple_http/rss-temple/
+  build_home:
+    working_directory: ~/rss_temple_http/
+    docker:
+      - image: circleci/node:10-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "~/rss_temple_http/rss-temple-home/yarn.lock" }}
+      - run:
+          name: install-dependencies
+          command: yarn install --frozen-lockfile
+          working_directory: ~/rss_temple_http/rss-temple-home/
+      - save_cache:
+          key: dependency-cache-{{ checksum "~/rss_temple_http/rss-temple-home/yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+      - run:
+          name: angular-build
+          command: yarn run grunt build
+          working_directory: ~/rss_temple_http/rss-temple-home/
+      - run:
+          name: tarball
+          command: tar -czf ../build_home.tar.gz *
+          working_directory: ~/rss_temple_http/rss-temple-home/dist/
+      - store_artifacts:
+          path: ~/rss_temple_http/rss-temple-home/build_home.tar.gz
