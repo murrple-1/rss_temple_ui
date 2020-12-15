@@ -1,10 +1,5 @@
 "use strict";
 module.exports = function (grunt) {
-  grunt.config(
-    "google-analytics-tracking-id",
-    grunt.option("g-track-id") || null
-  );
-
   require("time-grunt")(grunt);
 
   require("load-grunt-tasks")(grunt);
@@ -28,13 +23,7 @@ module.exports = function (grunt) {
       },
       "dist index": {
         options: {
-          context: [
-            {
-              google_analytics_tracking_id: grunt.config(
-                "google-analytics-tracking-id"
-              )
-            }
-          ]
+          context: [{}]
         },
         files: {
           ".tmp/index.html": "<%= yeoman.app %>/index.hbs"
