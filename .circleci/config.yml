@@ -103,7 +103,7 @@ jobs:
           paths:
             - ~/.cache/yarn
       - run:
-          name: angular-build
+          name: build
           command: yarn run grunt build
           working_directory: ~/rss_temple_http/rss-temple-home/
       - run:
