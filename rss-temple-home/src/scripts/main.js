@@ -1,2 +1,3 @@
-import "jquery/src/jquery";
-import "bootstrap/dist/js/bootstrap.bundle";
+import("jquery/src/jquery").then(() => {
+  import("bootstrap/dist/js/bootstrap.bundle");
+});
