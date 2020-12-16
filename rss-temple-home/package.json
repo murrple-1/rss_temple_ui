@@ -14,9 +14,22 @@
     "endOfLine": "lf",
     "semi": true,
     "useTabs": false,
-    "tabWidth": 2
+    "tabWidth": 2,
+    "overrides": [
+      {
+        "files": "*.hbs",
+        "options": {
+          "parser": "html"
+        }
+      }
+    ]
   },
-  "dependencies": {},
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.1",
+    "bootstrap": "^4.5.3",
+    "jquery": "^3.5.1",
+    "simple-line-icons": "^2.5.5"
+  },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
     "eslint": "^7.3.1",

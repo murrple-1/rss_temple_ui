@@ -54,7 +54,11 @@ module.exports = function (grunt) {
         options: {
           implementation: require("node-sass"),
           fiber: require("fibers"),
-          includePaths: []
+          includePaths: [
+            "node_modules/bootstrap/scss/",
+            "node_modules/@fortawesome/fontawesome-free/scss/",
+            "node_modules/simple-line-icons/scss/"
+          ]
         },
         files: {
           ".tmp/styles/main.css": "<%= yeoman.app %>/styles/main.scss"
@@ -119,6 +123,18 @@ module.exports = function (grunt) {
             cwd: "<%= yeoman.app %>/",
             src: ["favicon.ico", "robots.txt"],
             dest: "<%= yeoman.dist %>/"
+          },
+          {
+            expand: true,
+            cwd: "node_modules/@fortawesome/fontawesome-free/webfonts/",
+            src: ["*"],
+            dest: "<%= yeoman.dist %>/media/fonts/"
+          },
+          {
+            expand: true,
+            cwd: "node_modules/simple-line-icons/fonts/",
+            src: ["*"],
+            dest: "<%= yeoman.dist %>/media/fonts/"
           }
         ]
       }
