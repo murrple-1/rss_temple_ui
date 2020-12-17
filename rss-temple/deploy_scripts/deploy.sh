@@ -21,7 +21,7 @@ if [ -z "$TARBALL_URL" ]; then
     exit
 fi
 
-wget -q -O "build_app.tar.gz" --header "Circle-Token: $CIRCLE_TOKEN" "$TARBALL_URL"
+wget -q -O build_app.tar.gz --header "Circle-Token: $CIRCLE_TOKEN" "$TARBALL_URL"
 
-mkdir -p /var/www/rss_temple_app/
 tar -xzf build_app.tar.gz -C /var/www/rss_temple_app/
+rm build_app.tar.gz
