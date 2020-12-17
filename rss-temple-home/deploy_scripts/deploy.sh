@@ -27,5 +27,5 @@ fi
 
 wget -q -O "build_home.tar.gz" --header "Circle-Token: $CIRCLE_TOKEN" "$TARBALL_URL"
 
-mkdir -p /var/www/rss_temple_app/
-tar -xzf build_home.tar.gz -C /var/www/rss_temple_app/
+mkdir -p /var/www/rss_temple_home/
+tar -xzf build_home.tar.gz -C /var/www/rss_temple_home/
