@@ -12,7 +12,7 @@ if [ -z "$CIRCLE_TOKEN" ]; then
     exit
 fi
 
-ARTIFACTS_RESPONSE=$(curl -s -H "Circle-Token: $CIRCLE_TOKEN" "https://circleci.com/api/v1.1/project/github/murrple-1/rss_temple/$JOB_NUMBER/artifacts")
+ARTIFACTS_RESPONSE=$(curl -s -H "Circle-Token: $CIRCLE_TOKEN" "https://circleci.com/api/v1.1/project/github/murrple-1/rss_temple_http/$JOB_NUMBER/artifacts")
 
 TARBALL_URL=$(echo $ARTIFACTS_RESPONSE | grep -P -m 1 -o 'https://.*?build_home\.tar\.gz')
 
