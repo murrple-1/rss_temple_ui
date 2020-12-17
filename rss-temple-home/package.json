@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "license": "UNLICENSED",
+  "scripts": {
+    "lint": "grunt",
+    "build": "grunt build"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "pretty-quick --staged"
