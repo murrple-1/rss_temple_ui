@@ -14,13 +14,12 @@ import { sessionToken } from '@app/libs/session.lib';
 export class AuthGuard implements CanActivate {
   constructor(private router: Router) {}
 
-  canActivate(_: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+  canActivate(_route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     if (sessionToken() !== null) {
       return true;
     }
 
-    this.router.navigate(['/login', { returnUrl: state.url }]);
-    return false;
+    return this.router.createUrlTree(['/login', { returnUrl: state.url }]);
   }
 }
 
@@ -30,12 +29,11 @@ export class AuthGuard implements CanActivate {
 export class NoAuthGuard implements CanActivate {
   constructor(private router: Router) {}
 
-  canActivate(_: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+  canActivate(_route: ActivatedRouteSnapshot, _state: RouterStateSnapshot) {
     if (sessionToken() === null) {
       return true;
     }
 
-    this.router.navigate(['/main']);
-    return false;
+    return this.router.createUrlTree(['/main']);
   }
 }
