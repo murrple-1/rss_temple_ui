@@ -2,6 +2,7 @@ import {
   Router,
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
+  UrlTree,
 } from '@angular/router';
 
 import { setSessionToken, deleteSessionToken } from '@app/libs/session.lib';
@@ -9,7 +10,7 @@ import { setSessionToken, deleteSessionToken } from '@app/libs/session.lib';
 import { AuthGuard, NoAuthGuard } from './auth.guard';
 
 function setup_auth() {
-  const routerSpy = jasmine.createSpyObj<Router>('Router', ['navigate']);
+  const routerSpy = jasmine.createSpyObj<Router>('Router', ['createUrlTree']);
 
   const authGuard = new AuthGuard(routerSpy);
 
@@ -36,24 +37,29 @@ describe('AuthGuard', () => {
     } as RouterStateSnapshot;
 
     expect(authGuard.canActivate(activatedRouteSnapshot, state)).toBeTrue();
-    expect(routerSpy.navigate).toHaveBeenCalledTimes(0);
+    expect(routerSpy.createUrlTree).toHaveBeenCalledTimes(0);
   });
 
   it('can not activate', () => {
     const { routerSpy, authGuard } = setup_auth();
+
+    const fakeUrlTree: UrlTree = {} as any;
+    routerSpy.createUrlTree.and.returnValue(fakeUrlTree);
 
     const activatedRouteSnapshot = {} as ActivatedRouteSnapshot;
     const state = {
       url: 'http://example.com',
     } as RouterStateSnapshot;
 
-    expect(authGuard.canActivate(activatedRouteSnapshot, state)).toBeFalse();
-    expect(routerSpy.navigate).toHaveBeenCalledTimes(1);
+    expect(authGuard.canActivate(activatedRouteSnapshot, state)).toBe(
+      fakeUrlTree,
+    );
+    expect(routerSpy.createUrlTree).toHaveBeenCalledTimes(1);
   });
 });
 
 function setup_noauth() {
-  const routerSpy = jasmine.createSpyObj<Router>('Router', ['navigate']);
+  const routerSpy = jasmine.createSpyObj<Router>('Router', ['createUrlTree']);
 
   const noAuthGuard = new NoAuthGuard(routerSpy);
 
@@ -78,11 +84,14 @@ describe('NoAuthGuard', () => {
     } as RouterStateSnapshot;
 
     expect(noAuthGuard.canActivate(activatedRouteSnapshot, state)).toBeTrue();
-    expect(routerSpy.navigate).toHaveBeenCalledTimes(0);
+    expect(routerSpy.createUrlTree).toHaveBeenCalledTimes(0);
   });
 
   it('can not activate', () => {
     const { routerSpy, noAuthGuard } = setup_noauth();
+
+    const fakeUrlTree: UrlTree = {} as any;
+    routerSpy.createUrlTree.and.returnValue(fakeUrlTree);
 
     setSessionToken('a-token');
 
@@ -91,7 +100,9 @@ describe('NoAuthGuard', () => {
       url: 'http://example.com',
     } as RouterStateSnapshot;
 
-    expect(noAuthGuard.canActivate(activatedRouteSnapshot, state)).toBeFalse();
-    expect(routerSpy.navigate).toHaveBeenCalledTimes(1);
+    expect(noAuthGuard.canActivate(activatedRouteSnapshot, state)).toBe(
+      fakeUrlTree,
+    );
+    expect(routerSpy.createUrlTree).toHaveBeenCalledTimes(1);
   });
 });
