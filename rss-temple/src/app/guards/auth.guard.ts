@@ -7,6 +7,7 @@ import {
 } from '@angular/router';
 
 import { sessionToken } from '@app/libs/session.lib';
+import { areOldAndNewRoutesTheSame } from '@app/guards/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -14,12 +15,20 @@ import { sessionToken } from '@app/libs/session.lib';
 export class AuthGuard implements CanActivate {
   constructor(private router: Router) {}
 
-  canActivate(_route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     if (sessionToken() !== null) {
       return true;
     }
 
-    return this.router.createUrlTree(['/login', { returnUrl: state.url }]);
+    const urlTree = this.router.createUrlTree([
+      '/login',
+      { returnUrl: state.url },
+    ]);
+    if (areOldAndNewRoutesTheSame(route, urlTree)) {
+      return true;
+    } else {
+      return urlTree;
+    }
   }
 }
 
@@ -29,11 +38,16 @@ export class AuthGuard implements CanActivate {
 export class NoAuthGuard implements CanActivate {
   constructor(private router: Router) {}
 
-  canActivate(_route: ActivatedRouteSnapshot, _state: RouterStateSnapshot) {
+  canActivate(route: ActivatedRouteSnapshot, _state: RouterStateSnapshot) {
     if (sessionToken() === null) {
       return true;
     }
 
-    return this.router.createUrlTree(['/main']);
+    const urlTree = this.router.createUrlTree(['/main']);
+    if (areOldAndNewRoutesTheSame(route, urlTree)) {
+      return true;
+    } else {
+      return urlTree;
+    }
   }
 }
