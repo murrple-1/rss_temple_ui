@@ -3,6 +3,9 @@ import {
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
   UrlTree,
+  UrlSegmentGroup,
+  PRIMARY_OUTLET,
+  UrlSegment,
 } from '@angular/router';
 
 import { setSessionToken, deleteSessionToken } from '@app/libs/session.lib';
@@ -43,10 +46,22 @@ describe('AuthGuard', () => {
   it('can not activate', () => {
     const { routerSpy, authGuard } = setup_auth();
 
-    const fakeUrlTree: UrlTree = {} as any;
+    const fakeUrlTree = {
+      root: {
+        children: {
+          [PRIMARY_OUTLET]: {
+            segments: (['test'] as unknown) as UrlSegment[],
+          } as UrlSegmentGroup,
+        } as {
+          [key: string]: UrlSegmentGroup;
+        },
+      } as UrlSegmentGroup,
+    } as UrlTree;
     routerSpy.createUrlTree.and.returnValue(fakeUrlTree);
 
-    const activatedRouteSnapshot = {} as ActivatedRouteSnapshot;
+    const activatedRouteSnapshot = {
+      url: ([''] as unknown) as UrlSegment[],
+    } as ActivatedRouteSnapshot;
     const state = {
       url: 'http://example.com',
     } as RouterStateSnapshot;
@@ -54,6 +69,33 @@ describe('AuthGuard', () => {
     expect(authGuard.canActivate(activatedRouteSnapshot, state)).toBe(
       fakeUrlTree,
     );
+    expect(routerSpy.createUrlTree).toHaveBeenCalledTimes(1);
+  });
+
+  it('will not renavigate to the same place', () => {
+    const { routerSpy, authGuard } = setup_auth();
+
+    const fakeUrlTree = {
+      root: {
+        children: {
+          [PRIMARY_OUTLET]: {
+            segments: (['test'] as unknown) as UrlSegment[],
+          } as UrlSegmentGroup,
+        } as {
+          [key: string]: UrlSegmentGroup;
+        },
+      } as UrlSegmentGroup,
+    } as UrlTree;
+    routerSpy.createUrlTree.and.returnValue(fakeUrlTree);
+
+    const activatedRouteSnapshot = {
+      url: (['test'] as unknown) as UrlSegment[],
+    } as ActivatedRouteSnapshot;
+    const state = {
+      url: 'http://example.com',
+    } as RouterStateSnapshot;
+
+    expect(authGuard.canActivate(activatedRouteSnapshot, state)).toBeTrue();
     expect(routerSpy.createUrlTree).toHaveBeenCalledTimes(1);
   });
 });
@@ -90,12 +132,24 @@ describe('NoAuthGuard', () => {
   it('can not activate', () => {
     const { routerSpy, noAuthGuard } = setup_noauth();
 
-    const fakeUrlTree: UrlTree = {} as any;
+    const fakeUrlTree = {
+      root: {
+        children: {
+          [PRIMARY_OUTLET]: {
+            segments: (['test'] as unknown) as UrlSegment[],
+          } as UrlSegmentGroup,
+        } as {
+          [key: string]: UrlSegmentGroup;
+        },
+      } as UrlSegmentGroup,
+    } as UrlTree;
     routerSpy.createUrlTree.and.returnValue(fakeUrlTree);
 
     setSessionToken('a-token');
 
-    const activatedRouteSnapshot = {} as ActivatedRouteSnapshot;
+    const activatedRouteSnapshot = {
+      url: ([''] as unknown) as UrlSegment[],
+    } as ActivatedRouteSnapshot;
     const state = {
       url: 'http://example.com',
     } as RouterStateSnapshot;
@@ -103,6 +157,35 @@ describe('NoAuthGuard', () => {
     expect(noAuthGuard.canActivate(activatedRouteSnapshot, state)).toBe(
       fakeUrlTree,
     );
+    expect(routerSpy.createUrlTree).toHaveBeenCalledTimes(1);
+  });
+
+  it('will not renavigate to the same place', () => {
+    const { routerSpy, noAuthGuard } = setup_noauth();
+
+    const fakeUrlTree = {
+      root: {
+        children: {
+          [PRIMARY_OUTLET]: {
+            segments: (['test'] as unknown) as UrlSegment[],
+          } as UrlSegmentGroup,
+        } as {
+          [key: string]: UrlSegmentGroup;
+        },
+      } as UrlSegmentGroup,
+    } as UrlTree;
+    routerSpy.createUrlTree.and.returnValue(fakeUrlTree);
+
+    setSessionToken('a-token');
+
+    const activatedRouteSnapshot = {
+      url: (['test'] as unknown) as UrlSegment[],
+    } as ActivatedRouteSnapshot;
+    const state = {
+      url: 'http://example.com',
+    } as RouterStateSnapshot;
+
+    expect(noAuthGuard.canActivate(activatedRouteSnapshot, state)).toBeTrue();
     expect(routerSpy.createUrlTree).toHaveBeenCalledTimes(1);
   });
 });
