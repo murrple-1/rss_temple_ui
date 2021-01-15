@@ -9,6 +9,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -18,7 +19,7 @@ import { takeUntil, map } from 'rxjs/operators';
 import { openModal as openSubscribeModal } from '@app/routes/main/components/shared/header/subscribemodal/subscribemodal.component';
 import { openModal as openOPMLModal } from '@app/routes/main/components/shared/header/opmlmodal/opmlmodal.component';
 import { FeedService, UserCategoryService } from '@app/services/data';
-import { HttpErrorService, LoginService } from '@app/services';
+import { AlertService, HttpErrorService, LoginService } from '@app/services';
 import { FeedObservableService } from '@app/routes/main/services';
 import { deleteSessionToken, sessionToken } from '@app/libs/session.lib';
 import { UserCategory, Feed } from '@app/models';
@@ -82,6 +83,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private userCategoryService: UserCategoryService,
     private feedObservableService: FeedObservableService,
     private loginService: LoginService,
+    private alertService: AlertService,
     private httpErrorService: HttpErrorService,
   ) {
     const elem = this.elementRef.nativeElement;
@@ -257,7 +259,21 @@ export class HeaderComponent implements OnInit, OnDestroy {
             }
           },
           error: error => {
-            this.httpErrorService.handleError(error);
+            let errorHandled = false;
+
+            if (error instanceof HttpErrorResponse) {
+              if (error.status === 422) {
+                console.error('feed is malformed', error);
+                this.alertService.error(
+                  'Feed is unable to be read. Please ensure URL points to a valid RSS/Atom feed.',
+                );
+                errorHandled = true;
+              }
+            }
+
+            if (!errorHandled) {
+              this.httpErrorService.handleError(error);
+            }
           },
         });
     } catch {
