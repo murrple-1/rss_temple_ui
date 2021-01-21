@@ -3,10 +3,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { of } from 'rxjs';
 
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
-
-import { SnackbarModule } from 'ngx-snackbar';
-
 import { FeedService, UserCategoryService } from '@app/services/data';
 import { FeedObservableService } from '@app/routes/main/services';
 import { LoginService } from '@app/services';
@@ -28,13 +24,7 @@ async function setup() {
   ]);
 
   await TestBed.configureTestingModule({
-    imports: [
-      NgbDropdownModule,
-
-      SnackbarModule.forRoot(),
-
-      RouterTestingModule.withRoutes([]),
-    ],
+    imports: [RouterTestingModule.withRoutes([])],
     declarations: [HeaderComponent],
     providers: [
       FeedObservableService,

@@ -1,66 +1,86 @@
-﻿import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+﻿import {
+  Component,
+  OnInit,
+  ElementRef,
+  Renderer2,
+  AfterViewChecked,
+  NgZone,
+  OnDestroy,
+  ViewChild,
+} from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { Subject } from 'rxjs';
-import { takeUntil, skip } from 'rxjs/operators';
+import { ClrLoadingState } from '@clr/angular';
 
+import { Subject } from 'rxjs';
+import { skip, takeUntil } from 'rxjs/operators';
+
+import { passwordContainerOverride } from '@app/libs/password-container-override';
 import {
-  AlertService,
-  LoginService,
-  GAuthService,
+  AppAlertsService,
   FBAuthService,
+  GAuthService,
+  LoginService,
 } from '@app/services';
 import { setSessionToken } from '@app/libs/session.lib';
-import { openModal as openPasswordResetModal } from '@app/components/login/requestpasswordresetmodal/requestpasswordresetmodal.component';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormGroupErrors } from '@app/libs/formgrouperrors.lib';
+import {
+  RequestPasswordResetModalComponent,
+  openModal as openRequestPasswordResetModal,
+} from './request-password-reset-modal/request-password-reset-modal.component';
 
-export enum State {
-  Ready,
-  IsLoggingIn,
-  LoginFailed,
+interface LoginWithButtonDescriptor {
+  url: string;
+  imageUrl: string;
 }
 
 @Component({
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit, OnDestroy {
-  state = State.Ready;
-  readonly State = State;
+export class LoginComponent implements OnInit, AfterViewChecked, OnDestroy {
+  email = '';
+  emailErrors: string[] = [];
+  password = '';
+  passwordErrors: string[] = [];
+  rememberMe = false;
 
-  loginForm: FormGroup;
-  loginFormErrors = new FormGroupErrors();
+  loginButtonState = ClrLoadingState.DEFAULT;
+
+  loginWithButtons: LoginWithButtonDescriptor[] = [];
 
   returnUrl: string | null = null;
 
   gLoaded = false;
   fbLoaded = false;
 
+  @ViewChild(RequestPasswordResetModalComponent)
+  private requestPasswordResetModalComponent?: RequestPasswordResetModalComponent;
+
   private readonly unsubscribe$ = new Subject<void>();
 
   constructor(
-    private formBuilder: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
     private zone: NgZone,
-    private modal: NgbModal,
-    private loginService: LoginService,
-    private alertService: AlertService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private elementRef: ElementRef<Element>,
+    private renderer: Renderer2,
     private gAuthService: GAuthService,
     private fbAuthService: FBAuthService,
-  ) {
-    this.loginForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
-    });
-
-    this.loginFormErrors.initializeControls(this.loginForm);
-  }
+    private loginService: LoginService,
+    private appAlertsService: AppAlertsService,
+  ) {}
 
   ngOnInit() {
+    const email = localStorage.getItem('cached_email');
+    const password = localStorage.getItem('cached_password');
+
+    if (email !== null && password !== null) {
+      this.email = email;
+      this.password = password;
+      this.rememberMe = true;
+    }
+
     this.returnUrl = this.route.snapshot.paramMap.get('returnUrl') ?? '/main';
 
     this.gAuthService.isLoaded$.pipe(takeUntil(this.unsubscribe$)).subscribe({
@@ -85,10 +105,6 @@ export class LoginComponent implements OnInit, OnDestroy {
       .pipe(skip(1), takeUntil(this.unsubscribe$))
       .subscribe({
         next: user => {
-          this.zone.run(() => {
-            this.state = State.Ready;
-          });
-
           if (user) {
             this.handleGoogleUser(user);
           }
@@ -117,15 +133,15 @@ export class LoginComponent implements OnInit, OnDestroy {
       .pipe(skip(1), takeUntil(this.unsubscribe$))
       .subscribe({
         next: user => {
-          this.zone.run(() => {
-            this.state = State.Ready;
-          });
-
           if (user) {
             this.handleFacebookUser(user);
           }
         },
       });
+  }
+
+  ngAfterViewChecked() {
+    passwordContainerOverride(this.elementRef, this.renderer);
   }
 
   ngOnDestroy() {
@@ -134,39 +150,31 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   onLogin() {
-    this.loginFormErrors.clearErrors();
-    if (this.loginForm.invalid) {
-      this.state = State.LoginFailed;
+    this.emailErrors = [];
+    this.passwordErrors = [];
 
-      const emailErrors = this.loginForm.controls['email'].errors;
-      if (emailErrors !== null) {
-        if (emailErrors.required) {
-          this.loginFormErrors.controls['email'].push('Email required');
-        }
+    let inputError = false;
 
-        if (emailErrors.email) {
-          this.loginFormErrors.controls['email'].push('Email malformed');
-        }
-      }
+    const email = this.email.trim();
+    if (email.length < 1) {
+      this.emailErrors = ['Email missing'];
+      inputError = true;
+    }
 
-      const passwordErrors = this.loginForm.controls['password'].errors;
-      if (passwordErrors !== null) {
-        /* istanbul ignore else */
-        if (passwordErrors.required) {
-          this.loginFormErrors.controls['password'].push('Password required');
-        }
-      }
+    const password = this.password.trim();
+    if (password.length < 1) {
+      this.passwordErrors = ['Password missing'];
+      inputError = true;
+    }
 
+    if (inputError) {
       return;
     }
 
-    this.state = State.IsLoggingIn;
+    this.loginButtonState = ClrLoadingState.LOADING;
 
     this.loginService
-      .getMyLoginSession(
-        this.loginForm.controls['email'].value as string,
-        this.loginForm.controls['password'].value as string,
-      )
+      .getMyLoginSession(this.email, this.password)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: this.handleLoginSuccess.bind(this),
@@ -184,10 +192,11 @@ export class LoginComponent implements OnInit, OnDestroy {
           }
 
           console.error(errorMessage, error);
-          this.alertService.error(errorMessage, 5000);
-
-          this.zone.run(() => {
-            this.state = State.LoginFailed;
+          this.appAlertsService.appAlertDescriptor$.next({
+            autoCloseInterval: 5000,
+            canClose: true,
+            text: errorMessage,
+            type: 'danger',
           });
         },
       });
@@ -202,7 +211,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   onGoogleLogin() {
-    this.state = State.IsLoggingIn;
     this.gAuthService.signIn();
   }
 
@@ -230,11 +238,11 @@ export class LoginComponent implements OnInit, OnDestroy {
               }
 
               console.error(errorMessage, error);
-
-              this.alertService.error(errorMessage, 5000);
-
-              this.zone.run(() => {
-                this.state = State.LoginFailed;
+              this.appAlertsService.appAlertDescriptor$.next({
+                autoCloseInterval: 5000,
+                canClose: true,
+                text: errorMessage,
+                type: 'danger',
               });
             }
           } else {
@@ -242,10 +250,11 @@ export class LoginComponent implements OnInit, OnDestroy {
 
             console.error(errorMessage, error);
 
-            this.alertService.error(errorMessage, 5000);
-
-            this.zone.run(() => {
-              this.state = State.LoginFailed;
+            this.appAlertsService.appAlertDescriptor$.next({
+              autoCloseInterval: 5000,
+              canClose: true,
+              text: errorMessage,
+              type: 'danger',
             });
           }
         },
@@ -253,7 +262,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   onFacebookLogin() {
-    this.state = State.IsLoggingIn;
     this.fbAuthService.signIn();
   }
 
@@ -278,21 +286,22 @@ export class LoginComponent implements OnInit, OnDestroy {
                   break;
               }
 
-              this.alertService.error(errorMessage, 5000);
-
-              this.zone.run(() => {
-                this.state = State.LoginFailed;
+              this.appAlertsService.appAlertDescriptor$.next({
+                autoCloseInterval: 5000,
+                canClose: true,
+                text: errorMessage,
+                type: 'danger',
               });
             }
           } else {
             const errorMessage = 'Unknown Error';
 
             console.error(errorMessage, error);
-
-            this.alertService.error(errorMessage, 5000);
-
-            this.zone.run(() => {
-              this.state = State.LoginFailed;
+            this.appAlertsService.appAlertDescriptor$.next({
+              autoCloseInterval: 5000,
+              canClose: true,
+              text: errorMessage,
+              type: 'danger',
             });
           }
         },
@@ -300,12 +309,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   async onForgottenPassword() {
-    const modalRef = openPasswordResetModal(this.modal);
-
-    try {
-      await modalRef.result;
-    } catch {
-      // do nothing
+    if (this.requestPasswordResetModalComponent === undefined) {
+      throw new Error('requestPasswordResetModalComponent undefined');
     }
+
+    await openRequestPasswordResetModal(
+      this.requestPasswordResetModalComponent,
+    );
   }
 }

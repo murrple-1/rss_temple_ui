@@ -1,8 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { SnackbarModule } from 'ngx-snackbar';
-
 import {
   FeedService,
   UserCategoryService,
@@ -32,7 +30,7 @@ async function setup() {
   );
 
   await TestBed.configureTestingModule({
-    imports: [SnackbarModule.forRoot(), RouterTestingModule.withRoutes([])],
+    imports: [RouterTestingModule.withRoutes([])],
     declarations: [FeedComponent, DisplayOptionsViewComponent],
     providers: [
       FeedObservableService,

@@ -6,7 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 import { FeedEntryService } from '@app/services/data';
 import { FeedEntry, Feed } from '@app/models';
 import { DisplayObservableService } from '@app/routes/main/services';
-import { DisplayType } from '@app/routes/main/services/displayobservable.service';
+import { DisplayType } from '@app/routes/main/services/display-observable.service';
 
 type FeedImpl = Required<Pick<Feed, 'calculatedTitle' | 'homeUrl'>>;
 type FeedEntryImpl = Required<

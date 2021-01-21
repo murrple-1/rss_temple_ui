@@ -1,7 +1,11 @@
-import { Component, NgZone, ChangeDetectorRef, OnInit } from '@angular/core';
+import {
+  Component,
+  NgZone,
+  ChangeDetectorRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { zip, Observable } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
@@ -15,7 +19,8 @@ import { UserCategory, Feed } from '@app/models';
 import {
   openModal as openUserCategoriesModal,
   ReturnData,
-} from '@app/routes/main/components/feed/usercategoriesmodal/usercategoriesmodal.component';
+  UserCategoriesModalComponent,
+} from '@app/routes/main/components/feed/user-categories-modal/user-categories-modal.component';
 import { IApply } from '@app/services/data/usercategory.service';
 import { Sort } from '@app/services/data/sort.interface';
 import {
@@ -56,9 +61,11 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
     throw new Error('feeds cannot be setup');
   }
 
+  @ViewChild(UserCategoriesModalComponent, { static: true })
+  private userCategoriesModal?: UserCategoriesModalComponent;
+
   constructor(
     private route: ActivatedRoute,
-    private modal: NgbModal,
     private feedService: FeedService,
     private userCategoryService: UserCategoryService,
 
@@ -203,14 +210,17 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
   }
 
   async onAddUserCategory() {
-    const modalRef = openUserCategoriesModal(
-      this.modal,
+    if (this.userCategoriesModal === undefined) {
+      throw new Error('userCategoriesModal undefined');
+    }
+
+    const returnData = await openUserCategoriesModal(
       new Set<string>(
         this.userCategories.map(userCategory => userCategory.text),
       ),
+      this.userCategoriesModal,
     );
 
-    const returnData = await modalRef.result;
     if (this.feed !== null) {
       const applyBody: IApply = {};
       applyBody[this.feed.uuid] = new Set<string>(

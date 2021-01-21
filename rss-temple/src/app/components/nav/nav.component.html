@@ -1,0 +1,22 @@
+<div class="header-nav">
+  <a
+    *ngFor="let navLink of navLinks"
+    [routerLink]="navLink.routerLink"
+    routerLinkActive="active"
+    replaceUrl
+    class="nav-link nav-text"
+    >{{ navLink.name }}</a
+  >
+</div>
+<div class="header-actions">
+  <a
+    *ngFor="let navAction of navActions"
+    [routerLink]=""
+    class="nav-link nav-icon"
+    (click)="navAction.onClick()"
+  >
+    <clr-icon [attr.shape]="navAction.clrIconShape"></clr-icon>
+  </a>
+</div>
+
+<app-confirm-modal></app-confirm-modal>

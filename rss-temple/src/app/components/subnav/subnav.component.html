@@ -1,0 +1,13 @@
+<nav *ngIf="(subNavLinks$ | async)?.length > 0" class="subnav">
+  <ul class="nav">
+    <li *ngFor="let subNavLink of subNavLinks$ | async" class="nav-item">
+      <a
+        [routerLink]="subNavLink.routerLink"
+        routerLinkActive="active"
+        replaceUrl
+        class="nav-link"
+        >{{ subNavLink.text }}</a
+      >
+    </li>
+  </ul>
+</nav>

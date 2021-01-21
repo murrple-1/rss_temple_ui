@@ -11,15 +11,23 @@ import {
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
 import { Subject, zip } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 
-import { openModal as openSubscribeModal } from '@app/routes/main/components/shared/header/subscribemodal/subscribemodal.component';
-import { openModal as openOPMLModal } from '@app/routes/main/components/shared/header/opmlmodal/opmlmodal.component';
+import {
+  openModal as openSubscribeModal,
+  SubscribeModalComponent,
+} from '@app/routes/main/components/shared/header/subscribe-modal/subscribe-modal.component';
+import {
+  openModal as openOPMLModal,
+  OPMLModalComponent,
+} from '@app/routes/main/components/shared/header/opml-modal/opml-modal.component';
 import { FeedService, UserCategoryService } from '@app/services/data';
-import { AlertService, HttpErrorService, LoginService } from '@app/services';
+import {
+  AppAlertsService,
+  HttpErrorService,
+  LoginService,
+} from '@app/services';
 import { FeedObservableService } from '@app/routes/main/services';
 import { deleteSessionToken, sessionToken } from '@app/libs/session.lib';
 import { UserCategory, Feed } from '@app/models';
@@ -71,6 +79,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @ViewChild('filterInput', { static: true })
   private filterInput?: ElementRef<HTMLInputElement>;
 
+  @ViewChild(SubscribeModalComponent, { static: true })
+  private subscribeModal?: SubscribeModalComponent;
+
+  @ViewChild(OPMLModalComponent, { static: true })
+  private opmlModal?: OPMLModalComponent;
+
   private readonly unsubscribe$ = new Subject<void>();
 
   constructor(
@@ -78,12 +92,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private elementRef: ElementRef,
     private renderer: Renderer2,
     private router: Router,
-    private modal: NgbModal,
     private feedService: FeedService,
     private userCategoryService: UserCategoryService,
     private feedObservableService: FeedObservableService,
     private loginService: LoginService,
-    private alertService: AlertService,
+    private appAlertsService: AppAlertsService,
     private httpErrorService: HttpErrorService,
   ) {
     const elem = this.elementRef.nativeElement;
@@ -208,136 +221,137 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   async addFeed() {
-    const modalRef = openSubscribeModal(this.modal);
-
-    try {
-      const result = await modalRef.result;
-      this.feedService
-        .get(result.feedUrl, {
-          fields: ['uuid', 'title', 'subscribed', 'homeUrl'],
-        })
-        .pipe(
-          takeUntil(this.unsubscribe$),
-          map(feed => feed as FeedImpl2),
-        )
-        .subscribe({
-          next: _feed => {
-            const feed: FeedImpl = {
-              uuid: _feed.uuid,
-              feedUrl: result.feedUrl,
-              calculatedTitle: _feed.title,
-              homeUrl: _feed.homeUrl,
-            };
-            if (!_feed.subscribed) {
-              this.feedService
-                .subscribe(result.feedUrl, result.customTitle)
-                .pipe(takeUntil(this.unsubscribe$))
-                .subscribe({
-                  next: () => {
-                    if (result.customTitle !== undefined) {
-                      feed.calculatedTitle = result.customTitle;
-                    }
-
-                    this.zone.run(() => {
-                      this.feedObservableService.feedAdded.next(feed);
-
-                      this.allCategorizedFeeds.noCategory = this.allCategorizedFeeds.noCategory
-                        .concat(feed)
-                        .sort(HeaderComponent.sortFeeds);
-
-                      if (this.filterInput !== undefined) {
-                        this.filterFeeds(this.filterInput.nativeElement.value);
-                      }
-                    });
-                  },
-                  error: error => {
-                    this.httpErrorService.handleError(error);
-                  },
-                });
-            } else {
-              // TODO already subscribed. do anything?
-            }
-          },
-          error: error => {
-            let errorHandled = false;
-
-            if (error instanceof HttpErrorResponse) {
-              if (error.status === 422) {
-                console.error('feed is malformed', error);
-                this.alertService.error(
-                  'Feed is unable to be read. Please ensure URL points to a valid RSS/Atom feed.',
-                );
-                errorHandled = true;
-              }
-            }
-
-            if (!errorHandled) {
-              this.httpErrorService.handleError(error);
-            }
-          },
-        });
-    } catch {
-      // dialog dismissed, no-op
+    if (this.subscribeModal === undefined) {
+      throw new Error('subscribeModal undefined');
     }
+
+    const result = await openSubscribeModal(this.subscribeModal);
+
+    this.feedService
+      .get(result.feedUrl, {
+        fields: ['uuid', 'title', 'subscribed', 'homeUrl'],
+      })
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        map(feed => feed as FeedImpl2),
+      )
+      .subscribe({
+        next: _feed => {
+          const feed: FeedImpl = {
+            uuid: _feed.uuid,
+            feedUrl: result.feedUrl,
+            calculatedTitle: _feed.title,
+            homeUrl: _feed.homeUrl,
+          };
+          if (!_feed.subscribed) {
+            this.feedService
+              .subscribe(result.feedUrl, result.customTitle)
+              .pipe(takeUntil(this.unsubscribe$))
+              .subscribe({
+                next: () => {
+                  if (result.customTitle !== undefined) {
+                    feed.calculatedTitle = result.customTitle;
+                  }
+
+                  this.zone.run(() => {
+                    this.feedObservableService.feedAdded.next(feed);
+
+                    this.allCategorizedFeeds.noCategory = this.allCategorizedFeeds.noCategory
+                      .concat(feed)
+                      .sort(HeaderComponent.sortFeeds);
+
+                    if (this.filterInput !== undefined) {
+                      this.filterFeeds(this.filterInput.nativeElement.value);
+                    }
+                  });
+                },
+                error: error => {
+                  this.httpErrorService.handleError(error);
+                },
+              });
+          } else {
+            // TODO already subscribed. do anything?
+          }
+        },
+        error: error => {
+          let errorHandled = false;
+
+          if (error instanceof HttpErrorResponse) {
+            if (error.status === 422) {
+              console.error('feed is malformed', error);
+              this.appAlertsService.appAlertDescriptor$.next({
+                autoCloseInterval: null,
+                canClose: true,
+                text:
+                  'Feed is unable to be read. Please ensure URL points to a valid RSS/Atom feed.',
+                type: 'danger',
+              });
+              errorHandled = true;
+            }
+          }
+
+          if (!errorHandled) {
+            this.httpErrorService.handleError(error);
+          }
+        },
+      });
   }
 
   async uploadOPML() {
-    const modalRef = openOPMLModal(this.modal);
-
-    try {
-      await modalRef.result;
-
-      this.feedObservableService.feedsChanged.next();
-
-      zip(
-        this.userCategoryService
-          .queryAll({
-            fields: ['text', 'feedUuids'],
-            sort: new Sort([['text', 'ASC']]),
-            returnTotalCount: false,
-          })
-          .pipe(
-            map(response => {
-              if (response.objects !== undefined) {
-                return response.objects as UserCategoryImpl[];
-              }
-              throw new Error('malformed response');
-            }),
-          ),
-        this.feedService
-          .queryAll({
-            fields: ['uuid', 'calculatedTitle', 'feedUrl', 'homeUrl'],
-            search: 'subscribed:"true"',
-            sort: new Sort([['calculatedTitle', 'ASC']]),
-            returnTotalCount: false,
-          })
-          .pipe(
-            map(response => {
-              if (response.objects !== undefined) {
-                return response.objects as FeedImpl[];
-              }
-              throw new Error('malformed response');
-            }),
-          ),
-      )
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe({
-          next: ([userCategories, feeds]) => {
-            this.zone.run(() => {
-              this.allCategorizedFeeds = HeaderComponent.buildAllCategorizedFeeds(
-                userCategories,
-                feeds,
-              );
-
-              if (this.filterInput !== undefined) {
-                this.filterFeeds(this.filterInput.nativeElement.value);
-              }
-            });
-          },
-        });
-    } catch {
-      // dialog dismissed, no-op
+    if (this.opmlModal === undefined) {
+      throw new Error('opmlModal undefined');
     }
+
+    await openOPMLModal(this.opmlModal);
+
+    this.feedObservableService.feedsChanged.next();
+
+    zip(
+      this.userCategoryService
+        .queryAll({
+          fields: ['text', 'feedUuids'],
+          sort: new Sort([['text', 'ASC']]),
+          returnTotalCount: false,
+        })
+        .pipe(
+          map(response => {
+            if (response.objects !== undefined) {
+              return response.objects as UserCategoryImpl[];
+            }
+            throw new Error('malformed response');
+          }),
+        ),
+      this.feedService
+        .queryAll({
+          fields: ['uuid', 'calculatedTitle', 'feedUrl', 'homeUrl'],
+          search: 'subscribed:"true"',
+          sort: new Sort([['calculatedTitle', 'ASC']]),
+          returnTotalCount: false,
+        })
+        .pipe(
+          map(response => {
+            if (response.objects !== undefined) {
+              return response.objects as FeedImpl[];
+            }
+            throw new Error('malformed response');
+          }),
+        ),
+    )
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: ([userCategories, feeds]) => {
+          this.zone.run(() => {
+            this.allCategorizedFeeds = HeaderComponent.buildAllCategorizedFeeds(
+              userCategories,
+              feeds,
+            );
+
+            if (this.filterInput !== undefined) {
+              this.filterFeeds(this.filterInput.nativeElement.value);
+            }
+          });
+        },
+      });
   }
 
   onFilterInput(event: Event) {

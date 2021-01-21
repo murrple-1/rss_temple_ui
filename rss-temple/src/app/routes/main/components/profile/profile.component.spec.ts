@@ -4,8 +4,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { of } from 'rxjs';
 
-import { SnackbarModule } from 'ngx-snackbar';
-
 import { MockGAuthService } from '@app/test/gauth.service.mock';
 import { MockFBAuthService } from '@app/test/fbauth.service.mock';
 import { FeedService, FeedEntryService, UserService } from '@app/services/data';
@@ -27,13 +25,7 @@ async function setup() {
   ]);
 
   await TestBed.configureTestingModule({
-    imports: [
-      ReactiveFormsModule,
-
-      SnackbarModule.forRoot(),
-
-      RouterTestingModule.withRoutes([]),
-    ],
+    imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([])],
     declarations: [ProfileComponent],
     providers: [
       {

@@ -1,2 +1,2 @@
-export { FeedObservableService } from './feedobservable.service';
-export { DisplayObservableService } from './displayobservable.service';
+export { FeedObservableService } from './feed-observable.service';
+export { DisplayObservableService } from './display-observable.service';

@@ -1,66 +1,34 @@
-import { ValidatorFn, FormControl, FormGroup } from '@angular/forms';
-
 import {
-  isValidPassword,
+  validatePassword,
+  validatePasswordsMatch,
   passwordRequirementsText,
-  doPasswordsMatch,
 } from './password.lib';
 
 describe('password.lib', () => {
-  it('should create a validator function', () => {
-    const validator = isValidPassword();
-    expect(validator).not.toBeNull();
-  });
-
   it('should validate good passwords', () => {
-    const validator = isValidPassword() as ValidatorFn;
-
-    const formControl = new FormControl();
-
-    formControl.setValue('Password1!');
-    expect(validator(formControl)).toBeNull();
+    expect(validatePassword('Password1!')).toBeNull();
   });
 
   it('should invalidate no lowercase passwords', () => {
-    const validator = isValidPassword() as ValidatorFn;
-
-    const formControl = new FormControl();
-
-    formControl.setValue('PASSWORD1!');
-    expect(validator(formControl)).toEqual({
+    expect(validatePassword('PASSWORD1!')).toEqual({
       nolowercase: true,
     });
   });
 
   it('should invalidate no uppercase passwords', () => {
-    const validator = isValidPassword() as ValidatorFn;
-
-    const formControl = new FormControl();
-
-    formControl.setValue('password1!');
-    expect(validator(formControl)).toEqual({
+    expect(validatePassword('password1!')).toEqual({
       nouppercase: true,
     });
   });
 
   it('should invalidate no digit passwords', () => {
-    const validator = isValidPassword() as ValidatorFn;
-
-    const formControl = new FormControl();
-
-    formControl.setValue('Password!');
-    expect(validator(formControl)).toEqual({
+    expect(validatePassword('Password!')).toEqual({
       nodigit: true,
     });
   });
 
   it('should invalidate no special character passwords', () => {
-    const validator = isValidPassword() as ValidatorFn;
-
-    const formControl = new FormControl();
-
-    formControl.setValue('Password1');
-    expect(validator(formControl)).toEqual({
+    expect(validatePassword('Password1')).toEqual({
       nospecialcharacter: true,
     });
   });
@@ -71,20 +39,11 @@ describe('password.lib', () => {
   });
 
   it('should check that passwords match', () => {
-    const validator = doPasswordsMatch('password1', 'password2');
+    expect(validatePasswordsMatch('a_password', 'a_password')).toBeNull();
 
-    const formGroup = new FormGroup({
-      password1: new FormControl(),
-      password2: new FormControl(),
-    });
-
-    formGroup.controls['password1'].setValue('a_password');
-    formGroup.controls['password2'].setValue('a_password');
-
-    expect(validator(formGroup)).toBeNull();
-
-    formGroup.controls['password1'].setValue('a_different_password');
-    expect(validator(formGroup)).toEqual({
+    expect(
+      validatePasswordsMatch('a_password', 'a_different_password'),
+    ).toEqual({
       passwordsdonotmatch: true,
     });
   });

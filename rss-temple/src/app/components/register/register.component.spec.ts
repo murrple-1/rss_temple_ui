@@ -6,8 +6,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Component } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { SnackbarModule } from 'ngx-snackbar';
-
 import { Observable, of } from 'rxjs';
 
 import { AlertService, LoginService } from '@app/services';
@@ -34,8 +32,6 @@ async function setup() {
   await TestBed.configureTestingModule({
     imports: [
       ReactiveFormsModule,
-
-      SnackbarModule.forRoot(),
 
       RouterTestingModule.withRoutes([
         {

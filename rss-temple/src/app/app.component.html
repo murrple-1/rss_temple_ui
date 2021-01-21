@@ -1,2 +1,18 @@
-﻿<router-outlet></router-outlet>
-<ngx-snackbar position="bottom-center" [max]="3"></ngx-snackbar>
+<div class="main-container">
+  <app-alerts></app-alerts>
+  <header class="header header-6">
+    <div class="branding">
+      <a routerLink="/home" replaceUrl class="nav-link">
+        <clr-icon shape="app-logo"></clr-icon>
+        <span class="title">RSS Temple</span>
+      </a>
+    </div>
+    <app-nav></app-nav>
+  </header>
+  <app-subnav></app-subnav>
+  <div class="content-container">
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { DisplayObservableService } from '@app/routes/main/services';
-import { DisplayType } from '@app/routes/main/services/displayobservable.service';
+import { DisplayType } from '@app/routes/main/services/display-observable.service';
 
 @Component({
   selector: 'app-display-options',

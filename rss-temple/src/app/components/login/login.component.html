@@ -1,105 +1,66 @@
-﻿<div class="container">
-  <div class="row">
-    <div class="col-md-4 offset-md-4">
-      <h2>
-        Login
-        <img
-          *ngIf="state === State.IsLoggingIn"
-          src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
+﻿<div class="login-wrapper">
+  <div class="login">
+    <section class="title">
+      <h3 class="welcome">Welcome to</h3>
+      RSS Temple
+      <h5 class="hint">Please sign in to see your News Feed</h5>
+    </section>
+    <div class="login-group">
+      <clr-input-container>
+        <label>Email</label>
+        <input
+          clrInput
+          type="email"
+          placeholder="example@example.com"
+          [(ngModel)]="email"
+          (keydown.enter)="onLogin()"
         />
-      </h2>
-    </div>
-  </div>
-  <hr />
-  <div class="row pt-3">
-    <div class="col-md-4 offset-md-4">
-      <form
-        [formGroup]="loginForm"
-        [ngClass]="{ 'app--is-submitted': state !== State.Ready }"
-        (ngSubmit)="onLogin()"
+        <clr-control-error>Email required</clr-control-error>
+      </clr-input-container>
+      <clr-password-container>
+        <label>Password</label>
+        <input
+          clrPassword
+          type="password"
+          placeholder="Password"
+          [(ngModel)]="password"
+          (keydown.enter)="onLogin()"
+        />
+        <clr-control-error>Password required</clr-control-error>
+      </clr-password-container>
+      <clr-checkbox-wrapper>
+        <label>Remember Me</label>
+        <input type="checkbox" clrCheckbox [(ngModel)]="rememberMe" />
+      </clr-checkbox-wrapper>
+      <button
+        class="btn btn-primary"
+        (click)="onLogin()"
+        [clrLoading]="loginButtonState"
       >
-        <fieldset [disabled]="state === State.IsLoggingIn">
-          <div class="form-group">
-            <div class="input-group">
-              <label class="has-float-label">
-                <input
-                  type="email"
-                  formControlName="email"
-                  placeholder="example@example.com"
-                  class="form-control"
-                />
-                <span>Email</span>
-              </label>
-            </div>
-            <small
-              *ngFor="let errorString of loginFormErrors.controls['email']"
-              class="form-text text-muted"
-              >{{ errorString }}</small
-            >
-          </div>
-          <div class="form-group">
-            <div class="input-group">
-              <label class="has-float-label">
-                <input
-                  type="password"
-                  formControlName="password"
-                  placeholder="Password"
-                  class="form-control"
-                />
-                <span>Password</span>
-              </label>
-            </div>
-            <small
-              *ngFor="let errorString of loginFormErrors.controls['password']"
-              class="form-text text-muted"
-              >{{ errorString }}</small
-            >
-          </div>
-          <div class="app--error-group">
-            <small
-              *ngFor="let errorString of loginFormErrors.errors"
-              class="form-text text-muted"
-            >
-              {{ errorString }}
-            </small>
-          </div>
-          <div class="form-group">
-            <button type="submit" class="btn btn-primary">Login</button>
-            <a [routerLink]="['/register']" class="btn btn-link">Register</a>
-          </div>
-        </fieldset>
-      </form>
-    </div>
-  </div>
-  <hr />
-  <div class="row">
-    <div class="col-md-4 offset-md-4">
-      <fieldset [disabled]="state === State.IsLoggingIn">
-        <button
-          id="google-login"
-          [disabled]="!gLoaded"
-          class="btn btn-primary"
-          (click)="onGoogleLogin()"
-        >
-          Login with Google
-        </button>
-        <button
-          id="facebook-login"
-          [disabled]="!fbLoaded"
-          class="btn btn-primary"
-          (click)="onFacebookLogin()"
-        >
-          Login with Facebook
-        </button>
-      </fieldset>
-    </div>
-  </div>
-  <hr />
-  <div class="row">
-    <div class="col-md-4 offset-md-4">
-      <a id="forgotten-password" routerLink="" (click)="onForgottenPassword()"
-        >Forgot your Password?</a
+        Login
+      </button>
+      <button class="btn btn-link" (click)="onForgottenPassword()">
+        Forgot Password?
+      </button>
+      <hr />
+      <button
+        id="google-login"
+        [disabled]="!gLoaded"
+        class="btn btn-primary"
+        (click)="onGoogleLogin()"
       >
+        Login with Google
+      </button>
+      <button
+        id="facebook-login"
+        [disabled]="!fbLoaded"
+        class="btn btn-primary"
+        (click)="onFacebookLogin()"
+      >
+        Login with Facebook
+      </button>
     </div>
   </div>
 </div>
+
+<app-request-password-reset-modal></app-request-password-reset-modal>

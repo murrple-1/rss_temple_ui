@@ -2,14 +2,17 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { AlertService } from '@app/services/alert.service';
+import { AppAlertsService } from '@app/services/app-alerts.service';
 import { deleteSessionToken } from '@app/libs/session.lib';
 
 @Injectable({
   providedIn: 'root',
 })
 export class HttpErrorService {
-  constructor(private router: Router, private alertService: AlertService) {}
+  constructor(
+    private router: Router,
+    private appAlertsService: AppAlertsService,
+  ) {}
 
   handleError(error: any) {
     let errorMessage = 'Unknown Error';
@@ -30,6 +33,11 @@ export class HttpErrorService {
 
     console.error(errorMessage, error);
 
-    this.alertService.error(errorMessage, 5000);
+    this.appAlertsService.appAlertDescriptor$.next({
+      autoCloseInterval: 5000,
+      canClose: true,
+      text: errorMessage,
+      type: 'danger',
+    });
   }
 }

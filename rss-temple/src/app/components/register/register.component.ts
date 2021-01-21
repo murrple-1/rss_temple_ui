@@ -1,17 +1,10 @@
 ﻿import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { AlertService, LoginService } from '@app/services';
-import {
-  isValidPassword,
-  passwordRequirementsText,
-  doPasswordsMatch,
-} from '@app/libs/password.lib';
-import { FormGroupErrors } from '@app/libs/formgrouperrors.lib';
+import { AppAlertsService, LoginService } from '@app/services';
 
 export enum State {
   Ready,
@@ -27,8 +20,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
   state = State.Ready;
   readonly State = State;
 
-  registerForm: FormGroup;
-  registerFormErrors = new FormGroupErrors();
+  email = '';
+  password = '';
+  passwordCheck = '';
 
   private googleToken: string | null = null;
   private facebookToken: string | null = null;
@@ -36,29 +30,12 @@ export class RegisterComponent implements OnInit, OnDestroy {
   private readonly unsubscribe$ = new Subject<void>();
 
   constructor(
-    private formBuilder: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
     private zone: NgZone,
     private loginService: LoginService,
-    private alertService: AlertService,
-  ) {
-    this.registerForm = this.formBuilder.group(
-      {
-        email: [
-          this.route.snapshot.paramMap.get('email') ?? '',
-          [Validators.required, Validators.email],
-        ],
-        password: ['', [Validators.required, isValidPassword()]],
-        passwordCheck: ['', [Validators.required]],
-      },
-      {
-        validators: [doPasswordsMatch('password', 'passwordCheck')],
-      },
-    );
-
-    this.registerFormErrors.initializeControls(this.registerForm);
-  }
+    private appAlertsService: AppAlertsService,
+  ) {}
 
   ngOnInit() {
     this.googleToken = this.route.snapshot.paramMap.get('g_token');
@@ -71,74 +48,13 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   onRegister() {
-    this.registerFormErrors.clearErrors();
-    /* istanbul ignore else */
-    if (this.registerForm.invalid) {
-      this.state = State.RegisterFailed;
-
-      const errors = this.registerForm.errors;
-      if (errors !== null) {
-        /* istanbul ignore else */
-        if (errors.passwordsdonotmatch) {
-          this.registerFormErrors.errors.push('Passwords do not match');
-        }
-      }
-
-      const emailErrors = this.registerForm.controls['email'].errors;
-      if (emailErrors !== null) {
-        if (emailErrors.required) {
-          this.registerFormErrors.controls['email'].push('Email required');
-        }
-
-        if (emailErrors.email) {
-          this.registerFormErrors.controls['email'].push('Email malformed');
-        }
-      }
-
-      const passwordErrors = this.registerForm.controls['password'].errors;
-      if (passwordErrors !== null) {
-        if (passwordErrors.required) {
-          this.registerFormErrors.controls['password'].push(
-            'Password required',
-          );
-        }
-
-        /* istanbul ignore else */
-        if (
-          passwordErrors.minlength ||
-          passwordErrors.nolowercase ||
-          passwordErrors.nouppercase ||
-          passwordErrors.nodigit ||
-          passwordErrors.nospecialcharacter
-        ) {
-          this.registerFormErrors.controls['password'].push(
-            passwordRequirementsText('en'),
-          );
-        }
-      }
-
-      const passwordCheckErrors = this.registerForm.controls['passwordCheck']
-        .errors;
-      if (passwordCheckErrors !== null) {
-        /* istanbul ignore else */
-        if (passwordCheckErrors.required) {
-          this.registerFormErrors.controls['passwordCheck'].push(
-            'Password required',
-          );
-        }
-      }
-      return;
-    }
+    // TODO check error state
 
     this.state = State.IsRegistering;
 
     if (this.googleToken !== null) {
       this.loginService
-        .createGoogleLogin(
-          this.registerForm.controls['email'].value as string,
-          this.registerForm.controls['password'].value as string,
-          this.googleToken,
-        )
+        .createGoogleLogin(this.email, this.password, this.googleToken)
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: this.handleRegisterSuccess.bind(this),
@@ -146,11 +62,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
         });
     } else if (this.facebookToken !== null) {
       this.loginService
-        .createFacebookLogin(
-          this.registerForm.controls['email'].value as string,
-          this.registerForm.controls['password'].value as string,
-          this.facebookToken,
-        )
+        .createFacebookLogin(this.email, this.password, this.facebookToken)
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: this.handleRegisterSuccess.bind(this),
@@ -158,10 +70,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
         });
     } else {
       this.loginService
-        .createMyLogin(
-          this.registerForm.controls['email'].value as string,
-          this.registerForm.controls['password'].value as string,
-        )
+        .createMyLogin(this.email, this.password)
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: this.handleRegisterSuccess.bind(this),
@@ -187,9 +96,14 @@ export class RegisterComponent implements OnInit, OnDestroy {
         break;
     }
 
-    this.zone.run(() => {
-      this.alertService.error(errorMessage, 5000);
+    this.appAlertsService.appAlertDescriptor$.next({
+      autoCloseInterval: 5000,
+      canClose: true,
+      text: errorMessage,
+      type: 'danger',
+    });
 
+    this.zone.run(() => {
       this.state = State.RegisterFailed;
     });
   }

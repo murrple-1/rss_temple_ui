@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { Subject, zip } from 'rxjs';
@@ -10,15 +9,14 @@ import {
   HttpErrorService,
   GAuthService,
   FBAuthService,
-  AlertService,
+  AppAlertsService,
 } from '@app/services';
 import { UpdateUserBody } from '@app/services/data/user.service';
 import {
-  isValidPassword,
-  doPasswordsMatch,
+  validatePassword,
+  validatePasswordsMatch,
   passwordRequirementsText,
 } from '@app/libs/password.lib';
-import { FormGroupErrors } from '@app/libs/formgrouperrors.lib';
 import { User } from '@app/models';
 
 type UserImpl = Required<
@@ -42,8 +40,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
   state = State.IsLoading;
   readonly State = State;
 
-  profileForm: FormGroup;
-  profileFormErrors = new FormGroupErrors();
+  email = '';
+  oldPassword = '';
+  newPassword = '';
+  newPasswordCheck = '';
+
+  fieldsChanged = new Set<string>();
 
   hasGoogleLogin = false;
   hasFacebookLogin = false;
@@ -57,7 +59,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
   private readonly unsubscribe$ = new Subject<void>();
 
   constructor(
-    private formBuilder: FormBuilder,
     private zone: NgZone,
     private feedService: FeedService,
     private feedEntryService: FeedEntryService,
@@ -65,22 +66,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private httpErrorService: HttpErrorService,
     private gAuthService: GAuthService,
     private fbAuthService: FBAuthService,
-    private alertService: AlertService,
-  ) {
-    this.profileForm = this.formBuilder.group(
-      {
-        email: ['', [Validators.email]],
-        oldPassword: [''],
-        newPassword: ['', [isValidPassword()]],
-        newPasswordCheck: [''],
-      },
-      {
-        validators: [doPasswordsMatch('newPassword', 'newPasswordCheck')],
-      },
-    );
-
-    this.profileFormErrors.initializeControls(this.profileForm);
-  }
+    private appAlertsService: AppAlertsService,
+  ) {}
 
   ngOnInit() {
     zip(
@@ -121,8 +108,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       .subscribe({
         next: ([user, feedsCount, readFeedEntriesCount]) => {
           this.zone.run(() => {
-            this.profileForm.controls['email'].setValue(user.email);
-            this.profileForm.controls['email'].markAsPristine();
+            this.email = user.email;
 
             this.hasGoogleLogin = user.hasGoogleLogin;
 
@@ -297,101 +283,63 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   onSave() {
-    if (this.profileForm.pristine) {
+    if (this.fieldsChanged.size < 1) {
       return;
     }
 
-    this.profileFormErrors.clearErrors();
-    if (this.profileForm.invalid) {
-      this.state = State.SaveError;
+    // TODO check error state
 
-      const errors = this.profileForm.errors;
-      if (errors !== null) {
-        if (errors.passwordsdonotmatch) {
-          this.profileFormErrors.errors.push('Passwords do not match');
-        }
-      }
-
-      const emailErrors = this.profileForm.controls['email'].errors;
-      if (emailErrors !== null) {
-        if (emailErrors.email) {
-          this.profileFormErrors.controls['email'].push('Email malformed');
-        }
-      }
-
-      const newPasswordErrors = this.profileForm.controls['newPassword'].errors;
-      if (newPasswordErrors !== null) {
-        if (
-          newPasswordErrors.nolowercase ||
-          newPasswordErrors.nouppercase ||
-          newPasswordErrors.nodigit ||
-          newPasswordErrors.nospecialcharacter
-        ) {
-          this.profileFormErrors.controls['newPassword'].push(
-            passwordRequirementsText('en'),
-          );
-        }
-      }
-
-      return;
-    }
-
-    let hasUpdates = false;
     const updateUserBody: UpdateUserBody = {};
 
-    const emailControl = this.profileForm.controls['email'];
-    if (emailControl.dirty) {
-      updateUserBody.email = emailControl.value as string;
-      hasUpdates = true;
+    if (this.fieldsChanged.has('email')) {
+      updateUserBody.email = this.email;
     }
 
-    const oldPasswordControl = this.profileForm.controls['oldPassword'];
-    const newPasswordControl = this.profileForm.controls['newPassword'];
-    const newPasswordCheckControl = this.profileForm.controls[
-      'newPasswordCheck'
-    ];
-    if (
-      oldPasswordControl.dirty &&
-      newPasswordControl.dirty &&
-      newPasswordCheckControl.dirty
-    ) {
+    if (this.fieldsChanged.has('password')) {
       updateUserBody.my = {
         password: {
-          old: oldPasswordControl.value as string,
-          new: newPasswordControl.value as string,
+          old: this.oldPassword,
+          new: this.newPassword,
         },
       };
-      hasUpdates = true;
     }
 
-    if (hasUpdates) {
-      this.state = State.IsSaving;
+    this.state = State.IsSaving;
 
-      this.userService
-        .update(updateUserBody)
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe({
-          next: () => {
-            this.alertService.success('Profile Saved', 5000);
+    this.userService
+      .update(updateUserBody)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: () => {
+          this.appAlertsService.appAlertDescriptor$.next({
+            autoCloseInterval: 5000,
+            canClose: true,
+            text: 'Profile Saved',
+            type: 'info',
+          });
 
-            this.profileForm.markAsPristine();
+          this.fieldsChanged.clear();
 
-            this.zone.run(() => {
-              this.state = State.SaveSuccess;
+          this.zone.run(() => {
+            this.state = State.SaveSuccess;
+          });
+        },
+        error: error => {
+          if (error instanceof HttpErrorResponse && error.status === 400) {
+            this.appAlertsService.appAlertDescriptor$.next({
+              autoCloseInterval: 5000,
+              canClose: true,
+              text: 'Profile failed to save',
+              type: 'danger',
             });
-          },
-          error: error => {
-            if (error instanceof HttpErrorResponse && error.status === 400) {
-              this.alertService.error('Profile failed to save', 5000);
-            } else {
-              this.httpErrorService.handleError(error);
-            }
+          } else {
+            this.httpErrorService.handleError(error);
+          }
 
-            this.zone.run(() => {
-              this.state = State.SaveError;
-            });
-          },
-        });
-    }
+          this.zone.run(() => {
+            this.state = State.SaveError;
+          });
+        },
+      });
   }
 }

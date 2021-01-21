@@ -6,8 +6,6 @@ import { Component } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-
 import { of, Observable } from 'rxjs';
 
 import { MockActivatedRoute } from '@app/test/activatedroute.mock';

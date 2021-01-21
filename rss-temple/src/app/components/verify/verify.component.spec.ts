@@ -1,8 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { SnackbarModule } from 'ngx-snackbar';
-
 import { UserService } from '@app/services/data';
 
 import { VerifyComponent } from './verify.component';
@@ -13,7 +11,7 @@ async function setup() {
   ]);
 
   await TestBed.configureTestingModule({
-    imports: [SnackbarModule.forRoot(), RouterTestingModule.withRoutes([])],
+    imports: [RouterTestingModule.withRoutes([])],
     declarations: [VerifyComponent],
     providers: [
       {

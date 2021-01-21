@@ -1,0 +1,41 @@
+<clr-modal [clrModalOpen]="open" (clrModalOpenChange)="openChanged($event)">
+  <h4 class="modal-title">Upload OPML</h4>
+  <div class="modal-body">
+    <clr-input-container>
+      <label>Choose an OPML file</label>
+      <input
+        clrInput
+        #opmlFileInput
+        class="form-control-file"
+        type="file"
+        name="opml-file"
+        accept=".xml,.opml,application/xml,text/xml"
+        multiple="false"
+        [disabled]="uploading"
+      />
+    </clr-input-container>
+    <div *ngIf="uploading">
+      <span *ngIf="progressStatus"
+        >Loading new feeds ({{ progressStatus.finishedCount }}/{{
+          progressStatus.totalCount
+        }})...</span
+      >
+      <span *ngIf="!progressStatus">Loading new feeds...</span>
+    </div>
+    <div *ngIf="errorString" class="alert alert-danger" role="alert">
+      <div class="alert-items">
+        <div class="alert-item static">
+          <div class="alert-icon-wrapper">
+            <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
+          </div>
+          <span class="alert-text">{{ errorString }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" (click)="finish()" [disabled]="uploading">
+      Finish
+    </button>
+  </div>
+</clr-modal>

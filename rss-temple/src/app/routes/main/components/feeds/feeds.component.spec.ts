@@ -4,8 +4,6 @@ import { ActivatedRoute } from '@angular/router';
 
 import { of } from 'rxjs';
 
-import { SnackbarModule } from 'ngx-snackbar';
-
 import { MockActivatedRoute } from '@app/test/activatedroute.mock';
 import { FeedService, FeedEntryService } from '@app/services/data';
 import {
@@ -28,7 +26,7 @@ async function setup() {
   );
 
   await TestBed.configureTestingModule({
-    imports: [SnackbarModule.forRoot(), RouterTestingModule.withRoutes([])],
+    imports: [RouterTestingModule.withRoutes([])],
     declarations: [FeedsComponent, DisplayOptionsViewComponent],
     providers: [
       {
