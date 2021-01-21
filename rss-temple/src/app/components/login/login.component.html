@@ -6,32 +6,47 @@
       <h5 class="hint">Please sign in to see your News Feed</h5>
     </section>
     <div class="login-group">
-      <clr-input-container>
-        <label>Email</label>
-        <input
-          clrInput
-          type="email"
-          placeholder="example@example.com"
-          [(ngModel)]="email"
-          (keydown.enter)="onLogin()"
-        />
-        <clr-control-error>Email required</clr-control-error>
-      </clr-input-container>
-      <clr-password-container>
-        <label>Password</label>
-        <input
-          clrPassword
-          type="password"
-          placeholder="Password"
-          [(ngModel)]="password"
-          (keydown.enter)="onLogin()"
-        />
-        <clr-control-error>Password required</clr-control-error>
-      </clr-password-container>
-      <clr-checkbox-wrapper>
-        <label>Remember Me</label>
-        <input type="checkbox" clrCheckbox [(ngModel)]="rememberMe" />
-      </clr-checkbox-wrapper>
+      <form clrForm>
+        <clr-input-container>
+          <label>Email</label>
+          <input
+            clrInput
+            type="email"
+            name="email"
+            placeholder="example@example.com"
+            [(ngModel)]="email"
+            (keydown.enter)="onLogin()"
+            required
+          />
+          <clr-control-error *clrIfError="'required'"
+            >Email required</clr-control-error
+          >
+        </clr-input-container>
+        <clr-password-container>
+          <label>Password</label>
+          <input
+            clrPassword
+            type="password"
+            name="password"
+            placeholder="Password"
+            [(ngModel)]="password"
+            (keydown.enter)="onLogin()"
+            required
+          />
+          <clr-control-error *clrIfError="'required'"
+            >Password required</clr-control-error
+          >
+        </clr-password-container>
+        <clr-checkbox-wrapper>
+          <label>Remember Me</label>
+          <input
+            clrCheckbox
+            type="checkbox"
+            name="rememberMe"
+            [(ngModel)]="rememberMe"
+          />
+        </clr-checkbox-wrapper>
+      </form>
       <button
         class="btn btn-primary"
         (click)="onLogin()"
@@ -39,10 +54,10 @@
       >
         Login
       </button>
+      <a [routerLink]="['/register']" class="signup">Register</a>
       <button class="btn btn-link" (click)="onForgottenPassword()">
         Forgot Password?
       </button>
-      <hr />
       <button
         id="google-login"
         [disabled]="!gLoaded"

@@ -7,15 +7,6 @@ export const SpecialCharacters = ['!', '@', '#', '$', '%', '^', '&'];
 export function validatePassword(password: string) {
   let validationErrors: ValidationErrors | null = null;
 
-  if (password.length < MinLength) {
-    /* istanbul ignore next */
-    validationErrors = validationErrors ?? {};
-    validationErrors.minlength = {
-      requiredLength: MinLength,
-      actualLength: password.length,
-    };
-  }
-
   if (!/[a-z]/.test(password)) {
     /* istanbul ignore next */
     validationErrors = validationErrors ?? {};

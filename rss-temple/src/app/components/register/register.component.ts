@@ -5,6 +5,11 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { AppAlertsService, LoginService } from '@app/services';
+import {
+  MinLength as PasswordMinLength,
+  passwordRequirementsText,
+  SpecialCharacters as PasswordSpecialCharacters,
+} from '@app/libs/password.lib';
 
 export enum State {
   Ready,
@@ -19,6 +24,10 @@ export enum State {
 export class RegisterComponent implements OnInit, OnDestroy {
   state = State.Ready;
   readonly State = State;
+
+  readonly passwordHelperText = passwordRequirementsText('en');
+  readonly passwordMinLength = PasswordMinLength;
+  readonly passwordSpecialCharacters = PasswordSpecialCharacters.join('');
 
   email = '';
   password = '';

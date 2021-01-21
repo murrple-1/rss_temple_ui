@@ -11,6 +11,7 @@
             name="feedUrl"
             placeholder="Feed URL"
             [(ngModel)]="feedUrl"
+            required
           />
           <clr-control-error>Feed URL required</clr-control-error>
         </clr-input-container>
@@ -23,7 +24,6 @@
             placeholder="Custom Name"
             [(ngModel)]="customName"
           />
-          <clr-control-error>Custom Name required</clr-control-error>
         </clr-input-container>
       </fieldset>
     </form>

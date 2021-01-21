@@ -11,6 +11,10 @@ import { EssentialShapes } from '@clr/icons/shapes/essential-shapes';
 
 import { routes } from '@app/app.routing';
 
+import { PasswordValidatorDirective } from '@app/directives/password-validator.directive';
+import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-match-validator.directive';
+import { EmailValidatorDirective } from '@app/directives/email-validator.directive';
+
 import { AppComponent } from '@app/app.component';
 import { ConfirmModalComponent } from '@app/components/shared/confirm-modal/confirm-modal.component';
 import { NavComponent } from '@app/components/nav/nav.component';
@@ -46,6 +50,10 @@ export function clarityIconsFactory() {
     RouterModule.forRoot(routes),
   ],
   declarations: [
+    PasswordValidatorDirective,
+    PasswordsMatchValidatorDirective,
+    EmailValidatorDirective,
+
     AppComponent,
     ConfirmModalComponent,
     NavComponent,
