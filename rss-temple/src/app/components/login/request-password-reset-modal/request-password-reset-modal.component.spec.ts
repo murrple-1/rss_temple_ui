@@ -3,6 +3,9 @@ import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
 import { HttpErrorResponse } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { ClarityModule } from '@clr/angular';
 
 import { of, Observable } from 'rxjs';
 
@@ -20,7 +23,12 @@ async function setup() {
   );
 
   await TestBed.configureTestingModule({
-    imports: [FormsModule, RouterTestingModule.withRoutes([])],
+    imports: [
+      FormsModule,
+      BrowserAnimationsModule,
+      ClarityModule,
+      RouterTestingModule.withRoutes([]),
+    ],
     declarations: [RequestPasswordResetModalComponent],
     providers: [
       {
@@ -79,7 +87,13 @@ describe('RequestPasswordResetModalComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      expect(component.emailErrors).toEqual(['Email required']);
+      expect(
+        component._passwordResetRequestForm?.controls['email']?.errors ?? {},
+      ).toEqual(
+        jasmine.objectContaining({
+          required: jasmine.anything(),
+        }),
+      );
     }),
   );
 
@@ -112,7 +126,13 @@ describe('RequestPasswordResetModalComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      expect(component.emailErrors).toEqual(['Email malformed']);
+      expect(
+        component._passwordResetRequestForm?.controls['email']?.errors ?? {},
+      ).toEqual(
+        jasmine.objectContaining({
+          invalidemail: jasmine.anything(),
+        }),
+      );
     }),
   );
 

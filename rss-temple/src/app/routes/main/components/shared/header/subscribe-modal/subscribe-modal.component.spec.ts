@@ -1,11 +1,14 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { ClarityModule } from '@clr/angular';
 
 import { SubscribeModalComponent } from './subscribe-modal.component';
 
 async function setup() {
   await TestBed.configureTestingModule({
-    imports: [FormsModule],
+    imports: [FormsModule, BrowserAnimationsModule, ClarityModule],
     declarations: [SubscribeModalComponent],
   }).compileComponents();
 

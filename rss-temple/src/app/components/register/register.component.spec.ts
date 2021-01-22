@@ -1,16 +1,20 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { ClarityModule } from '@clr/angular';
 
 import { Observable, of } from 'rxjs';
+import { take } from 'rxjs/operators';
 
-import { AlertService, LoginService } from '@app/services';
-import { passwordRequirementsText } from '@app/libs/password.lib';
+import { AppAlertsService, LoginService } from '@app/services';
 import { MockActivatedRoute } from '@app/test/activatedroute.mock';
+import { AppAlertDescriptor } from '@app/services/app-alerts.service';
 
 import { RegisterComponent, State } from './register.component';
 
@@ -25,13 +29,13 @@ async function setup() {
     'createGoogleLogin',
     'createFacebookLogin',
   ]);
-  const mockAlertService = jasmine.createSpyObj<AlertService>('AlertService', [
-    'error',
-  ]);
 
   await TestBed.configureTestingModule({
     imports: [
-      ReactiveFormsModule,
+      FormsModule,
+      BrowserAnimationsModule,
+
+      ClarityModule,
 
       RouterTestingModule.withRoutes([
         {
@@ -50,10 +54,6 @@ async function setup() {
         provide: LoginService,
         useValue: mockLoginService,
       },
-      {
-        provide: AlertService,
-        useValue: mockAlertService,
-      },
     ],
   }).compileComponents();
 
@@ -61,7 +61,6 @@ async function setup() {
     mockRoute,
 
     mockLoginService,
-    mockAlertService,
   };
 }
 
@@ -93,7 +92,7 @@ describe('RegisterComponent', () => {
       component.ngOnInit();
       await componentFixture.whenStable();
 
-      expect(component.registerForm.controls['email'].value).toBe(email);
+      expect(component.email).toBe(email);
     }),
   );
 
@@ -156,8 +155,12 @@ describe('RegisterComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      expect(component.registerFormErrors.controls['email']).toContain(
-        'Email required',
+      expect(
+        component._registerForm?.controls['email']?.errors ?? {},
+      ).toContain(
+        jasmine.objectContaining({
+          required: jasmine.anything(),
+        }),
       );
     }),
   );
@@ -206,8 +209,12 @@ describe('RegisterComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      expect(component.registerFormErrors.controls['email']).toContain(
-        'Email malformed',
+      expect(
+        component._registerForm?.controls['email']?.errors ?? {},
+      ).toContain(
+        jasmine.objectContaining({
+          invalidemail: jasmine.anything(),
+        }),
       );
     }),
   );
@@ -256,8 +263,10 @@ describe('RegisterComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      expect(component.registerFormErrors.errors).toContain(
-        'Passwords do not match',
+      expect(component._registerForm?.errors ?? {}).toContain(
+        jasmine.objectContaining({
+          passwordsdonotmatch: jasmine.anything(),
+        }),
       );
     }),
   );
@@ -306,8 +315,19 @@ describe('RegisterComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      expect(component.registerFormErrors.controls['password']).toContain(
-        'Password required',
+      expect(
+        component._registerForm?.controls['password']?.errors ?? {},
+      ).toContain(
+        jasmine.objectContaining({
+          required: jasmine.anything(),
+        }),
+      );
+      expect(
+        component._registerForm?.controls['passwordCheck']?.errors ?? {},
+      ).toContain(
+        jasmine.objectContaining({
+          required: jasmine.anything(),
+        }),
       );
     }),
   );
@@ -343,7 +363,10 @@ describe('RegisterComponent', () => {
       const loginButton = debugElement.query(By.css('button[type="submit"]'))
         .nativeElement as HTMLButtonElement;
 
-      const runMalformedPasswordTest = async (passwordText: string) => {
+      const runMalformedPasswordTest = async (
+        passwordText: string,
+        errorKey: string,
+      ) => {
         passwordInput.value = passwordText;
         passwordInput.dispatchEvent(new Event('input'));
         componentFixture.detectChanges();
@@ -358,16 +381,20 @@ describe('RegisterComponent', () => {
         componentFixture.detectChanges();
         await componentFixture.whenStable();
 
-        expect(component.registerFormErrors.controls['password']).toContain(
-          passwordRequirementsText('en'),
+        expect(
+          component._registerForm?.controls['password']?.errors ?? {},
+        ).toBeTruthy(
+          jasmine.objectContaining({
+            [errorKey]: jasmine.anything(),
+          }),
         );
       };
 
-      await runMalformedPasswordTest('Ab1!');
-      await runMalformedPasswordTest('PASSWORD1!');
-      await runMalformedPasswordTest('password1!');
-      await runMalformedPasswordTest('Password!');
-      await runMalformedPasswordTest('Password1');
+      await runMalformedPasswordTest('Ab1!', 'minlength');
+      await runMalformedPasswordTest('PASSWORD1!', 'nolowercase');
+      await runMalformedPasswordTest('password1!', 'nouppercase');
+      await runMalformedPasswordTest('Password!', 'nodigit');
+      await runMalformedPasswordTest('Password1', 'nospecialcharacter');
     }),
   );
 
@@ -541,7 +568,7 @@ describe('RegisterComponent', () => {
   it(
     'should handle registration errors: cannot connect',
     waitForAsync(async () => {
-      const { mockLoginService, mockAlertService } = await setup();
+      const { mockLoginService } = await setup();
 
       const componentFixture = TestBed.createComponent(RegisterComponent);
       componentFixture.detectChanges();
@@ -561,6 +588,14 @@ describe('RegisterComponent', () => {
         }),
       );
       spyOn(console, 'error');
+      const appAlertService = TestBed.inject(AppAlertsService);
+      const appAlertEmitPromise = new Promise<AppAlertDescriptor>(resolve => {
+        appAlertService.appAlertDescriptor$.pipe(take(1)).subscribe({
+          next: event => {
+            resolve(event);
+          },
+        });
+      });
 
       const debugElement = componentFixture.debugElement;
 
@@ -593,9 +628,10 @@ describe('RegisterComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      expect(mockAlertService.error).toHaveBeenCalledWith(
-        jasmine.stringMatching(/Unable to connect to server/),
-        jasmine.any(Number),
+      await expectAsync(appAlertEmitPromise).toBeResolvedTo(
+        jasmine.objectContaining({
+          text: jasmine.stringMatching(/Unable to connect to server/),
+        }),
       );
       expect(component.state).toBe(State.RegisterFailed);
     }),
@@ -604,7 +640,7 @@ describe('RegisterComponent', () => {
   it(
     'should handle registration errors: email already in use',
     waitForAsync(async () => {
-      const { mockLoginService, mockAlertService } = await setup();
+      const { mockLoginService } = await setup();
 
       const componentFixture = TestBed.createComponent(RegisterComponent);
       componentFixture.detectChanges();
@@ -623,6 +659,14 @@ describe('RegisterComponent', () => {
           );
         }),
       );
+      const appAlertService = TestBed.inject(AppAlertsService);
+      const appAlertEmitPromise = new Promise<AppAlertDescriptor>(resolve => {
+        appAlertService.appAlertDescriptor$.pipe(take(1)).subscribe({
+          next: event => {
+            resolve(event);
+          },
+        });
+      });
 
       const debugElement = componentFixture.debugElement;
 
@@ -655,9 +699,10 @@ describe('RegisterComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      expect(mockAlertService.error).toHaveBeenCalledWith(
-        jasmine.stringMatching(/Email already in use/),
-        jasmine.any(Number),
+      await expectAsync(appAlertEmitPromise).toBeResolvedTo(
+        jasmine.objectContaining({
+          text: jasmine.stringMatching(/Email already in use/),
+        }),
       );
       expect(component.state).toBe(State.RegisterFailed);
     }),

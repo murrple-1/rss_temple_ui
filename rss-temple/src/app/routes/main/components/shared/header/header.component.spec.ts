@@ -1,11 +1,21 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { ClarityModule } from '@clr/angular';
 
 import { of } from 'rxjs';
 
-import { FeedService, UserCategoryService } from '@app/services/data';
+import {
+  FeedService,
+  OPMLService,
+  ProgressService,
+  UserCategoryService,
+} from '@app/services/data';
 import { FeedObservableService } from '@app/routes/main/services';
 import { LoginService } from '@app/services';
+import { SubscribeModalComponent } from '@app/routes/main/components/shared/header/subscribe-modal/subscribe-modal.component';
+import { OPMLModalComponent } from '@app/routes/main/components/shared/header/opml-modal/opml-modal.component';
 
 import { HeaderComponent } from './header.component';
 
@@ -22,10 +32,25 @@ async function setup() {
   const mockLoginService = jasmine.createSpyObj<LoginService>('LoginService', [
     'deleteSessionToken',
   ]);
+  const mockOPMLService = jasmine.createSpyObj<OPMLService>('OPMLService', [
+    'upload',
+  ]);
+  const mockProgressService = jasmine.createSpyObj<ProgressService>(
+    'ProgressService',
+    ['checkProgress'],
+  );
 
   await TestBed.configureTestingModule({
-    imports: [RouterTestingModule.withRoutes([])],
-    declarations: [HeaderComponent],
+    imports: [
+      BrowserAnimationsModule,
+      ClarityModule,
+      RouterTestingModule.withRoutes([]),
+    ],
+    declarations: [
+      HeaderComponent,
+      SubscribeModalComponent,
+      OPMLModalComponent,
+    ],
     providers: [
       FeedObservableService,
       {
@@ -40,6 +65,14 @@ async function setup() {
         provide: LoginService,
         useValue: mockLoginService,
       },
+      {
+        provide: OPMLService,
+        useValue: mockOPMLService,
+      },
+      {
+        provide: ProgressService,
+        useValue: mockProgressService,
+      },
     ],
   }).compileComponents();
 
@@ -47,6 +80,7 @@ async function setup() {
     mockFeedService,
     mockUserCategoryService,
     mockLoginService,
+    mockOPMLService,
   };
 }
 

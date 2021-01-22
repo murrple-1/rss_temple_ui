@@ -1,9 +1,8 @@
-import { Component, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnDestroy, NgZone, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-
-import { validate as emailValidate } from 'email-validator';
 
 import { PasswordResetTokenService } from '@app/services/data';
 import { HttpErrorService } from '@app/services';
@@ -28,6 +27,9 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
   email = '';
 
   result = new Subject<void>();
+
+  @ViewChild('passwordResetRequestForm', { static: true })
+  _passwordResetRequestForm?: NgForm;
 
   private readonly unsubscribe$ = new Subject<void>();
 
@@ -58,22 +60,16 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
   }
 
   request() {
+    if (this._passwordResetRequestForm?.invalid) {
+      return;
+    }
+
     this.state = State.Sending;
 
     const email = this.email.trim();
 
-    if (email.length < 1) {
-      this.state = State.Error;
-      return;
-    }
-
-    if (!emailValidate(email)) {
-      this.state = State.Error;
-      return;
-    }
-
     this.passwordResetTokenService
-      .request(this.email)
+      .request(email)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => {

@@ -1,6 +1,9 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { ClarityModule } from '@clr/angular';
 
 import { PasswordResetTokenService } from '@app/services/data';
 
@@ -13,7 +16,12 @@ async function setup() {
   );
 
   await TestBed.configureTestingModule({
-    imports: [FormsModule, RouterTestingModule.withRoutes([])],
+    imports: [
+      FormsModule,
+      BrowserAnimationsModule,
+      ClarityModule,
+      RouterTestingModule.withRoutes([]),
+    ],
     declarations: [ResetPasswordComponent],
     providers: [
       {

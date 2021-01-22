@@ -7,6 +7,7 @@
   appPasswordsMatch
   appPassword1ControlName="password"
   appPassword2ControlName="passwordCheck"
+  (ngSubmit)="onRegister()"
 >
   <fieldset [disabled]="state === State.IsRegistering">
     <clr-input-container>
@@ -97,25 +98,26 @@
       >
     </clr-input-container>
   </fieldset>
-</form>
-<ng-container
-  *ngIf="registerForm && (registerForm.touched || registerForm.dirty)"
->
-  <div *ngIf="registerForm.errors" class="alert alert-warning" role="alert">
-    <div class="alert-items">
-      <div
-        *ngIf="registerForm.errors?.passwordsdonotmatch"
-        class="alert-item static"
-      >
-        <div class="alert-icon-wrapper">
-          <clr-icon class="alert-icon" shape="exclamation-triangle"></clr-icon>
+  <ng-container
+    *ngIf="registerForm && (registerForm.touched || registerForm.dirty)"
+  >
+    <div *ngIf="registerForm.errors" class="alert alert-warning" role="alert">
+      <div class="alert-items">
+        <div
+          *ngIf="registerForm.errors?.passwordsdonotmatch"
+          class="alert-item static"
+        >
+          <div class="alert-icon-wrapper">
+            <clr-icon
+              class="alert-icon"
+              shape="exclamation-triangle"
+            ></clr-icon>
+          </div>
+          <span class="alert-text">Passwords don't match</span>
         </div>
-        <span class="alert-text">Passwords don't match</span>
       </div>
     </div>
-  </div>
-</ng-container>
-<button type="button" class="btn btn-primary" (click)="onRegister()">
-  Register
-</button>
-<a [routerLink]="['/login']" class="btn btn-link">Cancel</a>
+  </ng-container>
+  <button type="submit" class="btn btn-primary">Register</button>
+  <a [routerLink]="['/login']" class="btn btn-link">Cancel</a>
+</form>

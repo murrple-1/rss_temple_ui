@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ClarityModule } from '@clr/angular';
 
@@ -33,6 +34,7 @@ import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/routes/main
   imports: [
     CommonModule,
     FormsModule,
+    BrowserAnimationsModule,
 
     ClarityModule,
 

@@ -1,5 +1,6 @@
-﻿import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
+﻿import { Component, OnInit, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { NgForm } from '@angular/forms';
 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -36,6 +37,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
   private googleToken: string | null = null;
   private facebookToken: string | null = null;
 
+  @ViewChild('registerForm', { static: true })
+  _registerForm?: NgForm;
+
   private readonly unsubscribe$ = new Subject<void>();
 
   constructor(
@@ -57,7 +61,13 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   onRegister() {
-    // TODO check error state
+    if (this._registerForm === undefined) {
+      throw new Error('_registerForm undefined');
+    }
+
+    if (this._registerForm.invalid) {
+      return;
+    }
 
     this.state = State.IsRegistering;
 

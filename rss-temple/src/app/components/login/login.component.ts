@@ -47,10 +47,10 @@ export class LoginComponent implements OnInit, AfterViewChecked, OnDestroy {
   fbLoaded = false;
 
   @ViewChild('loginForm', { static: true })
-  private loginForm?: NgForm;
+  _loginForm?: NgForm;
 
   @ViewChild(RequestPasswordResetModalComponent)
-  private requestPasswordResetModalComponent?: RequestPasswordResetModalComponent;
+  _requestPasswordResetModal?: RequestPasswordResetModalComponent;
 
   private readonly unsubscribe$ = new Subject<void>();
 
@@ -143,11 +143,11 @@ export class LoginComponent implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   onLogin() {
-    if (this.loginForm === undefined) {
-      throw new Error('loginForm undefined');
+    if (this._loginForm === undefined) {
+      throw new Error('_loginForm undefined');
     }
 
-    if (this.loginForm.invalid) {
+    if (this._loginForm.invalid) {
       return;
     }
 
@@ -298,12 +298,10 @@ export class LoginComponent implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   async onForgottenPassword() {
-    if (this.requestPasswordResetModalComponent === undefined) {
-      throw new Error('requestPasswordResetModalComponent undefined');
+    if (this._requestPasswordResetModal === undefined) {
+      throw new Error('requestPasswordResetModal undefined');
     }
 
-    await openRequestPasswordResetModal(
-      this.requestPasswordResetModalComponent,
-    );
+    await openRequestPasswordResetModal(this._requestPasswordResetModal);
   }
 }

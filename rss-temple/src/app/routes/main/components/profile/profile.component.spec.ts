@@ -1,6 +1,9 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { ClarityModule } from '@clr/angular';
 
 import { of } from 'rxjs';
 
@@ -25,7 +28,12 @@ async function setup() {
   ]);
 
   await TestBed.configureTestingModule({
-    imports: [ReactiveFormsModule, RouterTestingModule.withRoutes([])],
+    imports: [
+      FormsModule,
+      BrowserAnimationsModule,
+      ClarityModule,
+      RouterTestingModule.withRoutes([]),
+    ],
     declarations: [ProfileComponent],
     providers: [
       {

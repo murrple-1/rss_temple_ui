@@ -1,5 +1,8 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { ClarityModule } from '@clr/angular';
 
 import { OPMLModalComponent } from './opml-modal.component';
 import { OPMLService, ProgressService } from '@app/services/data';
@@ -14,7 +17,11 @@ async function setup() {
   );
 
   await TestBed.configureTestingModule({
-    imports: [RouterTestingModule.withRoutes([])],
+    imports: [
+      ClarityModule,
+      BrowserAnimationsModule,
+      RouterTestingModule.withRoutes([]),
+    ],
     declarations: [OPMLModalComponent],
     providers: [
       {
