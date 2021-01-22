@@ -10,6 +10,7 @@
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { NgForm } from '@angular/forms';
 
 import { ClrLoadingState } from '@clr/angular';
 
@@ -27,12 +28,7 @@ import { setSessionToken } from '@app/libs/session.lib';
 import {
   RequestPasswordResetModalComponent,
   openModal as openRequestPasswordResetModal,
-} from './request-password-reset-modal/request-password-reset-modal.component';
-
-interface LoginWithButtonDescriptor {
-  url: string;
-  imageUrl: string;
-}
+} from '@app/components/login/request-password-reset-modal/request-password-reset-modal.component';
 
 @Component({
   templateUrl: './login.component.html',
@@ -40,19 +36,18 @@ interface LoginWithButtonDescriptor {
 })
 export class LoginComponent implements OnInit, AfterViewChecked, OnDestroy {
   email = '';
-  emailErrors: string[] = [];
   password = '';
-  passwordErrors: string[] = [];
   rememberMe = false;
 
   loginButtonState = ClrLoadingState.DEFAULT;
-
-  loginWithButtons: LoginWithButtonDescriptor[] = [];
 
   returnUrl: string | null = null;
 
   gLoaded = false;
   fbLoaded = false;
+
+  @ViewChild('loginForm', { static: true })
+  private loginForm?: NgForm;
 
   @ViewChild(RequestPasswordResetModalComponent)
   private requestPasswordResetModalComponent?: RequestPasswordResetModalComponent;
@@ -73,11 +68,9 @@ export class LoginComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   ngOnInit() {
     const email = localStorage.getItem('cached_email');
-    const password = localStorage.getItem('cached_password');
 
-    if (email !== null && password !== null) {
+    if (email !== null) {
       this.email = email;
-      this.password = password;
       this.rememberMe = true;
     }
 
@@ -150,34 +143,26 @@ export class LoginComponent implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   onLogin() {
-    this.emailErrors = [];
-    this.passwordErrors = [];
-
-    let inputError = false;
-
-    const email = this.email.trim();
-    if (email.length < 1) {
-      this.emailErrors = ['Email missing'];
-      inputError = true;
+    if (this.loginForm === undefined) {
+      throw new Error('loginForm undefined');
     }
 
-    const password = this.password.trim();
-    if (password.length < 1) {
-      this.passwordErrors = ['Password missing'];
-      inputError = true;
-    }
-
-    if (inputError) {
+    if (this.loginForm.invalid) {
       return;
     }
 
     this.loginButtonState = ClrLoadingState.LOADING;
 
+    const email = this.email;
+
     this.loginService
-      .getMyLoginSession(this.email, this.password)
+      .getMyLoginSession(email, this.password)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: this.handleLoginSuccess.bind(this),
+        next: sessionToken => {
+          localStorage.setItem('cached_email', email);
+          this.handleLoginSuccess(sessionToken);
+        },
         error: error => {
           let errorMessage = 'Unknown Error';
           if (error instanceof HttpErrorResponse) {
@@ -197,6 +182,10 @@ export class LoginComponent implements OnInit, AfterViewChecked, OnDestroy {
             canClose: true,
             text: errorMessage,
             type: 'danger',
+          });
+
+          this.zone.run(() => {
+            this.loginButtonState = ClrLoadingState.ERROR;
           });
         },
       });

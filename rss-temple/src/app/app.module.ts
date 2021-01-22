@@ -28,12 +28,18 @@ import { VerifyComponent } from '@app/components/verify/verify.component';
 
 const AppLogoSVG: string = require('!!raw-loader!../assets/images/icon.svg')
   .default;
+const FacebookLogoSVG: string = require('!!raw-loader!../assets/images/facebook-f.svg')
+  .default;
+const GoogleLogoSVG: string = require('!!raw-loader!../assets/images/google.svg')
+  .default;
 
 export function clarityIconsFactory() {
   return () => {
     ClarityIcons.add(EssentialShapes);
     ClarityIcons.add({
       'app-logo': AppLogoSVG,
+      'brand-facebook': FacebookLogoSVG,
+      'brand-google': GoogleLogoSVG,
     });
   };
 }

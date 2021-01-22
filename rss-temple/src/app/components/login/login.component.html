@@ -1,61 +1,62 @@
 ﻿<div class="login-wrapper">
-  <div class="login">
+  <form clrForm #loginForm="ngForm" (ngSubmit)="onLogin()" class="login">
     <section class="title">
       <h3 class="welcome">Welcome to</h3>
       RSS Temple
-      <h5 class="hint">Please sign in to see your News Feed</h5>
+      <h5 class="hint">Please sign in to see your Feed</h5>
     </section>
     <div class="login-group">
-      <form clrForm>
-        <clr-input-container>
-          <label>Email</label>
-          <input
-            clrInput
-            type="email"
-            name="email"
-            placeholder="example@example.com"
-            [(ngModel)]="email"
-            (keydown.enter)="onLogin()"
-            required
-          />
-          <clr-control-error *clrIfError="'required'"
-            >Email required</clr-control-error
-          >
-        </clr-input-container>
-        <clr-password-container>
-          <label>Password</label>
-          <input
-            clrPassword
-            type="password"
-            name="password"
-            placeholder="Password"
-            [(ngModel)]="password"
-            (keydown.enter)="onLogin()"
-            required
-          />
-          <clr-control-error *clrIfError="'required'"
-            >Password required</clr-control-error
-          >
-        </clr-password-container>
-        <clr-checkbox-wrapper>
-          <label>Remember Me</label>
-          <input
-            clrCheckbox
-            type="checkbox"
-            name="rememberMe"
-            [(ngModel)]="rememberMe"
-          />
-        </clr-checkbox-wrapper>
-      </form>
+      <clr-input-container>
+        <label>Email</label>
+        <input
+          clrInput
+          type="email"
+          name="email"
+          placeholder="example@example.com"
+          [(ngModel)]="email"
+          (keydown.enter)="onLogin()"
+          required
+        />
+        <clr-control-error *clrIfError="'required'"
+          >Email required</clr-control-error
+        >
+      </clr-input-container>
+      <clr-password-container>
+        <label>Password</label>
+        <input
+          clrPassword
+          type="password"
+          name="password"
+          placeholder="Password"
+          [(ngModel)]="password"
+          (keydown.enter)="onLogin()"
+          required
+        />
+        <clr-control-error *clrIfError="'required'"
+          >Password required</clr-control-error
+        >
+      </clr-password-container>
+      <clr-checkbox-wrapper>
+        <label>Remember Me</label>
+        <input
+          clrCheckbox
+          type="checkbox"
+          name="rememberMe"
+          [(ngModel)]="rememberMe"
+        />
+      </clr-checkbox-wrapper>
       <button
         class="btn btn-primary"
-        (click)="onLogin()"
+        type="submit"
         [clrLoading]="loginButtonState"
       >
         Login
       </button>
       <a [routerLink]="['/register']" class="signup">Register</a>
-      <button class="btn btn-link" (click)="onForgottenPassword()">
+      <button
+        class="btn btn-link btn-sm app--forgot-password"
+        (click)="onForgottenPassword()"
+      >
         Forgot Password?
       </button>
       <button
@@ -64,7 +65,8 @@
         class="btn btn-primary"
         (click)="onGoogleLogin()"
       >
-        Login with Google
+        <clr-icon shape="brand-google"></clr-icon>
+        <span>Login with Google</span>
       </button>
       <button
         id="facebook-login"
@@ -72,10 +74,11 @@
         class="btn btn-primary"
         (click)="onFacebookLogin()"
       >
-        Login with Facebook
+        <clr-icon shape="brand-facebook"></clr-icon>
+        <span>Login with Facebook</span>
       </button>
     </div>
-  </div>
+  </form>
 </div>
 
 <app-request-password-reset-modal></app-request-password-reset-modal>

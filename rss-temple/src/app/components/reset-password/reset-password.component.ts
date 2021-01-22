@@ -29,9 +29,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   readonly State = State;
 
   newPassword = '';
-  newPasswordErrors: string[] = [];
   newPasswordCheck = '';
-  newPasswordCheckErrors: string[] = [];
 
   private token: string | null = null;
 

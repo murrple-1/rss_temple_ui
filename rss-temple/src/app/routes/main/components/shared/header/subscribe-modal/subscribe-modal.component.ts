@@ -16,9 +16,7 @@ export class SubscribeModalComponent implements OnDestroy {
   submitted = false;
 
   feedUrl = '';
-  feedUrlErrors: string[] = [];
   customName = '';
-  customNameErrors: string[] = [];
 
   result = new Subject<SubscriptionDetails>();
 
@@ -37,19 +35,13 @@ export class SubscribeModalComponent implements OnDestroy {
   reset() {
     this.feedUrl = '';
     this.customName = '';
-    this.feedUrlErrors = [];
-    this.customNameErrors = [];
   }
 
   finish() {
     this.submitted = true;
 
-    this.feedUrlErrors = [];
-    this.customNameErrors = [];
-
     const feedUrl = this.feedUrl.trim();
     if (feedUrl.length < 1) {
-      this.feedUrlErrors = ['URL required'];
       return;
     }
 

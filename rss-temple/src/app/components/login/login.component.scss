@@ -1,3 +1,10 @@
-.login {
-  min-height: unset;
+button#google-login,
+button#facebook-login {
+  span {
+    margin-left: 1rem;
+  }
+}
+
+.login .login-group button.app--forgot-password {
+  margin: 0.5rem 0 0 0;
 }

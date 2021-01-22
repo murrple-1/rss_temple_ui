@@ -26,7 +26,6 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
   readonly State = State;
 
   email = '';
-  emailErrors: string[] = [];
 
   result = new Subject<void>();
 
@@ -48,7 +47,6 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
   reset() {
     this.state = State.NotStarted;
     this.email = '';
-    this.emailErrors = [];
   }
 
   openChanged(open: boolean) {
@@ -62,18 +60,14 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
   request() {
     this.state = State.Sending;
 
-    this.emailErrors = [];
-
     const email = this.email.trim();
 
     if (email.length < 1) {
-      this.emailErrors.push('Email required');
       this.state = State.Error;
       return;
     }
 
     if (!emailValidate(email)) {
-      this.emailErrors.push('Email malformed');
       this.state = State.Error;
       return;
     }
