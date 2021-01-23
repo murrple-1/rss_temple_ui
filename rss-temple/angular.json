@@ -34,7 +34,6 @@
             "namedChunks": true,
             "extractLicenses": false,
             "buildOptimizer": false,
-            "outputHashing": "all",
             "aot": true,
             "vendorChunk": false
           },
@@ -45,6 +44,7 @@
               "namedChunks": false,
               "extractLicenses": true,
               "buildOptimizer": true,
+              "outputHashing": "all",
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -62,6 +62,9 @@
                   "maximumWarning": "6kb"
                 }
               ]
+            },
+            "_e2e": {
+              "progress": false
             }
           }
         },
@@ -75,7 +78,7 @@
               "browserTarget": "rss-temple:build:production"
             },
             "_e2e": {
-              "progress": false
+              "browserTarget": "rss-temple:build:_e2e"
             }
           }
         },

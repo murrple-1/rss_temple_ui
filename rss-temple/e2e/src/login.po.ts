@@ -5,7 +5,7 @@ export namespace LoginPage {
     return browser.get(browser.baseUrl);
   }
 
-  export function getHeaderElement() {
+  export function getTitleElement() {
     return element(by.css('app-root .login section.title'));
   }
 }

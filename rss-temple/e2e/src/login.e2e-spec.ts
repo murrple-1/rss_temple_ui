@@ -6,8 +6,8 @@ describe('LoginPage', () => {
 
   it('should display login page', async () => {
     await LoginPage.navigateTo();
-    expect(await LoginPage.getHeaderElement().getText()).toEqual(
-      jasmine.stringMatching(/Welcome to.*?RSS Temple/),
+    expect(await LoginPage.getTitleElement().getText()).toEqual(
+      jasmine.stringMatching(/Welcome to.*?RSS Temple/s),
     );
   });
 });
