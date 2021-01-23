@@ -40,8 +40,7 @@ describe('AppComponent', () => {
     setup();
 
     const componentFixture = TestBed.createComponent(AppComponent);
-    const component = componentFixture.debugElement
-      .componentInstance as AppComponent;
+    const component = componentFixture.componentInstance;
     expect(component).toBeTruthy();
   });
 });

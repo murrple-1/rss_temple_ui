@@ -15,6 +15,9 @@ import { take } from 'rxjs/operators';
 import { AppAlertsService, LoginService } from '@app/services';
 import { MockActivatedRoute } from '@app/test/activatedroute.mock';
 import { AppAlertDescriptor } from '@app/services/app-alerts.service';
+import { EmailValidatorDirective } from '@app/directives/email-validator.directive';
+import { PasswordValidatorDirective } from '@app/directives/password-validator.directive';
+import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-match-validator.directive';
 
 import { RegisterComponent, State } from './register.component';
 
@@ -44,7 +47,12 @@ async function setup() {
         },
       ]),
     ],
-    declarations: [RegisterComponent],
+    declarations: [
+      RegisterComponent,
+      EmailValidatorDirective,
+      PasswordValidatorDirective,
+      PasswordsMatchValidatorDirective,
+    ],
     providers: [
       {
         provide: ActivatedRoute,
@@ -71,8 +79,7 @@ describe('RegisterComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(RegisterComponent);
-      const component = componentFixture.debugElement
-        .componentInstance as RegisterComponent;
+      const component = componentFixture.componentInstance;
       expect(component).toBeTruthy();
     }),
   );
@@ -86,8 +93,7 @@ describe('RegisterComponent', () => {
       mockRoute.snapshot._paramMap._map.set('email', email);
 
       const componentFixture = TestBed.createComponent(RegisterComponent);
-      const component = componentFixture.debugElement
-        .componentInstance as RegisterComponent;
+      const component = componentFixture.componentInstance;
 
       component.ngOnInit();
       await componentFixture.whenStable();
@@ -102,8 +108,7 @@ describe('RegisterComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(RegisterComponent);
-      const component = componentFixture.debugElement
-        .componentInstance as RegisterComponent;
+      const component = componentFixture.componentInstance;
 
       component.ngOnInit();
       await componentFixture.whenStable();
@@ -120,8 +125,7 @@ describe('RegisterComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as RegisterComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       const debugElement = componentFixture.debugElement;
@@ -134,7 +138,7 @@ describe('RegisterComponent', () => {
       await componentFixture.whenStable();
 
       const passwordInput = debugElement.query(
-        By.css('input[type="password"][formControlName="password"]'),
+        By.css('input[type="password"][name="password"]'),
       ).nativeElement as HTMLInputElement;
       passwordInput.value = 'Password1!';
       passwordInput.dispatchEvent(new Event('input'));
@@ -142,7 +146,7 @@ describe('RegisterComponent', () => {
       await componentFixture.whenStable();
 
       const passwordCheckInput = debugElement.query(
-        By.css('input[type="password"][formControlName="passwordCheck"]'),
+        By.css('input[type="password"][name="passwordCheck"]'),
       ).nativeElement as HTMLInputElement;
       passwordCheckInput.value = 'Password1!';
       passwordCheckInput.dispatchEvent(new Event('input'));
@@ -155,9 +159,7 @@ describe('RegisterComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      expect(
-        component._registerForm?.controls['email']?.errors ?? {},
-      ).toContain(
+      expect(component._registerForm?.controls['email']?.errors ?? {}).toEqual(
         jasmine.objectContaining({
           required: jasmine.anything(),
         }),
@@ -174,21 +176,21 @@ describe('RegisterComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as RegisterComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       const debugElement = componentFixture.debugElement;
 
-      const emailInput = debugElement.query(By.css('input[type="email"]'))
-        .nativeElement as HTMLInputElement;
+      const emailInput = debugElement.query(
+        By.css('input[type="email"][name="email"]'),
+      ).nativeElement as HTMLInputElement;
       emailInput.value = 'bademail';
       emailInput.dispatchEvent(new Event('input'));
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
       const passwordInput = debugElement.query(
-        By.css('input[type="password"][formControlName="password"]'),
+        By.css('input[type="password"][name="password"]'),
       ).nativeElement as HTMLInputElement;
       passwordInput.value = 'Password1!';
       passwordInput.dispatchEvent(new Event('input'));
@@ -196,7 +198,7 @@ describe('RegisterComponent', () => {
       await componentFixture.whenStable();
 
       const passwordCheckInput = debugElement.query(
-        By.css('input[type="password"][formControlName="passwordCheck"]'),
+        By.css('input[type="password"][name="passwordCheck"]'),
       ).nativeElement as HTMLInputElement;
       passwordCheckInput.value = 'Password1!';
       passwordCheckInput.dispatchEvent(new Event('input'));
@@ -209,9 +211,7 @@ describe('RegisterComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      expect(
-        component._registerForm?.controls['email']?.errors ?? {},
-      ).toContain(
+      expect(component._registerForm?.controls['email']?.errors ?? {}).toEqual(
         jasmine.objectContaining({
           invalidemail: jasmine.anything(),
         }),
@@ -228,8 +228,7 @@ describe('RegisterComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as RegisterComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       const debugElement = componentFixture.debugElement;
@@ -242,7 +241,7 @@ describe('RegisterComponent', () => {
       await componentFixture.whenStable();
 
       const passwordInput = debugElement.query(
-        By.css('input[type="password"][formControlName="password"]'),
+        By.css('input[type="password"][name="password"]'),
       ).nativeElement as HTMLInputElement;
       passwordInput.value = 'Password1!';
       passwordInput.dispatchEvent(new Event('input'));
@@ -250,7 +249,7 @@ describe('RegisterComponent', () => {
       await componentFixture.whenStable();
 
       const passwordCheckInput = debugElement.query(
-        By.css('input[type="password"][formControlName="passwordCheck"]'),
+        By.css('input[type="password"][name="passwordCheck"]'),
       ).nativeElement as HTMLInputElement;
       passwordCheckInput.value = 'Password2!';
       passwordCheckInput.dispatchEvent(new Event('input'));
@@ -263,7 +262,7 @@ describe('RegisterComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      expect(component._registerForm?.errors ?? {}).toContain(
+      expect(component._registerForm?.errors ?? {}).toEqual(
         jasmine.objectContaining({
           passwordsdonotmatch: jasmine.anything(),
         }),
@@ -280,8 +279,7 @@ describe('RegisterComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as RegisterComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       const debugElement = componentFixture.debugElement;
@@ -294,7 +292,7 @@ describe('RegisterComponent', () => {
       await componentFixture.whenStable();
 
       const passwordInput = debugElement.query(
-        By.css('input[type="password"][formControlName="password"]'),
+        By.css('input[type="password"][name="password"]'),
       ).nativeElement as HTMLInputElement;
       passwordInput.value = '';
       passwordInput.dispatchEvent(new Event('input'));
@@ -302,7 +300,7 @@ describe('RegisterComponent', () => {
       await componentFixture.whenStable();
 
       const passwordCheckInput = debugElement.query(
-        By.css('input[type="password"][formControlName="passwordCheck"]'),
+        By.css('input[type="password"][name="passwordCheck"]'),
       ).nativeElement as HTMLInputElement;
       passwordCheckInput.value = '';
       passwordCheckInput.dispatchEvent(new Event('input'));
@@ -317,14 +315,14 @@ describe('RegisterComponent', () => {
 
       expect(
         component._registerForm?.controls['password']?.errors ?? {},
-      ).toContain(
+      ).toEqual(
         jasmine.objectContaining({
           required: jasmine.anything(),
         }),
       );
       expect(
         component._registerForm?.controls['passwordCheck']?.errors ?? {},
-      ).toContain(
+      ).toEqual(
         jasmine.objectContaining({
           required: jasmine.anything(),
         }),
@@ -341,8 +339,7 @@ describe('RegisterComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as RegisterComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       const debugElement = componentFixture.debugElement;
@@ -355,10 +352,10 @@ describe('RegisterComponent', () => {
       await componentFixture.whenStable();
 
       const passwordInput = debugElement.query(
-        By.css('input[type="password"][formControlName="password"]'),
+        By.css('input[type="password"][name="password"]'),
       ).nativeElement as HTMLInputElement;
       const passwordCheckInput = debugElement.query(
-        By.css('input[type="password"][formControlName="passwordCheck"]'),
+        By.css('input[type="password"][name="passwordCheck"]'),
       ).nativeElement as HTMLInputElement;
       const loginButton = debugElement.query(By.css('button[type="submit"]'))
         .nativeElement as HTMLButtonElement;
@@ -383,7 +380,7 @@ describe('RegisterComponent', () => {
 
         expect(
           component._registerForm?.controls['password']?.errors ?? {},
-        ).toBeTruthy(
+        ).toEqual(
           jasmine.objectContaining({
             [errorKey]: jasmine.anything(),
           }),
@@ -407,8 +404,7 @@ describe('RegisterComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as RegisterComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       mockLoginService.createMyLogin.and.returnValue(of(undefined));
@@ -426,7 +422,7 @@ describe('RegisterComponent', () => {
       await componentFixture.whenStable();
 
       const passwordInput = debugElement.query(
-        By.css('input[type="password"][formControlName="password"]'),
+        By.css('input[type="password"][name="password"]'),
       ).nativeElement as HTMLInputElement;
       passwordInput.value = 'Password1!';
       passwordInput.dispatchEvent(new Event('input'));
@@ -434,7 +430,7 @@ describe('RegisterComponent', () => {
       await componentFixture.whenStable();
 
       const passwordCheckInput = debugElement.query(
-        By.css('input[type="password"][formControlName="passwordCheck"]'),
+        By.css('input[type="password"][name="passwordCheck"]'),
       ).nativeElement as HTMLInputElement;
       passwordCheckInput.value = 'Password1!';
       passwordCheckInput.dispatchEvent(new Event('input'));
@@ -462,8 +458,7 @@ describe('RegisterComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as RegisterComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       mockLoginService.createGoogleLogin.and.returnValue(of(undefined));
@@ -482,7 +477,7 @@ describe('RegisterComponent', () => {
       await componentFixture.whenStable();
 
       const passwordInput = debugElement.query(
-        By.css('input[type="password"][formControlName="password"]'),
+        By.css('input[type="password"][name="password"]'),
       ).nativeElement as HTMLInputElement;
       passwordInput.value = 'Password1!';
       passwordInput.dispatchEvent(new Event('input'));
@@ -490,7 +485,7 @@ describe('RegisterComponent', () => {
       await componentFixture.whenStable();
 
       const passwordCheckInput = debugElement.query(
-        By.css('input[type="password"][formControlName="passwordCheck"]'),
+        By.css('input[type="password"][name="passwordCheck"]'),
       ).nativeElement as HTMLInputElement;
       passwordCheckInput.value = 'Password1!';
       passwordCheckInput.dispatchEvent(new Event('input'));
@@ -518,8 +513,7 @@ describe('RegisterComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as RegisterComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       mockLoginService.createFacebookLogin.and.returnValue(of(undefined));
@@ -538,7 +532,7 @@ describe('RegisterComponent', () => {
       await componentFixture.whenStable();
 
       const passwordInput = debugElement.query(
-        By.css('input[type="password"][formControlName="password"]'),
+        By.css('input[type="password"][name="password"]'),
       ).nativeElement as HTMLInputElement;
       passwordInput.value = 'Password1!';
       passwordInput.dispatchEvent(new Event('input'));
@@ -546,7 +540,7 @@ describe('RegisterComponent', () => {
       await componentFixture.whenStable();
 
       const passwordCheckInput = debugElement.query(
-        By.css('input[type="password"][formControlName="passwordCheck"]'),
+        By.css('input[type="password"][name="passwordCheck"]'),
       ).nativeElement as HTMLInputElement;
       passwordCheckInput.value = 'Password1!';
       passwordCheckInput.dispatchEvent(new Event('input'));
@@ -574,8 +568,7 @@ describe('RegisterComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as RegisterComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       mockLoginService.createMyLogin.and.returnValue(
@@ -607,7 +600,7 @@ describe('RegisterComponent', () => {
       await componentFixture.whenStable();
 
       const passwordInput = debugElement.query(
-        By.css('input[type="password"][formControlName="password"]'),
+        By.css('input[type="password"][name="password"]'),
       ).nativeElement as HTMLInputElement;
       passwordInput.value = 'Password1!';
       passwordInput.dispatchEvent(new Event('input'));
@@ -615,7 +608,7 @@ describe('RegisterComponent', () => {
       await componentFixture.whenStable();
 
       const passwordCheckInput = debugElement.query(
-        By.css('input[type="password"][formControlName="passwordCheck"]'),
+        By.css('input[type="password"][name="passwordCheck"]'),
       ).nativeElement as HTMLInputElement;
       passwordCheckInput.value = 'Password1!';
       passwordCheckInput.dispatchEvent(new Event('input'));
@@ -646,8 +639,7 @@ describe('RegisterComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as RegisterComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       mockLoginService.createMyLogin.and.returnValue(
@@ -678,7 +670,7 @@ describe('RegisterComponent', () => {
       await componentFixture.whenStable();
 
       const passwordInput = debugElement.query(
-        By.css('input[type="password"][formControlName="password"]'),
+        By.css('input[type="password"][name="password"]'),
       ).nativeElement as HTMLInputElement;
       passwordInput.value = 'Password1!';
       passwordInput.dispatchEvent(new Event('input'));
@@ -686,7 +678,7 @@ describe('RegisterComponent', () => {
       await componentFixture.whenStable();
 
       const passwordCheckInput = debugElement.query(
-        By.css('input[type="password"][formControlName="passwordCheck"]'),
+        By.css('input[type="password"][name="passwordCheck"]'),
       ).nativeElement as HTMLInputElement;
       passwordCheckInput.value = 'Password1!';
       passwordCheckInput.dispatchEvent(new Event('input'));

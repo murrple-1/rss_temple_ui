@@ -33,8 +33,7 @@ describe('VerifyComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(VerifyComponent);
-      const component = componentFixture.debugElement
-        .componentInstance as VerifyComponent;
+      const component = componentFixture.componentInstance;
       expect(component).toBeTruthy();
     }),
   );
@@ -45,8 +44,7 @@ describe('VerifyComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(VerifyComponent);
-      const component = componentFixture.debugElement
-        .componentInstance as VerifyComponent;
+      const component = componentFixture.componentInstance;
 
       component.ngOnInit();
       await componentFixture.whenStable();

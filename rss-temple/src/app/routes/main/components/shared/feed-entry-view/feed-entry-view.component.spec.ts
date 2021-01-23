@@ -34,8 +34,7 @@ describe('FeedEntryViewComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(FeedEntryViewComponent);
-      const component = componentFixture.debugElement
-        .componentInstance as FeedEntryViewComponent;
+      const component = componentFixture.componentInstance;
       expect(component).toBeTruthy();
     }),
   );

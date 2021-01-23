@@ -53,6 +53,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.googleToken = this.route.snapshot.paramMap.get('g_token');
     this.facebookToken = this.route.snapshot.paramMap.get('fb_token');
+    this.email = this.route.snapshot.paramMap.get('email') ?? '';
   }
 
   ngOnDestroy() {

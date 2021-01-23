@@ -46,7 +46,7 @@ export class LoginComponent implements OnInit, AfterViewChecked, OnDestroy {
   gLoaded = false;
   fbLoaded = false;
 
-  @ViewChild('loginForm', { static: true })
+  @ViewChild('loginForm', { static: false })
   _loginForm?: NgForm;
 
   @ViewChild(RequestPasswordResetModalComponent)

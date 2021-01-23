@@ -25,7 +25,7 @@ interface ProgressStatus {
 export class OPMLModalComponent implements OnDestroy {
   open = false;
 
-  @ViewChild('opmlFileInput', { static: true })
+  @ViewChild('opmlFileInput', { static: false })
   private opmlFileInput?: ElementRef<HTMLInputElement>;
 
   uploading = false;

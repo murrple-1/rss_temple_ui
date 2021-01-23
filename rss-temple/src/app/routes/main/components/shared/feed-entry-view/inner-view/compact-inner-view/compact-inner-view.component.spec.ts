@@ -19,8 +19,7 @@ describe('CompactInnerViewComponent', () => {
       const componentFixture = TestBed.createComponent(
         CompactInnerViewComponent,
       );
-      const component = componentFixture.debugElement
-        .componentInstance as CompactInnerViewComponent;
+      const component = componentFixture.componentInstance;
       expect(component).toBeTruthy();
     }),
   );

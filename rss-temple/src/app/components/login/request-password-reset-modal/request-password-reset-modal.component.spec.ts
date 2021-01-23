@@ -52,8 +52,7 @@ describe('RequestPasswordResetModalComponent', () => {
       const componentFixture = TestBed.createComponent(
         RequestPasswordResetModalComponent,
       );
-      const component = componentFixture.debugElement
-        .componentInstance as RequestPasswordResetModalComponent;
+      const component = componentFixture.componentInstance;
       expect(component).toBeTruthy();
     }),
   );
@@ -69,8 +68,11 @@ describe('RequestPasswordResetModalComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as RequestPasswordResetModalComponent;
+      const component = componentFixture.componentInstance;
+
+      component.open = true;
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
       const debugElement = componentFixture.debugElement;
 
@@ -108,8 +110,7 @@ describe('RequestPasswordResetModalComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as RequestPasswordResetModalComponent;
+      const component = componentFixture.componentInstance;
 
       const debugElement = componentFixture.debugElement;
 

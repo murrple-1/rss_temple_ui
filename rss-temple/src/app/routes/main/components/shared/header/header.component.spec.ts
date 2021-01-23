@@ -1,6 +1,7 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule } from '@angular/forms';
 
 import { ClarityModule } from '@clr/angular';
 
@@ -42,6 +43,7 @@ async function setup() {
 
   await TestBed.configureTestingModule({
     imports: [
+      FormsModule,
       BrowserAnimationsModule,
       ClarityModule,
       RouterTestingModule.withRoutes([]),
@@ -91,8 +93,7 @@ describe('HeaderComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(HeaderComponent);
-      const component = componentFixture.debugElement
-        .componentInstance as HeaderComponent;
+      const component = componentFixture.componentInstance;
       expect(component).toBeTruthy();
     }),
   );
@@ -115,8 +116,7 @@ describe('HeaderComponent', () => {
       );
 
       const componentFixture = TestBed.createComponent(HeaderComponent);
-      const component = componentFixture.debugElement
-        .componentInstance as HeaderComponent;
+      const component = componentFixture.componentInstance;
 
       component.ngOnInit();
       await componentFixture.whenStable();

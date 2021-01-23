@@ -6,6 +6,6 @@ export namespace LoginPage {
   }
 
   export function getHeaderElement() {
-    return element(by.css('app-root h2'));
+    return element(by.css('app-root .login section.title'));
   }
 }

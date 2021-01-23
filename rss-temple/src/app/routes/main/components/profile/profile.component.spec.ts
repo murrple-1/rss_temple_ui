@@ -73,8 +73,7 @@ describe('ProfileComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(ProfileComponent);
-      const component = componentFixture.debugElement
-        .componentInstance as ProfileComponent;
+      const component = componentFixture.componentInstance;
       expect(component).toBeTruthy();
     }),
   );
@@ -102,8 +101,7 @@ describe('ProfileComponent', () => {
       );
 
       const componentFixture = TestBed.createComponent(ProfileComponent);
-      const component = componentFixture.debugElement
-        .componentInstance as ProfileComponent;
+      const component = componentFixture.componentInstance;
 
       component.ngOnInit();
       await componentFixture.whenStable();

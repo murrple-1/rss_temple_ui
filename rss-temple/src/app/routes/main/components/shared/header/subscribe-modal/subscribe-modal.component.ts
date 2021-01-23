@@ -1,4 +1,6 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
 import { Subject } from 'rxjs';
 
 export interface SubscriptionDetails {
@@ -20,6 +22,9 @@ export class SubscribeModalComponent implements OnDestroy {
 
   result = new Subject<SubscriptionDetails>();
 
+  @ViewChild('subscribeForm', { static: false })
+  _subscribeForm?: NgForm;
+
   ngOnDestroy() {
     this.result.complete();
   }
@@ -38,6 +43,14 @@ export class SubscribeModalComponent implements OnDestroy {
   }
 
   finish() {
+    if (this._subscribeForm === undefined) {
+      throw new Error('_subscribeForm undefined');
+    }
+
+    if (this._subscribeForm.invalid) {
+      return;
+    }
+
     this.submitted = true;
 
     const feedUrl = this.feedUrl.trim();

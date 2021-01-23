@@ -17,8 +17,7 @@ describe('ComfyInnerViewComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(ComfyInnerViewComponent);
-      const component = componentFixture.debugElement
-        .componentInstance as ComfyInnerViewComponent;
+      const component = componentFixture.componentInstance;
       expect(component).toBeTruthy();
     }),
   );

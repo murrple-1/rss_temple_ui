@@ -1,7 +1,12 @@
 <clr-modal [clrModalOpen]="open" (clrModalOpenChange)="openChanged($event)">
-  <h4 class="modal-title">Subscribe</h4>
-  <div class="modal-body">
-    <form clrForm [ngClass]="{ 'app--is-submitted': submitted }">
+  <form
+    clrForm
+    #subscribeForm="ngForm"
+    [ngClass]="{ 'app--is-submitted': submitted }"
+    (ngSubmit)="finish()"
+  >
+    <h4 class="modal-title">Subscribe</h4>
+    <div class="modal-body">
       <fieldset>
         <clr-input-container>
           <label>Feed URL</label>
@@ -13,7 +18,9 @@
             [(ngModel)]="feedUrl"
             required
           />
-          <clr-control-error>Feed URL required</clr-control-error>
+          <clr-control-error *clrIfError="'required'"
+            >Feed URL required</clr-control-error
+          >
         </clr-input-container>
         <clr-input-container>
           <label>Custom Name</label>
@@ -26,9 +33,9 @@
           />
         </clr-input-container>
       </fieldset>
-    </form>
-  </div>
-  <div class="modal-footer">
-    <button class="btn btn-primary" (click)="finish()">Finish</button>
-  </div>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary">Finish</button>
+    </div>
+  </form>
 </clr-modal>

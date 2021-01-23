@@ -22,8 +22,7 @@ describe('DisplayOptionsViewComponent', () => {
       const componentFixture = TestBed.createComponent(
         DisplayOptionsViewComponent,
       );
-      const component = componentFixture.debugElement
-        .componentInstance as DisplayOptionsViewComponent;
+      const component = componentFixture.componentInstance;
       expect(component).toBeTruthy();
     }),
   );

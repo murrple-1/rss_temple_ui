@@ -22,8 +22,7 @@ describe('SubscribeModalComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(SubscribeModalComponent);
-      const component = componentFixture.debugElement
-        .componentInstance as SubscribeModalComponent;
+      const component = componentFixture.componentInstance;
       expect(component).toBeTruthy();
     }),
   );

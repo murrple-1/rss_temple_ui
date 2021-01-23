@@ -47,8 +47,7 @@ describe('UserCategoriesModalComponent', () => {
       const componentFixture = TestBed.createComponent(
         UserCategoriesModalComponent,
       );
-      const component = componentFixture.debugElement
-        .componentInstance as UserCategoriesModalComponent;
+      const component = componentFixture.componentInstance;
       expect(component).toBeTruthy();
     }),
   );
@@ -67,8 +66,7 @@ describe('UserCategoriesModalComponent', () => {
       const componentFixture = TestBed.createComponent(
         UserCategoriesModalComponent,
       );
-      const component = componentFixture.debugElement
-        .componentInstance as UserCategoriesModalComponent;
+      const component = componentFixture.componentInstance;
 
       component.ngOnInit();
       await componentFixture.whenStable();

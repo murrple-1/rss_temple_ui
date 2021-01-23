@@ -64,8 +64,7 @@ describe('FeedComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(FeedComponent);
-      const component = componentFixture.debugElement
-        .componentInstance as FeedComponent;
+      const component = componentFixture.componentInstance;
       expect(component).toBeTruthy();
     }),
   );
@@ -76,8 +75,7 @@ describe('FeedComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(FeedComponent);
-      const component = componentFixture.debugElement
-        .componentInstance as FeedComponent;
+      const component = componentFixture.componentInstance;
 
       component.ngOnInit();
       await componentFixture.whenStable();

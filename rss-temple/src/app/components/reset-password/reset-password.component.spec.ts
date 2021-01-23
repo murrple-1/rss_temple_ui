@@ -43,8 +43,7 @@ describe('ResetPasswordComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(ResetPasswordComponent);
-      const component = componentFixture.debugElement
-        .componentInstance as ResetPasswordComponent;
+      const component = componentFixture.componentInstance;
       expect(component).toBeTruthy();
     }),
   );
@@ -55,8 +54,7 @@ describe('ResetPasswordComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(ResetPasswordComponent);
-      const component = componentFixture.debugElement
-        .componentInstance as ResetPasswordComponent;
+      const component = componentFixture.componentInstance;
 
       component.ngOnInit();
       await componentFixture.whenStable();

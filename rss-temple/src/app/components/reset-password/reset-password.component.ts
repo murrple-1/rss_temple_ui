@@ -1,6 +1,7 @@
-﻿import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+﻿import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { NgForm } from '@angular/forms';
 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -37,6 +38,9 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     return passwordRequirementsText('en');
   }
 
+  @ViewChild('resetPasswordForm', { static: false })
+  _resetPasswordForm?: NgForm;
+
   private readonly unsubscribe$ = new Subject<void>();
 
   constructor(
@@ -61,11 +65,17 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   }
 
   onSave() {
+    if (this._resetPasswordForm === undefined) {
+      throw new Error('_resetPasswordForm undefined');
+    }
+
     if (this.token === null) {
       return;
     }
 
-    // TODO check error states
+    if (this._resetPasswordForm.invalid) {
+      return;
+    }
 
     this.state = State.Sending;
 

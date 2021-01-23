@@ -110,8 +110,7 @@ describe('LoginComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      const component = componentFixture.debugElement
-        .componentInstance as LoginComponent;
+      const component = componentFixture.componentInstance;
       expect(component).toBeTruthy();
     }),
   );
@@ -125,8 +124,7 @@ describe('LoginComponent', () => {
       mockRoute.snapshot._paramMap._map.set('returnUrl', returnUrl);
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      const component = componentFixture.debugElement
-        .componentInstance as LoginComponent;
+      const component = componentFixture.componentInstance;
 
       component.ngOnInit();
       await componentFixture.whenStable();
@@ -141,8 +139,7 @@ describe('LoginComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      const component = componentFixture.debugElement
-        .componentInstance as LoginComponent;
+      const component = componentFixture.componentInstance;
 
       component.ngOnInit();
       await componentFixture.whenStable();
@@ -157,8 +154,7 @@ describe('LoginComponent', () => {
       mockLoginService.getGoogleLoginSession.and.returnValue(of('atoken'));
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      const component = componentFixture.debugElement
-        .componentInstance as LoginComponent;
+      const component = componentFixture.componentInstance;
 
       component.ngOnInit();
 
@@ -181,8 +177,7 @@ describe('LoginComponent', () => {
       mockLoginService.getFacebookLoginSession.and.returnValue(of('atoken'));
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      const component = componentFixture.debugElement
-        .componentInstance as LoginComponent;
+      const component = componentFixture.componentInstance;
 
       component.ngOnInit();
 
@@ -204,8 +199,7 @@ describe('LoginComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      const component = componentFixture.debugElement
-        .componentInstance as LoginComponent;
+      const component = componentFixture.componentInstance;
 
       const gAuthService = TestBed.inject(GAuthService);
       gAuthService.signIn();
@@ -223,8 +217,7 @@ describe('LoginComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      const component = componentFixture.debugElement
-        .componentInstance as LoginComponent;
+      const component = componentFixture.componentInstance;
 
       const fbAuthService = TestBed.inject(FBAuthService);
       fbAuthService.signIn();
@@ -245,8 +238,7 @@ describe('LoginComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as LoginComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       const debugElement = componentFixture.debugElement;
@@ -288,8 +280,7 @@ describe('LoginComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as LoginComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       const debugElement = componentFixture.debugElement;
@@ -331,8 +322,7 @@ describe('LoginComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as LoginComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       const debugElement = componentFixture.debugElement;
@@ -375,8 +365,7 @@ describe('LoginComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as LoginComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       const debugElement = componentFixture.debugElement;
@@ -421,8 +410,7 @@ describe('LoginComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as LoginComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       const debugElement = componentFixture.debugElement;
@@ -453,8 +441,7 @@ describe('LoginComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as LoginComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       const debugElement = componentFixture.debugElement;
@@ -484,8 +471,7 @@ describe('LoginComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as LoginComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       const clickSpy = spyOn(component, 'onForgottenPassword');
@@ -511,8 +497,7 @@ describe('LoginComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as LoginComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       const debugElement = componentFixture.debugElement;
@@ -540,8 +525,7 @@ describe('LoginComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as LoginComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       const debugElement = componentFixture.debugElement;
@@ -587,8 +571,7 @@ describe('LoginComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as LoginComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       const debugElement = componentFixture.debugElement;
@@ -648,8 +631,7 @@ describe('LoginComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as LoginComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       const debugElement = componentFixture.debugElement;
@@ -705,8 +687,7 @@ describe('LoginComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as LoginComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       const debugElement = componentFixture.debugElement;
@@ -766,8 +747,7 @@ describe('LoginComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as LoginComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       const debugElement = componentFixture.debugElement;
@@ -808,8 +788,7 @@ describe('LoginComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as LoginComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       const debugElement = componentFixture.debugElement;
@@ -854,8 +833,7 @@ describe('LoginComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as LoginComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       const debugElement = componentFixture.debugElement;
@@ -900,8 +878,7 @@ describe('LoginComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as LoginComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       const debugElement = componentFixture.debugElement;
@@ -942,8 +919,7 @@ describe('LoginComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as LoginComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       const debugElement = componentFixture.debugElement;
@@ -988,8 +964,7 @@ describe('LoginComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.debugElement
-        .componentInstance as LoginComponent;
+      const component = componentFixture.componentInstance;
       component.ngOnInit();
 
       const debugElement = componentFixture.debugElement;
