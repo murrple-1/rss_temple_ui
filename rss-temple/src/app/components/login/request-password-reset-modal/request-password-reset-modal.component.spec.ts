@@ -10,6 +10,7 @@ import { ClarityModule } from '@clr/angular';
 import { of, Observable } from 'rxjs';
 
 import { PasswordResetTokenService } from '@app/services/data';
+import { EmailValidatorDirective } from '@app/directives/email-validator.directive';
 
 import {
   RequestPasswordResetModalComponent,
@@ -29,7 +30,7 @@ async function setup() {
       ClarityModule,
       RouterTestingModule.withRoutes([]),
     ],
-    declarations: [RequestPasswordResetModalComponent],
+    declarations: [RequestPasswordResetModalComponent, EmailValidatorDirective],
     providers: [
       {
         provide: PasswordResetTokenService,
@@ -112,6 +113,10 @@ describe('RequestPasswordResetModalComponent', () => {
 
       const component = componentFixture.componentInstance;
 
+      component.open = true;
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
+
       const debugElement = componentFixture.debugElement;
 
       const emailInput = debugElement.query(By.css('input[type="email"]'))
@@ -149,7 +154,11 @@ describe('RequestPasswordResetModalComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.componentInstance as RequestPasswordResetModalComponent;
+      const component = componentFixture.componentInstance;
+
+      component.open = true;
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
       const debugElement = componentFixture.debugElement;
 
@@ -194,7 +203,11 @@ describe('RequestPasswordResetModalComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.componentInstance as RequestPasswordResetModalComponent;
+      const component = componentFixture.componentInstance;
+
+      component.open = true;
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
       const debugElement = componentFixture.debugElement;
 
