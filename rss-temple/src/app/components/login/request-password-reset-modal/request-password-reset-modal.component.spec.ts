@@ -66,16 +66,11 @@ describe('RequestPasswordResetModalComponent', () => {
       const componentFixture = TestBed.createComponent(
         RequestPasswordResetModalComponent,
       );
-      componentFixture.detectChanges();
-      await componentFixture.whenStable();
-
       const component = componentFixture.componentInstance;
+      const debugElement = componentFixture.debugElement;
 
       component.open = true;
       componentFixture.detectChanges();
-      await componentFixture.whenStable();
-
-      const debugElement = componentFixture.debugElement;
 
       const emailInput = debugElement.query(By.css('input[type="email"]'))
         .nativeElement as HTMLInputElement;
@@ -108,16 +103,12 @@ describe('RequestPasswordResetModalComponent', () => {
       const componentFixture = TestBed.createComponent(
         RequestPasswordResetModalComponent,
       );
-      componentFixture.detectChanges();
-      await componentFixture.whenStable();
-
       const component = componentFixture.componentInstance;
+      const debugElement = componentFixture.debugElement;
 
       component.open = true;
       componentFixture.detectChanges();
       await componentFixture.whenStable();
-
-      const debugElement = componentFixture.debugElement;
 
       const emailInput = debugElement.query(By.css('input[type="email"]'))
         .nativeElement as HTMLInputElement;
@@ -151,16 +142,12 @@ describe('RequestPasswordResetModalComponent', () => {
       const componentFixture = TestBed.createComponent(
         RequestPasswordResetModalComponent,
       );
-      componentFixture.detectChanges();
-      await componentFixture.whenStable();
-
       const component = componentFixture.componentInstance;
+      const debugElement = componentFixture.debugElement;
 
       component.open = true;
       componentFixture.detectChanges();
       await componentFixture.whenStable();
-
-      const debugElement = componentFixture.debugElement;
 
       const emailInput = debugElement.query(By.css('input[type="email"]'))
         .nativeElement as HTMLInputElement;
@@ -200,16 +187,12 @@ describe('RequestPasswordResetModalComponent', () => {
       const componentFixture = TestBed.createComponent(
         RequestPasswordResetModalComponent,
       );
-      componentFixture.detectChanges();
-      await componentFixture.whenStable();
-
       const component = componentFixture.componentInstance;
+      const debugElement = componentFixture.debugElement;
 
       component.open = true;
       componentFixture.detectChanges();
       await componentFixture.whenStable();
-
-      const debugElement = componentFixture.debugElement;
 
       const emailInput = debugElement.query(By.css('input[type="email"]'))
         .nativeElement as HTMLInputElement;

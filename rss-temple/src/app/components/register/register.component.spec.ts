@@ -96,7 +96,6 @@ describe('RegisterComponent', () => {
       const component = componentFixture.componentInstance;
 
       component.ngOnInit();
-      await componentFixture.whenStable();
 
       expect(component.email).toBe(email);
     }),
@@ -111,7 +110,7 @@ describe('RegisterComponent', () => {
       const component = componentFixture.componentInstance;
 
       component.ngOnInit();
-      await componentFixture.whenStable();
+
       expect().nothing();
     }),
   );
@@ -122,19 +121,17 @@ describe('RegisterComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(RegisterComponent);
+      const component = componentFixture.componentInstance;
+      const debugElement = componentFixture.debugElement;
+
+      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
-
-      const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
-      const debugElement = componentFixture.debugElement;
 
       const emailInput = debugElement.query(By.css('input[type="email"]'))
         .nativeElement as HTMLInputElement;
       emailInput.value = '';
       emailInput.dispatchEvent(new Event('input'));
-      componentFixture.detectChanges();
       await componentFixture.whenStable();
 
       const passwordInput = debugElement.query(
@@ -173,13 +170,12 @@ describe('RegisterComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(RegisterComponent);
+      const component = componentFixture.componentInstance;
+      const debugElement = componentFixture.debugElement;
+
+      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
-
-      const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
-      const debugElement = componentFixture.debugElement;
 
       const emailInput = debugElement.query(
         By.css('input[type="email"][name="email"]'),
@@ -211,7 +207,7 @@ describe('RegisterComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      expect(component._registerForm?.controls['email']?.errors ?? {}).toEqual(
+      expect(component._registerForm?.controls['email']?.errors).toEqual(
         jasmine.objectContaining({
           invalidemail: jasmine.anything(),
         }),
@@ -225,13 +221,12 @@ describe('RegisterComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(RegisterComponent);
+      const component = componentFixture.componentInstance;
+      const debugElement = componentFixture.debugElement;
+
+      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
-
-      const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
-      const debugElement = componentFixture.debugElement;
 
       const emailInput = debugElement.query(By.css('input[type="email"]'))
         .nativeElement as HTMLInputElement;
@@ -276,13 +271,12 @@ describe('RegisterComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(RegisterComponent);
+      const component = componentFixture.componentInstance;
+      const debugElement = componentFixture.debugElement;
+
+      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
-
-      const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
-      const debugElement = componentFixture.debugElement;
 
       const emailInput = debugElement.query(By.css('input[type="email"]'))
         .nativeElement as HTMLInputElement;
@@ -336,13 +330,12 @@ describe('RegisterComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(RegisterComponent);
+      const component = componentFixture.componentInstance;
+      const debugElement = componentFixture.debugElement;
+
+      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
-
-      const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
-      const debugElement = componentFixture.debugElement;
 
       const emailInput = debugElement.query(By.css('input[type="email"]'))
         .nativeElement as HTMLInputElement;
@@ -399,20 +392,18 @@ describe('RegisterComponent', () => {
     'should register: my',
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
-
-      const componentFixture = TestBed.createComponent(RegisterComponent);
-      componentFixture.detectChanges();
-      await componentFixture.whenStable();
-
-      const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
       mockLoginService.createMyLogin.and.returnValue(of(undefined));
 
+      const router = TestBed.inject(Router);
+      spyOn(router, 'navigate');
+
+      const componentFixture = TestBed.createComponent(RegisterComponent);
+      const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
 
-      const router = debugElement.injector.get(Router);
-      spyOn(router, 'navigate');
+      component.ngOnInit();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
       const emailInput = debugElement.query(By.css('input[type="email"]'))
         .nativeElement as HTMLInputElement;
@@ -453,21 +444,19 @@ describe('RegisterComponent', () => {
     'should register: Google',
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
+      mockLoginService.createGoogleLogin.and.returnValue(of(undefined));
+      const router = TestBed.inject(Router);
+      spyOn(router, 'navigate');
 
       const componentFixture = TestBed.createComponent(RegisterComponent);
+      const component = componentFixture.componentInstance;
+      const debugElement = componentFixture.debugElement;
+
+      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
-      mockLoginService.createGoogleLogin.and.returnValue(of(undefined));
       (component as any).googleToken = 'google-token';
-
-      const debugElement = componentFixture.debugElement;
-
-      const router = debugElement.injector.get(Router);
-      spyOn(router, 'navigate');
 
       const emailInput = debugElement.query(By.css('input[type="email"]'))
         .nativeElement as HTMLInputElement;
@@ -508,21 +497,19 @@ describe('RegisterComponent', () => {
     'should register: Facebook',
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
+      mockLoginService.createFacebookLogin.and.returnValue(of(undefined));
+      const router = TestBed.inject(Router);
+      spyOn(router, 'navigate');
 
       const componentFixture = TestBed.createComponent(RegisterComponent);
+      const component = componentFixture.componentInstance;
+      const debugElement = componentFixture.debugElement;
+
+      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
-      mockLoginService.createFacebookLogin.and.returnValue(of(undefined));
       (component as any).facebookToken = 'facebook-token';
-
-      const debugElement = componentFixture.debugElement;
-
-      const router = debugElement.injector.get(Router);
-      spyOn(router, 'navigate');
 
       const emailInput = debugElement.query(By.css('input[type="email"]'))
         .nativeElement as HTMLInputElement;
@@ -563,14 +550,6 @@ describe('RegisterComponent', () => {
     'should handle registration errors: cannot connect',
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
-
-      const componentFixture = TestBed.createComponent(RegisterComponent);
-      componentFixture.detectChanges();
-      await componentFixture.whenStable();
-
-      const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
       mockLoginService.createMyLogin.and.returnValue(
         new Observable<void>(subscriber => {
           subscriber.error(
@@ -590,7 +569,14 @@ describe('RegisterComponent', () => {
         });
       });
 
+      const componentFixture = TestBed.createComponent(RegisterComponent);
+      const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
+
+      component.ngOnInit();
+      component.ngOnInit();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
       const emailInput = debugElement.query(By.css('input[type="email"]'))
         .nativeElement as HTMLInputElement;
@@ -634,14 +620,6 @@ describe('RegisterComponent', () => {
     'should handle registration errors: email already in use',
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
-
-      const componentFixture = TestBed.createComponent(RegisterComponent);
-      componentFixture.detectChanges();
-      await componentFixture.whenStable();
-
-      const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
       mockLoginService.createMyLogin.and.returnValue(
         new Observable<void>(subscriber => {
           subscriber.error(
@@ -660,7 +638,13 @@ describe('RegisterComponent', () => {
         });
       });
 
+      const componentFixture = TestBed.createComponent(RegisterComponent);
+      const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
+
+      component.ngOnInit();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
       const emailInput = debugElement.query(By.css('input[type="email"]'))
         .nativeElement as HTMLInputElement;

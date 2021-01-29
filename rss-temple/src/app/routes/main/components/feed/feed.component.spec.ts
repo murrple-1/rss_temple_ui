@@ -78,7 +78,7 @@ describe('FeedComponent', () => {
       const component = componentFixture.componentInstance;
 
       component.ngOnInit();
-      await componentFixture.whenStable();
+
       expect().nothing();
     }),
   );

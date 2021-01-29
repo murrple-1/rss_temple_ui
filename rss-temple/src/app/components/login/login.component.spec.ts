@@ -127,7 +127,6 @@ describe('LoginComponent', () => {
       const component = componentFixture.componentInstance;
 
       component.ngOnInit();
-      await componentFixture.whenStable();
 
       expect(component.returnUrl).toBe(returnUrl);
     }),
@@ -142,7 +141,6 @@ describe('LoginComponent', () => {
       const component = componentFixture.componentInstance;
 
       component.ngOnInit();
-      await componentFixture.whenStable();
       expect().nothing();
     }),
   );
@@ -152,20 +150,18 @@ describe('LoginComponent', () => {
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
       mockLoginService.getGoogleLoginSession.and.returnValue(of('atoken'));
+      const router = TestBed.inject(Router);
+      spyOn(router, 'navigate');
 
       const componentFixture = TestBed.createComponent(LoginComponent);
       const component = componentFixture.componentInstance;
 
       component.ngOnInit();
-
-      const debugElement = componentFixture.debugElement;
-
-      const router = debugElement.injector.get(Router);
-      spyOn(router, 'navigate');
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
       const gAuthService = TestBed.inject(GAuthService);
       gAuthService.signIn();
-      await componentFixture.whenStable();
       expect().nothing();
     }),
   );
@@ -175,16 +171,15 @@ describe('LoginComponent', () => {
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
       mockLoginService.getFacebookLoginSession.and.returnValue(of('atoken'));
+      const router = TestBed.inject(Router);
+      spyOn(router, 'navigate');
 
       const componentFixture = TestBed.createComponent(LoginComponent);
       const component = componentFixture.componentInstance;
 
       component.ngOnInit();
-
-      const debugElement = componentFixture.debugElement;
-
-      const router = debugElement.injector.get(Router);
-      spyOn(router, 'navigate');
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
       const fbAuthService = TestBed.inject(FBAuthService);
       fbAuthService.signIn();
@@ -205,8 +200,9 @@ describe('LoginComponent', () => {
       gAuthService.signIn();
 
       component.ngOnInit();
-
+      componentFixture.detectChanges();
       await componentFixture.whenStable();
+
       expect().nothing();
     }),
   );
@@ -223,8 +219,9 @@ describe('LoginComponent', () => {
       fbAuthService.signIn();
 
       component.ngOnInit();
-
+      componentFixture.detectChanges();
       await componentFixture.whenStable();
+
       expect().nothing();
     }),
   );
@@ -235,13 +232,12 @@ describe('LoginComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(LoginComponent);
+      const component = componentFixture.componentInstance;
+      const debugElement = componentFixture.debugElement;
+
+      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
-
-      const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
-      const debugElement = componentFixture.debugElement;
 
       const emailInput = debugElement.query(By.css('input[type="email"]'))
         .nativeElement as HTMLInputElement;
@@ -277,13 +273,12 @@ describe('LoginComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(LoginComponent);
+      const component = componentFixture.componentInstance;
+      const debugElement = componentFixture.debugElement;
+
+      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
-
-      const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
-      const debugElement = componentFixture.debugElement;
 
       const emailInput = debugElement.query(By.css('input[type="email"]'))
         .nativeElement as HTMLInputElement;
@@ -319,13 +314,12 @@ describe('LoginComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(LoginComponent);
+      const component = componentFixture.componentInstance;
+      const debugElement = componentFixture.debugElement;
+
+      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
-
-      const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
-      const debugElement = componentFixture.debugElement;
 
       const emailInput = debugElement.query(By.css('input[type="email"]'))
         .nativeElement as HTMLInputElement;
@@ -360,18 +354,16 @@ describe('LoginComponent', () => {
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
       mockLoginService.getMyLoginSession.and.returnValue(of('atoken'));
+      const router = TestBed.inject(Router);
+      spyOn(router, 'navigate');
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      componentFixture.detectChanges();
-      await componentFixture.whenStable();
-
       const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
       const debugElement = componentFixture.debugElement;
 
-      const router = debugElement.injector.get(Router);
-      spyOn(router, 'navigate');
+      component.ngOnInit();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
       const emailInput = debugElement.query(By.css('input[type="email"]'))
         .nativeElement as HTMLInputElement;
@@ -405,22 +397,17 @@ describe('LoginComponent', () => {
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
       mockLoginService.getGoogleLoginSession.and.returnValue(of('atoken'));
+      const router = TestBed.inject(Router);
+      spyOn(router, 'navigate');
+      const gAuthService = TestBed.inject(GAuthService) as MockGAuthService;
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      componentFixture.detectChanges();
-      await componentFixture.whenStable();
-
       const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
       const debugElement = componentFixture.debugElement;
 
-      const router = debugElement.injector.get(Router);
-      spyOn(router, 'navigate');
-
-      const gAuthService = debugElement.injector.get(
-        GAuthService,
-      ) as MockGAuthService;
+      component.ngOnInit();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
       const googleButton = debugElement.query(By.css('button#google-login'))
         .nativeElement as HTMLButtonElement;
@@ -436,22 +423,17 @@ describe('LoginComponent', () => {
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
       mockLoginService.getFacebookLoginSession.and.returnValue(of('atoken'));
+      const router = TestBed.inject(Router);
+      spyOn(router, 'navigate');
+      const fbAuthService = TestBed.inject(FBAuthService) as MockFBAuthService;
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      componentFixture.detectChanges();
-      await componentFixture.whenStable();
-
       const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
       const debugElement = componentFixture.debugElement;
 
-      const router = debugElement.injector.get(Router);
-      spyOn(router, 'navigate');
-
-      const fbAuthService = debugElement.injector.get(
-        FBAuthService,
-      ) as MockFBAuthService;
+      component.ngOnInit();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
       const facebookButton = debugElement.query(By.css('button#facebook-login'))
         .nativeElement as HTMLButtonElement;
@@ -468,15 +450,14 @@ describe('LoginComponent', () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(LoginComponent);
+      const component = componentFixture.componentInstance;
+      const debugElement = componentFixture.debugElement;
+
+      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
       const clickSpy = spyOn(component, 'onForgottenPassword');
-
-      const debugElement = componentFixture.debugElement;
 
       const forgotPasswordButton = debugElement.query(
         By.css('button#forgotten-password'),
@@ -492,22 +473,16 @@ describe('LoginComponent', () => {
     'should handle Google logout',
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
+      const router = TestBed.inject(Router);
+      spyOn(router, 'navigate');
+      const gAuthService = TestBed.inject(GAuthService) as MockGAuthService;
 
       const componentFixture = TestBed.createComponent(LoginComponent);
+      const component = componentFixture.componentInstance;
+
+      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
-
-      const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
-      const debugElement = componentFixture.debugElement;
-
-      const router = debugElement.injector.get(Router);
-      spyOn(router, 'navigate');
-
-      const gAuthService = debugElement.injector.get(
-        GAuthService,
-      ) as MockGAuthService;
 
       gAuthService.user$.next(null);
       await componentFixture.whenStable();
@@ -520,22 +495,16 @@ describe('LoginComponent', () => {
     'should handle Facebook logout',
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
+      const router = TestBed.inject(Router);
+      spyOn(router, 'navigate');
+      const fbAuthService = TestBed.inject(FBAuthService) as MockFBAuthService;
 
       const componentFixture = TestBed.createComponent(LoginComponent);
+      const component = componentFixture.componentInstance;
+
+      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
-
-      const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
-      const debugElement = componentFixture.debugElement;
-
-      const router = debugElement.injector.get(Router);
-      spyOn(router, 'navigate');
-
-      const fbAuthService = debugElement.injector.get(
-        FBAuthService,
-      ) as MockFBAuthService;
 
       fbAuthService.user$.next(null);
       await componentFixture.whenStable();
@@ -568,13 +537,12 @@ describe('LoginComponent', () => {
       });
 
       const componentFixture = TestBed.createComponent(LoginComponent);
+      const component = componentFixture.componentInstance;
+      const debugElement = componentFixture.debugElement;
+
+      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
-
-      const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
-      const debugElement = componentFixture.debugElement;
 
       const emailInput = debugElement.query(By.css('input[type="email"]'))
         .nativeElement as HTMLInputElement;
@@ -628,13 +596,12 @@ describe('LoginComponent', () => {
       });
 
       const componentFixture = TestBed.createComponent(LoginComponent);
+      const component = componentFixture.componentInstance;
+      const debugElement = componentFixture.debugElement;
+
+      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
-
-      const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
-      const debugElement = componentFixture.debugElement;
 
       const emailInput = debugElement.query(By.css('input[type="email"]'))
         .nativeElement as HTMLInputElement;
@@ -684,13 +651,12 @@ describe('LoginComponent', () => {
       });
 
       const componentFixture = TestBed.createComponent(LoginComponent);
+      const component = componentFixture.componentInstance;
+      const debugElement = componentFixture.debugElement;
+
+      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
-
-      const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
-      const debugElement = componentFixture.debugElement;
 
       const emailInput = debugElement.query(By.css('input[type="email"]'))
         .nativeElement as HTMLInputElement;
@@ -744,13 +710,12 @@ describe('LoginComponent', () => {
       });
 
       const componentFixture = TestBed.createComponent(LoginComponent);
+      const component = componentFixture.componentInstance;
+      const debugElement = componentFixture.debugElement;
+
+      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
-
-      const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
-      const debugElement = componentFixture.debugElement;
 
       const googleButton = debugElement.query(By.css('button#google-login'))
         .nativeElement as HTMLButtonElement;
@@ -783,18 +748,16 @@ describe('LoginComponent', () => {
         }),
       );
       spyOn(console, 'error');
+      const router = TestBed.inject(Router);
+      spyOn(router, 'navigate');
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      componentFixture.detectChanges();
-      await componentFixture.whenStable();
-
       const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
       const debugElement = componentFixture.debugElement;
 
-      const router = debugElement.injector.get(Router);
-      spyOn(router, 'navigate');
+      component.ngOnInit();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
       const googleButton = debugElement.query(By.css('button#google-login'))
         .nativeElement as HTMLButtonElement;
@@ -830,13 +793,12 @@ describe('LoginComponent', () => {
       });
 
       const componentFixture = TestBed.createComponent(LoginComponent);
+      const component = componentFixture.componentInstance;
+      const debugElement = componentFixture.debugElement;
+
+      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
-
-      const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
-      const debugElement = componentFixture.debugElement;
 
       const googleButton = debugElement.query(By.css('button#google-login'))
         .nativeElement as HTMLButtonElement;
@@ -875,13 +837,12 @@ describe('LoginComponent', () => {
       });
 
       const componentFixture = TestBed.createComponent(LoginComponent);
+      const component = componentFixture.componentInstance;
+      const debugElement = componentFixture.debugElement;
+
+      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
-
-      const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
-      const debugElement = componentFixture.debugElement;
 
       const facebookButton = debugElement.query(By.css('button#facebook-login'))
         .nativeElement as HTMLButtonElement;
@@ -914,18 +875,16 @@ describe('LoginComponent', () => {
         }),
       );
       spyOn(console, 'error');
+      const router = TestBed.inject(Router);
+      spyOn(router, 'navigate');
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      componentFixture.detectChanges();
-      await componentFixture.whenStable();
-
       const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
       const debugElement = componentFixture.debugElement;
 
-      const router = debugElement.injector.get(Router);
-      spyOn(router, 'navigate');
+      component.ngOnInit();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
       const facebookButton = debugElement.query(By.css('button#facebook-login'))
         .nativeElement as HTMLButtonElement;
@@ -961,13 +920,12 @@ describe('LoginComponent', () => {
       });
 
       const componentFixture = TestBed.createComponent(LoginComponent);
+      const component = componentFixture.componentInstance;
+      const debugElement = componentFixture.debugElement;
+
+      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
-
-      const component = componentFixture.componentInstance;
-      component.ngOnInit();
-
-      const debugElement = componentFixture.debugElement;
 
       const facebookButton = debugElement.query(By.css('button#facebook-login'))
         .nativeElement as HTMLButtonElement;
