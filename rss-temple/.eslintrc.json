@@ -37,7 +37,7 @@
         "max-len": [
           "error",
           {
-            "ignorePattern": "^(?:import|export) .+",
+            "ignorePattern": "^(?:import|export) ",
             "code": 140
           }
         ],
