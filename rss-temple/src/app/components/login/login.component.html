@@ -16,13 +16,9 @@
           [(ngModel)]="email"
           (keydown.enter)="onLogin()"
           required
-          appEmail
         />
         <clr-control-error *clrIfError="'required'"
           >Email required</clr-control-error
-        >
-        <clr-control-error *clrIfError="'invalidemail'"
-          >Email malformed</clr-control-error
         >
       </clr-input-container>
       <clr-password-container>

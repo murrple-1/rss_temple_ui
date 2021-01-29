@@ -8,7 +8,11 @@ import { takeUntil } from 'rxjs/operators';
 
 import { PasswordResetTokenService } from '@app/services/data';
 import { HttpErrorService } from '@app/services';
-import { passwordRequirementsText } from '@app/libs/password.lib';
+import {
+  MinLength as PasswordMinLength,
+  passwordRequirementsText,
+  SpecialCharacters as PasswordSpecialCharacters,
+} from '@app/libs/password.lib';
 
 enum State {
   NotStarted,
@@ -32,11 +36,11 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   newPassword = '';
   newPasswordCheck = '';
 
-  private token: string | null = null;
+  readonly passwordHelperText = passwordRequirementsText('en');
+  readonly passwordMinLength = PasswordMinLength;
+  readonly passwordSpecialCharacters = PasswordSpecialCharacters.join('');
 
-  get passwordRequirementsText() {
-    return passwordRequirementsText('en');
-  }
+  private token: string | null = null;
 
   @ViewChild('resetPasswordForm', { static: false })
   _resetPasswordForm?: NgForm;

@@ -13,9 +13,9 @@ import {
 } from '@app/services';
 import { UpdateUserBody } from '@app/services/data/user.service';
 import {
-  validatePassword,
-  validatePasswordsMatch,
+  MinLength as PasswordMinLength,
   passwordRequirementsText,
+  SpecialCharacters as PasswordSpecialCharacters,
 } from '@app/libs/password.lib';
 import { User } from '@app/models';
 
@@ -45,6 +45,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   newPassword = '';
   newPasswordCheck = '';
 
+  // TODO hasn't been hooked up yet
+  isPasswordChanging = false;
+
   fieldsChanged = new Set<string>();
 
   hasGoogleLogin = false;
@@ -55,6 +58,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   gLoaded = false;
   fbLoaded = false;
+
+  readonly passwordHelperText = passwordRequirementsText('en');
+  readonly passwordMinLength = PasswordMinLength;
+  readonly passwordSpecialCharacters = PasswordSpecialCharacters.join('');
 
   private readonly unsubscribe$ = new Subject<void>();
 

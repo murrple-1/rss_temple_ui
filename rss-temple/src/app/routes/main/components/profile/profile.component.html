@@ -32,8 +32,15 @@
             type="email"
             placeholder="example@example.com"
             [(ngModel)]="email"
+            required
+            appEmail
           />
-          <clr-control-error>Email required</clr-control-error>
+          <clr-control-error *clrIfError="'required'"
+            >Email required</clr-control-error
+          >
+          <clr-control-error *clrIfError="'invalidemail'"
+            >Email malformed</clr-control-error
+          >
         </clr-input-container>
         <hr />
         <clr-input-container>
@@ -44,7 +51,6 @@
             placeholder="Old Password"
             [(ngModel)]="oldPassword"
           />
-          <clr-control-error>Password required</clr-control-error>
         </clr-input-container>
         <clr-input-container>
           <label>New Password</label>
@@ -53,8 +59,32 @@
             type="password"
             placeholder="New Password"
             [(ngModel)]="newPassword"
+            [required]="isPasswordChanging"
+            minlength="{{ passwordMinLength }}"
+            appPassword
           />
-          <clr-control-error>Password required</clr-control-error>
+          <clr-control-helper>{{ passwordHelperText }}</clr-control-helper>
+          <clr-control-error *clrIfError="'required'"
+            >Password required</clr-control-error
+          >
+          <clr-control-error *clrIfError="'minlength'; error as error"
+            >Password must be at least {{ error.requiredLength }} characters
+            long</clr-control-error
+          >
+          <clr-control-error *clrIfError="'nolowercase'"
+            >No Lowercase Character(s)</clr-control-error
+          >
+          <clr-control-error *clrIfError="'nouppercase'"
+            >No Uppercase Character(s)</clr-control-error
+          >
+          <clr-control-error *clrIfError="'nodigit'"
+            >No Digits(s)</clr-control-error
+          >
+          <clr-control-error *clrIfError="'nospecialcharacter'"
+            >No Special Character(s) ({{
+              passwordSpecialCharacters
+            }})</clr-control-error
+          >
         </clr-input-container>
         <clr-input-container>
           <label>Confirm New Password</label>
@@ -63,8 +93,32 @@
             type="password"
             placeholder="Confirm New Password"
             [(ngModel)]="newPasswordCheck"
+            [required]="isPasswordChanging"
+            minlength="{{ passwordMinLength }}"
+            appPassword
           />
-          <clr-control-error>Password required</clr-control-error>
+          <clr-control-helper>{{ passwordHelperText }}</clr-control-helper>
+          <clr-control-error *clrIfError="'required'"
+            >Password required</clr-control-error
+          >
+          <clr-control-error *clrIfError="'minlength'; error as error"
+            >Password must be at least {{ error.requiredLength }} characters
+            long</clr-control-error
+          >
+          <clr-control-error *clrIfError="'nolowercase'"
+            >No Lowercase Character(s)</clr-control-error
+          >
+          <clr-control-error *clrIfError="'nouppercase'"
+            >No Uppercase Character(s)</clr-control-error
+          >
+          <clr-control-error *clrIfError="'nodigit'"
+            >No Digits(s)</clr-control-error
+          >
+          <clr-control-error *clrIfError="'nospecialcharacter'"
+            >No Special Character(s) ({{
+              passwordSpecialCharacters
+            }})</clr-control-error
+          >
         </clr-input-container>
         <hr />
         <div class="form-group">

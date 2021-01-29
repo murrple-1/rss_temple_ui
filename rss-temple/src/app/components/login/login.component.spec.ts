@@ -22,12 +22,8 @@ import {
   AppAlertsService,
 } from '@app/services';
 import { PasswordResetTokenService } from '@app/services/data';
-import {
-  openModal as openRequestPasswordResetModal,
-  RequestPasswordResetModalComponent,
-} from '@app/components/login/request-password-reset-modal/request-password-reset-modal.component';
+import { RequestPasswordResetModalComponent } from '@app/components/login/request-password-reset-modal/request-password-reset-modal.component';
 import { AppAlertDescriptor } from '@app/services/app-alerts.service';
-import { EmailValidatorDirective } from '@app/directives/email-validator.directive';
 
 import { LoginComponent } from './login.component';
 
@@ -69,7 +65,6 @@ async function setup() {
       LoginComponent,
       MockComponent,
       RequestPasswordResetModalComponent,
-      EmailValidatorDirective,
     ],
     providers: [
       {
@@ -262,47 +257,6 @@ describe('LoginComponent', () => {
       expect(component._loginForm?.controls['email']?.errors ?? {}).toEqual(
         jasmine.objectContaining({
           required: jasmine.anything(),
-        }),
-      );
-    }),
-  );
-
-  it(
-    'should handle malformed email',
-    waitForAsync(async () => {
-      await setup();
-
-      const componentFixture = TestBed.createComponent(LoginComponent);
-      const component = componentFixture.componentInstance;
-      const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
-      componentFixture.detectChanges();
-      await componentFixture.whenStable();
-
-      const emailInput = debugElement.query(By.css('input[type="email"]'))
-        .nativeElement as HTMLInputElement;
-      emailInput.value = 'bademail';
-      emailInput.dispatchEvent(new Event('input'));
-      componentFixture.detectChanges();
-      await componentFixture.whenStable();
-
-      const passwordInput = debugElement.query(By.css('input[type="password"]'))
-        .nativeElement as HTMLInputElement;
-      passwordInput.value = 'password';
-      passwordInput.dispatchEvent(new Event('input'));
-      componentFixture.detectChanges();
-      await componentFixture.whenStable();
-
-      const loginButton = debugElement.query(By.css('button[type="submit"]'))
-        .nativeElement as HTMLButtonElement;
-      loginButton.click();
-      componentFixture.detectChanges();
-      await componentFixture.whenStable();
-
-      expect(component._loginForm?.controls['email']?.errors ?? {}).toEqual(
-        jasmine.objectContaining({
-          invalidemail: jasmine.anything(),
         }),
       );
     }),
