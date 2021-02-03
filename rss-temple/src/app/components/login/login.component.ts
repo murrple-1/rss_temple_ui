@@ -10,7 +10,7 @@
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { NgForm } from '@angular/forms';
+import { NgForm, ValidationErrors } from '@angular/forms';
 
 import { ClrLoadingState } from '@clr/angular';
 
@@ -40,6 +40,7 @@ export class LoginComponent implements OnInit, AfterViewChecked, OnDestroy {
   rememberMe = false;
 
   loginButtonState = ClrLoadingState.DEFAULT;
+  loginErrors: string[] = [];
 
   returnUrl: string | null = null;
 
@@ -47,7 +48,9 @@ export class LoginComponent implements OnInit, AfterViewChecked, OnDestroy {
   fbLoaded = false;
 
   @ViewChild('loginForm', { static: false })
-  _loginForm?: NgForm;
+  loginForm?: NgForm;
+
+  loginFormExternalValidation: ValidationErrors | null = null;
 
   @ViewChild(RequestPasswordResetModalComponent)
   _requestPasswordResetModal?: RequestPasswordResetModalComponent;
@@ -67,7 +70,7 @@ export class LoginComponent implements OnInit, AfterViewChecked, OnDestroy {
   ) {}
 
   ngOnInit() {
-    const email = localStorage.getItem('cached_email');
+    const email = localStorage.getItem('login:cached_email');
 
     if (email !== null) {
       this.email = email;
@@ -143,11 +146,16 @@ export class LoginComponent implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   onLogin() {
-    if (this._loginForm === undefined) {
-      throw new Error('_loginForm undefined');
+    if (this.loginForm === undefined) {
+      throw new Error('loginForm undefined');
     }
 
-    if (this._loginForm.invalid) {
+    this.loginFormExternalValidation = null;
+    for (const control of Object.values(this.loginForm.controls)) {
+      control.updateValueAndValidity();
+    }
+
+    if (this.loginForm.invalid) {
       return;
     }
 
@@ -160,33 +168,56 @@ export class LoginComponent implements OnInit, AfterViewChecked, OnDestroy {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: sessionToken => {
-          localStorage.setItem('cached_email', email);
+          localStorage.setItem('login:cached_email', email);
           this.handleLoginSuccess(sessionToken);
         },
         error: error => {
-          let errorMessage = 'Unknown Error';
+          let errorHandled = false;
           if (error instanceof HttpErrorResponse) {
             switch (error.status) {
-              case 0:
-                errorMessage = 'Unable to connect to server';
+              case 0: {
+                this.appAlertsService.appAlertDescriptor$.next({
+                  autoCloseInterval: 5000,
+                  canClose: true,
+                  text: 'Unable to connect to server',
+                  type: 'danger',
+                });
+                this.zone.run(() => {
+                  this.loginButtonState = ClrLoadingState.ERROR;
+                });
+                errorHandled = true;
                 break;
-              case 403:
-                errorMessage = 'Email or password wrong';
+              }
+              case 403: {
+                const loginForm = this.loginForm;
+                if (loginForm === undefined) {
+                  throw new Error('loginForm undefined');
+                }
+
+                const errors = this.loginFormExternalValidation ?? {};
+                errors['failedtologin'] = true;
+                this.zone.run(() => {
+                  this.loginFormExternalValidation = errors;
+                  this.loginButtonState = ClrLoadingState.ERROR;
+                });
+                errorHandled = true;
                 break;
+              }
             }
           }
 
-          console.error(errorMessage, error);
-          this.appAlertsService.appAlertDescriptor$.next({
-            autoCloseInterval: 5000,
-            canClose: true,
-            text: errorMessage,
-            type: 'danger',
-          });
-
-          this.zone.run(() => {
-            this.loginButtonState = ClrLoadingState.ERROR;
-          });
+          if (!errorHandled) {
+            console.error('Unknown Error', error);
+            this.appAlertsService.appAlertDescriptor$.next({
+              autoCloseInterval: 5000,
+              canClose: true,
+              text: 'Unknown Error',
+              type: 'danger',
+            });
+            this.zone.run(() => {
+              this.loginButtonState = ClrLoadingState.ERROR;
+            });
+          }
         },
       });
   }

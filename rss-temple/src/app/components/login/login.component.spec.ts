@@ -24,6 +24,7 @@ import {
 import { PasswordResetTokenService } from '@app/services/data';
 import { RequestPasswordResetModalComponent } from '@app/components/login/request-password-reset-modal/request-password-reset-modal.component';
 import { AppAlertDescriptor } from '@app/services/app-alerts.service';
+import { ExternalValidationValidatorDirective } from '@app/directives/external-validation-validator.directive';
 
 import { LoginComponent } from './login.component';
 
@@ -65,6 +66,7 @@ async function setup() {
       LoginComponent,
       MockComponent,
       RequestPasswordResetModalComponent,
+      ExternalValidationValidatorDirective,
     ],
     providers: [
       {
@@ -254,7 +256,7 @@ describe('LoginComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      expect(component._loginForm?.controls['email']?.errors ?? {}).toEqual(
+      expect(component.loginForm?.controls['email']?.errors ?? {}).toEqual(
         jasmine.objectContaining({
           required: jasmine.anything(),
         }),
@@ -295,7 +297,7 @@ describe('LoginComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      expect(component._loginForm?.controls['password']?.errors ?? {}).toEqual(
+      expect(component.loginForm?.controls['password']?.errors ?? {}).toEqual(
         jasmine.objectContaining({
           required: jasmine.anything(),
         }),
@@ -540,14 +542,6 @@ describe('LoginComponent', () => {
         }),
       );
       spyOn(console, 'error');
-      const appAlertService = TestBed.inject(AppAlertsService);
-      const appAlertEmitPromise = new Promise<AppAlertDescriptor>(resolve => {
-        appAlertService.appAlertDescriptor$.pipe(take(1)).subscribe({
-          next: event => {
-            resolve(event);
-          },
-        });
-      });
 
       const componentFixture = TestBed.createComponent(LoginComponent);
       const component = componentFixture.componentInstance;
@@ -577,10 +571,12 @@ describe('LoginComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      await expectAsync(appAlertEmitPromise).toBeResolvedTo(
-        jasmine.objectContaining({
-          text: jasmine.stringMatching(/Email or password wrong/),
-        }),
+      const alertElement = debugElement.query(By.css('.alert-text'))
+        .nativeElement as HTMLSpanElement;
+      expect(alertElement.innerText).toEqual(
+        jasmine.stringMatching(
+          /(?:email.*?password|password.*?email).*?wrong/i,
+        ),
       );
     }),
   );

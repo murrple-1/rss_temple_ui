@@ -38,7 +38,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   private facebookToken: string | null = null;
 
   @ViewChild('registerForm', { static: true })
-  _registerForm?: NgForm;
+  registerForm?: NgForm;
 
   private readonly unsubscribe$ = new Subject<void>();
 
@@ -62,11 +62,11 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   onRegister() {
-    if (this._registerForm === undefined) {
-      throw new Error('_registerForm undefined');
+    if (this.registerForm === undefined) {
+      throw new Error('registerForm undefined');
     }
 
-    if (this._registerForm.invalid) {
+    if (this.registerForm.invalid) {
       return;
     }
 

@@ -156,7 +156,7 @@ describe('RegisterComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      expect(component._registerForm?.controls['email']?.errors ?? {}).toEqual(
+      expect(component.registerForm?.controls['email']?.errors ?? {}).toEqual(
         jasmine.objectContaining({
           required: jasmine.anything(),
         }),
@@ -207,7 +207,7 @@ describe('RegisterComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      expect(component._registerForm?.controls['email']?.errors).toEqual(
+      expect(component.registerForm?.controls['email']?.errors).toEqual(
         jasmine.objectContaining({
           invalidemail: jasmine.anything(),
         }),
@@ -257,7 +257,7 @@ describe('RegisterComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      expect(component._registerForm?.errors ?? {}).toEqual(
+      expect(component.registerForm?.errors ?? {}).toEqual(
         jasmine.objectContaining({
           passwordsdonotmatch: jasmine.anything(),
         }),
@@ -308,14 +308,14 @@ describe('RegisterComponent', () => {
       await componentFixture.whenStable();
 
       expect(
-        component._registerForm?.controls['password']?.errors ?? {},
+        component.registerForm?.controls['password']?.errors ?? {},
       ).toEqual(
         jasmine.objectContaining({
           required: jasmine.anything(),
         }),
       );
       expect(
-        component._registerForm?.controls['passwordCheck']?.errors ?? {},
+        component.registerForm?.controls['passwordCheck']?.errors ?? {},
       ).toEqual(
         jasmine.objectContaining({
           required: jasmine.anything(),
@@ -372,7 +372,7 @@ describe('RegisterComponent', () => {
         await componentFixture.whenStable();
 
         expect(
-          component._registerForm?.controls['password']?.errors ?? {},
+          component.registerForm?.controls['password']?.errors ?? {},
         ).toEqual(
           jasmine.objectContaining({
             [errorKey]: jasmine.anything(),
