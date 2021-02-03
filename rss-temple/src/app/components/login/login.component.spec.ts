@@ -24,6 +24,7 @@ import {
 import { PasswordResetTokenService } from '@app/services/data';
 import { RequestPasswordResetModalComponent } from '@app/components/login/request-password-reset-modal/request-password-reset-modal.component';
 import { AppAlertDescriptor } from '@app/services/app-alerts.service';
+import { LocalAlertsComponent } from '@app/components/shared/local-alerts/local-alerts.component';
 
 import { LoginComponent } from './login.component';
 
@@ -65,6 +66,7 @@ async function setup() {
       LoginComponent,
       MockComponent,
       RequestPasswordResetModalComponent,
+      LocalAlertsComponent,
     ],
     providers: [
       {
@@ -123,7 +125,7 @@ describe('LoginComponent', () => {
 
       component.ngOnInit();
 
-      expect(component.returnUrl).toBe(returnUrl);
+      expect(component._returnUrl).toBe(returnUrl);
     }),
   );
 

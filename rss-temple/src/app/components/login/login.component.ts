@@ -10,7 +10,7 @@
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { NgForm, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 
 import { ClrLoadingState } from '@clr/angular';
 
@@ -29,6 +29,7 @@ import {
   RequestPasswordResetModalComponent,
   openModal as openRequestPasswordResetModal,
 } from '@app/components/login/request-password-reset-modal/request-password-reset-modal.component';
+import { AlertEntry } from '@app/components/shared/local-alerts/local-alerts.component';
 
 @Component({
   templateUrl: './login.component.html',
@@ -41,17 +42,17 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
 
   readonly ClrLoadingState = ClrLoadingState;
   loginButtonState = ClrLoadingState.DEFAULT;
-  loginErrors: string[] = [];
+  loginAlertEntries: AlertEntry[] = [];
 
-  returnUrl: string | null = null;
+  _returnUrl: string | null = null;
 
   gLoaded = false;
   fbLoaded = false;
+  gButtonInUse = false;
+  fbButtonInUse = false;
 
   @ViewChild('loginForm', { static: false })
   loginForm?: NgForm;
-
-  loginFormExternalValidation: ValidationErrors | null = null;
 
   @ViewChild(RequestPasswordResetModalComponent)
   _requestPasswordResetModal?: RequestPasswordResetModalComponent;
@@ -78,7 +79,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
       this.rememberMe = true;
     }
 
-    this.returnUrl = this.route.snapshot.paramMap.get('returnUrl') ?? '/main';
+    this._returnUrl = this.route.snapshot.paramMap.get('returnUrl') ?? '/main';
 
     this.gAuthService.isLoaded$.pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: isLoaded => {
@@ -139,19 +140,6 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit() {
     passwordContainerOverride(this.elementRef, this.renderer);
-
-    if (this.loginForm !== undefined) {
-      const validators: ValidatorFn[] = [
-        () => {
-          return this.loginFormExternalValidation;
-        },
-      ];
-      const oldValidatorFn = this.loginForm.control.validator;
-      if (oldValidatorFn !== null) {
-        validators.push(oldValidatorFn);
-      }
-      this.loginForm.control.setValidators(validators);
-    }
   }
 
   ngOnDestroy() {
@@ -164,8 +152,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
       throw new Error('loginForm undefined');
     }
 
-    this.loginFormExternalValidation = null;
-    this.loginForm.control.updateValueAndValidity();
+    this.loginAlertEntries = [];
 
     if (this.loginForm.invalid) {
       return;
@@ -201,16 +188,14 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
                 break;
               }
               case 403: {
-                if (this.loginForm === undefined) {
-                  throw new Error('loginForm undefined');
-                }
-
-                this.loginFormExternalValidation = {
-                  failedtologin: true,
-                };
-                this.loginForm.control.updateValueAndValidity();
-
                 this.zone.run(() => {
+                  this.loginAlertEntries = [
+                    {
+                      text: 'Email or password is wrong',
+                      iconShape: 'exclamation-triangle',
+                      type: 'warning',
+                    },
+                  ];
                   this.loginButtonState = ClrLoadingState.DEFAULT;
                 });
                 errorHandled = true;
@@ -236,14 +221,13 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private handleLoginSuccess(sessionToken: string) {
-    this.zone.run(() => {
-      setSessionToken(sessionToken);
+    setSessionToken(sessionToken);
 
-      this.router.navigate([this.returnUrl]);
-    });
+    this.router.navigate([this._returnUrl]);
   }
 
   onGoogleLogin() {
+    this.gButtonInUse = true;
     this.gAuthService.signIn();
   }
 
@@ -254,14 +238,16 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe({
         next: this.handleLoginSuccess.bind(this),
         error: error => {
+          this.zone.run(() => {
+            this.gButtonInUse = false;
+          });
+
           if (error instanceof HttpErrorResponse) {
             if (error.status === 422) {
-              this.zone.run(() => {
-                this.router.navigate([
-                  '/register',
-                  { g_token: error.error.token, email: error.error.email },
-                ]);
-              });
+              this.router.navigate([
+                '/register',
+                { g_token: error.error.token, email: error.error.email },
+              ]);
             } else {
               let errorMessage = 'Unknown Error';
               switch (error.status) {
@@ -295,6 +281,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onFacebookLogin() {
+    this.fbButtonInUse = true;
     this.fbAuthService.signIn();
   }
 
@@ -305,6 +292,10 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe({
         next: this.handleLoginSuccess.bind(this),
         error: error => {
+          this.zone.run(() => {
+            this.fbButtonInUse = false;
+          });
+
           if (error instanceof HttpErrorResponse) {
             if (error.status === 422) {
               this.router.navigate([

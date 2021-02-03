@@ -44,31 +44,11 @@
             [(ngModel)]="rememberMe"
           />
         </clr-checkbox-wrapper>
-        <ng-container *ngIf="loginForm">
-          <div
-            *ngIf="loginForm.errors"
-            class="alert alert-warning"
-            role="alert"
-          >
-            <div class="alert-items">
-              <div
-                *ngIf="loginForm.errors.failedtologin"
-                class="alert-item static"
-              >
-                <div class="alert-icon-wrapper">
-                  <clr-icon
-                    class="alert-icon"
-                    shape="exclamation-triangle"
-                  ></clr-icon>
-                </div>
-                <span class="alert-text">Email or password is wrong</span>
-              </div>
-            </div>
-          </div>
-        </ng-container>
+        <app-local-alerts [alertEntries]="loginAlertEntries"></app-local-alerts>
         <button
           class="btn btn-primary"
           type="submit"
+          [disabled]="gButtonInUse || fbButtonInUse"
           [clrLoading]="loginButtonState"
         >
           Login
@@ -85,7 +65,12 @@
     </form>
     <button
       id="google-login"
-      [disabled]="!gLoaded || loginButtonState !== ClrLoadingState.DEFAULT"
+      [disabled]="
+        !gLoaded ||
+        loginButtonState !== ClrLoadingState.DEFAULT ||
+        gButtonInUse ||
+        fbButtonInUse
+      "
       class="btn btn-primary"
       (click)="onGoogleLogin()"
     >
@@ -94,7 +79,12 @@
     </button>
     <button
       id="facebook-login"
-      [disabled]="!fbLoaded || loginButtonState !== ClrLoadingState.DEFAULT"
+      [disabled]="
+        !fbLoaded ||
+        loginButtonState !== ClrLoadingState.DEFAULT ||
+        gButtonInUse ||
+        fbButtonInUse
+      "
       class="btn btn-primary"
       (click)="onFacebookLogin()"
     >

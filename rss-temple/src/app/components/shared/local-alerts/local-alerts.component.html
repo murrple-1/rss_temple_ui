@@ -1,0 +1,26 @@
+<div
+  *ngFor="let alertEntry of alertEntries"
+  class="alert"
+  [ngClass]="{
+    'alert-danger': alertEntry.type === 'danger',
+    'alert-warning': alertEntry.type === 'warning',
+    'alert-success': alertEntry.type === 'success',
+    'alert-info': alertEntry.type === 'info'
+  }"
+  role="alert"
+>
+  <div class="alert-items">
+    <div class="alert-item static">
+      <div *ngIf="alertEntry.iconShape !== null" class="alert-icon-wrapper">
+        <ng-container [ngSwitch]="alertEntry.iconShape">
+          <clr-icon
+            *ngSwitchCase="'exclamation-triangle'"
+            class="alert-icon"
+            shape="exclamation-triangle"
+          ></clr-icon>
+        </ng-container>
+      </div>
+      <span class="alert-text">{{ alertEntry.text }}</span>
+    </div>
+  </div>
+</div>
