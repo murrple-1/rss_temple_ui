@@ -14,7 +14,6 @@ import { routes } from '@app/app.routing';
 import { PasswordValidatorDirective } from '@app/directives/password-validator.directive';
 import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-match-validator.directive';
 import { EmailValidatorDirective } from '@app/directives/email-validator.directive';
-import { ExternalValidationValidatorDirective } from '@app/directives/external-validation-validator.directive';
 
 import { AppComponent } from '@app/app.component';
 import { ConfirmModalComponent } from '@app/components/shared/confirm-modal/confirm-modal.component';
@@ -60,7 +59,6 @@ export function clarityIconsFactory() {
     PasswordValidatorDirective,
     PasswordsMatchValidatorDirective,
     EmailValidatorDirective,
-    ExternalValidationValidatorDirective,
 
     AppComponent,
     ConfirmModalComponent,

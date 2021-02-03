@@ -24,7 +24,6 @@ import {
 import { PasswordResetTokenService } from '@app/services/data';
 import { RequestPasswordResetModalComponent } from '@app/components/login/request-password-reset-modal/request-password-reset-modal.component';
 import { AppAlertDescriptor } from '@app/services/app-alerts.service';
-import { ExternalValidationValidatorDirective } from '@app/directives/external-validation-validator.directive';
 
 import { LoginComponent } from './login.component';
 
@@ -66,7 +65,6 @@ async function setup() {
       LoginComponent,
       MockComponent,
       RequestPasswordResetModalComponent,
-      ExternalValidationValidatorDirective,
     ],
     providers: [
       {

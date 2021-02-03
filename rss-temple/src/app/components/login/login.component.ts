@@ -3,14 +3,14 @@
   OnInit,
   ElementRef,
   Renderer2,
-  AfterViewChecked,
   NgZone,
   OnDestroy,
   ViewChild,
+  AfterViewInit,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { NgForm, ValidationErrors } from '@angular/forms';
+import { NgForm, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 import { ClrLoadingState } from '@clr/angular';
 
@@ -34,11 +34,12 @@ import {
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit, AfterViewChecked, OnDestroy {
+export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
   email = '';
   password = '';
   rememberMe = false;
 
+  readonly ClrLoadingState = ClrLoadingState;
   loginButtonState = ClrLoadingState.DEFAULT;
   loginErrors: string[] = [];
 
@@ -136,8 +137,21 @@ export class LoginComponent implements OnInit, AfterViewChecked, OnDestroy {
       });
   }
 
-  ngAfterViewChecked() {
+  ngAfterViewInit() {
     passwordContainerOverride(this.elementRef, this.renderer);
+
+    if (this.loginForm !== undefined) {
+      const validators: ValidatorFn[] = [
+        () => {
+          return this.loginFormExternalValidation;
+        },
+      ];
+      const oldValidatorFn = this.loginForm.control.validator;
+      if (oldValidatorFn !== null) {
+        validators.push(oldValidatorFn);
+      }
+      this.loginForm.control.setValidators(validators);
+    }
   }
 
   ngOnDestroy() {
@@ -151,9 +165,7 @@ export class LoginComponent implements OnInit, AfterViewChecked, OnDestroy {
     }
 
     this.loginFormExternalValidation = null;
-    for (const control of Object.values(this.loginForm.controls)) {
-      control.updateValueAndValidity();
-    }
+    this.loginForm.control.updateValueAndValidity();
 
     if (this.loginForm.invalid) {
       return;
@@ -183,22 +195,23 @@ export class LoginComponent implements OnInit, AfterViewChecked, OnDestroy {
                   type: 'danger',
                 });
                 this.zone.run(() => {
-                  this.loginButtonState = ClrLoadingState.ERROR;
+                  this.loginButtonState = ClrLoadingState.DEFAULT;
                 });
                 errorHandled = true;
                 break;
               }
               case 403: {
-                const loginForm = this.loginForm;
-                if (loginForm === undefined) {
+                if (this.loginForm === undefined) {
                   throw new Error('loginForm undefined');
                 }
 
-                const errors = this.loginFormExternalValidation ?? {};
-                errors['failedtologin'] = true;
+                this.loginFormExternalValidation = {
+                  failedtologin: true,
+                };
+                this.loginForm.control.updateValueAndValidity();
+
                 this.zone.run(() => {
-                  this.loginFormExternalValidation = errors;
-                  this.loginButtonState = ClrLoadingState.ERROR;
+                  this.loginButtonState = ClrLoadingState.DEFAULT;
                 });
                 errorHandled = true;
                 break;
@@ -215,7 +228,7 @@ export class LoginComponent implements OnInit, AfterViewChecked, OnDestroy {
               type: 'danger',
             });
             this.zone.run(() => {
-              this.loginButtonState = ClrLoadingState.ERROR;
+              this.loginButtonState = ClrLoadingState.DEFAULT;
             });
           }
         },

@@ -5,12 +5,7 @@
       RSS Temple
       <h5 class="hint">Please sign in to see your Feed</h5>
     </section>
-    <form
-      clrForm
-      #loginForm="ngForm"
-      (ngSubmit)="onLogin()"
-      [appExternalValidation]="loginFormExternalValidation"
-    >
+    <form clrForm #loginForm="ngForm" (ngSubmit)="onLogin()">
       <div class="login-group">
         <clr-input-container>
           <label>Email</label>
@@ -90,7 +85,7 @@
     </form>
     <button
       id="google-login"
-      [disabled]="!gLoaded"
+      [disabled]="!gLoaded || loginButtonState !== ClrLoadingState.DEFAULT"
       class="btn btn-primary"
       (click)="onGoogleLogin()"
     >
@@ -99,7 +94,7 @@
     </button>
     <button
       id="facebook-login"
-      [disabled]="!fbLoaded"
+      [disabled]="!fbLoaded || loginButtonState !== ClrLoadingState.DEFAULT"
       class="btn btn-primary"
       (click)="onFacebookLogin()"
     >
