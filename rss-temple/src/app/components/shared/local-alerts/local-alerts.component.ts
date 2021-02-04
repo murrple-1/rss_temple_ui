@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 
 export interface AlertEntry {
   text: string;
-  iconShape: 'exclamation-triangle' | null;
+  iconShape: string | null;
   type: 'danger' | 'warning' | 'success' | 'info';
 }
 

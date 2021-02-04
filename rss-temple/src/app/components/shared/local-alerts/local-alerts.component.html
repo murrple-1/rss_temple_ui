@@ -12,13 +12,10 @@
   <div class="alert-items">
     <div class="alert-item static">
       <div *ngIf="alertEntry.iconShape !== null" class="alert-icon-wrapper">
-        <ng-container [ngSwitch]="alertEntry.iconShape">
-          <clr-icon
-            *ngSwitchCase="'exclamation-triangle'"
-            class="alert-icon"
-            shape="exclamation-triangle"
-          ></clr-icon>
-        </ng-container>
+        <cds-icon
+          class="alert-icon"
+          [attr.shape]="alertEntry.iconShape"
+        ></cds-icon>
       </div>
       <span class="alert-text">{{ alertEntry.text }}</span>
     </div>

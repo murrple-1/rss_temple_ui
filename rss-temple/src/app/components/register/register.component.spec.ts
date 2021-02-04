@@ -19,7 +19,7 @@ import { EmailValidatorDirective } from '@app/directives/email-validator.directi
 import { PasswordValidatorDirective } from '@app/directives/password-validator.directive';
 import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-match-validator.directive';
 
-import { RegisterComponent, State } from './register.component';
+import { RegisterComponent } from './register.component';
 
 @Component({})
 class MockComponent {}
@@ -612,7 +612,6 @@ describe('RegisterComponent', () => {
           text: jasmine.stringMatching(/Unable to connect to server/),
         }),
       );
-      expect(component.state).toBe(State.RegisterFailed);
     }),
   );
 
@@ -680,7 +679,6 @@ describe('RegisterComponent', () => {
           text: jasmine.stringMatching(/Email already in use/),
         }),
       );
-      expect(component.state).toBe(State.RegisterFailed);
     }),
   );
 });

@@ -6,8 +6,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 import { ClarityModule } from '@clr/angular';
-import { ClarityIcons } from '@clr/icons';
-import { EssentialShapes } from '@clr/icons/shapes/essential-shapes';
+import '@cds/core/icon/register.js';
+import { ClarityIcons, essentialCollectionIcons } from '@cds/core/icon';
+import { IconShapeTuple } from '@cds/core/icon/interfaces/icon.interfaces';
 
 import { routes } from '@app/app.routing';
 
@@ -36,12 +37,12 @@ const GoogleLogoSVG: string = require('!!raw-loader!../assets/images/google.svg'
 
 export function clarityIconsFactory() {
   return () => {
-    ClarityIcons.add(EssentialShapes);
-    ClarityIcons.add({
-      'app-logo': AppLogoSVG,
-      'brand-facebook': FacebookLogoSVG,
-      'brand-google': GoogleLogoSVG,
-    });
+    const myCollectionIcons: IconShapeTuple[] = [
+      ['app-logo', AppLogoSVG],
+      ['brand-facebook', FacebookLogoSVG],
+      ['brand-google', GoogleLogoSVG],
+    ];
+    ClarityIcons.addIcons(...essentialCollectionIcons, ...myCollectionIcons);
   };
 }
 
