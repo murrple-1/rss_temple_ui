@@ -1124,22 +1124,15 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@clr/angular@^4.0.9":
-  version "4.0.10"
-  resolved "https://registry.yarnpkg.com/@clr/angular/-/angular-4.0.10.tgz#2c9f48606367b8dfbb5680e61ffdc3cb84844791"
-  integrity sha512-BpMdrOJrx39YckB8szeb0//3dI7Tw1zyMlQJ6cLKMGWqAmVMaZaKUz7AuScDAusydmKkkLx1EKCqtWZUG20c7g==
-  dependencies:
-    tslib "^2.0.0"
-
-"@clr/city@^1.1.0":
+"@cds/city@^1.1.0":
   version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@clr/city/-/city-1.1.0.tgz#4a444cd12c626d66ffadab27e9d09bb3c8eca352"
-  integrity sha512-R+C4uywmXoTD01LINOt3O0cBRviQdbAVNxdVvOyuO3+rM9bvFroF7UZY0R1ue/xvKXlqJrEkNKZQODeKjzaAhA==
+  resolved "https://registry.yarnpkg.com/@cds/city/-/city-1.1.0.tgz#5b7323750d3d64671ce2e3a804bcf260fbea1154"
+  integrity sha512-S9K+Q39BGOghyLHmR0Wdcmu1i1noSUk8HcvMj+3IaohZw02WFd99aPTQDHJeseXrXZP3CNovaSlePI0R11NcFg==
 
-"@clr/core@^4.0.9":
-  version "4.0.10"
-  resolved "https://registry.yarnpkg.com/@clr/core/-/core-4.0.10.tgz#baa1b8d596441cf49b4181098537fd3def6990bb"
-  integrity sha512-M8BKoQl6fxkAuc3tXbmBHdwJ9QVKqZddlUhnMd41tuKj3gTnLPT/YyWnmK5N+jUFVINDWKs7WECISieLe7H8/w==
+"@cds/core@^5.0.1":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@cds/core/-/core-5.0.1.tgz#eaf711fd4e0dda75ddad32ef9133fc51d372d62f"
+  integrity sha512-8KK1X/PQWSxFUGvP1W0lDLI3jsYRTEkT6BB4BogUkMHsCh0oN6j5IJevRz3KMqpUADAKYdIpoTgcxlfztHnxHQ==
   dependencies:
     "@types/resize-observer-browser" "^0.1.3"
     lit-element "^2.3.1"
@@ -1147,22 +1140,25 @@
     ramda "^0.27.0"
     tslib "^2.0.0"
   optionalDependencies:
-    "@clr/city" "^1.1.0"
-    "@webcomponents/custom-elements" "^1.4.2"
-    "@webcomponents/shadycss" "^1.10.1"
-    "@webcomponents/webcomponentsjs" "^2.4.4"
-    css-vars-ponyfill "^2.3.2"
+    "@cds/city" "^1.1.0"
     normalize.css "^8.0.1"
 
-"@clr/icons@^4.0.9":
-  version "4.0.10"
-  resolved "https://registry.yarnpkg.com/@clr/icons/-/icons-4.0.10.tgz#32eb0a92910dd2f2a24cba0ef314e8b08effc34a"
-  integrity sha512-EZF2+aq487VpEPqMX8ZU61SvfOmZgkTC46/lLrFxmCQseET/zMp4JyIM61yfda4vB8x7sIZxqwd38mZgwfPw1A==
+"@clr/angular@^5.0.1":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@clr/angular/-/angular-5.0.1.tgz#38cdbf0d1a834292b04835ef5b56c204f334f8c9"
+  integrity sha512-kaV79YwwTqlJzvOTNrSz+s1IZWmpWRX4+bfI+o64d1vkstwokCvZItqju4zb7YsCcSHBvOrFjcddDMJPrhX7Mw==
+  dependencies:
+    tslib "^2.0.0"
 
-"@clr/ui@^4.0.9":
-  version "4.0.10"
-  resolved "https://registry.yarnpkg.com/@clr/ui/-/ui-4.0.10.tgz#86f7a2b2175feb468fd73616d1cd7070afcc1c96"
-  integrity sha512-AsVS9psylBm74556pXA+nQ7tJzpvoiZBlABICDVrqXMk688b8qPgFuOmfuLG9uOkejUbtmwjwXhT8aANnH7Rng==
+"@clr/icons@^5.0.1":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@clr/icons/-/icons-5.0.1.tgz#6c74898af5221fd86384859fad0708b81c0962c5"
+  integrity sha512-NNYl4Umlp5fRGlE1tJSlNjEI3nW8DYKUGL7Uc9vPmSG+oTsI4NVOM+tz4hiD65gw4PeAceUvUd7YI2/m8Epp8g==
+
+"@clr/ui@^5.0.1":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@clr/ui/-/ui-5.0.1.tgz#8d68334ef812b1a975bfd1eecc311ab61f488e31"
+  integrity sha512-htdkOcQCctlHwpMwkKeZg+P+Zz0X67vG8i/FxJfQ0NXVVryiC67w3L4sZDiyXC+8sHA1C7mRMnP6oIEp8zcVQQ==
 
 "@eslint/eslintrc@^0.3.0":
   version "0.3.0"
@@ -1673,17 +1669,7 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
-"@webcomponents/custom-elements@^1.4.2":
-  version "1.4.3"
-  resolved "https://registry.yarnpkg.com/@webcomponents/custom-elements/-/custom-elements-1.4.3.tgz#1800d49f38bb4425ebfd160b50115e62776109d7"
-  integrity sha512-iD0YW46SreUQANGccywK/eC+gZELNHocZZrY2fGwrIlx/biQOTkAF9IohisibHbrmIHmA9pVCIdGwzfO+W0gig==
-
-"@webcomponents/shadycss@^1.10.1":
-  version "1.10.2"
-  resolved "https://registry.yarnpkg.com/@webcomponents/shadycss/-/shadycss-1.10.2.tgz#40e03cab6dc5e12f199949ba2b79e02f183d1e7b"
-  integrity sha512-9Iseu8bRtecb0klvv+WXZOVZatsRkbaH7M97Z+f+Pt909R4lDfgUODAnra23DOZTpeMTAkVpf4m/FZztN7Ox1A==
-
-"@webcomponents/webcomponentsjs@^2.4.4", "@webcomponents/webcomponentsjs@^2.5.0":
+"@webcomponents/webcomponentsjs@^2.5.0":
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/@webcomponents/webcomponentsjs/-/webcomponentsjs-2.5.0.tgz#61b27785a6ad5bfd68fa018201fe418b118cb38d"
   integrity sha512-C0l51MWQZ9kLzcxOZtniOMohpIFdCLZum7/TEHv3XWFc1Fvt5HCpbSX84x8ltka/JuNKcuiDnxXFkiB2gaePcg==
@@ -3282,11 +3268,6 @@ css-tree@^1.1.2:
   dependencies:
     mdn-data "2.0.14"
     source-map "^0.6.1"
-
-css-vars-ponyfill@^2.3.2:
-  version "2.4.2"
-  resolved "https://registry.yarnpkg.com/css-vars-ponyfill/-/css-vars-ponyfill-2.4.2.tgz#2ae8ea0ea5dfeb0afb5ac8f5c3b4247615a5ff69"
-  integrity sha512-kp8Ufs7jJDoaSym1hw/deawtakLJJTAQMB4ZgkdyOwCTJHqEClbpXI910ovQU4Guxt37EcdRiqppG9ihFyCjPQ==
 
 css-what@^3.2.1:
   version "3.4.2"
