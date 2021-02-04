@@ -1,1 +1,6 @@
-@import '~app/styles/_forms';
+input {
+  &[type='password'],
+  &[type='email'] {
+    width: 100%;
+  }
+}

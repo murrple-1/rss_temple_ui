@@ -2,31 +2,24 @@
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 
+import { ClrLoadingState } from '@clr/angular';
+
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { AppAlertsService, LoginService } from '@app/services';
 import {
   MinLength as PasswordMinLength,
-  passwordRequirementsText,
+  passwordRequirementsTextHtml,
   SpecialCharacters as PasswordSpecialCharacters,
 } from '@app/libs/password.lib';
-
-export enum State {
-  Ready,
-  IsRegistering,
-  RegisterFailed,
-}
 
 @Component({
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent implements OnInit, OnDestroy {
-  state = State.Ready;
-  readonly State = State;
-
-  readonly passwordHelperText = passwordRequirementsText('en');
+  readonly passwordHelperTextHtml = passwordRequirementsTextHtml('en');
   readonly passwordMinLength = PasswordMinLength;
   readonly passwordSpecialCharacters = PasswordSpecialCharacters.join('');
 
@@ -36,6 +29,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   private googleToken: string | null = null;
   private facebookToken: string | null = null;
+
+  readonly ClrLoadingState = ClrLoadingState;
+  registerButtonState = ClrLoadingState.DEFAULT;
 
   @ViewChild('registerForm', { static: true })
   registerForm?: NgForm;
@@ -70,7 +66,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.state = State.IsRegistering;
+    this.registerButtonState = ClrLoadingState.LOADING;
 
     if (this.googleToken !== null) {
       this.loginService
@@ -124,7 +120,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     });
 
     this.zone.run(() => {
-      this.state = State.RegisterFailed;
+      this.registerButtonState = ClrLoadingState.DEFAULT;
     });
   }
 }

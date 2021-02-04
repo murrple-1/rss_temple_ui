@@ -1,15 +1,13 @@
 ﻿<h2>Register</h2>
-<hr />
 <form
   clrForm
   #registerForm="ngForm"
-  [ngClass]="{ 'app--is-submitted': state !== State.Ready }"
   appPasswordsMatch
   appPassword1ControlName="password"
   appPassword2ControlName="passwordCheck"
   (ngSubmit)="onRegister()"
 >
-  <fieldset [disabled]="state === State.IsRegistering">
+  <fieldset [disabled]="registerButtonState !== ClrLoadingState.DEFAULT">
     <clr-input-container>
       <label>Email</label>
       <input
@@ -40,7 +38,6 @@
         minlength="{{ passwordMinLength }}"
         appPassword
       />
-      <clr-control-helper>{{ passwordHelperText }}</clr-control-helper>
       <clr-control-error *clrIfError="'required'"
         >Password required</clr-control-error
       >
@@ -98,6 +95,16 @@
       >
     </clr-input-container>
   </fieldset>
+  <hr />
+  <clr-accordion>
+    <clr-accordion-panel>
+      <clr-accordion-title>Password Requirements</clr-accordion-title>
+      <clr-accordion-content
+        *clrIfExpanded
+        [innerHtml]="passwordHelperTextHtml"
+      ></clr-accordion-content>
+    </clr-accordion-panel>
+  </clr-accordion>
   <ng-container
     *ngIf="registerForm && (registerForm.touched || registerForm.dirty)"
   >
@@ -118,6 +125,12 @@
       </div>
     </div>
   </ng-container>
-  <button type="submit" class="btn btn-primary">Register</button>
+  <button
+    type="submit"
+    class="btn btn-primary"
+    [clrLoading]="registerButtonState"
+  >
+    Register
+  </button>
   <a [routerLink]="['/login']" class="btn btn-link">Cancel</a>
 </form>

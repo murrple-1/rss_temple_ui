@@ -34,7 +34,6 @@ import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/routes/main
   imports: [
     CommonModule,
     FormsModule,
-    BrowserAnimationsModule,
 
     ClarityModule,
 
