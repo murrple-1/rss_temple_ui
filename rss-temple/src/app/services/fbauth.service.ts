@@ -55,24 +55,27 @@ export class FBAuthService {
   }
 
   load(id = 'fb-jssdk', language = 'en_US') {
-    (window as any).fbAsyncInit = () => {
-      FB.init({
-        appId: environment.facebookAppId,
-        xfbml: true,
-        version: 'v2.10',
-      });
-      FB.AppEvents.logPageView();
+    return new Promise<void>((resolve, _reject) => {
+      (window as any).fbAsyncInit = () => {
+        FB.init({
+          appId: environment.facebookAppId,
+          xfbml: true,
+          version: 'v2.10',
+        });
+        FB.AppEvents.logPageView();
 
-      this._isLoaded$.next(true);
-    };
+        this._isLoaded$.next(true);
+        resolve();
+      };
 
-    if (document.getElementById(id) !== null) {
-      return;
-    }
+      if (document.getElementById(id) !== null) {
+        return;
+      }
 
-    const js = document.createElement('script');
-    js.id = id;
-    js.src = `//connect.facebook.net/${language}/sdk.js`;
-    document.head.appendChild(js);
+      const js = document.createElement('script');
+      js.id = id;
+      js.src = `//connect.facebook.net/${language}/sdk.js`;
+      document.head.appendChild(js);
+    });
   }
 }

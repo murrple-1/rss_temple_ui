@@ -1,3 +1,4 @@
+import { fakeAsync } from '@angular/core/testing';
 import { skip } from 'rxjs/operators';
 
 import { FBAuthService } from './fbauth.service';
@@ -68,7 +69,7 @@ describe('FBAuthService', () => {
     expect(document.head.appendChild).not.toHaveBeenCalled();
   });
 
-  it('should be possible to sign in and succeed', () => {
+  it('should be possible to sign in and succeed', fakeAsync(async () => {
     const { fbAuthService } = setup();
 
     (window as any).FB = {
@@ -89,13 +90,13 @@ describe('FBAuthService', () => {
         ),
     };
 
-    fbAuthService.signIn();
+    await expectAsync(fbAuthService.signIn()).toBeResolved();
 
     expect(FB.login).toHaveBeenCalled();
     expect(fbAuthService.user).not.toBeNull();
-  });
+  }));
 
-  it('should be possible to sign in and fail', () => {
+  it('should be possible to sign in and fail', fakeAsync(async () => {
     const { fbAuthService } = setup();
 
     (window as any).FB = {
@@ -116,13 +117,13 @@ describe('FBAuthService', () => {
         ),
     };
 
-    fbAuthService.signIn();
+    await expectAsync(fbAuthService.signIn()).toBeRejected();
 
     expect(FB.login).toHaveBeenCalled();
     expect(fbAuthService.user).toBeNull();
-  });
+  }));
 
-  it('should be possible to sign out', () => {
+  it('should be possible to sign out', fakeAsync(async () => {
     const { fbAuthService } = setup();
 
     const userFn = jasmine.createSpy();
@@ -138,12 +139,12 @@ describe('FBAuthService', () => {
           }),
       };
 
-      fbAuthService.signOut();
+      await expectAsync(fbAuthService.signOut()).toBeResolved();
     } finally {
       userSubscription.unsubscribe();
     }
 
     expect(userFn).toHaveBeenCalledTimes(1);
     expect(userFn).toHaveBeenCalledWith(null);
-  });
+  }));
 });

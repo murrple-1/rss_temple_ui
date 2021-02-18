@@ -5,17 +5,14 @@ import { By } from '@angular/platform-browser';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { ClarityModule } from '@clr/angular';
+import { ClarityModule, ClrLoadingState } from '@clr/angular';
 
 import { of, Observable } from 'rxjs';
 
 import { PasswordResetTokenService } from '@app/services/data';
 import { EmailValidatorDirective } from '@app/directives/email-validator.directive';
 
-import {
-  RequestPasswordResetModalComponent,
-  State,
-} from './request-password-reset-modal.component';
+import { RequestPasswordResetModalComponent } from './request-password-reset-modal.component';
 
 async function setup() {
   const mockPasswordResetTokenService = jasmine.createSpyObj<PasswordResetTokenService>(
@@ -162,7 +159,7 @@ describe('RequestPasswordResetModalComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      expect(component.state).not.toBe(State.Error);
+      expect(component.requestButtonState).not.toBe(ClrLoadingState.DEFAULT);
       expect(mockPasswordResetTokenService.request).toHaveBeenCalledWith(
         'test@test.com',
       );
@@ -207,7 +204,7 @@ describe('RequestPasswordResetModalComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      expect(component.state).toBe(State.Error);
+      expect(component.requestButtonState).toBe(ClrLoadingState.DEFAULT);
       expect(mockPasswordResetTokenService.request).toHaveBeenCalledWith(
         'test@test.com',
       );

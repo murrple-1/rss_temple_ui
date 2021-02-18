@@ -18,17 +18,26 @@ export class MockFBAuthService extends FBAuthService {
   }
 
   load() {
-    this.isLoaded$.next(true);
+    return new Promise<void>((resolve, _reject) => {
+      this.isLoaded$.next(true);
+      resolve();
+    });
   }
 
   signIn() {
-    const user = {
-      accessToken: 'accessToken',
-    } as facebook.AuthResponse;
-    this.user$.next(user);
+    return new Promise<facebook.AuthResponse>((resolve, _reject) => {
+      const user = {
+        accessToken: 'accessToken',
+      } as facebook.AuthResponse;
+      this.user$.next(user);
+      resolve(user);
+    });
   }
 
   signOut() {
-    this.user$.next(null);
+    return new Promise<void>((resolve, _reject) => {
+      this.user$.next(null);
+      resolve();
+    });
   }
 }

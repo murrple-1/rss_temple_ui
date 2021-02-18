@@ -1,3 +1,4 @@
+import { fakeAsync } from '@angular/core/testing';
 import { GAuthService } from './gauth.service';
 
 function setup() {
@@ -8,7 +9,7 @@ function setup() {
   };
 }
 
-describe('FBAuthService', () => {
+describe('GAuthService', () => {
   afterAll(() => {
     (window as any).gapi = undefined;
   });
@@ -48,7 +49,7 @@ describe('FBAuthService', () => {
     expect(gAuthService.isLoaded).toBeTrue();
   });
 
-  it('should be possible to sign in and succeed', () => {
+  it('should be possible to sign in and succeed', fakeAsync(async () => {
     const { gAuthService } = setup();
 
     let isSignedInListener: ((isSignedIn: boolean) => void) | null = null;
@@ -80,13 +81,17 @@ describe('FBAuthService', () => {
                     },
                   },
                   signIn: () => {
-                    if (isSignedInListener !== null) {
-                      isSignedInListener(true);
-                    }
+                    return new Promise((resolve, _reject) => {
+                      if (isSignedInListener !== null) {
+                        isSignedInListener(true);
+                      }
 
-                    if (currentUserListener !== null) {
-                      currentUserListener(({} as any) as gapi.auth2.GoogleUser);
-                    }
+                      const currentUser = ({} as any) as gapi.auth2.GoogleUser;
+                      if (currentUserListener !== null) {
+                        currentUserListener(currentUser);
+                      }
+                      resolve(currentUser);
+                    });
                   },
                 } as any) as gapi.auth2.GoogleAuth);
               },
@@ -95,13 +100,13 @@ describe('FBAuthService', () => {
       },
     };
 
-    gAuthService.load();
-    gAuthService.signIn();
+    await expectAsync(gAuthService.load()).toBeResolved();
+    await expectAsync(gAuthService.signIn()).toBeResolved();
 
     expect(gAuthService.user).not.toBeNull();
-  });
+  }));
 
-  it('should be possible to sign out', () => {
+  it('should be possible to sign out', fakeAsync(async () => {
     const { gAuthService } = setup();
 
     let isSignedInListener: ((isSignedIn: boolean) => void) | null = null;
@@ -139,25 +144,21 @@ describe('FBAuthService', () => {
       },
     };
 
-    gAuthService.load();
-    gAuthService.signOut();
+    await expectAsync(gAuthService.load()).toBeResolved();
+    await expectAsync(gAuthService.signOut()).toBeResolved();
 
     expect(gAuthService.user).toBeNull();
-  });
+  }));
 
   it('should be possible to call sign in without loading', () => {
     const { gAuthService } = setup();
 
-    gAuthService.signIn();
-
-    expect().nothing();
+    expect(() => gAuthService.signIn()).toThrowError();
   });
 
   it('should be possible to call sign out without loading', () => {
     const { gAuthService } = setup();
 
-    gAuthService.signOut();
-
-    expect().nothing();
+    expect(() => gAuthService.signOut()).toThrowError();
   });
 });

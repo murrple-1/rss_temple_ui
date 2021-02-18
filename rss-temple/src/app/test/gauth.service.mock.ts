@@ -18,19 +18,28 @@ export class MockGAuthService extends GAuthService {
   }
 
   load() {
-    this.isLoaded$.next(true);
+    return new Promise<void>((resolve, _reject) => {
+      this.isLoaded$.next(true);
+      resolve();
+    });
   }
 
   signIn() {
-    const user = {
-      getAuthResponse: () => ({
-        id_token: 'id_token',
-      }),
-    } as gapi.auth2.GoogleUser;
-    this.user$.next(user);
+    return new Promise<gapi.auth2.GoogleUser>((resolve, _reject) => {
+      const user = {
+        getAuthResponse: () => ({
+          id_token: 'id_token',
+        }),
+      } as gapi.auth2.GoogleUser;
+      this.user$.next(user);
+      resolve(user);
+    });
   }
 
   signOut() {
-    this.user$.next(null);
+    return new Promise<void>((resolve, _reject) => {
+      this.user$.next(null);
+      resolve();
+    });
   }
 }

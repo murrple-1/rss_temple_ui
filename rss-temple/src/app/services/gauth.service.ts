@@ -38,35 +38,42 @@ export class GAuthService {
   }
 
   signOut() {
-    if (this.auth2 === null) {
+    const auth2 = this.auth2;
+    if (auth2 === null) {
       throw new Error('auth2 null');
     }
 
-    return this.auth2.signOut();
+    return new Promise<void>((resolve, _reject) => {
+      auth2.signOut();
+      resolve();
+    });
   }
 
   load() {
-    gapi.load('auth2', () => {
-      gapi.auth2
-        .init({
-          client_id: environment.googleApiClientId,
-          fetch_basic_profile: true,
-        })
-        .then(auth => {
-          this.auth2 = auth;
+    return new Promise<void>((resolve, _reject) => {
+      gapi.load('auth2', () => {
+        gapi.auth2
+          .init({
+            client_id: environment.googleApiClientId,
+            fetch_basic_profile: true,
+          })
+          .then(auth => {
+            this.auth2 = auth;
 
-          this.auth2.currentUser.listen(user => {
-            this._user$.next(user);
+            this.auth2.currentUser.listen(user => {
+              this._user$.next(user);
+            });
+
+            this.auth2.isSignedIn.listen(signedIn => {
+              if (!signedIn) {
+                this._user$.next(null);
+              }
+            });
+
+            this._isLoaded$.next(true);
+            resolve();
           });
-
-          this.auth2.isSignedIn.listen(signedIn => {
-            if (!signedIn) {
-              this._user$.next(null);
-            }
-          });
-
-          this._isLoaded$.next(true);
-        });
+      });
     });
   }
 }
