@@ -70,10 +70,6 @@ export class PasswordsMatchValidatorDirective implements Validator {
       return null;
     }
 
-    if (password1Control.untouched || password2Control.untouched) {
-      return null;
-    }
-
     const password1 = password1Control.value;
     if (typeof password1 !== 'string') {
       return null;
