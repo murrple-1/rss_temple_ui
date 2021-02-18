@@ -55,15 +55,15 @@
           Login
         </button>
         <a [routerLink]="['/register']" class="signup">Register</a>
-        <button
-          id="forgotten-password"
-          class="btn btn-link btn-sm app--forgot-password"
-          (click)="onForgottenPassword()"
-        >
-          Forgot Password?
-        </button>
       </div>
     </form>
+    <button
+      id="forgotten-password"
+      class="btn btn-link btn-sm app--forgot-password"
+      (click)="onForgottenPassword()"
+    >
+      Forgot Password?
+    </button>
     <button
       id="google-login"
       [disabled]="

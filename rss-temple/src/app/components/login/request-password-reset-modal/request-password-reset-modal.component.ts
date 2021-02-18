@@ -1,17 +1,13 @@
 import { Component, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
+import { ClrLoadingState } from '@clr/angular';
+
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { PasswordResetTokenService } from '@app/services/data';
 import { HttpErrorService } from '@app/services';
-
-export enum State {
-  NotStarted,
-  Sending,
-  Error,
-}
 
 @Component({
   selector: 'app-request-password-reset-modal',
@@ -21,8 +17,8 @@ export enum State {
 export class RequestPasswordResetModalComponent implements OnDestroy {
   open = false;
 
-  state = State.NotStarted;
-  readonly State = State;
+  requestButtonState = ClrLoadingState.DEFAULT;
+  readonly ClrLoadingState = ClrLoadingState;
 
   email = '';
 
@@ -47,8 +43,13 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
   }
 
   reset() {
-    this.state = State.NotStarted;
+    if (this._passwordResetRequestForm === undefined) {
+      throw new Error('_passwordResetRequestForm undefined');
+    }
+
+    this.requestButtonState = ClrLoadingState.DEFAULT;
     this.email = '';
+    this._passwordResetRequestForm.resetForm();
   }
 
   openChanged(open: boolean) {
@@ -64,7 +65,7 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
       return;
     }
 
-    this.state = State.Sending;
+    this.requestButtonState = ClrLoadingState.LOADING;
 
     const email = this.email.trim();
 
@@ -83,7 +84,7 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
           this.httpErrorService.handleError(error);
 
           this.zone.run(() => {
-            this.state = State.Error;
+            this.requestButtonState = ClrLoadingState.DEFAULT;
           });
         },
       });

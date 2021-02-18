@@ -32,18 +32,25 @@ export class FBAuthService {
       scope: 'email',
     },
   ) {
-    FB.login(response => {
-      if (response.status === 'connected') {
-        this._user$.next(response.authResponse);
-      } else {
-        this._user$.next(null);
-      }
-    }, options);
+    return new Promise<facebook.AuthResponse>((resolve, reject) => {
+      FB.login(response => {
+        if (response.status === 'connected') {
+          this._user$.next(response.authResponse);
+          resolve(response.authResponse);
+        } else {
+          this._user$.next(null);
+          reject(response.status);
+        }
+      }, options);
+    });
   }
 
   signOut() {
-    FB.logout(() => {
-      this._user$.next(null);
+    return new Promise<void>((resolve, reject) => {
+      FB.logout(() => {
+        this._user$.next(null);
+        resolve();
+      });
     });
   }
 

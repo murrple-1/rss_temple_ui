@@ -30,15 +30,19 @@ export class GAuthService {
   }
 
   signIn() {
-    if (this.auth2) {
-      this.auth2.signIn();
+    if (this.auth2 === null) {
+      throw new Error('auth2 null');
     }
+
+    return this.auth2.signIn();
   }
 
   signOut() {
-    if (this.auth2) {
-      this.auth2.signOut();
+    if (this.auth2 === null) {
+      throw new Error('auth2 null');
     }
+
+    return this.auth2.signOut();
   }
 
   load() {

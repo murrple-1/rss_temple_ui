@@ -167,7 +167,11 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: sessionToken => {
-          localStorage.setItem('login:cached_email', email);
+          if (this.rememberMe) {
+            localStorage.setItem('login:cached_email', email);
+          } else {
+            localStorage.removeItem('login:cached_email');
+          }
           this.handleLoginSuccess(sessionToken);
         },
         error: error => {
@@ -226,9 +230,14 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
     this.router.navigate([this._returnUrl]);
   }
 
-  onGoogleLogin() {
+  async onGoogleLogin() {
     this.gButtonInUse = true;
-    this.gAuthService.signIn();
+    try {
+      await this.gAuthService.signIn();
+    } catch (e) {
+      console.error(e);
+      this.gButtonInUse = false;
+    }
   }
 
   private handleGoogleUser(user: gapi.auth2.GoogleUser) {
@@ -280,9 +289,14 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
-  onFacebookLogin() {
+  async onFacebookLogin() {
     this.fbButtonInUse = true;
-    this.fbAuthService.signIn();
+    try {
+      await this.fbAuthService.signIn();
+    } catch (e) {
+      console.error(e);
+      this.fbButtonInUse = false;
+    }
   }
 
   private handleFacebookUser(user: fb.AuthResponse) {
