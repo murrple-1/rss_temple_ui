@@ -11,11 +11,6 @@
     "e2e": "ng e2e"
   },
   "private": true,
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged"
-    }
-  },
   "prettier": {
     "singleQuote": true,
     "trailingComma": "all",
@@ -72,7 +67,6 @@
     "eslint-plugin-import": "2.22.1",
     "eslint-plugin-jsdoc": "32.0.2",
     "eslint-plugin-prefer-arrow": "1.2.3",
-    "husky": "^5.0.9",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~6.0.0",
     "karma": "6.1.1",

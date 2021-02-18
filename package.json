@@ -1,0 +1,11 @@
+{
+  "name": "rss_temple_http",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "postinstall": "husky install"
+  },
+  "devDependencies": {
+    "husky": "^5.0.9"
+  }
+}
