@@ -3,9 +3,7 @@ import { fakeAsync } from '@angular/core/testing';
 
 import { of } from 'rxjs';
 
-import * as dayjs from 'dayjs';
-import * as utc from 'dayjs/plugin/utc';
-dayjs.extend(utc);
+import { parse as parseDate, format as formatDate } from 'date-fns';
 
 import { FeedEntry } from '@app/models';
 
@@ -268,14 +266,15 @@ describe('FeedEntryService', () => {
   it('should `createdAt`', fakeAsync(async () => {
     const { httpClientSpy, feedEntryService } = setup();
 
-    const createdAt = dayjs('2020-01-01 00:00:00', {
-      format: 'YYYY-MM-DD HH:mm:ss',
-      utc: true,
-    });
+    const createdAt = parseDate(
+      '2020-01-01 00:00:00',
+      'yyyy-MM-dd HH:mm:ss',
+      new Date(),
+    );
 
     httpClientSpy.get.and.returnValue(
       of({
-        createdAt: createdAt.format('YYYY-MM-DD HH:mm:ss'),
+        createdAt: formatDate(createdAt, 'yyyy-MM-dd HH:mm:ss'),
       }),
     );
 
@@ -323,20 +322,21 @@ describe('FeedEntryService', () => {
 
     await expectAsync(
       feedEntryService.get('http://www.fake.com/rss.xml').toPromise(),
-    ).toBeRejectedWithError(Error, /createdAt.*?invalid/);
+    ).toBeRejectedWithError(Error, /createdAt.*?malformed/);
   }));
 
   it('should `publishedAt`', fakeAsync(async () => {
     const { httpClientSpy, feedEntryService } = setup();
 
-    const publishedAt = dayjs('2020-01-01 00:00:00', {
-      format: 'YYYY-MM-DD HH:mm:ss',
-      utc: true,
-    });
+    const publishedAt = parseDate(
+      '2020-01-01 00:00:00',
+      'yyyy-MM-dd HH:mm:ss',
+      new Date(),
+    );
 
     httpClientSpy.get.and.returnValue(
       of({
-        publishedAt: publishedAt.format('YYYY-MM-DD HH:mm:ss'),
+        publishedAt: formatDate(publishedAt, 'yyyy-MM-dd HH:mm:ss'),
       }),
     );
 
@@ -372,20 +372,21 @@ describe('FeedEntryService', () => {
 
     await expectAsync(
       feedEntryService.get('http://www.fake.com/rss.xml').toPromise(),
-    ).toBeRejectedWithError(Error, /publishedAt.*?invalid/);
+    ).toBeRejectedWithError(Error, /publishedAt.*?malformed/);
   }));
 
   it('should `updatedAt`', fakeAsync(async () => {
     const { httpClientSpy, feedEntryService } = setup();
 
-    const updatedAt = dayjs('2020-01-01 00:00:00', {
-      format: 'YYYY-MM-DD HH:mm:ss',
-      utc: true,
-    });
+    const updatedAt = parseDate(
+      '2020-01-01 00:00:00',
+      'yyyy-MM-dd HH:mm:ss',
+      new Date(),
+    );
 
     httpClientSpy.get.and.returnValue(
       of({
-        updatedAt: updatedAt.format('YYYY-MM-DD HH:mm:ss'),
+        updatedAt: formatDate(updatedAt, 'yyyy-MM-dd HH:mm:ss'),
       }),
     );
 
@@ -433,7 +434,7 @@ describe('FeedEntryService', () => {
 
     await expectAsync(
       feedEntryService.get('http://www.fake.com/rss.xml').toPromise(),
-    ).toBeRejectedWithError(Error, /updatedAt.*?invalid/);
+    ).toBeRejectedWithError(Error, /updatedAt.*?malformed/);
   }));
 
   it('should `title`', fakeAsync(async () => {

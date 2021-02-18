@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { map } from 'rxjs/operators';
 
-import * as dayjs from 'dayjs';
+import { parse as parseDate } from 'date-fns';
 
 import { Feed } from '@app/models';
 import { sessionToken } from '@app/libs/session.lib';
@@ -78,14 +78,13 @@ function toFeed(value: JsonValue) {
   if (value.publishedAt !== undefined) {
     const publishedAt = value.publishedAt;
     if (typeof publishedAt === 'string') {
-      const _dayjs = dayjs(publishedAt, {
-        format: 'YYYY-MM-DD HH:mm:ss',
-        utc: true,
-      });
-      if (_dayjs.isValid()) {
-        feed.publishedAt = _dayjs;
-      } else {
-        throw new Error("'publishedAt' invalid");
+      feed.publishedAt = parseDate(
+        publishedAt,
+        'yyyy-MM-dd HH:mm:ss',
+        new Date(),
+      );
+      if (isNaN(feed.publishedAt.getTime())) {
+        throw new Error("'publishedAt' malformed");
       }
     } else {
       throw new Error("'publishedAt' must be datetime");
@@ -97,14 +96,9 @@ function toFeed(value: JsonValue) {
     if (updatedAt === null) {
       feed.updatedAt = null;
     } else if (typeof updatedAt === 'string') {
-      const _dayjs = dayjs(updatedAt, {
-        format: 'YYYY-MM-DD HH:mm:ss',
-        utc: true,
-      });
-      if (_dayjs.isValid()) {
-        feed.updatedAt = _dayjs;
-      } else {
-        throw new Error("'updatedAt' invalid");
+      feed.updatedAt = parseDate(updatedAt, 'yyyy-MM-dd HH:mm:ss', new Date());
+      if (isNaN(feed.updatedAt.getTime())) {
+        throw new Error("'updatedAt' malformed");
       }
     } else {
       throw new Error("'updatedAt' must be datetime or null");

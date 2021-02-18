@@ -1,11 +1,9 @@
-import * as dayjs from 'dayjs';
-
 export class FeedEntry {
   uuid?: string;
   id?: string | null;
-  createdAt?: dayjs.Dayjs | null;
-  publishedAt?: dayjs.Dayjs;
-  updatedAt?: dayjs.Dayjs | null;
+  createdAt?: Date | null;
+  publishedAt?: Date;
+  updatedAt?: Date | null;
   title?: string;
   url?: string;
   content?: string | null;

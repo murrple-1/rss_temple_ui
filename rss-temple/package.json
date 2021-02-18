@@ -34,7 +34,7 @@
     "@webcomponents/custom-elements": "^1.0.0",
     "@webcomponents/webcomponentsjs": "^2.5.0",
     "core-js": "^3.6.5",
-    "dayjs": "^1.8.26",
+    "date-fns": "^2.17.0",
     "email-validator": "^2.0.4",
     "ngx-infinite-scroll": "^10.0.0",
     "rxjs": "~6.6.3",

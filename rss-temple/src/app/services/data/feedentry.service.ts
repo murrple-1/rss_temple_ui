@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { map } from 'rxjs/operators';
 
-import * as dayjs from 'dayjs';
+import { parse as parseDate } from 'date-fns';
 
 import { FeedEntry } from '@app/models';
 import { sessionToken } from '@app/libs/session.lib';
@@ -64,14 +64,13 @@ function toFeedEntry(value: JsonValue) {
     if (createdAt === null) {
       feedEntry.createdAt = null;
     } else if (typeof createdAt === 'string') {
-      const _dayjs = dayjs(createdAt, {
-        format: 'YYYY-MM-DD HH:mm:ss',
-        utc: true,
-      });
-      if (_dayjs.isValid()) {
-        feedEntry.createdAt = _dayjs;
-      } else {
-        throw new Error("'createdAt' invalid");
+      feedEntry.createdAt = parseDate(
+        createdAt,
+        'yyyy-MM-dd HH:mm:ss',
+        new Date(),
+      );
+      if (isNaN(feedEntry.createdAt.getTime())) {
+        throw new Error("'createdAt' malformed");
       }
     } else {
       throw new Error("'createdAt' must be datetime or null");
@@ -81,14 +80,13 @@ function toFeedEntry(value: JsonValue) {
   if (value.publishedAt !== undefined) {
     const publishedAt = value.publishedAt;
     if (typeof publishedAt === 'string') {
-      const _dayjs = dayjs(publishedAt, {
-        format: 'YYYY-MM-DD HH:mm:ss',
-        utc: true,
-      });
-      if (_dayjs.isValid()) {
-        feedEntry.publishedAt = _dayjs;
-      } else {
-        throw new Error("'publishedAt' invalid");
+      feedEntry.publishedAt = parseDate(
+        publishedAt,
+        'yyyy-MM-dd HH:mm:ss',
+        new Date(),
+      );
+      if (isNaN(feedEntry.publishedAt.getTime())) {
+        throw new Error("'publishedAt' malformed");
       }
     } else {
       throw new Error("'publishedAt' must be datetime");
@@ -100,14 +98,13 @@ function toFeedEntry(value: JsonValue) {
     if (updatedAt === null) {
       feedEntry.updatedAt = null;
     } else if (typeof updatedAt === 'string') {
-      const _dayjs = dayjs(updatedAt, {
-        format: 'YYYY-MM-DD HH:mm:ss',
-        utc: true,
-      });
-      if (_dayjs.isValid()) {
-        feedEntry.updatedAt = _dayjs;
-      } else {
-        throw new Error("'updatedAt' invalid");
+      feedEntry.updatedAt = parseDate(
+        updatedAt,
+        'yyyy-MM-dd HH:mm:ss',
+        new Date(),
+      );
+      if (isNaN(feedEntry.updatedAt.getTime())) {
+        throw new Error("'updatedAt' malformed");
       }
     } else {
       throw new Error("'updatedAt' must be datetime or null");
