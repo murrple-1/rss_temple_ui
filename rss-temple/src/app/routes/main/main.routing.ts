@@ -10,7 +10,7 @@ export const routes: Routes = [
     path: '',
     component: MainComponent,
     children: [
-      { path: '', component: FeedsComponent },
+      { path: 'feeds', component: FeedsComponent },
       { path: 'feed', component: FeedComponent },
       { path: 'profile', component: ProfileComponent },
     ],
