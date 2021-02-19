@@ -1,32 +1,22 @@
-﻿<div class="container">
-  <div class="row">
-    <div class="col-md-4 offset-md-4">
-      <h2>Reset Password</h2>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-4 offset-md-4">
-      <ng-container *ngIf="state === State.Sending">
-        <div>Sending...</div>
-      </ng-container>
-      <ng-container *ngIf="state === State.Success">
-        <div>Success</div>
-        <ng-container *ngTemplateOutlet="backToLoginPage"></ng-container>
-      </ng-container>
-      <ng-container *ngIf="state === State.Error">
-        <div class="alert alert-danger" role="alert">Error</div>
-        <ng-container *ngTemplateOutlet="backToLoginPage"></ng-container>
-      </ng-container>
-      <ng-container *ngIf="state === State.NoToken">
-        <div class="alert alert-danger" role="alert">No Token</div>
-        <ng-container *ngTemplateOutlet="backToLoginPage"></ng-container>
-      </ng-container>
+﻿<h2>Reset Password</h2>
+<div class="alert" [ngClass]="alertClass">
+  <div class="alert-items">
+    <div class="alert-item static" role="alert">
+      <div class="alert-icon-wrapper">
+        <clr-icon class="alert-icon" [attr.shape]="iconShape"></clr-icon>
+      </div>
+      <span class="alert-text">
+        <ng-container [ngSwitch]="state">
+          <ng-container *ngSwitchCase="State.NotStarted"
+            >Not Started</ng-container
+          >
+          <ng-container *ngSwitchCase="State.Sending">Sending...</ng-container>
+          <ng-container *ngSwitchCase="State.Success">Success</ng-container>
+          <ng-container *ngSwitchCase="State.Error">Error</ng-container>
+          <ng-container *ngSwitchCase="State.NoToken">No Token</ng-container>
+        </ng-container>
+      </span>
     </div>
   </div>
 </div>
-
-<ng-template #backToLoginPage>
-  <div>
-    <a routerLink="/login">Back to Login page</a>
-  </div>
-</ng-template>
+<a *ngIf="isLoginPageAnchorVisible" routerLink="/login">Back to Login page</a>

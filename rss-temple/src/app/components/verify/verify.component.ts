@@ -23,6 +23,56 @@ export class VerifyComponent implements OnInit, OnDestroy {
   readonly State = State;
   state = State.NotStarted;
 
+  get alertClass() {
+    switch (this.state) {
+      case State.NotStarted: {
+        return 'alert-warning';
+      }
+      case State.Error:
+      case State.NoToken: {
+        return 'alert-danger';
+      }
+      case State.Success: {
+        return 'alert-success';
+      }
+      case State.Sending:
+      default: {
+        return 'alert-info';
+      }
+    }
+  }
+
+  get iconShape() {
+    switch (this.state) {
+      case State.NotStarted: {
+        return 'exclamation-triangle';
+      }
+      case State.Error:
+      case State.NoToken: {
+        return 'exclamation-circle';
+      }
+      case State.Success: {
+        return 'check-circle';
+      }
+      case State.Sending:
+      default: {
+        return 'info-circle';
+      }
+    }
+  }
+
+  get isLoginPageAnchorVisible() {
+    switch (this.state) {
+      case State.NotStarted:
+      case State.Sending: {
+        return false;
+      }
+      default: {
+        return true;
+      }
+    }
+  }
+
   private readonly unsubscribe$ = new Subject<void>();
 
   constructor(
