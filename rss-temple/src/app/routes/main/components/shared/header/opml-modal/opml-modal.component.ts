@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 
 import { OPMLService, ProgressService } from '@app/services/data';
 import { HttpErrorService } from '@app/services';
@@ -169,5 +169,5 @@ export function openModal(modal: OPMLModalComponent) {
   modal.reset();
   modal.open = true;
 
-  return modal.result.toPromise();
+  return modal.result.pipe(take(1)).toPromise();
 }

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
 import { Subject } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-confirm-modal',
@@ -37,5 +38,5 @@ export function openModal(
   modal.text = text;
   modal.open = true;
 
-  return modal.result.toPromise();
+  return modal.result.pipe(take(1)).toPromise();
 }

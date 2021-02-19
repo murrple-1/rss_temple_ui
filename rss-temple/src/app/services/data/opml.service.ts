@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { sessionToken } from '@app/libs/session.lib';
 import {
   CommonOptions,
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
+import { SessionService } from '@app/services/session.service';
 
 import { environment } from '@environments/environment';
 
@@ -13,10 +13,15 @@ import { environment } from '@environments/environment';
   providedIn: 'root',
 })
 export class OPMLService {
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private sessionService: SessionService,
+  ) {}
 
   download(options: CommonOptions = {}) {
-    const headers = commonToHeaders(options, sessionToken);
+    const headers = commonToHeaders(options, () =>
+      this.sessionService.sessionToken$.getValue(),
+    );
 
     return this.http.get(`${environment.apiHost}/api/opml`, {
       headers,
@@ -25,7 +30,9 @@ export class OPMLService {
   }
 
   upload(opmlText: string | ArrayBuffer, options: CommonOptions = {}) {
-    const headers = commonToHeaders(options, sessionToken);
+    const headers = commonToHeaders(options, () =>
+      this.sessionService.sessionToken$.getValue(),
+    );
 
     return this.http.post(`${environment.apiHost}/api/opml`, opmlText, {
       headers,

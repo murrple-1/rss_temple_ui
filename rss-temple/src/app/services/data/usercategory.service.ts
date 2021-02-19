@@ -4,7 +4,6 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 
 import { UserCategory } from '@app/models';
-import { sessionToken } from '@app/libs/session.lib';
 import { toObjects } from '@app/services/data/objects';
 import {
   GetOptions,
@@ -24,6 +23,7 @@ import {
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 import { JsonValue, isJsonObject, JsonObject } from '@app/libs/json.lib';
+import { SessionService } from '@app/services/session.service';
 
 import { environment } from '@environments/environment';
 
@@ -72,10 +72,15 @@ export interface IApply {
   providedIn: 'root',
 })
 export class UserCategoryService {
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private sessionService: SessionService,
+  ) {}
 
   get(uuid: string, options: GetOptions<Field> = {}) {
-    const headers = getToHeaders(options, sessionToken);
+    const headers = getToHeaders(options, () =>
+      this.sessionService.sessionToken$.getValue(),
+    );
     const params = getToParams(options, () => ['uuid']);
 
     return this.http
@@ -87,7 +92,9 @@ export class UserCategoryService {
   }
 
   query(options: QueryOptions<Field, SortField> = {}) {
-    const headers = queryToHeaders(options, sessionToken);
+    const headers = queryToHeaders(options, () =>
+      this.sessionService.sessionToken$.getValue(),
+    );
     const params = queryToParams('usercategories');
     const body = queryToBody(options, () => ['uuid']);
 
@@ -111,7 +118,9 @@ export class UserCategoryService {
     userCategoryJson: ICreateUserCategory,
     options: GetOptions<Field> = {},
   ) {
-    const headers = getToHeaders(options, sessionToken);
+    const headers = getToHeaders(options, () =>
+      this.sessionService.sessionToken$.getValue(),
+    );
 
     const params = getToParams(options, () => ['uuid']);
 
@@ -129,7 +138,9 @@ export class UserCategoryService {
   }
 
   delete(uuid: string, options: CommonOptions = {}) {
-    const headers = commonToHeaders(options, sessionToken);
+    const headers = commonToHeaders(options, () =>
+      this.sessionService.sessionToken$.getValue(),
+    );
 
     return this.http.delete<void>(
       `${environment.apiHost}/api/usercategory/${uuid}`,
@@ -140,7 +151,9 @@ export class UserCategoryService {
   }
 
   apply(apply: IApply, options: CommonOptions = {}) {
-    const headers = commonToHeaders(options, sessionToken);
+    const headers = commonToHeaders(options, () =>
+      this.sessionService.sessionToken$.getValue(),
+    );
 
     const body: JsonObject = {};
 

@@ -6,6 +6,7 @@ import { of } from 'rxjs';
 import { parse as parseDate, format as formatDate } from 'date-fns';
 
 import { FeedEntry } from '@app/models';
+import { SessionService } from '@app/services/session.service';
 
 import { FeedEntryService } from './feedentry.service';
 
@@ -16,11 +17,13 @@ function setup() {
     'delete',
     'request',
   ]);
+  const sessionService = new SessionService();
 
-  const feedEntryService = new FeedEntryService(httpClientSpy);
+  const feedEntryService = new FeedEntryService(httpClientSpy, sessionService);
 
   return {
     httpClientSpy,
+    sessionService,
 
     feedEntryService,
   };

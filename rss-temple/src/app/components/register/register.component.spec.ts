@@ -12,12 +12,13 @@ import { ClarityModule } from '@clr/angular';
 import { Observable, of } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { AppAlertsService, LoginService } from '@app/services';
+import { AppAlertsService } from '@app/services';
 import { MockActivatedRoute } from '@app/test/activatedroute.mock';
 import { AppAlertDescriptor } from '@app/services/app-alerts.service';
 import { EmailValidatorDirective } from '@app/directives/email-validator.directive';
 import { PasswordValidatorDirective } from '@app/directives/password-validator.directive';
 import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-match-validator.directive';
+import { LoginService } from '@app/services/data';
 
 import { RegisterComponent } from './register.component';
 

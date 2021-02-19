@@ -5,3 +5,4 @@ export { ProgressService } from './progress.service';
 export { UserService } from './user.service';
 export { UserCategoryService } from './usercategory.service';
 export { PasswordResetTokenService } from './passwordresettoken.service';
+export { LoginService } from './login.service';

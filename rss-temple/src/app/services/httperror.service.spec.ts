@@ -7,6 +7,7 @@ import {
   AppAlertDescriptor,
   AppAlertsService,
 } from '@app/services/app-alerts.service';
+import { SessionService } from '@app/services/session.service';
 
 import { HttpErrorService } from './httperror.service';
 
@@ -15,12 +16,18 @@ function setup() {
 
   const routerSpy = jasmine.createSpyObj<Router>('Router', ['navigate']);
   const appAlertService = new AppAlertsService();
+  const sessionService = new SessionService();
 
-  const httpErrorService = new HttpErrorService(routerSpy, appAlertService);
+  const httpErrorService = new HttpErrorService(
+    routerSpy,
+    appAlertService,
+    sessionService,
+  );
 
   return {
     routerSpy,
     appAlertService,
+    sessionService,
 
     httpErrorService,
   };

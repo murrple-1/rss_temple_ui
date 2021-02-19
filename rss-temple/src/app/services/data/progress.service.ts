@@ -2,13 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { map } from 'rxjs/operators';
-
-import { sessionToken } from '@app/libs/session.lib';
 import {
   CommonOptions,
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 import { JsonValue, isJsonObject } from '@app/libs/json.lib';
+import { SessionService } from '@app/services/session.service';
 
 import { environment } from '@environments/environment';
 
@@ -59,10 +58,15 @@ function toProgressInterface(value: JsonValue): ProgressInterface {
   providedIn: 'root',
 })
 export class ProgressService {
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private sessionService: SessionService,
+  ) {}
 
   checkProgress(uuid: string, options: CommonOptions = {}) {
-    const headers = commonToHeaders(options, sessionToken);
+    const headers = commonToHeaders(options, () =>
+      this.sessionService.sessionToken$.getValue(),
+    );
 
     return this.http
       .get<JsonValue>(

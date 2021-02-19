@@ -3,6 +3,8 @@ import { fakeAsync } from '@angular/core/testing';
 
 import { of } from 'rxjs';
 
+import { SessionService } from '@app/services/session.service';
+
 import { OPMLService } from './opml.service';
 
 function setup() {
@@ -10,11 +12,13 @@ function setup() {
     'get',
     'post',
   ]);
+  const sessionService = new SessionService();
 
-  const opmlService = new OPMLService(httpClientSpy);
+  const opmlService = new OPMLService(httpClientSpy, sessionService);
 
   return {
     httpClientSpy,
+    sessionService,
 
     opmlService,
   };

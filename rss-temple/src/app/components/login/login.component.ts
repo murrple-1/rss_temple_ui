@@ -22,14 +22,14 @@ import {
   AppAlertsService,
   FBAuthService,
   GAuthService,
-  LoginService,
+  SessionService,
 } from '@app/services';
-import { setSessionToken } from '@app/libs/session.lib';
 import {
   RequestPasswordResetModalComponent,
   openModal as openRequestPasswordResetModal,
 } from '@app/components/login/request-password-reset-modal/request-password-reset-modal.component';
 import { AlertEntry } from '@app/components/shared/local-alerts/local-alerts.component';
+import { LoginService } from '@app/services/data';
 
 @Component({
   templateUrl: './login.component.html',
@@ -69,6 +69,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
     private fbAuthService: FBAuthService,
     private loginService: LoginService,
     private appAlertsService: AppAlertsService,
+    private sessionService: SessionService,
   ) {}
 
   ngOnInit() {
@@ -225,7 +226,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private handleLoginSuccess(sessionToken: string) {
-    setSessionToken(sessionToken);
+    this.sessionService.sessionToken$.next(sessionToken);
 
     this.router.navigate([this._returnUrl]);
   }

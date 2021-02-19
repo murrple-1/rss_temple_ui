@@ -6,7 +6,6 @@ import { map } from 'rxjs/operators';
 import { parse as parseDate } from 'date-fns';
 
 import { Feed } from '@app/models';
-import { sessionToken } from '@app/libs/session.lib';
 import { toObjects } from '@app/services/data/objects';
 import {
   GetOptions,
@@ -26,6 +25,7 @@ import {
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 import { JsonValue, isJsonObject, isJsonArray } from '@app/libs/json.lib';
+import { SessionService } from '@app/services/session.service';
 
 import { environment } from '@environments/environment';
 
@@ -157,10 +157,15 @@ function toFeed(value: JsonValue) {
   providedIn: 'root',
 })
 export class FeedService {
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private sessionService: SessionService,
+  ) {}
 
   get(feedUrl: string, options: GetOptions<Field> = {}) {
-    const headers = getToHeaders(options, sessionToken);
+    const headers = getToHeaders(options, () =>
+      this.sessionService.sessionToken$.getValue(),
+    );
     const params = getToParams(options, () => ['uuid']);
     params.url = feedUrl;
 
@@ -173,7 +178,9 @@ export class FeedService {
   }
 
   query(options: QueryOptions<Field, SortField> = {}) {
-    const headers = queryToHeaders(options, sessionToken);
+    const headers = queryToHeaders(options, () =>
+      this.sessionService.sessionToken$.getValue(),
+    );
     const params = queryToParams('feeds');
     const body = queryToBody(options, () => ['uuid']);
 
@@ -190,7 +197,9 @@ export class FeedService {
   }
 
   subscribe(url: string, customTitle?: string, options: CommonOptions = {}) {
-    const headers = commonToHeaders(options, sessionToken);
+    const headers = commonToHeaders(options, () =>
+      this.sessionService.sessionToken$.getValue(),
+    );
     const params: {
       [header: string]: string | string[];
     } = {
@@ -212,7 +221,9 @@ export class FeedService {
   }
 
   unsubscribe(url: string, options: CommonOptions = {}) {
-    const headers = commonToHeaders(options, sessionToken);
+    const headers = commonToHeaders(options, () =>
+      this.sessionService.sessionToken$.getValue(),
+    );
     const params: {
       [header: string]: string | string[];
     } = {

@@ -1,19 +1,24 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { environment } from '@environments/environment';
+import { map } from 'rxjs/operators';
+
 import {
   CommonOptions,
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
-import { sessionToken } from '@app/libs/session.lib';
-import { map } from 'rxjs/operators';
+import { SessionService } from '@app/services/session.service';
+
+import { environment } from '@environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LoginService {
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private sessionService: SessionService,
+  ) {}
 
   createMyLogin(email: string, password: string) {
     return this.http.post<void>(`${environment.apiHost}/api/login/my`, {
@@ -112,7 +117,9 @@ export class LoginService {
     options: Required<Pick<CommonOptions, 'sessionToken'>> &
       Omit<CommonOptions, 'sessionToken'>,
   ) {
-    const headers = commonToHeaders(options, sessionToken);
+    const headers = commonToHeaders(options, () =>
+      this.sessionService.sessionToken$.getValue(),
+    );
 
     return this.http.delete<void>(`${environment.apiHost}/api/session`, {
       headers,

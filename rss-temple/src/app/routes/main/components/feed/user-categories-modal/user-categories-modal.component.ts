@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 
 import { Subject } from 'rxjs';
-import { takeUntil, map } from 'rxjs/operators';
+import { takeUntil, map, take } from 'rxjs/operators';
 
 import { UserCategoryService } from '@app/services/data';
 import { HttpErrorService } from '@app/services';
@@ -195,5 +195,5 @@ export function openModal(
   modal.initialUserCategories = initialUserCategories;
   modal.open = true;
 
-  return modal.result.toPromise();
+  return modal.result.pipe(take(1)).toPromise();
 }

@@ -4,7 +4,6 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 
 import { User } from '@app/models';
-import { sessionToken } from '@app/libs/session.lib';
 import {
   GetOptions,
   toHeaders as getToHeaders,
@@ -15,6 +14,7 @@ import {
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 import { JsonValue, isJsonObject, isJsonArray } from '@app/libs/json.lib';
+import { SessionService } from '@app/services/session.service';
 
 import { environment } from '@environments/environment';
 
@@ -99,10 +99,15 @@ export interface UpdateUserBody {
   providedIn: 'root',
 })
 export class UserService {
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private sessionService: SessionService,
+  ) {}
 
   get(options: GetOptions<Field> = {}) {
-    const headers = getToHeaders(options, sessionToken);
+    const headers = getToHeaders(options, () =>
+      this.sessionService.sessionToken$.getValue(),
+    );
     const params = getToParams(options, () => ['uuid']);
 
     return this.http
@@ -114,7 +119,9 @@ export class UserService {
   }
 
   update(body: UpdateUserBody, options: CommonOptions = {}) {
-    const headers = commonToHeaders(options, sessionToken);
+    const headers = commonToHeaders(options, () =>
+      this.sessionService.sessionToken$.getValue(),
+    );
 
     return this.http.put<void>(`${environment.apiHost}/api/user`, body, {
       headers,

@@ -2,6 +2,7 @@ import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
 import { Subject } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 export interface SubscriptionDetails {
   feedUrl: string;
@@ -77,5 +78,5 @@ export function openModal(modal: SubscribeModalComponent) {
   modal.reset();
   modal.open = true;
 
-  return modal.result.toPromise();
+  return modal.result.pipe(take(1)).toPromise();
 }

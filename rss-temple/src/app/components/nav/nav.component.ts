@@ -1,11 +1,14 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import {
   ConfirmModalComponent,
   openModal as openConfirmModal,
 } from '@app/components/shared/confirm-modal/confirm-modal.component';
-import { deleteSessionToken } from '@app/libs/session.lib';
+import { SessionService } from '@app/services';
 
 interface NavLink {
   name: string;
@@ -22,18 +25,18 @@ interface NavAction {
   templateUrl: './nav.component.html',
   styleUrls: ['./nav.component.scss'],
 })
-export class NavComponent implements OnInit {
+export class NavComponent implements OnInit, OnDestroy {
   private readonly loginLink: NavLink = {
     name: 'Login',
     routerLink: '/login',
   };
-  private readonly homeLink: NavLink = {
+  private readonly mainLink: NavLink = {
     name: 'Home',
-    routerLink: '/home',
+    routerLink: '/main',
   };
   private readonly logoutAction: NavAction = {
     clrIconShape: 'logout',
-    onClick: this.logout.bind(this),
+    onClick: () => this.logout(),
   };
 
   navLinks: NavLink[] = [];
@@ -42,10 +45,35 @@ export class NavComponent implements OnInit {
   @ViewChild('logoutConfirmDialog', { static: true })
   private logoutConfirmDialog?: ConfirmModalComponent;
 
-  constructor(private router: Router) {}
+  private unsubscribe$ = new Subject<void>();
+
+  constructor(
+    private zone: NgZone,
+    private router: Router,
+    private sessionService: SessionService,
+  ) {}
 
   ngOnInit() {
-    // TODO implement nav changes
+    this.sessionService.isLoggedIn$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: isLoggedIn => {
+          this.zone.run(() => {
+            if (isLoggedIn) {
+              this.navLinks = [this.mainLink];
+              this.navActions = [this.logoutAction];
+            } else {
+              this.navLinks = [this.loginLink];
+              this.navActions = [];
+            }
+          });
+        },
+      });
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
   private async logout() {
@@ -53,16 +81,14 @@ export class NavComponent implements OnInit {
       throw new Error('logoutConfirmDialog undefined');
     }
 
-    await openConfirmModal(
+    const result = await openConfirmModal(
       'Logout?',
       'Are you sure you want to log-out?',
       this.logoutConfirmDialog,
     );
-  }
 
-  onLogoutConfirmClose(result: boolean) {
     if (result) {
-      deleteSessionToken();
+      this.sessionService.sessionToken$.next(null);
 
       this.router.navigate(['/login'], {
         replaceUrl: true,

@@ -4,6 +4,7 @@ import { fakeAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 import { User } from '@app/models';
+import { SessionService } from '@app/services/session.service';
 
 import { UserService } from './user.service';
 
@@ -13,11 +14,13 @@ function setup() {
     'post',
     'put',
   ]);
+  const sessionService = new SessionService();
 
-  const userService = new UserService(httpClientSpy);
+  const userService = new UserService(httpClientSpy, sessionService);
 
   return {
     httpClientSpy,
+    sessionService,
 
     userService,
   };

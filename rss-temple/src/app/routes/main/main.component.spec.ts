@@ -14,9 +14,9 @@ import {
   OPMLService,
   ProgressService,
   UserCategoryService,
+  LoginService,
 } from '@app/services/data';
 import { FeedObservableService } from '@app/routes/main/services';
-import { LoginService } from '@app/services';
 
 import { MainComponent } from './main.component';
 

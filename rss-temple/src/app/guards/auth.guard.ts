@@ -6,17 +6,17 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 
-import { sessionToken } from '@app/libs/session.lib';
 import { areOldAndNewRoutesTheSame } from '@app/guards/utils';
+import { SessionService } from '@app/services';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-  constructor(private router: Router) {}
+  constructor(private router: Router, private sessionService: SessionService) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (sessionToken() !== null) {
+    if (this.sessionService.isLoggedIn) {
       return true;
     }
 
@@ -36,10 +36,10 @@ export class AuthGuard implements CanActivate {
   providedIn: 'root',
 })
 export class NoAuthGuard implements CanActivate {
-  constructor(private router: Router) {}
+  constructor(private router: Router, private sessionService: SessionService) {}
 
   canActivate(route: ActivatedRouteSnapshot, _state: RouterStateSnapshot) {
-    if (sessionToken() === null) {
+    if (!this.sessionService.isLoggedIn) {
       return true;
     }
 

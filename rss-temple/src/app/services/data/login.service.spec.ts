@@ -3,6 +3,8 @@ import { fakeAsync } from '@angular/core/testing';
 
 import { of } from 'rxjs';
 
+import { SessionService } from '@app/services/session.service';
+
 import { LoginService } from './login.service';
 
 function setup() {
@@ -10,10 +12,14 @@ function setup() {
     'post',
     'delete',
   ]);
-  const loginService = new LoginService(httpClientSpy);
+  const sessionService = new SessionService();
+
+  const loginService = new LoginService(httpClientSpy, sessionService);
 
   return {
     httpClientSpy,
+    sessionService,
+
     loginService,
   };
 }

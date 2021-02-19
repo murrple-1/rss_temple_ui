@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { AppAlertsService } from '@app/services/app-alerts.service';
-import { deleteSessionToken } from '@app/libs/session.lib';
+import { SessionService } from '@app/services/session.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +12,7 @@ export class HttpErrorService {
   constructor(
     private router: Router,
     private appAlertsService: AppAlertsService,
+    private sessionService: SessionService,
   ) {}
 
   handleError(error: any) {
@@ -23,7 +24,7 @@ export class HttpErrorService {
           break;
         case 401:
           errorMessage = 'Session expired';
-          deleteSessionToken();
+          this.sessionService.sessionToken$.next(null);
           this.router.navigate(['/login'], {
             replaceUrl: true,
           });

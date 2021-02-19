@@ -4,6 +4,7 @@ import { fakeAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 import { UserCategory } from '@app/models';
+import { SessionService } from '@app/services/session.service';
 
 import { UserCategoryService } from './usercategory.service';
 
@@ -14,11 +15,16 @@ function setup() {
     'put',
     'delete',
   ]);
+  const sessionService = new SessionService();
 
-  const userCategoryService = new UserCategoryService(httpClientSpy);
+  const userCategoryService = new UserCategoryService(
+    httpClientSpy,
+    sessionService,
+  );
 
   return {
     httpClientSpy,
+    sessionService,
 
     userCategoryService,
   };

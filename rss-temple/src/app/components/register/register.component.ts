@@ -7,12 +7,13 @@ import { ClrLoadingState } from '@clr/angular';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { AppAlertsService, LoginService } from '@app/services';
+import { AppAlertsService } from '@app/services';
 import {
   MinLength as PasswordMinLength,
   passwordRequirementsTextHtml,
   SpecialCharacters as PasswordSpecialCharacters,
 } from '@app/libs/password.lib';
+import { LoginService } from '@app/services/data';
 
 @Component({
   templateUrl: './register.component.html',

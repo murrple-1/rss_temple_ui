@@ -3,15 +3,19 @@ import { fakeAsync } from '@angular/core/testing';
 
 import { of } from 'rxjs';
 
+import { SessionService } from '@app/services/session.service';
+
 import { ProgressService } from './progress.service';
 
 function setup() {
   const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', ['get']);
+  const sessionService = new SessionService();
 
-  const progressService = new ProgressService(httpClientSpy);
+  const progressService = new ProgressService(httpClientSpy, sessionService);
 
   return {
     httpClientSpy,
+    sessionService,
 
     progressService,
   };

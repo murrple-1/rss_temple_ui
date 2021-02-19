@@ -22,14 +22,17 @@ import {
   openModal as openOPMLModal,
   OPMLModalComponent,
 } from '@app/routes/main/components/shared/header/opml-modal/opml-modal.component';
-import { FeedService, UserCategoryService } from '@app/services/data';
+import {
+  FeedService,
+  LoginService,
+  UserCategoryService,
+} from '@app/services/data';
 import {
   AppAlertsService,
   HttpErrorService,
-  LoginService,
+  SessionService,
 } from '@app/services';
 import { FeedObservableService } from '@app/routes/main/services';
-import { deleteSessionToken, sessionToken } from '@app/libs/session.lib';
 import { UserCategory, Feed } from '@app/models';
 import { Sort } from '@app/services/data/sort.interface';
 
@@ -98,6 +101,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private loginService: LoginService,
     private appAlertsService: AppAlertsService,
     private httpErrorService: HttpErrorService,
+    private sessionService: SessionService,
   ) {
     const elem = this.elementRef.nativeElement;
     for (const _class of this._classes) {
@@ -394,13 +398,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   logOut(event: Event) {
     event.stopPropagation();
 
-    const _sessionToken = sessionToken();
-    if (_sessionToken !== null) {
-      deleteSessionToken();
+    const sessionToken = this.sessionService.sessionToken$.getValue();
+    if (sessionToken !== null) {
+      this.sessionService.sessionToken$.next(null);
 
       this.loginService
         .deleteSessionToken({
-          sessionToken: _sessionToken,
+          sessionToken,
         })
         .subscribe({
           next: () => {

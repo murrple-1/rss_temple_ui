@@ -12,9 +12,9 @@ import {
   OPMLService,
   ProgressService,
   UserCategoryService,
+  LoginService,
 } from '@app/services/data';
 import { FeedObservableService } from '@app/routes/main/services';
-import { LoginService } from '@app/services';
 import { SubscribeModalComponent } from '@app/routes/main/components/shared/header/subscribe-modal/subscribe-modal.component';
 import { OPMLModalComponent } from '@app/routes/main/components/shared/header/opml-modal/opml-modal.component';
 

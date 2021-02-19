@@ -15,13 +15,8 @@ import { take } from 'rxjs/operators';
 import { MockActivatedRoute } from '@app/test/activatedroute.mock';
 import { MockGAuthService } from '@app/test/gauth.service.mock';
 import { MockFBAuthService } from '@app/test/fbauth.service.mock';
-import {
-  GAuthService,
-  FBAuthService,
-  LoginService,
-  AppAlertsService,
-} from '@app/services';
-import { PasswordResetTokenService } from '@app/services/data';
+import { GAuthService, FBAuthService, AppAlertsService } from '@app/services';
+import { LoginService, PasswordResetTokenService } from '@app/services/data';
 import { RequestPasswordResetModalComponent } from '@app/components/login/request-password-reset-modal/request-password-reset-modal.component';
 import { AppAlertDescriptor } from '@app/services/app-alerts.service';
 import { LocalAlertsComponent } from '@app/components/shared/local-alerts/local-alerts.component';

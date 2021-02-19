@@ -8,17 +8,19 @@ import {
   UrlSegment,
 } from '@angular/router';
 
-import { setSessionToken, deleteSessionToken } from '@app/libs/session.lib';
+import { SessionService } from '@app/services';
 
 import { AuthGuard, NoAuthGuard } from './auth.guard';
 
 function setup_auth() {
   const routerSpy = jasmine.createSpyObj<Router>('Router', ['createUrlTree']);
+  const sessionService = new SessionService();
 
-  const authGuard = new AuthGuard(routerSpy);
+  const authGuard = new AuthGuard(routerSpy, sessionService);
 
   return {
     routerSpy,
+    sessionService,
 
     authGuard,
   };
@@ -26,13 +28,13 @@ function setup_auth() {
 
 describe('AuthGuard', () => {
   beforeEach(() => {
-    deleteSessionToken();
+    localStorage.removeItem('sessionToken');
   });
 
   it('can activate', () => {
-    const { routerSpy, authGuard } = setup_auth();
+    const { routerSpy, sessionService, authGuard } = setup_auth();
 
-    setSessionToken('a-token');
+    sessionService.sessionToken$.next('a-token');
 
     const activatedRouteSnapshot = {} as ActivatedRouteSnapshot;
     const state = {
@@ -102,11 +104,13 @@ describe('AuthGuard', () => {
 
 function setup_noauth() {
   const routerSpy = jasmine.createSpyObj<Router>('Router', ['createUrlTree']);
+  const sessionService = new SessionService();
 
-  const noAuthGuard = new NoAuthGuard(routerSpy);
+  const noAuthGuard = new NoAuthGuard(routerSpy, sessionService);
 
   return {
     routerSpy,
+    sessionService,
 
     noAuthGuard,
   };
@@ -114,7 +118,7 @@ function setup_noauth() {
 
 describe('NoAuthGuard', () => {
   beforeEach(() => {
-    deleteSessionToken();
+    localStorage.removeItem('sessionToken');
   });
 
   it('can activate', () => {
@@ -130,7 +134,7 @@ describe('NoAuthGuard', () => {
   });
 
   it('can not activate', () => {
-    const { routerSpy, noAuthGuard } = setup_noauth();
+    const { routerSpy, sessionService, noAuthGuard } = setup_noauth();
 
     const fakeUrlTree = {
       root: {
@@ -145,7 +149,7 @@ describe('NoAuthGuard', () => {
     } as UrlTree;
     routerSpy.createUrlTree.and.returnValue(fakeUrlTree);
 
-    setSessionToken('a-token');
+    sessionService.sessionToken$.next('a-token');
 
     const activatedRouteSnapshot = {
       url: ([''] as unknown) as UrlSegment[],
@@ -161,7 +165,7 @@ describe('NoAuthGuard', () => {
   });
 
   it('will not renavigate to the same place', () => {
-    const { routerSpy, noAuthGuard } = setup_noauth();
+    const { routerSpy, sessionService, noAuthGuard } = setup_noauth();
 
     const fakeUrlTree = {
       root: {
@@ -176,7 +180,7 @@ describe('NoAuthGuard', () => {
     } as UrlTree;
     routerSpy.createUrlTree.and.returnValue(fakeUrlTree);
 
-    setSessionToken('a-token');
+    sessionService.sessionToken$.next('a-token');
 
     const activatedRouteSnapshot = {
       url: (['test'] as unknown) as UrlSegment[],
