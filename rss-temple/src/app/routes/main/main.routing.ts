@@ -10,6 +10,7 @@ export const routes: Routes = [
     path: '',
     component: MainComponent,
     children: [
+      { path: '', pathMatch: 'full', redirectTo: 'feeds' },
       { path: 'feeds', component: FeedsComponent },
       { path: 'feed', component: FeedComponent },
       { path: 'profile', component: ProfileComponent },

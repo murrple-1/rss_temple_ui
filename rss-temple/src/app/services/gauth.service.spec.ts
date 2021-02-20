@@ -80,8 +80,8 @@ describe('GAuthService', () => {
                       currentUserListener = listener;
                     },
                   },
-                  signIn: () => {
-                    return new Promise((resolve, _reject) => {
+                  signIn: () =>
+                    new Promise((resolve, _reject) => {
                       if (isSignedInListener !== null) {
                         isSignedInListener(true);
                       }
@@ -91,8 +91,7 @@ describe('GAuthService', () => {
                         currentUserListener(currentUser);
                       }
                       resolve(currentUser);
-                    });
-                  },
+                    }),
                 } as any) as gapi.auth2.GoogleAuth);
               },
             } as any) as gapi.auth2.GoogleAuth),

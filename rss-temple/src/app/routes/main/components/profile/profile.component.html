@@ -1,191 +1,181 @@
-<main role="main">
-  <div class="container">
-    <h1>Profile</h1>
+<h1>Profile</h1>
+<div class="clr-row">
+  <div class="clr-col-md-6 clr-col-12">
     <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Profile Stats</h5>
-        <p class="card-text">Here are some stats!</p>
-        <p class="card-text">
+      <div class="card-header">Profile Stats</div>
+      <div class="card-block">
+        <div class="card-text">
           Number of Feeds subscribed to: {{ numberOfFeeds }}
-        </p>
-        <p class="card-text">
+        </div>
+        <div class="card-text">
           Number of Read Articles: {{ numberOfReadFeedEntries }}
-        </p>
+        </div>
       </div>
     </div>
-    <hr />
-    <form
-      class="mb-4"
-      [ngClass]="{
-        'app--is-submitted': [
-          State.IsSaving,
-          State.SaveSuccess,
-          State.SaveError
-        ].includes(state)
-      }"
-    >
-      <fieldset [disabled]="[State.IsLoading, State.IsSaving].includes(state)">
-        <clr-input-container>
-          <label>Email</label>
-          <input
-            clrInput
-            type="email"
-            placeholder="example@example.com"
-            [(ngModel)]="email"
-            required
-            appEmail
-          />
-          <clr-control-error *clrIfError="'required'"
-            >Email required</clr-control-error
-          >
-          <clr-control-error *clrIfError="'invalidemail'"
-            >Email malformed</clr-control-error
-          >
-        </clr-input-container>
-        <hr />
-        <clr-input-container>
-          <label>Old Password</label>
-          <input
-            clrInput
-            type="password"
-            placeholder="Old Password"
-            [(ngModel)]="oldPassword"
-          />
-        </clr-input-container>
-        <clr-input-container>
-          <label>New Password</label>
-          <input
-            clrInput
-            type="password"
-            placeholder="New Password"
-            [(ngModel)]="newPassword"
-            [required]="isPasswordChanging"
-            minlength="{{ passwordMinLength }}"
-            appPassword
-          />
-          <clr-control-helper>{{ passwordHelperText }}</clr-control-helper>
-          <clr-control-error *clrIfError="'required'"
-            >Password required</clr-control-error
-          >
-          <clr-control-error *clrIfError="'minlength'; error as error"
-            >Password must be at least {{ error.requiredLength }} characters
-            long</clr-control-error
-          >
-          <clr-control-error *clrIfError="'nolowercase'"
-            >No Lowercase Character(s)</clr-control-error
-          >
-          <clr-control-error *clrIfError="'nouppercase'"
-            >No Uppercase Character(s)</clr-control-error
-          >
-          <clr-control-error *clrIfError="'nodigit'"
-            >No Digits(s)</clr-control-error
-          >
-          <clr-control-error *clrIfError="'nospecialcharacter'"
-            >No Special Character(s) ({{
-              passwordSpecialCharacters
-            }})</clr-control-error
-          >
-        </clr-input-container>
-        <clr-input-container>
-          <label>Confirm New Password</label>
-          <input
-            clrInput
-            type="password"
-            placeholder="Confirm New Password"
-            [(ngModel)]="newPasswordCheck"
-            [required]="isPasswordChanging"
-            minlength="{{ passwordMinLength }}"
-            appPassword
-          />
-          <clr-control-helper>{{ passwordHelperText }}</clr-control-helper>
-          <clr-control-error *clrIfError="'required'"
-            >Password required</clr-control-error
-          >
-          <clr-control-error *clrIfError="'minlength'; error as error"
-            >Password must be at least {{ error.requiredLength }} characters
-            long</clr-control-error
-          >
-          <clr-control-error *clrIfError="'nolowercase'"
-            >No Lowercase Character(s)</clr-control-error
-          >
-          <clr-control-error *clrIfError="'nouppercase'"
-            >No Uppercase Character(s)</clr-control-error
-          >
-          <clr-control-error *clrIfError="'nodigit'"
-            >No Digits(s)</clr-control-error
-          >
-          <clr-control-error *clrIfError="'nospecialcharacter'"
-            >No Special Character(s) ({{
-              passwordSpecialCharacters
-            }})</clr-control-error
-          >
-        </clr-input-container>
-        <hr />
-        <div class="form-group">
-          <div class="container">
-            <div class="row">
-              <h4>3rd Party Logins</h4>
-            </div>
-            <div class="row">
-              <div class="col-sm-2">
-                <div class="card text-center">
-                  <i class="fab fa-google app--brand mt-2"></i>
-                  <div class="card-body">
-                    <h5 class="card-title">Google</h5>
-                    <button
-                      type="button"
-                      class="btn btn-outline-primary"
-                      (click)="linkGoogle()"
-                      *ngIf="!hasGoogleLogin"
-                      [disabled]="!gLoaded"
-                    >
-                      Link
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-outline-warning"
-                      (click)="unlinkGoogle()"
-                      *ngIf="hasGoogleLogin"
-                      [disabled]="!gLoaded"
-                    >
-                      Unlink
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-2 offset-sm-1">
-                <div class="card text-center">
-                  <i class="fab fa-facebook app--brand mt-2"></i>
-                  <div class="card-body">
-                    <h5 class="card-title">Facebook</h5>
-                    <button
-                      type="button"
-                      class="btn btn-outline-primary"
-                      (click)="linkFacebook()"
-                      *ngIf="!hasFacebookLogin"
-                      [disabled]="!fbLoaded"
-                    >
-                      Link
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-outline-warning"
-                      (click)="unlinkFacebook()"
-                      *ngIf="hasFacebookLogin"
-                      [disabled]="!fbLoaded"
-                    >
-                      Unlink
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <button type="button" class="btn btn-primary" (click)="onSave()">
-          Save
-        </button>
-      </fieldset>
-    </form>
   </div>
-</main>
+  <div class="clr-col-md-6 clr-col-12">
+    <div class="card">
+      <form clrForm>
+        <div class="card-header">Profile</div>
+        <div class="card-block">
+          <fieldset
+            [disabled]="[State.IsLoading, State.IsSaving].includes(state)"
+          >
+            <clr-input-container>
+              <label>Email</label>
+              <input
+                clrInput
+                type="email"
+                placeholder="example@example.com"
+                [(ngModel)]="email"
+                required
+                appEmail
+              />
+              <clr-control-error *clrIfError="'required'"
+                >Email required</clr-control-error
+              >
+              <clr-control-error *clrIfError="'invalidemail'"
+                >Email malformed</clr-control-error
+              >
+            </clr-input-container>
+            <clr-input-container>
+              <label>Old Password</label>
+              <input
+                clrInput
+                type="password"
+                placeholder="Old Password"
+                [(ngModel)]="oldPassword"
+              />
+            </clr-input-container>
+            <clr-input-container>
+              <label>New Password</label>
+              <input
+                clrInput
+                type="password"
+                placeholder="New Password"
+                [(ngModel)]="newPassword"
+                [required]="isPasswordChanging"
+                minlength="{{ passwordMinLength }}"
+                appPassword
+              />
+              <clr-control-helper>{{ passwordHelperText }}</clr-control-helper>
+              <clr-control-error *clrIfError="'required'"
+                >Password required</clr-control-error
+              >
+              <clr-control-error *clrIfError="'minlength'; error as error"
+                >Password must be at least {{ error.requiredLength }} characters
+                long</clr-control-error
+              >
+              <clr-control-error *clrIfError="'nolowercase'"
+                >No Lowercase Character(s)</clr-control-error
+              >
+              <clr-control-error *clrIfError="'nouppercase'"
+                >No Uppercase Character(s)</clr-control-error
+              >
+              <clr-control-error *clrIfError="'nodigit'"
+                >No Digits(s)</clr-control-error
+              >
+              <clr-control-error *clrIfError="'nospecialcharacter'"
+                >No Special Character(s) ({{
+                  passwordSpecialCharacters
+                }})</clr-control-error
+              >
+            </clr-input-container>
+            <clr-input-container>
+              <label>Confirm New Password</label>
+              <input
+                clrInput
+                type="password"
+                placeholder="Confirm New Password"
+                [(ngModel)]="newPasswordCheck"
+                [required]="isPasswordChanging"
+                minlength="{{ passwordMinLength }}"
+                appPassword
+              />
+              <clr-control-helper>{{ passwordHelperText }}</clr-control-helper>
+              <clr-control-error *clrIfError="'required'"
+                >Password required</clr-control-error
+              >
+              <clr-control-error *clrIfError="'minlength'; error as error"
+                >Password must be at least {{ error.requiredLength }} characters
+                long</clr-control-error
+              >
+              <clr-control-error *clrIfError="'nolowercase'"
+                >No Lowercase Character(s)</clr-control-error
+              >
+              <clr-control-error *clrIfError="'nouppercase'"
+                >No Uppercase Character(s)</clr-control-error
+              >
+              <clr-control-error *clrIfError="'nodigit'"
+                >No Digits(s)</clr-control-error
+              >
+              <clr-control-error *clrIfError="'nospecialcharacter'"
+                >No Special Character(s) ({{
+                  passwordSpecialCharacters
+                }})</clr-control-error
+              >
+            </clr-input-container>
+          </fieldset>
+        </div>
+        <div class="card-footer">
+          <button type="submit" class="btn btn-sm btn-link">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<h4>Third Party Logins</h4>
+<div class="clr-row">
+  <div class="clr-col-2">
+    <div class="card">
+      <div class="card-block">
+        <cds-icon shape="brand-google"></cds-icon>
+        <div class="card-title">Google</div>
+        <button
+          type="button"
+          class="btn btn-outline-primary"
+          (click)="linkGoogle()"
+          *ngIf="!hasGoogleLogin"
+          [disabled]="!gLoaded"
+        >
+          Link
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-warning"
+          (click)="unlinkGoogle()"
+          *ngIf="hasGoogleLogin"
+          [disabled]="!gLoaded"
+        >
+          Unlink
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="clr-col-2">
+    <div class="card">
+      <div class="card-block">
+        <cds-icon shape="brand-facebook"></cds-icon>
+        <div class="card-title">Facebook</div>
+        <button
+          type="button"
+          class="btn btn-outline-primary"
+          (click)="linkFacebook()"
+          *ngIf="!hasFacebookLogin"
+          [disabled]="!fbLoaded"
+        >
+          Link
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-warning"
+          (click)="unlinkFacebook()"
+          *ngIf="hasFacebookLogin"
+          [disabled]="!fbLoaded"
+        >
+          Unlink
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
