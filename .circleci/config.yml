@@ -57,6 +57,20 @@ jobs:
           paths:
             - ~/.cache/yarn
       - run:
+          name: create-environment
+          command: |
+            cat \<< EOF > environment.ts
+            import { IEnvironment } from '@environments/ienvironment';
+
+            export const environment: IEnvironment = {
+              production: true,
+              apiHost: 'http://localhost:8000',
+              googleApiClientId: '',
+              facebookAppId: '',
+            };
+            EOF
+          working_directory: ~/rss_temple_http/rss-temple/src/environments/
+      - run:
           name: angular-test
           command: yarn run cross-env TEST_TYPE=xml ng test --code-coverage --no-watch --no-progress
           working_directory: ~/rss_temple_http/rss-temple/
@@ -88,6 +102,20 @@ jobs:
           key: dependency-cache-{{ checksum "~/rss_temple_http/rss-temple/yarn.lock" }}
           paths:
             - ~/.cache/yarn
+      - run:
+          name: create-environment
+          command: |
+            cat \<< EOF > environment.ts
+            import { IEnvironment } from '@environments/ienvironment';
+
+            export const environment: IEnvironment = {
+              production: true,
+              apiHost: 'http://localhost:8000',
+              googleApiClientId: '',
+              facebookAppId: '',
+            };
+            EOF
+          working_directory: ~/rss_temple_http/rss-temple/src/environments/
       - run:
           name: angular-e2e
           command: yarn run ng e2e --webdriver-update=false
