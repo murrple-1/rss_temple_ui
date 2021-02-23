@@ -25,6 +25,20 @@ jobs:
           paths:
             - ~/.cache/yarn
       - run:
+          name: create-environment
+          command: |
+            cat \<< EOF > environment.ts
+            import { IEnvironment } from '@environments/ienvironment';
+
+            export const environment: IEnvironment = {
+              production: true,
+              apiHost: 'http://localhost:8000',
+              googleApiClientId: '',
+              facebookAppId: '',
+            };
+            EOF
+          working_directory: ~/rss_temple_http/rss-temple/src/environments/
+      - run:
           name: setup-prod-environment
           command: |
             sed -i "s/googleApiClientId: '',/googleApiClientId: '$GOOGLE_API_CLIENT_ID',/g" environment.prod.ts
