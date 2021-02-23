@@ -7,7 +7,21 @@ export async function checkLogs() {
   switch (browserName) {
     case 'chrome': {
       const logs = await browser.manage().logs().get(logging.Type.BROWSER);
-      expect(logs).not.toContain(
+      expect(
+        logs.filter(l => {
+          if (/google/i.test(l.message)) {
+            // allow Google errors
+            return false;
+          }
+
+          if (/fb/i.test(l.message)) {
+            // allow Facebook errors
+            return false;
+          }
+
+          return true;
+        }),
+      ).not.toContain(
         jasmine.objectContaining({
           level: logging.Level.SEVERE,
         }),
