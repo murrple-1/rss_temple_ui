@@ -29,7 +29,9 @@ export class PasswordsMatchValidatorDirective implements Validator {
   }
 
   set validatorEnabled(value: boolean) {
-    this._validatorEnabled = value;
+    if (typeof value === 'boolean') {
+      this._validatorEnabled = value;
+    }
     if (this.validatorChangeCallback !== undefined) {
       this.validatorChangeCallback();
     }
