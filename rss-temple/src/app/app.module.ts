@@ -10,11 +10,9 @@ import '@cds/core/icon/register.js';
 import { ClarityIcons, essentialCollectionIcons } from '@cds/core/icon';
 import { IconShapeTuple } from '@cds/core/icon/interfaces/icon.interfaces';
 
-import { routes } from '@app/app.routing';
+import { AppSharedModule } from '@app/app-shared.module';
 
-import { PasswordValidatorDirective } from '@app/directives/password-validator.directive';
-import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-match-validator.directive';
-import { EmailValidatorDirective } from '@app/directives/email-validator.directive';
+import { routes } from '@app/app.routing';
 
 import { AppComponent } from '@app/app.component';
 import { ConfirmModalComponent } from '@app/components/shared/confirm-modal/confirm-modal.component';
@@ -55,13 +53,11 @@ export function clarityIconsFactory() {
 
     ClarityModule,
 
+    AppSharedModule,
+
     RouterModule.forRoot(routes),
   ],
   declarations: [
-    PasswordValidatorDirective,
-    PasswordsMatchValidatorDirective,
-    EmailValidatorDirective,
-
     AppComponent,
     ConfirmModalComponent,
     LocalAlertsComponent,

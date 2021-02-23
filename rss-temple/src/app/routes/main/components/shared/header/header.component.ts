@@ -11,7 +11,7 @@ import {
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { Subject, zip } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 
 import {
@@ -170,7 +170,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    zip(
+    forkJoin([
       this.userCategoryService
         .queryAll({
           fields: ['text', 'feedUuids'],
@@ -200,7 +200,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
             throw new Error('malformed response');
           }),
         ),
-    )
+    ])
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: ([userCategories, feeds]) => {
@@ -310,7 +310,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     this.feedObservableService.feedsChanged.next();
 
-    zip(
+    forkJoin([
       this.userCategoryService
         .queryAll({
           fields: ['text', 'feedUuids'],
@@ -340,7 +340,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
             throw new Error('malformed response');
           }),
         ),
-    )
+    ])
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: ([userCategories, feeds]) => {

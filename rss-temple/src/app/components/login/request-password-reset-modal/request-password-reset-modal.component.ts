@@ -24,7 +24,7 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
 
   result = new Subject<void>();
 
-  @ViewChild('passwordResetRequestForm', { static: false })
+  @ViewChild('passwordResetRequestForm', { static: true })
   _passwordResetRequestForm?: NgForm;
 
   private readonly unsubscribe$ = new Subject<void>();

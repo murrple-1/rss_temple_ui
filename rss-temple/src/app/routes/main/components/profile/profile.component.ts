@@ -1,7 +1,8 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { NgForm } from '@angular/forms';
 
-import { Subject, zip } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
 import { takeUntil, skip, map } from 'rxjs/operators';
 
 import { FeedService, FeedEntryService, UserService } from '@app/services/data';
@@ -14,7 +15,7 @@ import {
 import { UpdateUserBody } from '@app/services/data/user.service';
 import {
   MinLength as PasswordMinLength,
-  passwordRequirementsText,
+  passwordRequirementsTextHtml,
   SpecialCharacters as PasswordSpecialCharacters,
 } from '@app/libs/password.lib';
 import { User } from '@app/models';
@@ -45,11 +46,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
   newPassword = '';
   newPasswordCheck = '';
 
-  // TODO hasn't been hooked up yet
-  isPasswordChanging = false;
-
-  fieldsChanged = new Set<string>();
-
   hasGoogleLogin = false;
   hasFacebookLogin = false;
 
@@ -58,10 +54,23 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   gLoaded = false;
   fbLoaded = false;
+  gButtonInUse = false;
+  fbButtonInUse = false;
 
-  readonly passwordHelperText = passwordRequirementsText('en');
+  @ViewChild('profileDetailsForm', { static: true })
+  profileDetailsForm?: NgForm;
+
+  readonly passwordHelperTextHtml = passwordRequirementsTextHtml('en');
   readonly passwordMinLength = PasswordMinLength;
   readonly passwordSpecialCharacters = PasswordSpecialCharacters.join('');
+
+  get isPasswordChanging() {
+    return (
+      this.oldPassword.length > 0 ||
+      this.newPassword.length > 0 ||
+      this.newPasswordCheck.length > 0
+    );
+  }
 
   private readonly unsubscribe$ = new Subject<void>();
 
@@ -77,7 +86,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    zip(
+    forkJoin([
       this.userService
         .get({
           fields: ['email', 'hasGoogleLogin', 'hasFacebookLogin'],
@@ -110,7 +119,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             throw new Error('malformed response');
           }),
         ),
-    )
+    ])
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: ([user, feedsCount, readFeedEntriesCount]) => {
@@ -199,8 +208,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  linkGoogle() {
-    this.gAuthService.signIn();
+  async linkGoogle() {
+    this.gButtonInUse = true;
+    try {
+      await this.gAuthService.signIn();
+    } catch (e) {
+      console.error(e);
+    }
+    this.gButtonInUse = false;
   }
 
   private handleGoogleUser(user: gapi.auth2.GoogleUser) {
@@ -223,8 +238,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
       });
   }
 
-  linkFacebook() {
-    this.fbAuthService.signIn();
+  async linkFacebook() {
+    this.fbButtonInUse = true;
+    try {
+      await this.fbAuthService.signIn();
+    } catch (e) {
+      console.error(e);
+    }
+    this.fbButtonInUse = false;
   }
 
   private handleFacebookUser(user: fb.AuthResponse) {
@@ -290,19 +311,37 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   onSave() {
-    if (this.fieldsChanged.size < 1) {
+    if (this.profileDetailsForm === undefined) {
+      throw new Error('profileDetailsForm undefined');
+    }
+
+    if (this.profileDetailsForm.pristine) {
+      this.appAlertsService.appAlertDescriptor$.next({
+        autoCloseInterval: 5000,
+        canClose: true,
+        text: 'Profile Saved',
+        type: 'info',
+      });
+
+      this.state = State.SaveSuccess;
       return;
     }
 
-    // TODO check error state
+    if (this.profileDetailsForm.invalid) {
+      return;
+    }
 
     const updateUserBody: UpdateUserBody = {};
 
-    if (this.fieldsChanged.has('email')) {
+    if (this.profileDetailsForm.controls['email']?.dirty) {
       updateUserBody.email = this.email;
     }
 
-    if (this.fieldsChanged.has('password')) {
+    if (
+      this.profileDetailsForm.controls['oldPassword']?.dirty &&
+      this.profileDetailsForm.controls['newPassword']?.dirty &&
+      this.profileDetailsForm.controls['newPasswordCheck']?.dirty
+    ) {
       updateUserBody.my = {
         password: {
           old: this.oldPassword,
@@ -325,21 +364,45 @@ export class ProfileComponent implements OnInit, OnDestroy {
             type: 'info',
           });
 
-          this.fieldsChanged.clear();
+          this.profileDetailsForm?.resetForm({
+            email: this.email,
+            oldPassword: '',
+            newPassword: '',
+            newPasswordCheck: '',
+          });
 
           this.zone.run(() => {
             this.state = State.SaveSuccess;
           });
         },
         error: error => {
-          if (error instanceof HttpErrorResponse && error.status === 400) {
-            this.appAlertsService.appAlertDescriptor$.next({
-              autoCloseInterval: 5000,
-              canClose: true,
-              text: 'Profile failed to save',
-              type: 'danger',
-            });
-          } else {
+          let errorHandled = false;
+          if (error instanceof HttpErrorResponse) {
+            switch (error.status) {
+              case 400: {
+                this.appAlertsService.appAlertDescriptor$.next({
+                  autoCloseInterval: 5000,
+                  canClose: true,
+                  text: 'Profile failed to save',
+                  type: 'danger',
+                });
+                errorHandled = true;
+                break;
+              }
+              case 403: {
+                this.appAlertsService.appAlertDescriptor$.next({
+                  autoCloseInterval: 5000,
+                  canClose: true,
+                  text: 'Old password wrong',
+                  type: 'danger',
+                });
+                errorHandled = true;
+                break;
+              }
+            }
+          }
+
+          if (!errorHandled) {
             this.httpErrorService.handleError(error);
           }
 

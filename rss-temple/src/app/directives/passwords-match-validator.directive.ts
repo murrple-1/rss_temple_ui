@@ -19,8 +19,21 @@ import { validatePasswordsMatch } from '@app/libs/password.lib';
   ],
 })
 export class PasswordsMatchValidatorDirective implements Validator {
+  private _validatorEnabled = true;
   private _password1ControlName?: string;
   private _password2ControlName?: string;
+
+  @Input('appPasswordsMatch')
+  get validatorEnabled() {
+    return this._validatorEnabled;
+  }
+
+  set validatorEnabled(value: boolean) {
+    this._validatorEnabled = value;
+    if (this.validatorChangeCallback !== undefined) {
+      this.validatorChangeCallback();
+    }
+  }
 
   @Input('appPassword1ControlName')
   get password1ControlName() {
@@ -49,9 +62,13 @@ export class PasswordsMatchValidatorDirective implements Validator {
   private validatorChangeCallback?: () => void;
 
   validate(control: AbstractControl) {
+    if (!this._validatorEnabled) {
+      return null;
+    }
+
     if (
-      this.password1ControlName === undefined ||
-      this.password2ControlName === undefined
+      this._password1ControlName === undefined ||
+      this._password2ControlName === undefined
     ) {
       return null;
     }
@@ -60,12 +77,12 @@ export class PasswordsMatchValidatorDirective implements Validator {
       return null;
     }
 
-    const password1Control = control.controls[this.password1ControlName];
+    const password1Control = control.controls[this._password1ControlName];
     if (!password1Control) {
       return null;
     }
 
-    const password2Control = control.controls[this.password2ControlName];
+    const password2Control = control.controls[this._password2ControlName];
     if (!password2Control) {
       return null;
     }

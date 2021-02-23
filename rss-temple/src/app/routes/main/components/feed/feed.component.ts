@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { zip, Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 
 import {
@@ -147,7 +147,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
             );
           }
 
-          zip(this.getFeedEntries(), userCategoriesObservable)
+          forkJoin([this.getFeedEntries(), userCategoriesObservable])
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
               next: ([feedEntries, userCategories]) => {

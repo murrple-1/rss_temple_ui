@@ -1,39 +1,38 @@
-<h1>Profile</h1>
+<div class="clr-row">
+  <div class="clr-col-12">
+    <h1>Profile</h1>
+  </div>
+</div>
 <div class="clr-row">
   <div class="clr-col-md-6 clr-col-12">
     <div class="card">
-      <div class="card-header">Profile Stats</div>
-      <div class="card-block">
-        <div class="card-text">
-          Number of Feeds subscribed to: {{ numberOfFeeds }}
-        </div>
-        <div class="card-text">
-          Number of Read Articles: {{ numberOfReadFeedEntries }}
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="clr-col-md-6 clr-col-12">
-    <div class="card">
-      <form clrForm>
-        <div class="card-header">Profile</div>
+      <form
+        clrForm
+        #profileDetailsForm="ngForm"
+        [appPasswordsMatch]="isPasswordChanging"
+        appPassword1ControlName="newPassword"
+        appPassword2ControlName="newPasswordCheck"
+        (ngSubmit)="onSave()"
+      >
+        <div class="card-header">Edit Profile Details</div>
         <div class="card-block">
           <fieldset
-            [disabled]="[State.IsLoading, State.IsSaving].includes(state)"
+            [disabled]="
+              [State.IsLoading, State.IsSaving].includes(state) ||
+              gButtonInUse ||
+              fbButtonInUse
+            "
           >
             <clr-input-container>
               <label>Email</label>
               <input
                 clrInput
                 type="email"
+                name="email"
                 placeholder="example@example.com"
                 [(ngModel)]="email"
-                required
                 appEmail
               />
-              <clr-control-error *clrIfError="'required'"
-                >Email required</clr-control-error
-              >
               <clr-control-error *clrIfError="'invalidemail'"
                 >Email malformed</clr-control-error
               >
@@ -43,8 +42,10 @@
               <input
                 clrInput
                 type="password"
+                name="oldPassword"
                 placeholder="Old Password"
                 [(ngModel)]="oldPassword"
+                [required]="isPasswordChanging"
               />
             </clr-input-container>
             <clr-input-container>
@@ -52,13 +53,13 @@
               <input
                 clrInput
                 type="password"
+                name="newPassword"
                 placeholder="New Password"
                 [(ngModel)]="newPassword"
                 [required]="isPasswordChanging"
                 minlength="{{ passwordMinLength }}"
                 appPassword
               />
-              <clr-control-helper>{{ passwordHelperText }}</clr-control-helper>
               <clr-control-error *clrIfError="'required'"
                 >Password required</clr-control-error
               >
@@ -86,13 +87,13 @@
               <input
                 clrInput
                 type="password"
+                name="newPasswordCheck"
                 placeholder="Confirm New Password"
                 [(ngModel)]="newPasswordCheck"
                 [required]="isPasswordChanging"
                 minlength="{{ passwordMinLength }}"
                 appPassword
               />
-              <clr-control-helper>{{ passwordHelperText }}</clr-control-helper>
               <clr-control-error *clrIfError="'required'"
                 >Password required</clr-control-error
               >
@@ -116,65 +117,160 @@
               >
             </clr-input-container>
           </fieldset>
+          <clr-accordion class="app--pw-requirements">
+            <clr-accordion-panel>
+              <clr-accordion-title>Password Requirements</clr-accordion-title>
+              <clr-accordion-content
+                *clrIfExpanded
+                [innerHtml]="passwordHelperTextHtml"
+              ></clr-accordion-content>
+            </clr-accordion-panel>
+          </clr-accordion>
+          <ng-container
+            *ngIf="
+              profileDetailsForm &&
+              (profileDetailsForm.touched || profileDetailsForm.dirty)
+            "
+          >
+            <div
+              *ngIf="profileDetailsForm.errors"
+              class="alert alert-warning"
+              role="alert"
+            >
+              <div class="alert-items">
+                <div
+                  *ngIf="profileDetailsForm.errors?.passwordsdonotmatch"
+                  class="alert-item static"
+                >
+                  <div class="alert-icon-wrapper">
+                    <cds-icon
+                      class="alert-icon"
+                      shape="exclamation-triangle"
+                    ></cds-icon>
+                  </div>
+                  <span class="alert-text">Passwords don't match</span>
+                </div>
+              </div>
+            </div>
+          </ng-container>
         </div>
         <div class="card-footer">
-          <button type="submit" class="btn btn-sm btn-link">Save</button>
+          <button
+            type="submit"
+            class="btn btn-sm btn-link"
+            [disabled]="
+              [State.IsLoading, State.IsSaving].includes(state) ||
+              gButtonInUse ||
+              fbButtonInUse
+            "
+          >
+            Save
+          </button>
         </div>
       </form>
     </div>
   </div>
+  <div class="clr-col-md-6 clr-col-12">
+    <div class="card">
+      <div class="card-header">Profile Stats</div>
+      <div class="card-block">
+        <div class="card-text">
+          Number of Feeds subscribed to: {{ numberOfFeeds }}
+        </div>
+        <div class="card-text">
+          Number of Read Articles: {{ numberOfReadFeedEntries }}
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-<h4>Third Party Logins</h4>
+<div class="clr-row">
+  <div class="clr-col-12">
+    <h4>Third Party Logins</h4>
+  </div>
+</div>
 <div class="clr-row">
   <div class="clr-col-2">
     <div class="card">
-      <div class="card-block">
-        <cds-icon shape="brand-google"></cds-icon>
-        <div class="card-title">Google</div>
-        <button
-          type="button"
-          class="btn btn-outline-primary"
-          (click)="linkGoogle()"
-          *ngIf="!hasGoogleLogin"
-          [disabled]="!gLoaded"
-        >
-          Link
-        </button>
-        <button
-          type="button"
-          class="btn btn-outline-warning"
-          (click)="unlinkGoogle()"
-          *ngIf="hasGoogleLogin"
-          [disabled]="!gLoaded"
-        >
-          Unlink
-        </button>
+      <div class="card-header">
+        <cds-icon shape="brand-google" size="xl"></cds-icon>
+      </div>
+      <div class="card-footer">
+        <ng-container
+          *ngIf="hasGoogleLogin; then unlinkGButton; else linkGButton"
+        ></ng-container>
+        <ng-template #unlinkGButton>
+          <button
+            type="button"
+            class="btn btn-outline-warning"
+            (click)="unlinkGoogle()"
+            [disabled]="
+              !gLoaded ||
+              gButtonInUse ||
+              fbButtonInUse ||
+              [State.IsLoading, State.IsSaving].includes(state)
+            "
+          >
+            Unlink
+          </button>
+        </ng-template>
+        <ng-template #linkGButton>
+          <button
+            type="button"
+            class="btn btn-outline-primary"
+            (click)="linkGoogle()"
+            [disabled]="
+              !gLoaded ||
+              gButtonInUse ||
+              fbButtonInUse ||
+              [State.IsLoading, State.IsSaving].includes(state)
+            "
+          >
+            Link
+          </button>
+        </ng-template>
       </div>
     </div>
   </div>
   <div class="clr-col-2">
     <div class="card">
-      <div class="card-block">
-        <cds-icon shape="brand-facebook"></cds-icon>
-        <div class="card-title">Facebook</div>
-        <button
-          type="button"
-          class="btn btn-outline-primary"
-          (click)="linkFacebook()"
-          *ngIf="!hasFacebookLogin"
-          [disabled]="!fbLoaded"
-        >
-          Link
-        </button>
-        <button
-          type="button"
-          class="btn btn-outline-warning"
-          (click)="unlinkFacebook()"
-          *ngIf="hasFacebookLogin"
-          [disabled]="!fbLoaded"
-        >
-          Unlink
-        </button>
+      <div class="card-header">
+        <cds-icon shape="brand-facebook" size="xl"></cds-icon>
+      </div>
+      <div class="card-footer">
+        <ng-container
+          *ngIf="hasFacebookLogin; then unlinkFBButton; else linkFBButton"
+        ></ng-container>
+        <ng-template #unlinkFBButton>
+          <button
+            type="button"
+            class="btn btn-outline-warning"
+            (click)="unlinkFacebook()"
+            [disabled]="
+              !fbLoaded ||
+              gButtonInUse ||
+              fbButtonInUse ||
+              [State.IsLoading, State.IsSaving].includes(state)
+            "
+          >
+            Unlink
+          </button>
+        </ng-template>
+        <ng-template #linkFBButton>
+          <button
+            type="button"
+            class="btn btn-outline-primary"
+            (click)="linkFacebook()"
+            [disabled]="
+              !fbLoaded ||
+              gButtonInUse ||
+              fbButtonInUse ||
+              [State.IsLoading, State.IsSaving].includes(state)
+            "
+          >
+            Link
+          </button>
+        </ng-template>
       </div>
     </div>
   </div>

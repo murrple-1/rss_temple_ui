@@ -23,7 +23,7 @@ export class SubscribeModalComponent implements OnDestroy {
 
   result = new Subject<SubscriptionDetails>();
 
-  @ViewChild('subscribeForm', { static: false })
+  @ViewChild('subscribeForm', { static: true })
   _subscribeForm?: NgForm;
 
   ngOnDestroy() {

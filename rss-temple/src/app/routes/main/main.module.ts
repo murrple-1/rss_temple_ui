@@ -7,6 +7,8 @@ import { ClarityModule } from '@clr/angular';
 
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
+import { AppSharedModule } from '@app/app-shared.module';
+
 import { routes } from '@app/routes/main/main.routing';
 
 import {
@@ -38,10 +40,14 @@ import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/routes/main
 
     InfiniteScrollModule,
 
+    AppSharedModule,
+
     RouterModule.forChild(routes),
   ],
   providers: [FeedObservableService, DisplayObservableService],
   declarations: [
+    InViewportDirective,
+
     MainComponent,
     FeedsComponent,
     FeedComponent,
@@ -54,8 +60,6 @@ import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/routes/main
     DisplayOptionsViewComponent,
     HeaderSubscribeModalComponent,
     HeaderOPMLModalComponent,
-
-    InViewportDirective,
   ],
 })
 export class MainModule {}
