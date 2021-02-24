@@ -34,6 +34,9 @@ import { LoginService } from '@app/services/data';
 @Component({
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
+  host: {
+    'class': 'content-container',
+  },
 })
 export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
   email = '';

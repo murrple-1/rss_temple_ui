@@ -1,97 +1,101 @@
-﻿<div class="login-wrapper">
-  <div class="login">
-    <section class="title">
-      <h3 class="welcome">Welcome to</h3>
-      RSS Temple
-    </section>
-    <form clrForm #loginForm="ngForm" (ngSubmit)="onLogin()">
-      <div class="login-group">
-        <fieldset [disabled]="loginButtonState !== ClrLoadingState.DEFAULT">
-          <clr-input-container>
-            <label>Email</label>
-            <input
-              clrInput
-              type="email"
-              name="email"
-              placeholder="example@example.com"
-              [(ngModel)]="email"
-              required
-            />
-            <clr-control-error *clrIfError="'required'"
-              >Email required</clr-control-error
-            >
-          </clr-input-container>
-          <clr-password-container>
-            <label>Password</label>
-            <input
-              clrPassword
-              type="password"
-              name="password"
-              placeholder="Password"
-              [(ngModel)]="password"
-              required
-            />
-            <clr-control-error *clrIfError="'required'"
-              >Password required</clr-control-error
-            >
-          </clr-password-container>
-          <clr-checkbox-wrapper>
-            <label>Remember Me</label>
-            <input
-              clrCheckbox
-              type="checkbox"
-              name="rememberMe"
-              [(ngModel)]="rememberMe"
-            />
-          </clr-checkbox-wrapper>
-        </fieldset>
-        <app-local-alerts [alertEntries]="loginAlertEntries"></app-local-alerts>
-        <button
-          class="btn btn-primary"
-          type="submit"
-          [disabled]="gButtonInUse || fbButtonInUse"
-          [clrLoading]="loginButtonState"
-        >
-          Login
-        </button>
-        <a [routerLink]="['/register']" class="signup">Register</a>
-      </div>
-    </form>
-    <button
-      id="forgotten-password"
-      class="btn btn-link btn-sm app--forgot-password"
-      (click)="onForgottenPassword()"
-    >
-      Forgot Password?
-    </button>
-    <button
-      id="google-login"
-      [disabled]="
-        !gLoaded ||
-        loginButtonState !== ClrLoadingState.DEFAULT ||
-        gButtonInUse ||
-        fbButtonInUse
-      "
-      class="btn btn-primary"
-      (click)="onGoogleLogin()"
-    >
-      <cds-icon shape="brand-google"></cds-icon>
-      <span>Login with Google</span>
-    </button>
-    <button
-      id="facebook-login"
-      [disabled]="
-        !fbLoaded ||
-        loginButtonState !== ClrLoadingState.DEFAULT ||
-        gButtonInUse ||
-        fbButtonInUse
-      "
-      class="btn btn-primary"
-      (click)="onFacebookLogin()"
-    >
-      <cds-icon shape="brand-facebook"></cds-icon>
-      <span>Login with Facebook</span>
-    </button>
+﻿<div class="content-area">
+  <div class="login-wrapper">
+    <div class="login">
+      <section class="title">
+        <h3 class="welcome">Welcome to</h3>
+        RSS Temple
+      </section>
+      <form clrForm #loginForm="ngForm" (ngSubmit)="onLogin()">
+        <div class="login-group">
+          <fieldset [disabled]="loginButtonState !== ClrLoadingState.DEFAULT">
+            <clr-input-container>
+              <label>Email</label>
+              <input
+                clrInput
+                type="email"
+                name="email"
+                placeholder="example@example.com"
+                [(ngModel)]="email"
+                required
+              />
+              <clr-control-error *clrIfError="'required'"
+                >Email required</clr-control-error
+              >
+            </clr-input-container>
+            <clr-password-container>
+              <label>Password</label>
+              <input
+                clrPassword
+                type="password"
+                name="password"
+                placeholder="Password"
+                [(ngModel)]="password"
+                required
+              />
+              <clr-control-error *clrIfError="'required'"
+                >Password required</clr-control-error
+              >
+            </clr-password-container>
+            <clr-checkbox-wrapper>
+              <label>Remember Me</label>
+              <input
+                clrCheckbox
+                type="checkbox"
+                name="rememberMe"
+                [(ngModel)]="rememberMe"
+              />
+            </clr-checkbox-wrapper>
+          </fieldset>
+          <app-local-alerts
+            [alertEntries]="loginAlertEntries"
+          ></app-local-alerts>
+          <button
+            class="btn btn-primary"
+            type="submit"
+            [disabled]="gButtonInUse || fbButtonInUse"
+            [clrLoading]="loginButtonState"
+          >
+            Login
+          </button>
+          <a [routerLink]="['/register']" class="signup">Register</a>
+        </div>
+      </form>
+      <button
+        id="forgotten-password"
+        class="btn btn-link btn-sm app--forgot-password"
+        (click)="onForgottenPassword()"
+      >
+        Forgot Password?
+      </button>
+      <button
+        id="google-login"
+        [disabled]="
+          !gLoaded ||
+          loginButtonState !== ClrLoadingState.DEFAULT ||
+          gButtonInUse ||
+          fbButtonInUse
+        "
+        class="btn btn-primary"
+        (click)="onGoogleLogin()"
+      >
+        <cds-icon shape="brand-google"></cds-icon>
+        <span>Login with Google</span>
+      </button>
+      <button
+        id="facebook-login"
+        [disabled]="
+          !fbLoaded ||
+          loginButtonState !== ClrLoadingState.DEFAULT ||
+          gButtonInUse ||
+          fbButtonInUse
+        "
+        class="btn btn-primary"
+        (click)="onFacebookLogin()"
+      >
+        <cds-icon shape="brand-facebook"></cds-icon>
+        <span>Login with Facebook</span>
+      </button>
+    </div>
   </div>
 </div>
 

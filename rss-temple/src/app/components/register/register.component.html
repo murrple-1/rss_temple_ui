@@ -1,135 +1,137 @@
-﻿<h2>Register</h2>
-<form
-  clrForm
-  #registerForm="ngForm"
-  appPasswordsMatch
-  appPassword1ControlName="password"
-  appPassword2ControlName="passwordCheck"
-  (ngSubmit)="onRegister()"
->
-  <fieldset [disabled]="registerButtonState !== ClrLoadingState.DEFAULT">
-    <clr-input-container>
-      <label>Email</label>
-      <input
-        clrInput
-        type="email"
-        name="email"
-        placeholder="example@example.com"
-        [(ngModel)]="email"
-        required
-        appEmail
-      />
-      <clr-control-error *clrIfError="'required'"
-        >Email required</clr-control-error
-      >
-      <clr-control-error *clrIfError="'invalidemail'"
-        >Email malformed</clr-control-error
-      >
-    </clr-input-container>
-    <clr-input-container>
-      <label>Password</label>
-      <input
-        clrInput
-        type="password"
-        name="password"
-        placeholder="Password"
-        [(ngModel)]="password"
-        required
-        minlength="{{ passwordMinLength }}"
-        appPassword
-      />
-      <clr-control-error *clrIfError="'required'"
-        >Password required</clr-control-error
-      >
-      <clr-control-error *clrIfError="'minlength'; error as error"
-        >Password must be at least {{ error.requiredLength }} characters
-        long</clr-control-error
-      >
-      <clr-control-error *clrIfError="'nolowercase'"
-        >No Lowercase Character(s)</clr-control-error
-      >
-      <clr-control-error *clrIfError="'nouppercase'"
-        >No Uppercase Character(s)</clr-control-error
-      >
-      <clr-control-error *clrIfError="'nodigit'"
-        >No Digits(s)</clr-control-error
-      >
-      <clr-control-error *clrIfError="'nospecialcharacter'"
-        >No Special Character(s) ({{
-          passwordSpecialCharacters
-        }})</clr-control-error
-      >
-    </clr-input-container>
-    <clr-input-container>
-      <label>Confirm Password</label>
-      <input
-        clrInput
-        type="password"
-        name="passwordCheck"
-        placeholder="Confirm Password"
-        [(ngModel)]="passwordCheck"
-        required
-        minlength="{{ passwordMinLength }}"
-        appPassword
-      />
-      <clr-control-error *clrIfError="'required'"
-        >Password required</clr-control-error
-      >
-      <clr-control-error *clrIfError="'minlength'; error as error"
-        >Password must be at least {{ error.requiredLength }} characters
-        long</clr-control-error
-      >
-      <clr-control-error *clrIfError="'nolowercase'"
-        >No Lowercase Character(s)</clr-control-error
-      >
-      <clr-control-error *clrIfError="'nouppercase'"
-        >No Uppercase Character(s)</clr-control-error
-      >
-      <clr-control-error *clrIfError="'nodigit'"
-        >No Digits(s)</clr-control-error
-      >
-      <clr-control-error *clrIfError="'nospecialcharacter'"
-        >No Special Character(s) ({{
-          passwordSpecialCharacters
-        }})</clr-control-error
-      >
-    </clr-input-container>
-  </fieldset>
-  <clr-accordion class="app--pw-requirements">
-    <clr-accordion-panel>
-      <clr-accordion-title>Password Requirements</clr-accordion-title>
-      <clr-accordion-content
-        *clrIfExpanded
-        [innerHtml]="passwordHelperTextHtml"
-      ></clr-accordion-content>
-    </clr-accordion-panel>
-  </clr-accordion>
-  <ng-container
-    *ngIf="registerForm && (registerForm.touched || registerForm.dirty)"
+﻿<div class="content-area">
+  <h2>Register</h2>
+  <form
+    clrForm
+    #registerForm="ngForm"
+    appPasswordsMatch
+    appPassword1ControlName="password"
+    appPassword2ControlName="passwordCheck"
+    (ngSubmit)="onRegister()"
   >
-    <div *ngIf="registerForm.errors" class="alert alert-warning" role="alert">
-      <div class="alert-items">
-        <div
-          *ngIf="registerForm.errors?.passwordsdonotmatch"
-          class="alert-item static"
+    <fieldset [disabled]="registerButtonState !== ClrLoadingState.DEFAULT">
+      <clr-input-container>
+        <label>Email</label>
+        <input
+          clrInput
+          type="email"
+          name="email"
+          placeholder="example@example.com"
+          [(ngModel)]="email"
+          required
+          appEmail
+        />
+        <clr-control-error *clrIfError="'required'"
+          >Email required</clr-control-error
         >
-          <div class="alert-icon-wrapper">
-            <cds-icon
-              class="alert-icon"
-              shape="exclamation-triangle"
-            ></cds-icon>
+        <clr-control-error *clrIfError="'invalidemail'"
+          >Email malformed</clr-control-error
+        >
+      </clr-input-container>
+      <clr-input-container>
+        <label>Password</label>
+        <input
+          clrInput
+          type="password"
+          name="password"
+          placeholder="Password"
+          [(ngModel)]="password"
+          required
+          minlength="{{ passwordMinLength }}"
+          appPassword
+        />
+        <clr-control-error *clrIfError="'required'"
+          >Password required</clr-control-error
+        >
+        <clr-control-error *clrIfError="'minlength'; error as error"
+          >Password must be at least {{ error.requiredLength }} characters
+          long</clr-control-error
+        >
+        <clr-control-error *clrIfError="'nolowercase'"
+          >No Lowercase Character(s)</clr-control-error
+        >
+        <clr-control-error *clrIfError="'nouppercase'"
+          >No Uppercase Character(s)</clr-control-error
+        >
+        <clr-control-error *clrIfError="'nodigit'"
+          >No Digits(s)</clr-control-error
+        >
+        <clr-control-error *clrIfError="'nospecialcharacter'"
+          >No Special Character(s) ({{
+            passwordSpecialCharacters
+          }})</clr-control-error
+        >
+      </clr-input-container>
+      <clr-input-container>
+        <label>Confirm Password</label>
+        <input
+          clrInput
+          type="password"
+          name="passwordCheck"
+          placeholder="Confirm Password"
+          [(ngModel)]="passwordCheck"
+          required
+          minlength="{{ passwordMinLength }}"
+          appPassword
+        />
+        <clr-control-error *clrIfError="'required'"
+          >Password required</clr-control-error
+        >
+        <clr-control-error *clrIfError="'minlength'; error as error"
+          >Password must be at least {{ error.requiredLength }} characters
+          long</clr-control-error
+        >
+        <clr-control-error *clrIfError="'nolowercase'"
+          >No Lowercase Character(s)</clr-control-error
+        >
+        <clr-control-error *clrIfError="'nouppercase'"
+          >No Uppercase Character(s)</clr-control-error
+        >
+        <clr-control-error *clrIfError="'nodigit'"
+          >No Digits(s)</clr-control-error
+        >
+        <clr-control-error *clrIfError="'nospecialcharacter'"
+          >No Special Character(s) ({{
+            passwordSpecialCharacters
+          }})</clr-control-error
+        >
+      </clr-input-container>
+    </fieldset>
+    <clr-accordion class="app--pw-requirements">
+      <clr-accordion-panel>
+        <clr-accordion-title>Password Requirements</clr-accordion-title>
+        <clr-accordion-content
+          *clrIfExpanded
+          [innerHtml]="passwordHelperTextHtml"
+        ></clr-accordion-content>
+      </clr-accordion-panel>
+    </clr-accordion>
+    <ng-container
+      *ngIf="registerForm && (registerForm.touched || registerForm.dirty)"
+    >
+      <div *ngIf="registerForm.errors" class="alert alert-warning" role="alert">
+        <div class="alert-items">
+          <div
+            *ngIf="registerForm.errors?.passwordsdonotmatch"
+            class="alert-item static"
+          >
+            <div class="alert-icon-wrapper">
+              <cds-icon
+                class="alert-icon"
+                shape="exclamation-triangle"
+              ></cds-icon>
+            </div>
+            <span class="alert-text">Passwords don't match</span>
           </div>
-          <span class="alert-text">Passwords don't match</span>
         </div>
       </div>
-    </div>
-  </ng-container>
-  <button
-    type="submit"
-    class="btn btn-primary"
-    [clrLoading]="registerButtonState"
-  >
-    Register
-  </button>
-  <a [routerLink]="['/login']" class="btn btn-link">Cancel</a>
-</form>
+    </ng-container>
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [clrLoading]="registerButtonState"
+    >
+      Register
+    </button>
+    <a [routerLink]="['/login']" class="btn btn-link">Cancel</a>
+  </form>
+</div>

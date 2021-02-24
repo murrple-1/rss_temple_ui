@@ -36,6 +36,9 @@ enum State {
 @Component({
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
+  host: {
+    'class': 'content-container',
+  },
 })
 export class ProfileComponent implements OnInit, OnDestroy {
   state = State.IsLoading;
