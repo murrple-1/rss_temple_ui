@@ -1,0 +1,27 @@
+<clr-vertical-nav
+  [clrVerticalNavCollapsible]="true"
+  [(clrVerticalNavCollapsed)]="isCollapsed"
+>
+  <a clrVerticalNavLink routerLink="./charmander" routerLinkActive="active"
+    >Charmander</a
+  >
+  <a clrVerticalNavLink routerLink="./jigglypuff" routerLinkActive="active"
+    >Jigglypuff</a
+  >
+  <a clrVerticalNavLink routerLink="./pikachu" routerLinkActive="active"
+    >Pikachu</a
+  >
+  <a clrVerticalNavLink routerLink="./raichu" routerLinkActive="active"
+    >Raichu</a
+  >
+  <a clrVerticalNavLink routerLink="./snorlax" routerLinkActive="active"
+    >Snorlax</a
+  >
+  <div class="nav-divider"></div>
+  <a clrVerticalNavLink routerLink="./credit" routerLinkActive="active"
+    >Credit</a
+  >
+</clr-vertical-nav>
+
+<app-subscribe-modal></app-subscribe-modal>
+<app-opml-modal></app-opml-modal>

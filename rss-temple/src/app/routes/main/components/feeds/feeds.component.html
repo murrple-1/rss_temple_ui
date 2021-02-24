@@ -1,7 +1,7 @@
-<main role="main">
+<app-vertical-nav></app-vertical-nav>
+<div class="content-area">
   <app-display-options></app-display-options>
   <div
-    class="container"
     infinite-scroll
     [infiniteScrollDisabled]="isLoadingMore"
     (scrolled)="onApproachingBottom()"
@@ -21,4 +21,4 @@
     <div *ngIf="isLoadingMore">Loading...</div>
     <div *ngIf="!isLoadingMore">Load More</div>
   </div>
-</main>
+</div>

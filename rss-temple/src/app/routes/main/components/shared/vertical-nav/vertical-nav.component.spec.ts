@@ -15,10 +15,10 @@ import {
   LoginService,
 } from '@app/services/data';
 import { FeedObservableService } from '@app/routes/main/services';
-import { SubscribeModalComponent } from '@app/routes/main/components/shared/header/subscribe-modal/subscribe-modal.component';
-import { OPMLModalComponent } from '@app/routes/main/components/shared/header/opml-modal/opml-modal.component';
+import { SubscribeModalComponent } from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
+import { OPMLModalComponent } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
 
-import { HeaderComponent } from './header.component';
+import { VerticalNavComponent } from './vertical-nav.component';
 
 async function setup() {
   const mockFeedService = jasmine.createSpyObj<FeedService>('FeedService', [
@@ -49,7 +49,7 @@ async function setup() {
       RouterTestingModule.withRoutes([]),
     ],
     declarations: [
-      HeaderComponent,
+      VerticalNavComponent,
       SubscribeModalComponent,
       OPMLModalComponent,
     ],
@@ -92,7 +92,7 @@ describe('HeaderComponent', () => {
     waitForAsync(async () => {
       await setup();
 
-      const componentFixture = TestBed.createComponent(HeaderComponent);
+      const componentFixture = TestBed.createComponent(VerticalNavComponent);
       const component = componentFixture.componentInstance;
       expect(component).toBeTruthy();
     }),
@@ -115,7 +115,7 @@ describe('HeaderComponent', () => {
         }),
       );
 
-      const componentFixture = TestBed.createComponent(HeaderComponent);
+      const componentFixture = TestBed.createComponent(VerticalNavComponent);
       const component = componentFixture.componentInstance;
 
       component.ngOnInit();

@@ -6,9 +6,9 @@ import { FormsModule } from '@angular/forms';
 
 import { ClarityModule } from '@clr/angular';
 
-import { HeaderComponent } from '@app/routes/main/components/shared/header/header.component';
-import { OPMLModalComponent } from '@app/routes/main/components/shared/header/opml-modal/opml-modal.component';
-import { SubscribeModalComponent } from '@app/routes/main/components/shared/header/subscribe-modal/subscribe-modal.component';
+import { VerticalNavComponent } from '@app/routes/main/components/shared/vertical-nav/vertical-nav.component';
+import { OPMLModalComponent } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
+import { SubscribeModalComponent } from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
 import {
   FeedService,
   OPMLService,
@@ -48,7 +48,7 @@ async function setup() {
     ],
     declarations: [
       MainComponent,
-      HeaderComponent,
+      VerticalNavComponent,
       OPMLModalComponent,
       SubscribeModalComponent,
     ],

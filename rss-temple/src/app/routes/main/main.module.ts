@@ -23,13 +23,13 @@ import { FeedsComponent } from '@app/routes/main/components/feeds/feeds.componen
 import { FeedComponent } from '@app/routes/main/components/feed/feed.component';
 import { UserCategoriesModalComponent } from '@app/routes/main/components/feed/user-categories-modal/user-categories-modal.component';
 import { ProfileComponent } from '@app/routes/main/components/profile/profile.component';
-import { HeaderComponent } from '@app/routes/main/components/shared/header/header.component';
+import { VerticalNavComponent } from '@app/routes/main/components/shared/vertical-nav/vertical-nav.component';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
 import { ComfyInnerViewComponent } from '@app/routes/main/components/shared/feed-entry-view/inner-view/comfy-inner-view/comfy-inner-view.component';
 import { CompactInnerViewComponent } from '@app/routes/main/components/shared/feed-entry-view/inner-view/compact-inner-view/compact-inner-view.component';
 import { DisplayOptionsViewComponent } from '@app/routes/main/components/shared/display-options/display-options.component';
-import { SubscribeModalComponent as HeaderSubscribeModalComponent } from '@app/routes/main/components/shared/header/subscribe-modal/subscribe-modal.component';
-import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/routes/main/components/shared/header/opml-modal/opml-modal.component';
+import { SubscribeModalComponent as HeaderSubscribeModalComponent } from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
+import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
 
 @NgModule({
   imports: [
@@ -53,7 +53,7 @@ import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/routes/main
     FeedComponent,
     UserCategoriesModalComponent,
     ProfileComponent,
-    HeaderComponent,
+    VerticalNavComponent,
     FeedEntryViewComponent,
     ComfyInnerViewComponent,
     CompactInnerViewComponent,

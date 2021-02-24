@@ -1,14 +1,4 @@
-/* eslint-disable @angular-eslint/component-selector */
-import {
-  Component,
-  OnInit,
-  NgZone,
-  OnDestroy,
-  Renderer2,
-  ElementRef,
-  ViewChild,
-} from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { forkJoin, Subject } from 'rxjs';
@@ -17,21 +7,13 @@ import { takeUntil, map } from 'rxjs/operators';
 import {
   openModal as openSubscribeModal,
   SubscribeModalComponent,
-} from '@app/routes/main/components/shared/header/subscribe-modal/subscribe-modal.component';
+} from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
 import {
   openModal as openOPMLModal,
   OPMLModalComponent,
-} from '@app/routes/main/components/shared/header/opml-modal/opml-modal.component';
-import {
-  FeedService,
-  LoginService,
-  UserCategoryService,
-} from '@app/services/data';
-import {
-  AppAlertsService,
-  HttpErrorService,
-  SessionService,
-} from '@app/services';
+} from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
+import { FeedService, UserCategoryService } from '@app/services/data';
+import { AppAlertsService, HttpErrorService } from '@app/services';
 import { FeedObservableService } from '@app/routes/main/services';
 import { UserCategory, Feed } from '@app/models';
 import { Sort } from '@app/services/data/sort.interface';
@@ -53,22 +35,14 @@ interface CategorizedFeeds {
 }
 
 @Component({
-  selector: 'nav[app-header]',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
+  selector: 'app-vertical-nav',
+  templateUrl: './vertical-nav.component.html',
+  styleUrls: ['./vertical-nav.component.scss'],
 })
-export class HeaderComponent implements OnInit, OnDestroy {
-  private readonly _classes: string[] = [
-    'navbar',
-    'navbar-expand-lg',
-    'navbar-dark',
-    'bg-dark',
-    'fixed-top',
-  ];
-
-  isCollapsed = true;
-
+export class VerticalNavComponent implements OnInit, OnDestroy {
+  filterText = '';
   searchAllText = '';
+  isCollapsed = false;
 
   private allCategorizedFeeds: CategorizedFeeds = {
     noCategory: [],
@@ -78,9 +52,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     noCategory: [],
     category: [],
   };
-
-  @ViewChild('filterInput', { static: true })
-  private filterInput?: ElementRef<HTMLInputElement>;
 
   @ViewChild(SubscribeModalComponent, { static: true })
   private subscribeModal?: SubscribeModalComponent;
@@ -92,22 +63,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   constructor(
     private zone: NgZone,
-    private elementRef: ElementRef,
-    private renderer: Renderer2,
-    private router: Router,
     private feedService: FeedService,
     private userCategoryService: UserCategoryService,
     private feedObservableService: FeedObservableService,
-    private loginService: LoginService,
     private appAlertsService: AppAlertsService,
     private httpErrorService: HttpErrorService,
-    private sessionService: SessionService,
-  ) {
-    const elem = this.elementRef.nativeElement;
-    for (const _class of this._classes) {
-      this.renderer.addClass(elem, _class);
-    }
-  }
+  ) {}
 
   private static buildAllCategorizedFeeds(
     userCategories: UserCategoryImpl[],
@@ -204,7 +165,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: ([userCategories, feeds]) => {
-          const allCategorizedFeeds = HeaderComponent.buildAllCategorizedFeeds(
+          const allCategorizedFeeds = VerticalNavComponent.buildAllCategorizedFeeds(
             userCategories,
             feeds,
           );
@@ -262,11 +223,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
                     this.allCategorizedFeeds.noCategory = this.allCategorizedFeeds.noCategory
                       .concat(feed)
-                      .sort(HeaderComponent.sortFeeds);
+                      .sort(VerticalNavComponent.sortFeeds);
 
-                    if (this.filterInput !== undefined) {
-                      this.filterFeeds(this.filterInput.nativeElement.value);
-                    }
+                    this.filterFeeds();
                   });
                 },
                 error: error => {
@@ -345,31 +304,28 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .subscribe({
         next: ([userCategories, feeds]) => {
           this.zone.run(() => {
-            this.allCategorizedFeeds = HeaderComponent.buildAllCategorizedFeeds(
+            this.allCategorizedFeeds = VerticalNavComponent.buildAllCategorizedFeeds(
               userCategories,
               feeds,
             );
 
-            if (this.filterInput !== undefined) {
-              this.filterFeeds(this.filterInput.nativeElement.value);
-            }
+            this.filterFeeds();
           });
         },
       });
   }
 
-  onFilterInput(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
-
-    this.filterFeeds(value);
+  setFilterText(filterText: string) {
+    this.filterText = filterText;
+    this.filterFeeds();
   }
 
-  private filterFeeds(value: string) {
-    value = value.trim().toLowerCase();
+  private filterFeeds() {
+    const filterText = this.filterText.trim().toLowerCase();
 
     const filterFn = (feed: FeedImpl) => {
       if (feed.calculatedTitle !== undefined) {
-        return feed.calculatedTitle.toLowerCase().includes(value);
+        return feed.calculatedTitle.toLowerCase().includes(filterText);
       } else {
         return false;
       }
@@ -393,29 +349,5 @@ export class HeaderComponent implements OnInit, OnDestroy {
   onSearch() {
     // TODO searching?
     console.log(this.searchAllText);
-  }
-
-  logOut(event: Event) {
-    event.stopPropagation();
-
-    const sessionToken = this.sessionService.sessionToken$.getValue();
-    if (sessionToken !== null) {
-      this.sessionService.sessionToken$.next(null);
-
-      this.loginService
-        .deleteSessionToken({
-          sessionToken,
-        })
-        .subscribe({
-          next: () => {
-            // do nothing
-          },
-          error: error => {
-            console.log(error);
-          },
-        });
-    }
-
-    this.router.navigate(['/login']);
   }
 }
