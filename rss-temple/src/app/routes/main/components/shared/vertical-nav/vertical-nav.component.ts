@@ -42,7 +42,6 @@ interface CategorizedFeeds {
 export class VerticalNavComponent implements OnInit, OnDestroy {
   filterText = '';
   searchAllText = '';
-  isCollapsed = false;
 
   private allCategorizedFeeds: CategorizedFeeds = {
     noCategory: [],

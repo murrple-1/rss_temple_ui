@@ -18,9 +18,6 @@ import { LoginService } from '@app/services/data';
 @Component({
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
-  host: {
-    'class': 'content-container',
-  },
 })
 export class RegisterComponent implements OnInit, OnDestroy {
   readonly passwordHelperTextHtml = passwordRequirementsTextHtml('en');
