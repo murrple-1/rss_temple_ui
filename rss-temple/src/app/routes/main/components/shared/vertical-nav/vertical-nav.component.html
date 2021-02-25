@@ -1,24 +1,66 @@
-<clr-vertical-nav [clrVerticalNavCollapsible]="true">
-  <clr-vertical-nav-group routerLinkActive="active">
-    <clr-icon shape="user" clrVerticalNavIcon></clr-icon>
-    Normal
+<clr-vertical-nav>
+  <clr-vertical-nav-group
+    *ngFor="let categoryDescriptor of categorizedFeeds.category"
+    routerLinkActive="active"
+  >
+    <clr-icon shape="folder" clrVerticalNavIcon></clr-icon>
+    {{ categoryDescriptor.category }}
     <clr-vertical-nav-group-children>
       <a
+        *ngFor="let feed of categoryDescriptor.feeds"
         clrVerticalNavLink
-        routerLink="./normal/pidgey"
+        [routerLink]="[
+          '/main/feed',
+          {
+            'feedUrl': feed.feedUrl
+          }
+        ]"
         routerLinkActive="active"
       >
-        Pidgey
-      </a>
-      <a
-        clrVerticalNavLink
-        routerLink="./normal/snorlax"
-        routerLinkActive="active"
-      >
-        Snorlax
+        {{ feed.calculatedTitle }}
       </a>
     </clr-vertical-nav-group-children>
   </clr-vertical-nav-group>
+  <clr-vertical-nav-group
+    *ngIf="categorizedFeeds.noCategory.length > 0"
+    routerLinkActive="active"
+  >
+    <clr-icon shape="folder" clrVerticalNavIcon></clr-icon>
+    No Category
+    <clr-vertical-nav-group-children>
+      <a
+        *ngFor="let feed of categorizedFeeds.noCategory"
+        clrVerticalNavLink
+        [routerLink]="[
+          '/main/feed',
+          {
+            'feedUrl': feed.feedUrl
+          }
+        ]"
+        routerLinkActive="active"
+      >
+        {{ feed.calculatedTitle }}
+      </a>
+    </clr-vertical-nav-group-children>
+  </clr-vertical-nav-group>
+  <label
+    *ngIf="
+      categorizedFeeds.category.length < 1 &&
+      categorizedFeeds.noCategory.length < 1
+    "
+    class="nav-header"
+  >
+    No Feeds
+  </label>
+  <div class="nav-divider"></div>
+  <a clrVerticalNavLink [routerLink]="" (click)="addFeed()">
+    <clr-icon clrVerticalNavIcon shape="plus"></clr-icon>
+    Add Feed...
+  </a>
+  <a clrVerticalNavLink [routerLink]="" (click)="uploadOPML()">
+    <clr-icon clrVerticalNavIcon shape="upload"></clr-icon>
+    Upload OPML...
+  </a>
 </clr-vertical-nav>
 
 <app-subscribe-modal></app-subscribe-modal>

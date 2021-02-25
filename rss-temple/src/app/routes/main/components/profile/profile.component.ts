@@ -96,6 +96,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         .query({
           returnObjects: false,
           returnTotalCount: true,
+          search: 'subscribed:"true"',
         })
         .pipe(
           map(response => {

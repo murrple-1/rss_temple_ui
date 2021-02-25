@@ -40,14 +40,7 @@ interface CategorizedFeeds {
   styleUrls: ['./vertical-nav.component.scss'],
 })
 export class VerticalNavComponent implements OnInit, OnDestroy {
-  filterText = '';
-  searchAllText = '';
-
-  private allCategorizedFeeds: CategorizedFeeds = {
-    noCategory: [],
-    category: [],
-  };
-  filteredCategorizedFeeds: CategorizedFeeds = {
+  categorizedFeeds: CategorizedFeeds = {
     noCategory: [],
     category: [],
   };
@@ -69,11 +62,11 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
     private httpErrorService: HttpErrorService,
   ) {}
 
-  private static buildAllCategorizedFeeds(
+  private static buildCategorizedFeeds(
     userCategories: UserCategoryImpl[],
     feeds: FeedImpl[],
   ) {
-    const allCategorizedFeedUuids = new Set<string>(
+    const categorizedFeedUuids = new Set<string>(
       userCategories.flatMap(_userCategory => {
         if (_userCategory.feedUuids !== undefined) {
           return _userCategory.feedUuids;
@@ -83,10 +76,10 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
       }),
     );
 
-    const allCategorizedFeeds: CategorizedFeeds = {
+    const categorizedFeeds: CategorizedFeeds = {
       noCategory: feeds.filter(_feed => {
         if (_feed.uuid !== undefined) {
-          return !allCategorizedFeedUuids.has(_feed.uuid);
+          return !categorizedFeedUuids.has(_feed.uuid);
         } else {
           return false;
         }
@@ -101,7 +94,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
       ) {
         const feedUuids = new Set<string>(userCategory.feedUuids);
 
-        allCategorizedFeeds.category.push({
+        categorizedFeeds.category.push({
           name: userCategory.text,
           feeds: feeds.filter(_feed => {
             if (_feed.uuid !== undefined) {
@@ -114,7 +107,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
       }
     }
 
-    return allCategorizedFeeds;
+    return categorizedFeeds;
   }
 
   private static sortFeeds(a: FeedImpl, b: FeedImpl) {
@@ -164,13 +157,12 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: ([userCategories, feeds]) => {
-          const allCategorizedFeeds = VerticalNavComponent.buildAllCategorizedFeeds(
+          const categorizedFeeds = VerticalNavComponent.buildCategorizedFeeds(
             userCategories,
             feeds,
           );
           this.zone.run(() => {
-            this.allCategorizedFeeds = allCategorizedFeeds;
-            this.filteredCategorizedFeeds = allCategorizedFeeds;
+            this.categorizedFeeds = categorizedFeeds;
           });
         },
         error: error => {
@@ -220,11 +212,9 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
                   this.zone.run(() => {
                     this.feedObservableService.feedAdded.next(feed);
 
-                    this.allCategorizedFeeds.noCategory = this.allCategorizedFeeds.noCategory
+                    this.categorizedFeeds.noCategory = this.categorizedFeeds.noCategory
                       .concat(feed)
                       .sort(VerticalNavComponent.sortFeeds);
-
-                    this.filterFeeds();
                   });
                 },
                 error: error => {
@@ -302,51 +292,14 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: ([userCategories, feeds]) => {
+          const categorizedFeeds = VerticalNavComponent.buildCategorizedFeeds(
+            userCategories,
+            feeds,
+          );
           this.zone.run(() => {
-            this.allCategorizedFeeds = VerticalNavComponent.buildAllCategorizedFeeds(
-              userCategories,
-              feeds,
-            );
-
-            this.filterFeeds();
+            this.categorizedFeeds = categorizedFeeds;
           });
         },
       });
-  }
-
-  setFilterText(filterText: string) {
-    this.filterText = filterText;
-    this.filterFeeds();
-  }
-
-  private filterFeeds() {
-    const filterText = this.filterText.trim().toLowerCase();
-
-    const filterFn = (feed: FeedImpl) => {
-      if (feed.calculatedTitle !== undefined) {
-        return feed.calculatedTitle.toLowerCase().includes(filterText);
-      } else {
-        return false;
-      }
-    };
-
-    const filteredCategorizedFeeds: CategorizedFeeds = {
-      noCategory: this.allCategorizedFeeds.noCategory.filter(filterFn),
-      category: [],
-    };
-
-    for (const category of this.allCategorizedFeeds.category) {
-      filteredCategorizedFeeds.category.push({
-        name: category.name,
-        feeds: category.feeds.filter(filterFn),
-      });
-    }
-
-    this.filteredCategorizedFeeds = filteredCategorizedFeeds;
-  }
-
-  onSearch() {
-    // TODO searching?
-    console.log(this.searchAllText);
   }
 }
