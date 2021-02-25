@@ -25,7 +25,7 @@ interface ProgressStatus {
 export class OPMLModalComponent implements OnDestroy {
   open = false;
 
-  @ViewChild('opmlFileInput', { static: true })
+  @ViewChild('opmlFileInput', { static: false })
   private opmlFileInput?: ElementRef<HTMLInputElement>;
 
   uploading = false;
@@ -55,6 +55,11 @@ export class OPMLModalComponent implements OnDestroy {
   }
 
   reset() {
+    if (this.opmlFileInput === undefined) {
+      throw new Error('opmlFileInput undefined');
+    }
+
+    this.opmlFileInput.nativeElement.value = '';
     this.uploading = false;
     this.progressStatus = null;
     this.errorString = null;
@@ -72,7 +77,7 @@ export class OPMLModalComponent implements OnDestroy {
     if (this.opmlFileInput !== undefined) {
       const nativeElement = this.opmlFileInput.nativeElement;
       if (nativeElement.files && nativeElement.files.length > 0) {
-        const file = nativeElement.files[0];
+        const file = nativeElement.files[0] as File;
 
         const reader = new FileReader();
 

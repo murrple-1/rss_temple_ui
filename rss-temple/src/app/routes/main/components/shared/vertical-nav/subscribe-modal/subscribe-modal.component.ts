@@ -21,7 +21,7 @@ export class SubscribeModalComponent implements OnDestroy {
   feedUrl = '';
   customName = '';
 
-  result = new Subject<SubscriptionDetails>();
+  result = new Subject<SubscriptionDetails | undefined>();
 
   @ViewChild('subscribeForm', { static: true })
   _subscribeForm?: NgForm;
@@ -39,8 +39,13 @@ export class SubscribeModalComponent implements OnDestroy {
   }
 
   reset() {
-    this.feedUrl = '';
-    this.customName = '';
+    if (this._subscribeForm === undefined) {
+      throw new Error('_subscribeForm undefined');
+    }
+    this._subscribeForm.resetForm({
+      feedUrl: '',
+      customName: '',
+    });
   }
 
   finish() {

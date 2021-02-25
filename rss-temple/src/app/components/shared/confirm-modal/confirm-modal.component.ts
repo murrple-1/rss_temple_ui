@@ -14,7 +14,7 @@ export class ConfirmModalComponent {
   title = '';
   text = '';
 
-  result = new Subject<boolean>();
+  result = new Subject<boolean | undefined>();
 
   onCancel() {
     this.result.next(false);

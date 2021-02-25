@@ -9,7 +9,8 @@ export function areOldAndNewRoutesTheSame(
   newRoute: UrlTree,
 ) {
   const currentRouteUrl = currentRoute.url.join('');
-  const newRouteUrl = newRoute.root.children[PRIMARY_OUTLET].segments.join('');
+  const newRouteUrl =
+    newRoute.root.children[PRIMARY_OUTLET]?.segments.join('') ?? '';
 
   return currentRouteUrl === newRouteUrl;
 }

@@ -1,10 +1,5 @@
-<clr-modal [clrModalOpen]="open" (clrModalOpenChange)="openChanged($event)">
-  <form
-    clrForm
-    #subscribeForm="ngForm"
-    [ngClass]="{ 'app--is-submitted': submitted }"
-    (ngSubmit)="finish()"
-  >
+<form clrForm #subscribeForm="ngForm" (ngSubmit)="finish()">
+  <clr-modal [clrModalOpen]="open" (clrModalOpenChange)="openChanged($event)">
     <h4 class="modal-title">Subscribe</h4>
     <div class="modal-body">
       <fieldset>
@@ -37,5 +32,5 @@
     <div class="modal-footer">
       <button type="submit" class="btn btn-primary">Finish</button>
     </div>
-  </form>
-</clr-modal>
+  </clr-modal>
+</form>

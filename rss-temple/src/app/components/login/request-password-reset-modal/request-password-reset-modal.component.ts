@@ -48,8 +48,9 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
     }
 
     this.requestButtonState = ClrLoadingState.DEFAULT;
-    this.email = '';
-    this._passwordResetRequestForm.resetForm();
+    this._passwordResetRequestForm.resetForm({
+      email: '',
+    });
   }
 
   openChanged(open: boolean) {

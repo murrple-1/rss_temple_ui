@@ -41,7 +41,7 @@ export class UserCategoriesModalComponent implements OnInit, OnDestroy {
 
   userCategorySelections: Selection[] = [];
 
-  result = new Subject<ReturnData[]>();
+  result = new Subject<ReturnData[] | undefined>();
 
   private readonly unsubscribe$ = new Subject<void>();
 
@@ -159,7 +159,9 @@ export class UserCategoriesModalComponent implements OnInit, OnDestroy {
   }
 
   removeUserCategory(index: number) {
-    const userCategorySelection = this.userCategorySelections[index];
+    const userCategorySelection = this.userCategorySelections[
+      index
+    ] as Selection;
 
     this.userCategoryService
       .delete(userCategorySelection._uuid)

@@ -182,6 +182,9 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
     }
 
     const result = await openSubscribeModal(this.subscribeModal);
+    if (result === undefined) {
+      return;
+    }
 
     this.feedService
       .get(result.feedUrl, {

@@ -220,6 +220,9 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
       ),
       this.userCategoriesModal,
     );
+    if (returnData === undefined) {
+      return;
+    }
 
     if (this.feed !== null) {
       const applyBody: IApply = {};

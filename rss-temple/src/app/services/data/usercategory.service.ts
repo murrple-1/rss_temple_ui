@@ -157,8 +157,8 @@ export class UserCategoryService {
 
     const body: JsonObject = {};
 
-    for (const feedUuid of Object.keys(apply)) {
-      body[feedUuid] = Array.from(apply[feedUuid]);
+    for (const [feedUuid, uuids] of Object.entries(apply)) {
+      body[feedUuid] = Array.from(uuids);
     }
 
     return this.http.put<void>(
