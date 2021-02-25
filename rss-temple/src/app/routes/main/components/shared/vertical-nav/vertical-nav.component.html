@@ -1,23 +1,24 @@
 <clr-vertical-nav [clrVerticalNavCollapsible]="true">
-  <a clrVerticalNavLink routerLink="./charmander" routerLinkActive="active"
-    >Charmander</a
-  >
-  <a clrVerticalNavLink routerLink="./jigglypuff" routerLinkActive="active"
-    >Jigglypuff</a
-  >
-  <a clrVerticalNavLink routerLink="./pikachu" routerLinkActive="active"
-    >Pikachu</a
-  >
-  <a clrVerticalNavLink routerLink="./raichu" routerLinkActive="active"
-    >Raichu</a
-  >
-  <a clrVerticalNavLink routerLink="./snorlax" routerLinkActive="active"
-    >Snorlax</a
-  >
-  <div class="nav-divider"></div>
-  <a clrVerticalNavLink routerLink="./credit" routerLinkActive="active"
-    >Credit</a
-  >
+  <clr-vertical-nav-group routerLinkActive="active">
+    <clr-icon shape="user" clrVerticalNavIcon></clr-icon>
+    Normal
+    <clr-vertical-nav-group-children>
+      <a
+        clrVerticalNavLink
+        routerLink="./normal/pidgey"
+        routerLinkActive="active"
+      >
+        Pidgey
+      </a>
+      <a
+        clrVerticalNavLink
+        routerLink="./normal/snorlax"
+        routerLinkActive="active"
+      >
+        Snorlax
+      </a>
+    </clr-vertical-nav-group-children>
+  </clr-vertical-nav-group>
 </clr-vertical-nav>
 
 <app-subscribe-modal></app-subscribe-modal>
