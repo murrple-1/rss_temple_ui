@@ -3,7 +3,7 @@
     *ngFor="let categoryDescriptor of categorizedFeeds.category"
     routerLinkActive="active"
   >
-    <clr-icon shape="folder" clrVerticalNavIcon></clr-icon>
+    <cds-icon shape="folder" clrVerticalNavIcon></cds-icon>
     {{ categoryDescriptor.category }}
     <clr-vertical-nav-group-children>
       <a
@@ -25,7 +25,7 @@
     *ngIf="categorizedFeeds.noCategory.length > 0"
     routerLinkActive="active"
   >
-    <clr-icon shape="folder" clrVerticalNavIcon></clr-icon>
+    <cds-icon shape="folder" clrVerticalNavIcon></cds-icon>
     <span class="app--no-category-title">No Category</span>
     <clr-vertical-nav-group-children>
       <a
@@ -54,11 +54,11 @@
   </label>
   <div class="nav-divider"></div>
   <a clrVerticalNavLink [routerLink]="" (click)="addFeed()">
-    <clr-icon clrVerticalNavIcon shape="plus"></clr-icon>
+    <cds-icon clrVerticalNavIcon shape="plus"></cds-icon>
     Add Feed...
   </a>
   <a clrVerticalNavLink [routerLink]="" (click)="uploadOPML()">
-    <clr-icon clrVerticalNavIcon shape="upload"></clr-icon>
+    <cds-icon clrVerticalNavIcon shape="upload"></cds-icon>
     Upload OPML...
   </a>
 </clr-vertical-nav>

@@ -12,7 +12,6 @@ import {
   OPMLService,
   ProgressService,
   UserCategoryService,
-  LoginService,
 } from '@app/services/data';
 import { FeedObservableService } from '@app/routes/main/services';
 import { SubscribeModalComponent } from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
@@ -30,9 +29,6 @@ async function setup() {
     'UserCategoryService',
     ['queryAll'],
   );
-  const mockLoginService = jasmine.createSpyObj<LoginService>('LoginService', [
-    'deleteSessionToken',
-  ]);
   const mockOPMLService = jasmine.createSpyObj<OPMLService>('OPMLService', [
     'upload',
   ]);
@@ -64,10 +60,6 @@ async function setup() {
         useValue: mockUserCategoryService,
       },
       {
-        provide: LoginService,
-        useValue: mockLoginService,
-      },
-      {
         provide: OPMLService,
         useValue: mockOPMLService,
       },
@@ -81,7 +73,6 @@ async function setup() {
   return {
     mockFeedService,
     mockUserCategoryService,
-    mockLoginService,
     mockOPMLService,
   };
 }

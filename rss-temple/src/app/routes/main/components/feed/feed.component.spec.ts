@@ -1,16 +1,21 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { FormsModule } from '@angular/forms';
+
+import { ClarityModule } from '@clr/angular';
 
 import {
   FeedService,
   UserCategoryService,
   FeedEntryService,
+  OPMLService,
+  ProgressService,
 } from '@app/services/data';
-import {
-  FeedObservableService,
-  DisplayObservableService,
-} from '@app/routes/main/services';
-import { DisplayOptionsViewComponent } from '@app/routes/main/components/shared/display-options/display-options.component';
+import { FeedObservableService } from '@app/routes/main/services';
+import { VerticalNavComponent } from '@app/routes/main/components/shared/vertical-nav/vertical-nav.component';
+import { SubscribeModalComponent } from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
+import { OPMLModalComponent } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
+import { UserCategoriesModalComponent } from '@app/routes/main/components/feed/user-categories-modal/user-categories-modal.component';
 
 import { FeedComponent } from './feed.component';
 
@@ -28,13 +33,25 @@ async function setup() {
     'FeedEntryService',
     ['query', 'read', 'unread'],
   );
+  const mockOPMLService = jasmine.createSpyObj<OPMLService>('OPMLService', [
+    'upload',
+  ]);
+  const mockProgressService = jasmine.createSpyObj<ProgressService>(
+    'ProgressService',
+    ['checkProgress'],
+  );
 
   await TestBed.configureTestingModule({
-    imports: [RouterTestingModule.withRoutes([])],
-    declarations: [FeedComponent, DisplayOptionsViewComponent],
+    imports: [FormsModule, ClarityModule, RouterTestingModule.withRoutes([])],
+    declarations: [
+      FeedComponent,
+      VerticalNavComponent,
+      SubscribeModalComponent,
+      OPMLModalComponent,
+      UserCategoriesModalComponent,
+    ],
     providers: [
       FeedObservableService,
-      DisplayObservableService,
       {
         provide: FeedService,
         useValue: mockFeedService,
@@ -47,6 +64,14 @@ async function setup() {
         provide: FeedEntryService,
         useValue: mockFeedEntryService,
       },
+      {
+        provide: OPMLService,
+        useValue: mockOPMLService,
+      },
+      {
+        provide: ProgressService,
+        useValue: mockProgressService,
+      },
     ],
   }).compileComponents();
 
@@ -54,6 +79,8 @@ async function setup() {
     mockFeedService,
     mockUserCategoryService,
     mockFeedEntryService,
+    mockOPMLService,
+    mockProgressService,
   };
 }
 

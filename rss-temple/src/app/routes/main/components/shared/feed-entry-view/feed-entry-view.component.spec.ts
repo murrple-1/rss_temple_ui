@@ -1,6 +1,5 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 
-import { DisplayObservableService } from '@app/routes/main/services';
 import { FeedEntryService } from '@app/services/data';
 
 import { FeedEntryViewComponent } from './feed-entry-view.component';
@@ -14,7 +13,6 @@ async function setup() {
   await TestBed.configureTestingModule({
     declarations: [FeedEntryViewComponent],
     providers: [
-      DisplayObservableService,
       {
         provide: FeedEntryService,
         useValue: mockFeedEntryService,

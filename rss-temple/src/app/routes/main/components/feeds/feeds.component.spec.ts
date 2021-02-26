@@ -1,16 +1,24 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+
+import { ClarityModule } from '@clr/angular';
 
 import { of } from 'rxjs';
 
 import { MockActivatedRoute } from '@app/test/activatedroute.mock';
-import { FeedService, FeedEntryService } from '@app/services/data';
 import {
-  FeedObservableService,
-  DisplayObservableService,
-} from '@app/routes/main/services';
-import { DisplayOptionsViewComponent } from '@app/routes/main/components/shared/display-options/display-options.component';
+  FeedService,
+  FeedEntryService,
+  OPMLService,
+  ProgressService,
+  UserCategoryService,
+} from '@app/services/data';
+import { FeedObservableService } from '@app/routes/main/services';
+import { VerticalNavComponent } from '@app/routes/main/components/shared/vertical-nav/vertical-nav.component';
+import { SubscribeModalComponent } from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
+import { OPMLModalComponent } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
 
 import { FeedsComponent } from './feeds.component';
 
@@ -24,10 +32,26 @@ async function setup() {
     'FeedEntryService',
     ['query', 'read', 'unread'],
   );
+  const mockOPMLService = jasmine.createSpyObj<OPMLService>('OPMLService', [
+    'upload',
+  ]);
+  const mockProgressService = jasmine.createSpyObj<ProgressService>(
+    'ProgressService',
+    ['checkProgress'],
+  );
+  const mockUserCategoryService = jasmine.createSpyObj<UserCategoryService>(
+    'UserCategoryService',
+    ['queryAll'],
+  );
 
   await TestBed.configureTestingModule({
-    imports: [RouterTestingModule.withRoutes([])],
-    declarations: [FeedsComponent, DisplayOptionsViewComponent],
+    imports: [FormsModule, ClarityModule, RouterTestingModule.withRoutes([])],
+    declarations: [
+      FeedsComponent,
+      VerticalNavComponent,
+      SubscribeModalComponent,
+      OPMLModalComponent,
+    ],
     providers: [
       {
         provide: ActivatedRoute,
@@ -35,7 +59,6 @@ async function setup() {
       },
 
       FeedObservableService,
-      DisplayObservableService,
       {
         provide: FeedService,
         useValue: mockFeedService,
@@ -43,6 +66,18 @@ async function setup() {
       {
         provide: FeedEntryService,
         useValue: mockFeedEntryService,
+      },
+      {
+        provide: OPMLService,
+        useValue: mockOPMLService,
+      },
+      {
+        provide: ProgressService,
+        useValue: mockProgressService,
+      },
+      {
+        provide: UserCategoryService,
+        useValue: mockUserCategoryService,
       },
     ],
   }).compileComponents();
@@ -52,6 +87,9 @@ async function setup() {
 
     mockFeedService,
     mockFeedEntryService,
+    mockOPMLService,
+    mockProgressService,
+    mockUserCategoryService,
   };
 }
 
