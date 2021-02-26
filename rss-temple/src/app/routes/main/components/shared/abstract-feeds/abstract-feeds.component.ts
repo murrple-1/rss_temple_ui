@@ -37,11 +37,18 @@ export type FeedEntryImpl = Required<
   >
 >;
 
+enum LoadingState {
+  IsLoading,
+  IsNotLoading,
+  NoMoreToLoad,
+}
+
 @Directive()
 export abstract class AbstractFeedsComponent implements OnInit, OnDestroy {
   feedEntries: FeedEntryImpl[] = [];
 
-  isLoadingMore = false;
+  loadingState = LoadingState.IsNotLoading;
+  readonly LoadingState = LoadingState;
 
   protected count = DEFAULT_COUNT;
 
@@ -129,8 +136,8 @@ export abstract class AbstractFeedsComponent implements OnInit, OnDestroy {
   }
 
   onApproachingBottom() {
-    if (this.feedEntries && this.feedEntries.length > 0) {
-      this.isLoadingMore = true;
+    if (this.feedEntries.length > 0) {
+      this.loadingState = LoadingState.IsLoading;
 
       this.getFeedEntries(this.feedEntries.length)
         .pipe(takeUntil(this.unsubscribe$))
@@ -139,12 +146,12 @@ export abstract class AbstractFeedsComponent implements OnInit, OnDestroy {
             this.zone.run(() => {
               this.feedEntries = this.feedEntries.concat(...feedEntries);
 
-              this.isLoadingMore = false;
+              this.loadingState = LoadingState.IsNotLoading;
             });
           },
           error: error => {
             this.zone.run(() => {
-              this.isLoadingMore = false;
+              this.loadingState = LoadingState.IsNotLoading;
             });
 
             this.httpErrorService.handleError(error);

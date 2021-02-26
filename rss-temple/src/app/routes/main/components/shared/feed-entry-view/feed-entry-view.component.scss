@@ -1,8 +1,6 @@
-.app--view {
-  width: 100%;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 3px;
-  margin-bottom: 10px;
+app-comfy-inner-view,
+app-compact-inner-view {
+  display: contents;
 }
 
 @keyframes flash {

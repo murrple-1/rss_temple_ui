@@ -1,12 +1,10 @@
 import { Component, Input, NgZone, OnDestroy, ElementRef } from '@angular/core';
 
-import { Subject, Observable } from 'rxjs';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { FeedEntryService } from '@app/services/data';
 import { FeedEntry, Feed } from '@app/models';
-import { DisplayObservableService } from '@app/routes/main/services';
-import { DisplayType } from '@app/routes/main/services/display-observable.service';
 
 type FeedImpl = Required<Pick<Feed, 'calculatedTitle' | 'homeUrl'>>;
 type FeedEntryImpl = Required<
@@ -29,10 +27,6 @@ type FeedEntryImpl = Required<
   styleUrls: ['./feed-entry-view.component.scss'],
 })
 export class FeedEntryViewComponent implements OnDestroy {
-  readonly DisplayType = DisplayType;
-
-  display: Observable<DisplayType>;
-
   @Input()
   feed?: FeedImpl;
 
@@ -49,11 +43,7 @@ export class FeedEntryViewComponent implements OnDestroy {
     private zone: NgZone,
     private elementRef: ElementRef,
     private feedEntryService: FeedEntryService,
-
-    displayObservableService: DisplayObservableService,
-  ) {
-    this.display = displayObservableService.display;
-  }
+  ) {}
 
   ngOnDestroy() {
     this.unsubscribe$.next();

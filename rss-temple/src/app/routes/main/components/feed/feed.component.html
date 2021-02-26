@@ -1,50 +1,109 @@
+<app-vertical-nav></app-vertical-nav>
 <div class="content-area">
-  <app-display-options></app-display-options>
   <div
     infinite-scroll
-    [infiniteScrollDisabled]="isLoadingMore"
+    [infiniteScrollDisabled]="
+      [LoadingState.IsLoading, LoadingState.NoMoreToLoad].includes(loadingState)
+    "
     (scrolled)="onApproachingBottom()"
   >
-    <h2 *ngIf="!feed">No Feed</h2>
-    <ng-container *ngIf="feed">
-      <h2 *ngIf="!feed.customTitle; else customTitleHeader">
-        {{ feed.title }}
-      </h2>
-      <ng-template #customTitleHeader>
-        <h2>{{ feed.customTitle }}</h2>
-        <h3>{{ feed.title }}</h3>
-      </ng-template>
-    </ng-container>
-
-    <button (click)="onSubscribe()" *ngIf="feed && !feed.subscribed">
-      Subscribe
-    </button>
-    <button (click)="onUnsubscribe()" *ngIf="feed && feed.subscribed">
-      Unsubscribe
-    </button>
-
-    <hr />
-
-    <div *ngFor="let userCategory of userCategories">
-      {{ userCategory.text }}
-    </div>
-
-    <button (click)="onAddUserCategory()" *ngIf="feed">
-      Add User Category
-    </button>
-
-    <hr />
-
-    <app-feed-entry-view
-      *ngFor="let feedEntry of feedEntries"
-      #feedEntryView
-      [feed]="feed"
-      [feedEntry]="feedEntry"
-      appInViewport
-      (appInViewportWatch)="onEntryEnteredViewport($event, feedEntryView)"
-      (click)="onEntryClicked($event, feedEntryView)"
-    ></app-feed-entry-view>
-    <div *ngIf="isLoadingMore">Loading...</div>
-    <div *ngIf="!isLoadingMore">Load More</div>
+    <ng-container
+      *ngIf="feed !== null; then hasFeed; else hasNoFeed"
+    ></ng-container>
+    <ng-template #hasNoFeed>
+      <div class="clr-row">
+        <div class="clr-col-12">No Feed</div>
+      </div>
+    </ng-template>
+    <ng-template #hasFeed>
+      <ng-container *ngIf="feed !== null">
+        <div class="clr-row">
+          <div class="clr-col-12">
+            <ng-container
+              *ngIf="
+                feed.customTitle !== null;
+                then hasCustomTitle;
+                else hasNoCustomTitle
+              "
+            ></ng-container>
+            <ng-template #hasCustomTitle>
+              <h2>{{ feed.customTitle }} ({{ feed.title }})</h2>
+            </ng-template>
+            <ng-template #hasNoCustomTitle>
+              <h2>{{ feed.title }}</h2>
+            </ng-template>
+          </div>
+        </div>
+        <div class="clr-row">
+          <div class="clr-col-12">
+            <ng-container
+              *ngIf="
+                feed.subscribed;
+                then unsubscribeButton;
+                else subscribeButton
+              "
+            ></ng-container>
+            <ng-template #unsubscribeButton>
+              <button class="btn btn-primary" (click)="onUnsubscribe()">
+                Unsubscribe
+              </button>
+            </ng-template>
+            <ng-template #subscribeButton>
+              <button class="btn btn-primary" (click)="onSubscribe()">
+                Subscribe
+              </button>
+            </ng-template>
+          </div>
+        </div>
+        <div class="clr-row">
+          <div class="clr-col-12">
+            <ng-container
+              *ngIf="
+                userCategories.length < 1;
+                then noUserCategoriesList;
+                else userCategoriesList
+              "
+            ></ng-container>
+            <ng-template #noUserCategoriesList>
+              <span class="app--no-user-categories">No User Categories</span>
+            </ng-template>
+            <ng-template #userCategoriesList>
+              <ul class="list-unstyled">
+                <li *ngFor="let userCategory of userCategories">
+                  {{ userCategory.text }}
+                </li>
+              </ul>
+            </ng-template>
+          </div>
+        </div>
+        <div class="clr-row">
+          <div class="clr-col-12">
+            <button class="btn btn-primary" (click)="onAddUserCategory()">
+              Add User Category
+            </button>
+          </div>
+        </div>
+        <ng-container
+          *ngIf="feedEntries.length < 1; then hasNoEntries; else hasEntries"
+        ></ng-container>
+        <ng-template #hasNoEntries>
+          <div class="clr-col-12">No Entries</div>
+        </ng-template>
+        <ng-template #hasEntries>
+          <div *ngFor="let feedEntry of feedEntries" class="clr-col-12">
+            <app-feed-entry-view
+              #feedEntryView
+              [feed]="feed"
+              [feedEntry]="feedEntry"
+              appInViewport
+              (appInViewportWatch)="
+                onEntryEnteredViewport($event, feedEntryView)
+              "
+              (click)="onEntryClicked($event, feedEntryView)"
+            ></app-feed-entry-view>
+          </div>
+        </ng-template>
+      </ng-container>
+    </ng-template>
   </div>
 </div>

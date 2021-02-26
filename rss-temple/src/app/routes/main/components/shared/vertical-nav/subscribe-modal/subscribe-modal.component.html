@@ -9,7 +9,7 @@
             clrInput
             type="text"
             name="feedUrl"
-            placeholder="Feed URL"
+            placeholder="http://example.com/rss.xml"
             [(ngModel)]="feedUrl"
             required
           />
@@ -26,11 +26,14 @@
             placeholder="Custom Name"
             [(ngModel)]="customName"
           />
+          <clr-control-helper
+            >Override the default feed title</clr-control-helper
+          >
         </clr-input-container>
       </fieldset>
     </div>
     <div class="modal-footer">
-      <button type="submit" class="btn btn-primary">Finish</button>
+      <button type="submit" class="btn btn-primary">Add</button>
     </div>
   </clr-modal>
 </form>

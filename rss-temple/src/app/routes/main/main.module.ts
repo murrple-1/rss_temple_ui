@@ -11,10 +11,7 @@ import { AppSharedModule } from '@app/app-shared.module';
 
 import { routes } from '@app/routes/main/main.routing';
 
-import {
-  FeedObservableService,
-  DisplayObservableService,
-} from '@app/routes/main/services';
+import { FeedObservableService } from '@app/routes/main/services';
 
 import { InViewportDirective } from '@app/directives/inviewport.directive';
 
@@ -25,9 +22,6 @@ import { UserCategoriesModalComponent } from '@app/routes/main/components/feed/u
 import { ProfileComponent } from '@app/routes/main/components/profile/profile.component';
 import { VerticalNavComponent } from '@app/routes/main/components/shared/vertical-nav/vertical-nav.component';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
-import { ComfyInnerViewComponent } from '@app/routes/main/components/shared/feed-entry-view/inner-view/comfy-inner-view/comfy-inner-view.component';
-import { CompactInnerViewComponent } from '@app/routes/main/components/shared/feed-entry-view/inner-view/compact-inner-view/compact-inner-view.component';
-import { DisplayOptionsViewComponent } from '@app/routes/main/components/shared/display-options/display-options.component';
 import { SubscribeModalComponent as HeaderSubscribeModalComponent } from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
 import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
 
@@ -44,7 +38,7 @@ import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/routes/main
 
     RouterModule.forChild(routes),
   ],
-  providers: [FeedObservableService, DisplayObservableService],
+  providers: [FeedObservableService],
   declarations: [
     InViewportDirective,
 
@@ -55,9 +49,6 @@ import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/routes/main
     ProfileComponent,
     VerticalNavComponent,
     FeedEntryViewComponent,
-    ComfyInnerViewComponent,
-    CompactInnerViewComponent,
-    DisplayOptionsViewComponent,
     HeaderSubscribeModalComponent,
     HeaderOPMLModalComponent,
   ],
