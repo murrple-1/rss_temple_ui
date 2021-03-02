@@ -4,9 +4,7 @@ import { Subject } from 'rxjs';
 
 import { Feed } from '@app/models';
 
-interface FeedImpl extends Feed {
-  uuid: string;
-}
+type FeedImpl = Required<Pick<Feed, 'uuid'>> & Omit<Feed, 'uuid'>;
 
 @Injectable()
 export class FeedObservableService {
