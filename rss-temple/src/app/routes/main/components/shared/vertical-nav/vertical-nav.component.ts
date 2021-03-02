@@ -69,6 +69,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
     const categorizedFeedUuids = new Set<string>(
       userCategories.flatMap(uc => uc.feedUuids),
     );
+
     return {
       noCategory: feeds.filter(f => !categorizedFeedUuids.has(f.uuid)),
       category: userCategories
@@ -85,15 +86,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
   }
 
   private static sortFeeds(a: FeedImpl, b: FeedImpl) {
-    if (a.calculatedTitle !== undefined) {
-      if (b.calculatedTitle !== undefined) {
-        return a.calculatedTitle.localeCompare(b.calculatedTitle);
-      } else {
-        return 1;
-      }
-    } else {
-      return -1;
-    }
+    return a.calculatedTitle.localeCompare(b.calculatedTitle);
   }
 
   ngOnInit() {

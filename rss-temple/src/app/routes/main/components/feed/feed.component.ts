@@ -168,44 +168,40 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
   }
 
   onSubscribe() {
-    if (this.feed !== null) {
-      const feed = this.feed;
-      if (feed.feedUrl !== undefined) {
-        this.feedService
-          .subscribe(feed.feedUrl)
-          .pipe(takeUntil(this.unsubscribe$))
-          .subscribe({
-            next: () => {
-              this.zone.run(() => {
-                feed.subscribed = true;
-              });
-            },
-            error: error => {
-              this.httpErrorService.handleError(error);
-            },
-          });
-      }
+    const feed = this.feed;
+    if (feed !== null) {
+      this.feedService
+        .subscribe(feed.feedUrl)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe({
+          next: () => {
+            this.zone.run(() => {
+              feed.subscribed = true;
+            });
+          },
+          error: error => {
+            this.httpErrorService.handleError(error);
+          },
+        });
     }
   }
 
   onUnsubscribe() {
-    if (this.feed !== null && this.feed.feedUrl) {
-      const feed = this.feed;
-      if (feed.feedUrl !== undefined) {
-        this.feedService
-          .unsubscribe(feed.feedUrl)
-          .pipe(takeUntil(this.unsubscribe$))
-          .subscribe({
-            next: () => {
-              this.zone.run(() => {
-                feed.subscribed = false;
-              });
-            },
-            error: error => {
-              this.httpErrorService.handleError(error);
-            },
-          });
-      }
+    const feed = this.feed;
+    if (feed !== null) {
+      this.feedService
+        .unsubscribe(feed.feedUrl)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe({
+          next: () => {
+            this.zone.run(() => {
+              feed.subscribed = false;
+            });
+          },
+          error: error => {
+            this.httpErrorService.handleError(error);
+          },
+        });
     }
   }
 

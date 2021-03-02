@@ -72,11 +72,7 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
       .subscribe({
         next: feed => {
           this.feeds = this.feeds.filter(f => {
-            if (feed.uuid !== undefined) {
-              return f.uuid !== feed.uuid;
-            } else {
-              return true;
-            }
+            return f.uuid !== feed.uuid;
           });
 
           this._getFeedEntries();
