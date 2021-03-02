@@ -67,47 +67,21 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
     feeds: FeedImpl[],
   ) {
     const categorizedFeedUuids = new Set<string>(
-      userCategories.flatMap(_userCategory => {
-        if (_userCategory.feedUuids !== undefined) {
-          return _userCategory.feedUuids;
-        } else {
-          return [];
-        }
-      }),
+      userCategories.flatMap(uc => uc.feedUuids),
     );
+    return {
+      noCategory: feeds.filter(f => !categorizedFeedUuids.has(f.uuid)),
+      category: userCategories
+        .filter(uc => uc.feedUuids.length > 0)
+        .map(uc => {
+          const feedUuids = new Set<string>(uc.feedUuids);
 
-    const categorizedFeeds: CategorizedFeeds = {
-      noCategory: feeds.filter(_feed => {
-        if (_feed.uuid !== undefined) {
-          return !categorizedFeedUuids.has(_feed.uuid);
-        } else {
-          return false;
-        }
-      }),
-      category: [],
+          return {
+            name: uc.text,
+            feeds: feeds.filter(f => feedUuids.has(f.uuid)),
+          };
+        }),
     };
-
-    for (const userCategory of userCategories) {
-      if (
-        userCategory.text !== undefined &&
-        userCategory.feedUuids !== undefined
-      ) {
-        const feedUuids = new Set<string>(userCategory.feedUuids);
-
-        categorizedFeeds.category.push({
-          name: userCategory.text,
-          feeds: feeds.filter(_feed => {
-            if (_feed.uuid !== undefined) {
-              return feedUuids.has(_feed.uuid);
-            } else {
-              return false;
-            }
-          }),
-        });
-      }
-    }
-
-    return categorizedFeeds;
   }
 
   private static sortFeeds(a: FeedImpl, b: FeedImpl) {

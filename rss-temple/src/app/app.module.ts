@@ -7,7 +7,16 @@ import { RouterModule } from '@angular/router';
 
 import { ClarityModule } from '@clr/angular';
 import '@cds/core/icon/register.js';
-import { ClarityIcons, essentialCollectionIcons } from '@cds/core/icon';
+import {
+  ClarityIcons,
+  exclamationCircleIcon,
+  windowCloseIcon,
+  exclamationTriangleIcon,
+  folderIcon,
+  plusIcon,
+  uploadIcon,
+  logoutIcon,
+} from '@cds/core/icon';
 import { IconShapeTuple } from '@cds/core/icon/interfaces/icon.interfaces';
 
 import { AppSharedModule } from '@app/app-shared.module';
@@ -40,7 +49,16 @@ export function clarityIconsFactory() {
       ['brand-facebook', FacebookLogoSVG],
       ['brand-google', GoogleLogoSVG],
     ];
-    ClarityIcons.addIcons(...essentialCollectionIcons, ...myCollectionIcons);
+    ClarityIcons.addIcons(
+      exclamationCircleIcon,
+      windowCloseIcon,
+      exclamationTriangleIcon,
+      folderIcon,
+      plusIcon,
+      uploadIcon,
+      logoutIcon,
+      ...myCollectionIcons,
+    );
   };
 }
 

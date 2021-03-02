@@ -22,7 +22,12 @@ import {
   CommonOptions,
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
-import { JsonValue, isJsonObject, JsonObject } from '@app/libs/json.lib';
+import {
+  JsonValue,
+  isJsonObject,
+  JsonObject,
+  isJsonArray,
+} from '@app/libs/json.lib';
 import { SessionService } from '@app/services/session.service';
 
 import { environment } from '@environments/environment';
@@ -52,6 +57,21 @@ function toUserCategory(value: JsonValue) {
       userCategory.text = text;
     } else {
       throw new Error("'text' must be string");
+    }
+  }
+
+  if (value.feedUuids !== undefined) {
+    const feedUuids = value.feedUuids;
+    if (isJsonArray(feedUuids)) {
+      for (const feedUuid of feedUuids) {
+        if (typeof feedUuid !== 'string') {
+          throw new Error("'feedUuids' element must be string");
+        }
+      }
+
+      userCategory.feedUuids = feedUuids as string[];
+    } else {
+      throw new Error("'feedUuids' must be array");
     }
   }
 

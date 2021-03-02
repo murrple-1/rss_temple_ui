@@ -4,7 +4,7 @@
     routerLinkActive="active"
   >
     <cds-icon shape="folder" clrVerticalNavIcon></cds-icon>
-    {{ categoryDescriptor.category }}
+    {{ categoryDescriptor.name }}
     <clr-vertical-nav-group-children>
       <a
         *ngFor="let feed of categoryDescriptor.feeds"
