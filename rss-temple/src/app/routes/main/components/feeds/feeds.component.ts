@@ -13,6 +13,9 @@ import {
 } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 import { HttpErrorService } from '@app/services';
 import { Feed } from '@app/models';
+import { QueryOptions } from '@app/services/data/query.interface';
+import { Field, SortField } from '@app/services/data/feedentry.service';
+import { Sort } from '@app/services/data/sort.interface';
 
 type FeedImpl = BaseFeedImpl &
   Required<Pick<Feed, 'homeUrl' | 'calculatedTitle'>>;
@@ -24,6 +27,8 @@ type FeedEntryImpl = BaseFeedEntryImpl;
 })
 export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
   feeds: FeedImpl[] = [];
+
+  favoritesOnly = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -47,6 +52,7 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
           paramMap.get('count') ?? DEFAULT_COUNT.toString(10),
           10,
         );
+        this.favoritesOnly = paramMap.get('favorites') === 'true';
 
         this._getFeedEntries();
       },
@@ -112,6 +118,29 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
           this.httpErrorService.handleError(error);
         },
       });
+  }
+
+  protected feedEntryQueryOptions_search(feeds: FeedImpl[]) {
+    let search: string;
+    if (this.favoritesOnly) {
+      if (feeds.length < 1) {
+        search = 'isRead:"false" and isFavorite:"true"';
+      } else {
+        search = `feedUuid:"${feeds
+          .map(feed => feed.uuid)
+          .join(',')}" and isRead:"false" and isFavorite:"true"`;
+      }
+    } else {
+      if (feeds.length < 1) {
+        search = 'isRead:"false"';
+      } else {
+        search = `feedUuid:"${feeds
+          .map(feed => feed.uuid)
+          .join(',')}" and isRead:"false"`;
+      }
+    }
+
+    return search;
   }
 
   private _getFeedEntries() {

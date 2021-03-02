@@ -53,6 +53,19 @@
     No Feeds
   </label>
   <div class="nav-divider"></div>
+  <a
+    clrVerticalNavLink
+    [routerLink]="[
+      '/main/feeds',
+      {
+        favorites: true
+      }
+    ]"
+  >
+    <cds-icon clrVerticalNavIcon shape="star"></cds-icon>
+    Favorite Entries
+  </a>
+  <div class="nav-divider"></div>
   <a clrVerticalNavLink [routerLink]="" (click)="addFeed()">
     <cds-icon clrVerticalNavIcon shape="plus"></cds-icon>
     Add Feed...

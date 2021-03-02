@@ -72,16 +72,14 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
 
     return {
       noCategory: feeds.filter(f => !categorizedFeedUuids.has(f.uuid)),
-      category: userCategories
-        .filter(uc => uc.feedUuids.length > 0)
-        .map(uc => {
-          const feedUuids = new Set<string>(uc.feedUuids);
+      category: userCategories.map(uc => {
+        const feedUuids = new Set<string>(uc.feedUuids);
 
-          return {
-            name: uc.text,
-            feeds: feeds.filter(f => feedUuids.has(f.uuid)),
-          };
-        }),
+        return {
+          name: uc.text,
+          feeds: feeds.filter(f => feedUuids.has(f.uuid)),
+        };
+      }),
     };
   }
 

@@ -65,20 +65,24 @@ export abstract class AbstractFeedsComponent implements OnInit, OnDestroy {
     protected httpErrorService: HttpErrorService,
   ) {}
 
-  protected static feedEntryQueryOptions(
+  ngOnInit() {
+    fromEvent<KeyboardEvent>(document, 'keypress')
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: this.handleKeyPress.bind(this),
+      });
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
+
+  protected feedEntryQueryOptions(
     feeds: FeedImpl[],
     count: number,
     skip?: number,
   ): QueryOptions<Field, SortField> {
-    let search: string;
-    if (feeds.length < 1) {
-      search = 'isRead:"false"';
-    } else {
-      search = `feedUuid:"${feeds
-        .map(feed => feed.uuid)
-        .join(',')}" and isRead:"false"`;
-    }
-
     return {
       fields: [
         'uuid',
@@ -94,37 +98,35 @@ export abstract class AbstractFeedsComponent implements OnInit, OnDestroy {
       returnTotalCount: false,
       count,
       skip,
-      search,
-      sort: new Sort([
-        ['createdAt', 'DESC'],
-        ['publishedAt', 'DESC'],
-        ['updatedAt', 'DESC'],
-      ]),
+      search: this.feedEntryQueryOptions_search(feeds),
+      sort: this.feedEntryQueryOptions_sort(),
     };
   }
 
-  ngOnInit() {
-    fromEvent<KeyboardEvent>(document, 'keypress')
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe({
-        next: this.handleKeyPress.bind(this),
-      });
+  protected feedEntryQueryOptions_search(feeds: FeedImpl[]) {
+    let search: string;
+    if (feeds.length < 1) {
+      search = 'isRead:"false"';
+    } else {
+      search = `feedUuid:"${feeds
+        .map(feed => feed.uuid)
+        .join(',')}" and isRead:"false"`;
+    }
+
+    return search;
   }
 
-  ngOnDestroy() {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
+  protected feedEntryQueryOptions_sort() {
+    return new Sort([
+      ['createdAt', 'DESC'],
+      ['publishedAt', 'DESC'],
+      ['updatedAt', 'DESC'],
+    ]);
   }
 
   protected getFeedEntries(skip?: number) {
     return this.feedEntryService
-      .query(
-        AbstractFeedsComponent.feedEntryQueryOptions(
-          this.feeds,
-          this.count,
-          skip,
-        ),
-      )
+      .query(this.feedEntryQueryOptions(this.feeds, this.count, skip))
       .pipe(
         map(feedEntries => {
           if (feedEntries.objects !== undefined) {
