@@ -1,6 +1,6 @@
 import { Feed } from '@app/models';
 
-import { FeedObservableService } from './feed-observable.service';
+import { FeedObservableService, FeedImpl } from './feed-observable.service';
 
 function setup() {
   const feedObservableService = new FeedObservableService();
@@ -21,7 +21,7 @@ describe('FeedObservableService', () => {
     });
 
     try {
-      feedObservableService.feedAdded.next(new Feed());
+      feedObservableService.feedAdded.next(new Feed() as FeedImpl);
 
       expect(fn).toHaveBeenCalledTimes(1);
     } finally {
@@ -39,7 +39,7 @@ describe('FeedObservableService', () => {
     });
 
     try {
-      feedObservableService.feedRemoved.next(new Feed());
+      feedObservableService.feedRemoved.next(new Feed() as FeedImpl);
 
       expect(fn).toHaveBeenCalledTimes(1);
     } finally {
