@@ -89,6 +89,12 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
         );
 
         if (url) {
+          this.zone.run(() => {
+            this.feed = null;
+            this.feedEntries = [];
+            this.userCategories = [];
+          });
+
           this.getFeed(url);
         }
       },
