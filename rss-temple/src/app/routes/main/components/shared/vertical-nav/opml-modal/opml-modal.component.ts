@@ -56,7 +56,7 @@ export class OPMLModalComponent implements OnDestroy {
 
   reset() {
     if (this.opmlFileInput === undefined) {
-      throw new Error('opmlFileInput undefined');
+      throw new Error();
     }
 
     this.opmlFileInput.nativeElement.value = '';
@@ -74,67 +74,71 @@ export class OPMLModalComponent implements OnDestroy {
   }
 
   finish() {
-    if (this.opmlFileInput !== undefined) {
-      const nativeElement = this.opmlFileInput.nativeElement;
-      if (nativeElement.files && nativeElement.files.length > 0) {
-        const file = nativeElement.files[0] as File;
+    if (this.opmlFileInput === undefined) {
+      throw new Error();
+    }
 
-        const reader = new FileReader();
+    this.errorString = null;
 
-        reader.onload = () => {
-          if (reader.result !== null) {
-            this.opmlService
-              .upload(reader.result)
-              .pipe(takeUntil(this.unsubscribe$))
-              .subscribe({
-                next: response => {
-                  if (response.status === 200) {
-                    this.result.next();
+    const nativeElement = this.opmlFileInput.nativeElement;
+    if (nativeElement.files && nativeElement.files.length > 0) {
+      const file = nativeElement.files[0] as File;
+
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        if (reader.result !== null) {
+          this.opmlService
+            .upload(reader.result)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+              next: response => {
+                if (response.status === 200) {
+                  this.result.next();
+                  this.zone.run(() => {
+                    this.open = false;
+                  });
+                } else if (response.status === 202) {
+                  const body = response.body;
+                  if (typeof body === 'string') {
                     this.zone.run(() => {
-                      this.open = false;
+                      this.checkProgress(body);
                     });
-                  } else if (response.status === 202) {
-                    const body = response.body;
-                    if (typeof body === 'string') {
-                      this.zone.run(() => {
-                        this.checkProgress(body);
-                      });
-                    } else {
-                      this.zone.run(() => {
-                        this.uploading = false;
-                      });
-                    }
                   } else {
-                    this.result.next();
                     this.zone.run(() => {
-                      this.open = false;
+                      this.uploading = false;
                     });
                   }
-                },
-                error: error => {
+                } else {
+                  this.result.next();
                   this.zone.run(() => {
-                    this.uploading = false;
+                    this.open = false;
                   });
+                }
+              },
+              error: error => {
+                this.zone.run(() => {
+                  this.uploading = false;
+                });
 
-                  this.httpErrorService.handleError(error);
-                },
-              });
-          }
-        };
+                this.httpErrorService.handleError(error);
+              },
+            });
+        }
+      };
 
-        reader.onerror = () => {
-          // TODO show error?
-          this.zone.run(() => {
-            this.uploading = false;
-          });
-        };
+      reader.onerror = () => {
+        this.zone.run(() => {
+          this.errorString = 'Failed to read file';
+          this.uploading = false;
+        });
+      };
 
-        this.uploading = true;
-        reader.readAsText(file);
-      } else {
-        this.result.next();
-        this.open = false;
-      }
+      this.uploading = true;
+      reader.readAsText(file);
+    } else {
+      this.result.next();
+      this.open = false;
     }
   }
 

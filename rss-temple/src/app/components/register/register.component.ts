@@ -60,7 +60,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   onRegister() {
     if (this.registerForm === undefined) {
-      throw new Error('registerForm undefined');
+      throw new Error();
     }
 
     if (this.registerForm.invalid) {

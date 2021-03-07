@@ -31,7 +31,7 @@ export class GAuthService {
 
   signIn() {
     if (this.auth2 === null) {
-      throw new Error('auth2 null');
+      throw new Error();
     }
 
     return this.auth2.signIn();
@@ -40,7 +40,7 @@ export class GAuthService {
   signOut() {
     const auth2 = this.auth2;
     if (auth2 === null) {
-      throw new Error('auth2 null');
+      throw new Error();
     }
 
     return new Promise<void>((resolve, _reject) => {

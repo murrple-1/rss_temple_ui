@@ -82,7 +82,7 @@ export class NavComponent implements OnInit, OnDestroy {
 
   private async logout() {
     if (this.logoutConfirmDialog === undefined) {
-      throw new Error('logoutConfirmDialog undefined');
+      throw new Error();
     }
 
     const result = await openConfirmModal(

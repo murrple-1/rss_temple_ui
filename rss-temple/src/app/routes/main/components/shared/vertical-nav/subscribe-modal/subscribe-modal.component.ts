@@ -40,7 +40,7 @@ export class SubscribeModalComponent implements OnDestroy {
 
   reset() {
     if (this._subscribeForm === undefined) {
-      throw new Error('_subscribeForm undefined');
+      throw new Error();
     }
     this._subscribeForm.resetForm({
       feedUrl: '',
@@ -50,7 +50,7 @@ export class SubscribeModalComponent implements OnDestroy {
 
   finish() {
     if (this._subscribeForm === undefined) {
-      throw new Error('_subscribeForm undefined');
+      throw new Error();
     }
 
     if (this._subscribeForm.invalid) {

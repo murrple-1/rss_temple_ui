@@ -143,7 +143,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
 
   async addFeed() {
     if (this.subscribeModal === undefined) {
-      throw new Error('subscribeModal undefined');
+      throw new Error();
     }
 
     const result = await openSubscribeModal(this.subscribeModal);
@@ -219,7 +219,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
 
   async uploadOPML() {
     if (this.opmlModal === undefined) {
-      throw new Error('opmlModal undefined');
+      throw new Error();
     }
 
     await openOPMLModal(this.opmlModal);

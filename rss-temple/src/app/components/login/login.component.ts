@@ -150,7 +150,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onLogin() {
     if (this.loginForm === undefined) {
-      throw new Error('loginForm undefined');
+      throw new Error();
     }
 
     this.loginAlertEntries = [];
@@ -349,7 +349,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
 
   async onForgottenPassword() {
     if (this._requestPasswordResetModal === undefined) {
-      throw new Error('requestPasswordResetModal undefined');
+      throw new Error();
     }
 
     await openRequestPasswordResetModal(this._requestPasswordResetModal);

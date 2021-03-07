@@ -313,7 +313,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   onSave() {
     if (this.profileDetailsForm === undefined) {
-      throw new Error('profileDetailsForm undefined');
+      throw new Error();
     }
 
     if (this.profileDetailsForm.pristine) {

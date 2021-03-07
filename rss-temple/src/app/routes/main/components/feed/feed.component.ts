@@ -207,7 +207,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
 
   async onAddUserCategory() {
     if (this.userCategoriesModal === undefined) {
-      throw new Error('userCategoriesModal undefined');
+      throw new Error();
     }
 
     const returnData = await openUserCategoriesModal(

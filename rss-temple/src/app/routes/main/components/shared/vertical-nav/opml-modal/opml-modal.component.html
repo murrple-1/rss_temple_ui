@@ -21,7 +21,7 @@
       >
       <span *ngIf="!progressStatus">Loading new feeds...</span>
     </div>
-    <div *ngIf="errorString" class="alert alert-danger" role="alert">
+    <div *ngIf="errorString !== null" class="alert alert-danger" role="alert">
       <div class="alert-items">
         <div class="alert-item static">
           <div class="alert-icon-wrapper">

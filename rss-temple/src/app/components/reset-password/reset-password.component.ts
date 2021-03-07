@@ -70,7 +70,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 
   onSave() {
     if (this._resetPasswordForm === undefined) {
-      throw new Error('_resetPasswordForm undefined');
+      throw new Error();
     }
 
     if (this.token === null) {

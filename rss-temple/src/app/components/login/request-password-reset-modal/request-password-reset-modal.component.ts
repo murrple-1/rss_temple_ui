@@ -44,7 +44,7 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
 
   reset() {
     if (this._passwordResetRequestForm === undefined) {
-      throw new Error('_passwordResetRequestForm undefined');
+      throw new Error();
     }
 
     this.requestButtonState = ClrLoadingState.DEFAULT;
