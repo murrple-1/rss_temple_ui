@@ -163,7 +163,10 @@ export class OPMLModalComponent implements OnDestroy {
               );
               break;
             case 'finished':
-              // TODO close
+              this.result.next();
+              this.zone.run(() => {
+                this.open = false;
+              });
               break;
           }
         },
