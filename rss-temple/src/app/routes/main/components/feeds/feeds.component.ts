@@ -13,9 +13,6 @@ import {
 } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 import { HttpErrorService } from '@app/services';
 import { Feed } from '@app/models';
-import { QueryOptions } from '@app/services/data/query.interface';
-import { Field, SortField } from '@app/services/data/feedentry.service';
-import { Sort } from '@app/services/data/sort.interface';
 
 type FeedImpl = BaseFeedImpl &
   Required<Pick<Feed, 'homeUrl' | 'calculatedTitle'>>;
@@ -128,7 +125,7 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
       } else {
         search = `feedUuid:"${feeds
           .map(feed => feed.uuid)
-          .join(',')}" and isRead:"false" and isFavorite:"true"`;
+          .join(',')}" and isFavorite:"true"`;
       }
     } else {
       if (feeds.length < 1) {

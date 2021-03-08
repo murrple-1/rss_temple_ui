@@ -16,6 +16,7 @@
       <ng-container
         *ngIf="feedEntry.authorName; then authorName; else noAuthorName"
       ></ng-container>
+      ({{ feedEntry.publishedAt | dateFormat }})
       <ng-template #authorName>{{ feedEntry.authorName }}</ng-template>
       <ng-template #noAuthorName>N/A</ng-template>
     </div>

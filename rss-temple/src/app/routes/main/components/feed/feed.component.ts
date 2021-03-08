@@ -18,7 +18,6 @@ import {
 import { UserCategory, Feed } from '@app/models';
 import {
   openModal as openUserCategoriesModal,
-  ReturnData,
   UserCategoriesModalComponent,
 } from '@app/routes/main/components/feed/user-categories-modal/user-categories-modal.component';
 import { IApply } from '@app/services/data/usercategory.service';

@@ -4,22 +4,10 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { FeedEntryService } from '@app/services/data';
-import { FeedEntry, Feed } from '@app/models';
+import { Feed } from '@app/models';
+import { FeedEntryImpl } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 
 type FeedImpl = Required<Pick<Feed, 'calculatedTitle' | 'homeUrl'>>;
-type FeedEntryImpl = Required<
-  Pick<
-    FeedEntry,
-    | 'uuid'
-    | 'url'
-    | 'title'
-    | 'content'
-    | 'isRead'
-    | 'isFavorite'
-    | 'authorName'
-    | 'publishedAt'
-  >
->;
 
 @Component({
   selector: 'app-feed-entry-view',

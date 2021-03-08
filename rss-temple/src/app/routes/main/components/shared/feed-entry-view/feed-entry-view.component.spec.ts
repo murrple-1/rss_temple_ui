@@ -1,6 +1,7 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import { FeedEntryService } from '@app/services/data';
+import { DateFormatPipe } from '@app/pipes/dayjs-format.pipe';
 
 import { FeedEntryViewComponent } from './feed-entry-view.component';
 
@@ -11,7 +12,7 @@ async function setup() {
   );
 
   await TestBed.configureTestingModule({
-    declarations: [FeedEntryViewComponent],
+    declarations: [FeedEntryViewComponent, DateFormatPipe],
     providers: [
       {
         provide: FeedEntryService,
