@@ -20,7 +20,6 @@ import {
   openModal as openUserCategoriesModal,
   UserCategoriesModalComponent,
 } from '@app/routes/main/components/feed/user-categories-modal/user-categories-modal.component';
-import { IApply } from '@app/services/data/usercategory.service';
 import { Sort } from '@app/services/data/sort.interface';
 import {
   AbstractFeedsComponent,
@@ -215,37 +214,21 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
       throw new Error();
     }
 
+    if (this.feed === null) {
+      throw new Error();
+    }
+
     const returnData = await openUserCategoriesModal(
+      this.feed.uuid,
       new Set<string>(
         this.userCategories.map(userCategory => userCategory.text),
       ),
       this.userCategoriesModal,
     );
-    if (returnData === undefined) {
-      return;
-    }
-
-    if (this.feed !== null) {
-      const applyBody: IApply = {};
-      applyBody[this.feed.uuid] = new Set<string>(
-        returnData.map(data => data.uuid),
-      );
-
-      this.userCategoryService
-        .apply(applyBody)
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe({
-          next: () => {
-            this.zone.run(() => {
-              this.userCategories = returnData.map<UserCategoryImpl>(data => ({
-                text: data.text,
-              }));
-            });
-          },
-          error: error => {
-            this.httpErrorService.handleError(error);
-          },
-        });
+    if (returnData !== undefined) {
+      this.userCategories = returnData.categories.map<UserCategoryImpl>(c => ({
+        text: c,
+      }));
     }
   }
 }

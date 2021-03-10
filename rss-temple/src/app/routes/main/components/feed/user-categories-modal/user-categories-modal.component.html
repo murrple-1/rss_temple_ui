@@ -1,53 +1,53 @@
 <clr-modal [clrModalOpen]="open" (clrModalOpenChange)="openChanged($event)">
   <h4 class="modal-title">Categories</h4>
   <div class="modal-body">
-    <ul class="list-group app--user-categories-list">
-      <li
-        *ngIf="userCategorySelections.length === 0; else userCategoryList"
-        class="list-group-item disabled"
-      >
-        No Categories
-      </li>
-      <ng-template #userCategoryList>
+    <ng-container
+      *ngIf="
+        selectedCategoryDescriptors.length > 0;
+        then userCategoryEntries;
+        else noUserCategoriesEntry
+      "
+    ></ng-container>
+    <ng-template #noUserCategoriesEntry>
+      <p class="p4 app--no-user-categories">No Categories</p>
+    </ng-template>
+    <ng-template #userCategoryEntries>
+      <ul class="list">
         <li
-          *ngFor="
-            let userCategorySelection of userCategorySelections;
-            index as i
-          "
-          class="list-group-item d-flex justify-content-between align-items-center"
+          *ngFor="let selectedCategoryDescriptor of selectedCategoryDescriptors"
         >
-          <div class="form-check">
-            <label class="form-check-label">
-              <input
-                [(ngModel)]="userCategorySelection.isSelected"
-                class="form-check-input"
-                type="checkbox"
-              />
-              {{ userCategorySelection.text }}
-            </label>
-          </div>
-          <a
-            [routerLink]=""
-            class="badge badge-danger badge-pill"
-            (click)="removeUserCategory(i)"
-            >Remove</a
+          {{ selectedCategoryDescriptor.text }}
+          <button
+            type="button"
+            class="btn btn-icon btn-link"
+            (click)="removeUserCategory(selectedCategoryDescriptor)"
           >
+            <cds-icon shape="minus"></cds-icon>
+          </button>
         </li>
-      </ng-template>
-    </ul>
-    <div class="input-group mb-3">
+      </ul>
+    </ng-template>
+    <clr-datalist-container>
       <input
-        type="text"
-        class="form-control"
-        placeholder="Category"
+        clrDatalistInput
         [(ngModel)]="newUserCategoryText"
+        placeholder="Category Name"
       />
-      <div class="input-group-append">
-        <button class="btn btn-outline-primary" (click)="addUserCategory()">
-          Add
-        </button>
-      </div>
-    </div>
+      <datalist>
+        <option
+          *ngFor="let categoryDescriptor of categoryDescriptors"
+          [value]="categoryDescriptor.text"
+        ></option>
+      </datalist>
+    </clr-datalist-container>
+    <button
+      type="button"
+      class="btn btn-icon btn-sm"
+      [disabled]="newUserCategoryText.length < 1"
+      (click)="addUserCategory()"
+    >
+      <cds-icon shape="plus"></cds-icon>
+    </button>
   </div>
   <div class="modal-footer">
     <button class="btn btn-primary" (click)="finish()">Finish</button>

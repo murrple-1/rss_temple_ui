@@ -1,30 +1,24 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnDestroy, NgZone, Input } from '@angular/core';
 
-import { Subject } from 'rxjs';
-import { takeUntil, map, take } from 'rxjs/operators';
+import { forkJoin, Observable, Subject } from 'rxjs';
+import { takeUntil, map, take, tap } from 'rxjs/operators';
 
 import { UserCategoryService } from '@app/services/data';
 import { HttpErrorService } from '@app/services';
 import { Sort } from '@app/services/data/sort.interface';
+import { UserCategory } from '@app/models';
+import { IApply } from '@app/services/data/usercategory.service';
 
-interface UserCategoryImpl1 {
-  uuid: string;
-  text: string;
-}
+type UserCategoryImpl1 = Required<Pick<UserCategory, 'uuid' | 'text'>>;
+type UserCategoryImpl2 = Required<Pick<UserCategory, 'uuid'>>;
 
-interface UserCategoryImpl2 {
-  uuid: string;
-}
-
-interface Selection {
+interface CategoryDescriptor {
   _uuid: string;
   text: string;
-  isSelected: boolean;
 }
 
-export interface ReturnData {
-  uuid: string;
-  text: string;
+export interface Result {
+  categories: string[];
 }
 
 @Component({
@@ -32,16 +26,22 @@ export interface ReturnData {
   templateUrl: './user-categories-modal.component.html',
   styleUrls: ['./user-categories-modal.component.scss'],
 })
-export class UserCategoriesModalComponent implements OnInit, OnDestroy {
+export class UserCategoriesModalComponent implements OnDestroy {
   open = false;
 
   newUserCategoryText = '';
 
-  initialUserCategories?: Set<string>;
+  @Input()
+  feedUuid = '';
 
-  userCategorySelections: Selection[] = [];
+  @Input()
+  initialSelectedUserCategories?: Set<string>;
 
-  result = new Subject<ReturnData[] | undefined>();
+  private initialCategoryDescriptors: CategoryDescriptor[] = [];
+  categoryDescriptors: CategoryDescriptor[] = [];
+  selectedCategoryDescriptors: CategoryDescriptor[] = [];
+
+  result = new Subject<Result | undefined>();
 
   private readonly unsubscribe$ = new Subject<void>();
 
@@ -51,7 +51,24 @@ export class UserCategoriesModalComponent implements OnInit, OnDestroy {
     private httpErrorService: HttpErrorService,
   ) {}
 
-  ngOnInit() {
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
+
+  reset() {
+    this.feedUuid = '';
+    this.newUserCategoryText = '';
+    this.initialSelectedUserCategories = undefined;
+    this.initialCategoryDescriptors = this.categoryDescriptors = this.selectedCategoryDescriptors = [];
+  }
+
+  load() {
+    const initialUserCategories = this.initialSelectedUserCategories;
+    if (initialUserCategories === undefined) {
+      throw new Error();
+    }
+
     this.userCategoryService
       .queryAll({
         fields: ['uuid', 'text'],
@@ -69,38 +86,26 @@ export class UserCategoriesModalComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: userCategories => {
-          const userCategorySelections: Selection[] = [];
+          const categoryDescriptors = userCategories
+            .map<CategoryDescriptor>(uc => ({
+              _uuid: uc.uuid,
+              text: uc.text,
+            }))
+            .sort(sortCategoryDescriptor);
 
-          const initialUserCategories =
-            this.initialUserCategories ?? new Set<string>();
-
-          for (const userCategory of userCategories) {
-            userCategorySelections.push({
-              _uuid: userCategory.uuid,
-              text: userCategory.text,
-              isSelected: initialUserCategories.has(userCategory.text),
-            });
-          }
+          const selectedCategoryDescriptors = categoryDescriptors.filter(cd =>
+            initialUserCategories.has(cd.text),
+          );
 
           this.zone.run(() => {
-            this.userCategorySelections = userCategorySelections;
+            this.initialCategoryDescriptors = this.categoryDescriptors = categoryDescriptors;
+            this.selectedCategoryDescriptors = selectedCategoryDescriptors;
           });
         },
         error: error => {
           this.httpErrorService.handleError(error);
         },
       });
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
-  }
-
-  reset() {
-    this.newUserCategoryText = '';
-    this.initialUserCategories = undefined;
-    this.userCategorySelections = [];
   }
 
   openChanged(open: boolean) {
@@ -112,90 +117,129 @@ export class UserCategoriesModalComponent implements OnInit, OnDestroy {
   }
 
   addUserCategory() {
-    const newUserCategoryText = this.newUserCategoryText.trim();
-    if (newUserCategoryText !== '') {
-      if (
-        this.userCategorySelections.some(
-          _selection => _selection.text === newUserCategoryText,
-        )
-      ) {
-        this.newUserCategoryText = '';
-        return;
-      }
-
-      this.userCategoryService
-        .create(
-          {
-            text: newUserCategoryText,
-          },
-          {
-            fields: ['uuid'],
-          },
-        )
-        .pipe(
-          takeUntil(this.unsubscribe$),
-          map(userCategory => userCategory as UserCategoryImpl2),
-        )
-        .subscribe({
-          next: userCategory => {
-            const userCategorySelection: Selection = {
-              _uuid: userCategory.uuid,
-              text: newUserCategoryText,
-              isSelected: true,
-            };
-
-            this.zone.run(() => {
-              this.userCategorySelections = this.userCategorySelections.concat(
-                userCategorySelection,
-              );
-              this.newUserCategoryText = '';
-            });
-          },
-          error: error => {
-            this.httpErrorService.handleError(error);
-          },
-        });
+    let categoryDescriptor = this.categoryDescriptors.find(
+      cd => cd.text === this.newUserCategoryText,
+    );
+    if (categoryDescriptor === undefined) {
+      categoryDescriptor = {
+        _uuid: '',
+        text: this.newUserCategoryText,
+      };
+      this.categoryDescriptors = [
+        ...this.categoryDescriptors,
+        categoryDescriptor,
+      ].sort(sortCategoryDescriptor);
     }
+
+    if (
+      this.selectedCategoryDescriptors.find(
+        cd => cd.text === this.newUserCategoryText,
+      ) === undefined
+    ) {
+      this.selectedCategoryDescriptors = [
+        ...this.selectedCategoryDescriptors,
+        categoryDescriptor,
+      ];
+    }
+
+    this.newUserCategoryText = '';
   }
 
-  removeUserCategory(index: number) {
-    const userCategorySelection = this.userCategorySelections[
-      index
-    ] as Selection;
+  removeUserCategory(categoryDescriptor: CategoryDescriptor) {
+    this.selectedCategoryDescriptors = this.selectedCategoryDescriptors.filter(
+      cd => cd !== categoryDescriptor,
+    );
+  }
 
-    this.userCategoryService
-      .delete(userCategorySelection._uuid)
+  finish() {
+    const createObservables: Observable<unknown>[] = [];
+    for (const selectedCategoryDescriptor of this.selectedCategoryDescriptors) {
+      if (
+        this.initialCategoryDescriptors.every(
+          cd => cd.text !== selectedCategoryDescriptor.text,
+        )
+      ) {
+        createObservables.push(
+          this.userCategoryService
+            .create(
+              {
+                text: selectedCategoryDescriptor.text,
+              },
+              {
+                fields: ['uuid'],
+              },
+            )
+            .pipe(
+              map(response => response as UserCategoryImpl2),
+              tap(uc => {
+                selectedCategoryDescriptor._uuid = uc.uuid;
+              }),
+            ),
+        );
+      }
+    }
+
+    if (createObservables.length < 1) {
+      createObservables.push(
+        new Observable(subscriber => {
+          subscriber.next();
+          subscriber.complete();
+        }),
+      );
+    }
+
+    forkJoin(createObservables)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => {
-          this.userCategorySelections = this.userCategorySelections.filter(
-            (_, _index) => _index !== index,
-          );
+          const applyBody: IApply = {
+            [this.feedUuid]: new Set<string>(
+              this.selectedCategoryDescriptors.map(cd => cd._uuid),
+            ),
+          };
+
+          this.userCategoryService
+            .apply(applyBody)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+              next: () => {
+                const result: Result = {
+                  categories: this.selectedCategoryDescriptors.map(
+                    cd => cd.text,
+                  ),
+                };
+                this.result.next(result);
+
+                this.zone.run(() => {
+                  this.open = false;
+                });
+              },
+              error: error => {
+                this.httpErrorService.handleError(error);
+              },
+            });
         },
         error: error => {
           this.httpErrorService.handleError(error);
         },
       });
   }
-
-  finish() {
-    const returnData = this.userCategorySelections
-      .filter(_selection => _selection.isSelected)
-      .map<ReturnData>(_selection => ({
-        uuid: _selection._uuid,
-        text: _selection.text,
-      }));
-    this.result.next(returnData);
-  }
 }
 
 export function openModal(
+  feedUuid: string,
   initialUserCategories: Set<string>,
   modal: UserCategoriesModalComponent,
 ) {
   modal.reset();
-  modal.initialUserCategories = initialUserCategories;
+  modal.feedUuid = feedUuid;
+  modal.initialSelectedUserCategories = initialUserCategories;
   modal.open = true;
+  modal.load();
 
   return modal.result.pipe(take(1)).toPromise();
+}
+
+function sortCategoryDescriptor(a: CategoryDescriptor, b: CategoryDescriptor) {
+  return a.text.localeCompare(b.text);
 }
