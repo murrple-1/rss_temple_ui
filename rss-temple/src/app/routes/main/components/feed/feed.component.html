@@ -27,7 +27,10 @@
               "
             ></ng-container>
             <ng-template #hasCustomTitle>
-              <h2>{{ feed.customTitle }} ({{ feed.title }})</h2>
+              <h2>
+                {{ feed.customTitle }}
+                <span class="app--regular-title">({{ feed.title }})</span>
+              </h2>
             </ng-template>
             <ng-template #hasNoCustomTitle>
               <h2>{{ feed.title }}</h2>
@@ -35,7 +38,7 @@
           </div>
         </div>
         <div class="clr-row">
-          <div class="clr-col-12">
+          <div class="clr-col-1">
             <ng-container
               *ngIf="
                 feed.subscribed;
@@ -44,43 +47,45 @@
               "
             ></ng-container>
             <ng-template #unsubscribeButton>
-              <button class="btn btn-primary" (click)="onUnsubscribe()">
+              <button class="btn btn-warning btn-sm" (click)="onUnsubscribe()">
                 Unsubscribe
               </button>
             </ng-template>
             <ng-template #subscribeButton>
-              <button class="btn btn-primary" (click)="onSubscribe()">
+              <button class="btn btn-primary btn-sm" (click)="onSubscribe()">
                 Subscribe
               </button>
             </ng-template>
           </div>
-        </div>
-        <div class="clr-row">
-          <div class="clr-col-12">
-            <ng-container
-              *ngIf="
-                userCategories.length < 1;
-                then noUserCategoriesList;
-                else userCategoriesList
-              "
-            ></ng-container>
-            <ng-template #noUserCategoriesList>
-              <span class="app--no-user-categories">No User Categories</span>
-            </ng-template>
-            <ng-template #userCategoriesList>
-              <ul class="list-unstyled">
+          <div class="clr-col-11">
+            <ul class="list-unstyled">
+              <li>
+                <h5 class="app--categories-header">Categories</h5>
+              </li>
+              <ng-container
+                *ngIf="
+                  userCategories.length > 0;
+                  then userCategoryEntries;
+                  else noUserCategoriesEntry
+                "
+              ></ng-container>
+              <ng-template #userCategoryEntries>
                 <li *ngFor="let userCategory of userCategories">
                   {{ userCategory.text }}
                 </li>
-              </ul>
-            </ng-template>
-          </div>
-        </div>
-        <div class="clr-row">
-          <div class="clr-col-12">
-            <button class="btn btn-primary" (click)="onAddUserCategory()">
-              Add User Category
-            </button>
+              </ng-template>
+              <ng-template #noUserCategoriesEntry>
+                <li class="app--no-user-categories">Not Categorized</li>
+              </ng-template>
+              <li>
+                <button
+                  class="btn btn-primary btn-sm"
+                  (click)="onAddUserCategory()"
+                >
+                  Setup Categories
+                </button>
+              </li>
+            </ul>
           </div>
         </div>
         <ng-container

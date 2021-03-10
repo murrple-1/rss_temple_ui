@@ -11,14 +11,14 @@
     <a [attr.href]="feedEntry.url" target="_blank">{{ feedEntry.title }}</a>
   </div>
   <div class="card-block">
-    <div class="card-title">
-      From <a [attr.href]="feed.homeUrl">{{ feed.calculatedTitle }}</a> by
-      <ng-container
-        *ngIf="feedEntry.authorName; then authorName; else noAuthorName"
-      ></ng-container>
-      ({{ feedEntry.publishedAt | dateFormat }})
-      <ng-template #authorName>{{ feedEntry.authorName }}</ng-template>
-      <ng-template #noAuthorName>N/A</ng-template>
+    <div class="card-text">
+      <p class="p4 app--creator">
+        From <a [attr.href]="feed.homeUrl">{{ feed.calculatedTitle }}</a>
+        <ng-container *ngIf="feedEntry.authorName !== null"
+          >&nbsp;by {{ feedEntry.authorName }}</ng-container
+        >
+      </p>
+      <p class="p7 app--date">{{ feedEntry.publishedAt | dateFormat }}</p>
     </div>
     <div class="card-text" [innerHtml]="feedEntry.content"></div>
   </div>

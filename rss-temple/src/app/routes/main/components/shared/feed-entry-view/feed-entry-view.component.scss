@@ -1,6 +1,12 @@
-app-comfy-inner-view,
-app-compact-inner-view {
-  display: contents;
+.card-text {
+  p.app--creator {
+    margin-top: 0;
+    margin-bottom: 0.2rem;
+  }
+
+  p.app--date {
+    margin-top: 0;
+  }
 }
 
 @keyframes flash {
