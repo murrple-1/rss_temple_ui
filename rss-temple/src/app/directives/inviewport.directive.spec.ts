@@ -43,8 +43,12 @@ describe('InViewportDirective', () => {
 
   it('should check inside', async () => {
     const { elementSpy, inViewportDirective } = setup();
-    inViewportDirective.appInViewportOffset = 0;
+    inViewportDirective.offset = 0;
     inViewportDirective.ngOnInit();
+
+    if (inViewportDirective._scrollParent === null) {
+      throw new Error();
+    }
 
     elementSpy.getBoundingClientRect.and.returnValue({
       top: 0,
@@ -61,7 +65,7 @@ describe('InViewportDirective', () => {
       });
     });
 
-    window.dispatchEvent(new Event('scroll'));
+    inViewportDirective._scrollParent.dispatchEvent(new Event('scroll'));
 
     await expectAsync(emitPromise).toBeResolvedTo(
       jasmine.objectContaining({
@@ -72,8 +76,12 @@ describe('InViewportDirective', () => {
 
   it('should check outside', async () => {
     const { elementSpy, inViewportDirective } = setup();
-    inViewportDirective.appInViewportOffset = 0;
+    inViewportDirective.offset = 0;
     inViewportDirective.ngOnInit();
+
+    if (inViewportDirective._scrollParent === null) {
+      throw new Error();
+    }
 
     elementSpy.getBoundingClientRect.and.returnValue({
       top: window.innerHeight + 1,
@@ -90,7 +98,7 @@ describe('InViewportDirective', () => {
       });
     });
 
-    window.dispatchEvent(new Event('scroll'));
+    inViewportDirective._scrollParent.dispatchEvent(new Event('scroll'));
 
     await expectAsync(emitPromise).toBeResolvedTo(
       jasmine.objectContaining({
