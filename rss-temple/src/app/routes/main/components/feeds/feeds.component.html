@@ -6,6 +6,8 @@
       [LoadingState.IsLoading, LoadingState.NoMoreToLoad].includes(loadingState)
     "
     (scrolled)="onApproachingBottom()"
+    [infiniteScrollContainer]="'.content-area'"
+    [fromRoot]="true"
   >
     <ng-container
       *ngIf="feedEntries.length < 1; then hasNoEntries; else hasEntries"
@@ -20,6 +22,8 @@
           [feed]="findFeed(feedEntry)"
           [feedEntry]="feedEntry"
           appInViewport
+          [appInViewportOffset]="{ 'bottom': -350 }"
+          [appInViewportDisabled]="feedEntry.isRead"
           (appInViewportWatch)="onEntryEnteredViewport($event, feedEntryView)"
           (click)="onEntryClicked($event, feedEntryView)"
         ></app-feed-entry-view>

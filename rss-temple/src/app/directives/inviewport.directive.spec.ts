@@ -43,19 +43,15 @@ describe('InViewportDirective', () => {
 
   it('should check inside', async () => {
     const { elementSpy, inViewportDirective } = setup();
-    inViewportDirective.offset = 0;
     inViewportDirective.ngOnInit();
 
     if (inViewportDirective._scrollParent === null) {
       throw new Error();
     }
 
-    elementSpy.getBoundingClientRect.and.returnValue({
-      top: 0,
-      bottom: 0,
-      left: 0,
-      right: 0,
-    } as DOMRect);
+    const scollParentRect = inViewportDirective._scrollParent.getBoundingClientRect();
+
+    elementSpy.getBoundingClientRect.and.returnValue(scollParentRect);
 
     const emitPromise = new Promise<InViewportEvent>(resolve => {
       inViewportDirective.appInViewportWatch.pipe(take(1)).subscribe({
@@ -76,19 +72,27 @@ describe('InViewportDirective', () => {
 
   it('should check outside', async () => {
     const { elementSpy, inViewportDirective } = setup();
-    inViewportDirective.offset = 0;
     inViewportDirective.ngOnInit();
 
     if (inViewportDirective._scrollParent === null) {
       throw new Error();
     }
 
-    elementSpy.getBoundingClientRect.and.returnValue({
-      top: window.innerHeight + 1,
-      bottom: -1,
-      left: window.innerWidth + 1,
-      right: -1,
-    } as DOMRect);
+    const scollParentRect = inViewportDirective._scrollParent.getBoundingClientRect();
+
+    const myRect: DOMRect = {
+      top: scollParentRect.top - 2,
+      bottom: scollParentRect.top - 1,
+      left: scollParentRect.left - 2,
+      right: scollParentRect.left - 1,
+      width: 1,
+      height: 1,
+      x: -2,
+      y: -2,
+      toJSON: () => {},
+    };
+
+    elementSpy.getBoundingClientRect.and.returnValue(myRect);
 
     const emitPromise = new Promise<InViewportEvent>(resolve => {
       inViewportDirective.appInViewportWatch.pipe(take(1)).subscribe({

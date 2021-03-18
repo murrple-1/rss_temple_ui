@@ -3,6 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 
 import { takeUntil, map } from 'rxjs/operators';
 
+import { format } from 'date-fns';
+
 import { FeedService, FeedEntryService } from '@app/services/data';
 import { FeedObservableService } from '@app/routes/main/services';
 import {
@@ -115,27 +117,21 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
       });
   }
 
-  protected feedEntryQueryOptions_search(feeds: FeedImpl[]) {
-    let search: string;
+  protected feedEntryQueryOptions_search(_feeds: FeedImpl[]) {
+    const searchParts: string[] = [];
     if (this.favoritesOnly) {
-      if (feeds.length < 1) {
-        search = 'isRead:"false" and isFavorite:"true"';
-      } else {
-        search = `feedUuid:"${feeds
-          .map(feed => feed.uuid)
-          .join(',')}" and isFavorite:"true"`;
-      }
+      searchParts.push('(isFavorite:"true")');
     } else {
-      if (feeds.length < 1) {
-        search = 'isRead:"false"';
-      } else {
-        search = `feedUuid:"${feeds
-          .map(feed => feed.uuid)
-          .join(',')}" and isRead:"false"`;
-      }
+      searchParts.push('(isRead:"false")');
     }
 
-    return search;
+    if (this.startTime !== null) {
+      searchParts.push(
+        `(publishedAt:"|${format(this.startTime, 'yyyy-MM-dd HH:mm:ss')}")`,
+      );
+    }
+
+    return searchParts.join(' and ');
   }
 
   private _getFeedEntries() {
@@ -143,6 +139,10 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: feedEntries => {
+          if (this.startTime === null) {
+            this.startTime = feedEntries[0]?.publishedAt ?? null;
+          }
+
           this.zone.run(() => {
             this.feedEntries = feedEntries;
           });

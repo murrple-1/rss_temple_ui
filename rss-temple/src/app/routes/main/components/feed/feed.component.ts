@@ -54,9 +54,9 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
   get feeds() {
     if (this.feed !== null) {
       return [this.feed];
+    } else {
+      return [];
     }
-
-    throw new Error('feeds cannot be setup');
   }
 
   @ViewChild(UserCategoriesModalComponent, { static: true })
@@ -155,6 +155,10 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
               next: ([feedEntries, userCategories]) => {
+                if (this.startTime === null) {
+                  this.startTime = feedEntries[0]?.publishedAt ?? null;
+                }
+
                 this.zone.run(() => {
                   this.feedEntries = feedEntries;
                   this.userCategories = userCategories;

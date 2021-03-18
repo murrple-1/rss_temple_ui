@@ -10,6 +10,8 @@ import {
 import { Subject, fromEvent } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 
+import { format } from 'date-fns';
+
 import { HttpErrorService } from '@app/services';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
 import { InViewportEvent } from '@app/directives/inviewport.directive';
@@ -53,6 +55,8 @@ export abstract class AbstractFeedsComponent implements OnInit, OnDestroy {
   protected count = DEFAULT_COUNT;
 
   private focusedFeedEntryView: FeedEntryViewComponent | null = null;
+
+  protected startTime: Date | null = null;
 
   protected readonly unsubscribe$ = new Subject<void>();
 
@@ -104,22 +108,27 @@ export abstract class AbstractFeedsComponent implements OnInit, OnDestroy {
   }
 
   protected feedEntryQueryOptions_search(feeds: FeedImpl[]) {
-    let search: string;
-    if (feeds.length < 1) {
-      search = 'isRead:"false"';
-    } else {
-      search = `feedUuid:"${feeds
-        .map(feed => feed.uuid)
-        .join(',')}" and isRead:"false"`;
+    const searchParts = ['(isRead:"false")'];
+
+    if (feeds.length >= 1) {
+      searchParts.push(
+        `(feedUuid:"${feeds.map(feed => feed.uuid).join(',')}")`,
+      );
     }
 
-    return search;
+    if (this.startTime !== null) {
+      searchParts.push(
+        `(publishedAt:"|${format(this.startTime, 'yyyy-MM-dd HH:mm:ss')}")`,
+      );
+    }
+
+    return searchParts.join(' and ');
   }
 
   protected feedEntryQueryOptions_sort() {
     return new Sort([
-      ['createdAt', 'DESC'],
       ['publishedAt', 'DESC'],
+      ['createdAt', 'DESC'],
       ['updatedAt', 'DESC'],
     ]);
   }
@@ -146,9 +155,12 @@ export abstract class AbstractFeedsComponent implements OnInit, OnDestroy {
         .subscribe({
           next: feedEntries => {
             this.zone.run(() => {
-              this.feedEntries = this.feedEntries.concat(...feedEntries);
-
-              this.loadingState = LoadingState.IsNotLoading;
+              if (feedEntries.length > 0) {
+                this.feedEntries = this.feedEntries.concat(...feedEntries);
+                this.loadingState = LoadingState.IsNotLoading;
+              } else {
+                this.loadingState = LoadingState.NoMoreToLoad;
+              }
             });
           },
           error: error => {

@@ -22,6 +22,13 @@ export type InViewportEvent =
       boundingRect: ClientRect | DOMRect;
     };
 
+export interface Rect {
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+}
+
 type CheckEventType = 'resize' | 'scroll';
 
 @Directive({
@@ -29,10 +36,13 @@ type CheckEventType = 'resize' | 'scroll';
 })
 export class InViewportDirective implements OnInit, OnDestroy {
   @Input('appInViewportOffset')
-  offset = 0;
+  offset: Partial<Rect> = {};
 
   @Input('appInViewportRecognizedEventTypes')
   recognizedEventTypes = new Set<CheckEventType>(['resize', 'scroll']);
+
+  @Input('appInViewportDisabled')
+  disabled = false;
 
   @Output()
   appInViewportWatch = new EventEmitter<InViewportEvent>();
@@ -43,10 +53,7 @@ export class InViewportDirective implements OnInit, OnDestroy {
 
   constructor(private elementRef: ElementRef<HTMLElement>) {}
 
-  private static rectIntersects(
-    r1: ClientRect | DOMRect,
-    r2: ClientRect | DOMRect,
-  ) {
+  private static rectIntersects(r1: Rect, r2: Rect) {
     return !(
       r2.left > r1.right ||
       r2.right < r1.left ||
@@ -56,8 +63,9 @@ export class InViewportDirective implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this._scrollParent =
+    const scrollParent =
       getScrollParent(this.elementRef.nativeElement) ?? document.body;
+    this._scrollParent = scrollParent;
 
     this.subscription = merge(
       fromEvent(window, 'resize').pipe(mapTo<Event, CheckEventType>('resize')),
@@ -68,7 +76,7 @@ export class InViewportDirective implements OnInit, OnDestroy {
       .pipe(debounceTime(100))
       .subscribe({
         next: checkEventType => {
-          this.check(checkEventType);
+          this.check(checkEventType, scrollParent);
         },
       });
   }
@@ -79,20 +87,21 @@ export class InViewportDirective implements OnInit, OnDestroy {
     }
   }
 
-  private check(eventType: CheckEventType) {
-    if (!this.recognizedEventTypes.has(eventType)) {
+  private check(eventType: CheckEventType, scrollParent: Element) {
+    if (this.disabled || !this.recognizedEventTypes.has(eventType)) {
       return;
     }
 
     const nativeElement = this.elementRef.nativeElement;
 
-    const viewportRect: ClientRect | DOMRect = {
-      top: -this.offset,
-      bottom: window.innerHeight + this.offset,
-      left: 0,
-      right: window.innerWidth,
-      width: window.innerWidth,
-      height: window.innerHeight + this.offset * 2,
+    const scrollParentRect = scrollParent.getBoundingClientRect();
+    const offset = this.offset;
+
+    const viewportRect: Rect = {
+      top: scrollParentRect.top + (offset.top ?? 0),
+      bottom: scrollParentRect.bottom + (offset.bottom ?? 0),
+      left: scrollParentRect.left + (offset.left ?? 0),
+      right: scrollParentRect.right + (offset.right ?? 0),
     };
 
     const boundingRect = nativeElement.getBoundingClientRect();
