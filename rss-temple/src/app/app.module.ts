@@ -18,6 +18,7 @@ import {
   logoutIcon,
   starIcon,
   minusIcon,
+  libraryIcon,
 } from '@cds/core/icon';
 import { IconShapeTuple } from '@cds/core/icon/interfaces/icon.interfaces';
 
@@ -61,6 +62,7 @@ export function clarityIconsFactory() {
       logoutIcon,
       starIcon,
       minusIcon,
+      libraryIcon,
       ...myCollectionIcons,
     );
   };
