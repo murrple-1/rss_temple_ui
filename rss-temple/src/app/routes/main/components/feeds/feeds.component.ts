@@ -43,8 +43,6 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
   }
 
   ngOnInit() {
-    super.ngOnInit();
-
     this.route.paramMap.pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: paramMap => {
         this.count = parseInt(
@@ -53,7 +51,9 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
         );
         this.favoritesOnly = paramMap.get('favorites') === 'true';
 
-        this._getFeedEntries();
+        this.zone.run(() => {
+          this.reload();
+        });
       },
     });
 
@@ -68,7 +68,9 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
         next: feed => {
           this.feeds.push(feed);
 
-          this._getFeedEntries();
+          this.zone.run(() => {
+            this.reload();
+          });
         },
       });
 
@@ -78,7 +80,9 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
         next: feed => {
           this.feeds = this.feeds.filter(f => f.uuid !== feed.uuid);
 
-          this._getFeedEntries();
+          this.zone.run(() => {
+            this.reload();
+          });
         },
       });
 
@@ -109,7 +113,9 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
         next: feeds => {
           this.feeds = feeds;
 
-          this._getFeedEntries();
+          this.zone.run(() => {
+            this.reload();
+          });
         },
         error: error => {
           this.httpErrorService.handleError(error);
@@ -134,7 +140,9 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
     return searchParts.join(' and ');
   }
 
-  private _getFeedEntries() {
+  protected reload() {
+    this.feedEntries = [];
+
     this.getFeedEntries()
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
@@ -161,7 +169,9 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
   feedAdded(feed: FeedImpl) {
     this.feeds.push(feed);
 
-    this._getFeedEntries();
+    this.zone.run(() => {
+      this.reload();
+    });
   }
 
   opmlUploaded() {

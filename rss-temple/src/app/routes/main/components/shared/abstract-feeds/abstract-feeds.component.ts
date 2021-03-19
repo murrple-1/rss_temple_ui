@@ -1,13 +1,13 @@
 /* eslint-disable @angular-eslint/directive-class-suffix */
 import {
-  OnInit,
   OnDestroy,
   ChangeDetectorRef,
   NgZone,
   Directive,
+  HostListener,
 } from '@angular/core';
 
-import { Subject, fromEvent } from 'rxjs';
+import { Subject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 
 import { format } from 'date-fns';
@@ -46,7 +46,7 @@ enum LoadingState {
 }
 
 @Directive()
-export abstract class AbstractFeedsComponent implements OnInit, OnDestroy {
+export abstract class AbstractFeedsComponent implements OnDestroy {
   feedEntries: FeedEntryImpl[] = [];
 
   loadingState = LoadingState.IsNotLoading;
@@ -54,7 +54,7 @@ export abstract class AbstractFeedsComponent implements OnInit, OnDestroy {
 
   protected count = DEFAULT_COUNT;
 
-  private focusedFeedEntryView: FeedEntryViewComponent | null = null;
+  protected focusedFeedEntryView: FeedEntryViewComponent | null = null;
 
   protected startTime: Date | null = null;
 
@@ -68,14 +68,6 @@ export abstract class AbstractFeedsComponent implements OnInit, OnDestroy {
     protected feedEntryService: FeedEntryService,
     protected httpErrorService: HttpErrorService,
   ) {}
-
-  ngOnInit() {
-    fromEvent<KeyboardEvent>(document, 'keypress')
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe({
-        next: this.handleKeyPress.bind(this),
-      });
-  }
 
   ngOnDestroy() {
     this.unsubscribe$.next();
@@ -191,7 +183,10 @@ export abstract class AbstractFeedsComponent implements OnInit, OnDestroy {
     feedEntryView.autoRead();
   }
 
-  private handleKeyPress(event: KeyboardEvent) {
+  protected abstract reload(): void;
+
+  @HostListener('document:keypress', ['$event'])
+  handleKeyPress(event: KeyboardEvent) {
     if (event.key === 'm') {
       const focusedFeedEntry = this.focusedFeedEntryView;
       if (focusedFeedEntry !== null) {
@@ -228,6 +223,8 @@ export abstract class AbstractFeedsComponent implements OnInit, OnDestroy {
             });
         }
       }
+    } else if (event.key === 'r') {
+      this.reload();
     }
   }
 }

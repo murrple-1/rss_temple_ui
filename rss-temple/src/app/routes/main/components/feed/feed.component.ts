@@ -49,6 +49,7 @@ type UserCategoryImpl = Required<Pick<UserCategory, 'text'>>;
 })
 export class FeedComponent extends AbstractFeedsComponent implements OnInit {
   feed: FeedImpl | null = null;
+  feedUrl: string | null = null;
   userCategories: UserCategoryImpl[] = [];
 
   get feeds() {
@@ -76,8 +77,6 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
   }
 
   ngOnInit() {
-    super.ngOnInit();
-
     this.route.paramMap.pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: paramMap => {
         const url = paramMap.get('url');
@@ -87,19 +86,29 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
         );
 
         if (url) {
+          this.feedUrl = url;
           this.zone.run(() => {
-            this.feed = null;
-            this.feedEntries = [];
-            this.userCategories = [];
+            this.reload();
           });
-
-          this.getFeed(url);
         }
       },
     });
   }
 
-  private getFeed(url: string) {
+  protected reload() {
+    this.feed = null;
+    this.feedEntries = [];
+    this.userCategories = [];
+
+    this.getFeed();
+  }
+
+  private getFeed() {
+    const url = this.feedUrl;
+    if (url === null) {
+      return;
+    }
+
     this.feedService
       .get(url, {
         fields: [
