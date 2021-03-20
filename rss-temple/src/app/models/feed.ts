@@ -9,4 +9,6 @@ export class Feed {
   customTitle?: string | null;
   calculatedTitle?: string;
   userCategoryUuids?: string[];
+  unreadCount?: number;
+  readCount?: number;
 }

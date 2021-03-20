@@ -150,6 +150,24 @@ function toFeed(value: JsonValue) {
     }
   }
 
+  if (value.unreadCount !== undefined) {
+    const unreadCount = value.unreadCount;
+    if (typeof unreadCount === 'number') {
+      feed.unreadCount = unreadCount;
+    } else {
+      throw new Error("'unreadCount' must be number");
+    }
+  }
+
+  if (value.readCount !== undefined) {
+    const readCount = value.readCount;
+    if (typeof readCount === 'number') {
+      feed.readCount = readCount;
+    } else {
+      throw new Error("'readCount' must be number");
+    }
+  }
+
   return feed;
 }
 

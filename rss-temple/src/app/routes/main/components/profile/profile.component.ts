@@ -51,6 +51,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   numberOfFeeds = 0;
   numberOfReadFeedEntries = 0;
+  numberOfUnreadFeedEntries = 0;
 
   gLoaded = false;
   fbLoaded = false;
@@ -120,20 +121,38 @@ export class ProfileComponent implements OnInit, OnDestroy {
             throw new Error('malformed response');
           }),
         ),
+      this.feedEntryService
+        .query({
+          returnObjects: false,
+          returnTotalCount: true,
+          search: 'isRead:"false"',
+        })
+        .pipe(
+          map(response => {
+            if (response.totalCount !== undefined) {
+              return response.totalCount;
+            }
+            throw new Error('malformed response');
+          }),
+        ),
     ])
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: ([user, feedsCount, readFeedEntriesCount]) => {
+        next: ([
+          user,
+          feedsCount,
+          readFeedEntriesCount,
+          unreadFeedEntriesCount,
+        ]) => {
           this.zone.run(() => {
             this.email = user.email;
 
             this.hasGoogleLogin = user.hasGoogleLogin;
-
             this.hasFacebookLogin = user.hasFacebookLogin;
 
             this.numberOfFeeds = feedsCount;
-
             this.numberOfReadFeedEntries = readFeedEntriesCount;
+            this.numberOfUnreadFeedEntries = unreadFeedEntriesCount;
 
             this.state = State.LoadSuccess;
           });
