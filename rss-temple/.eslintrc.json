@@ -25,7 +25,10 @@
         "@typescript-eslint/quotes": [
           "error",
           "single",
-          { "avoidEscape": true, "allowTemplateLiterals": true }
+          {
+            "avoidEscape": true,
+            "allowTemplateLiterals": true
+          }
         ],
         "@typescript-eslint/naming-convention": "off",
         "@typescript-eslint/member-ordering": "off",
