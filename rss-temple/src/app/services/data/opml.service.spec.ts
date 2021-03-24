@@ -25,6 +25,10 @@ function setup() {
 }
 
 describe('OPMLService', () => {
+  beforeEach(() => {
+    localStorage.removeItem('sessionToken');
+  });
+
   it('should download', fakeAsync(async () => {
     const { httpClientSpy, opmlService } = setup();
 

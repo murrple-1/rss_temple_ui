@@ -34,6 +34,10 @@ function setup() {
 }
 
 describe('HttpErrorService', () => {
+  beforeEach(() => {
+    localStorage.removeItem('sessionToken');
+  });
+
   it('should handle HttpErrorResponses', async () => {
     const { httpErrorService, appAlertService } = setup();
 

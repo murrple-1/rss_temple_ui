@@ -22,6 +22,10 @@ function setup() {
 }
 
 describe('ProgressService', () => {
+  beforeEach(() => {
+    localStorage.removeItem('sessionToken');
+  });
+
   it('should check progress', fakeAsync(async () => {
     const { httpClientSpy, progressService } = setup();
 

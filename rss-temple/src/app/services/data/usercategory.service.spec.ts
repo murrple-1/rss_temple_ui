@@ -31,6 +31,10 @@ function setup() {
 }
 
 describe('UserCategoryService', () => {
+  beforeEach(() => {
+    localStorage.removeItem('sessionToken');
+  });
+
   it('should get', fakeAsync(async () => {
     const { httpClientSpy, userCategoryService } = setup();
 

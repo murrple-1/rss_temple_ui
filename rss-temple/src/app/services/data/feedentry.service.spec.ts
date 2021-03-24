@@ -30,6 +30,10 @@ function setup() {
 }
 
 describe('FeedEntryService', () => {
+  beforeEach(() => {
+    localStorage.removeItem('sessionToken');
+  });
+
   it('should get', fakeAsync(async () => {
     const { httpClientSpy, feedEntryService } = setup();
 
