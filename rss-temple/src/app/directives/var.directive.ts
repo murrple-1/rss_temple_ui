@@ -1,29 +1,29 @@
 import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
 
-interface Context {
-  $implicit?: unknown;
-  appVar?: unknown;
+interface Context<T> {
+  $implicit?: T;
+  appVar?: T;
 }
 
 @Directive({
   selector: '[appVar]',
 })
-export class VarDirective {
-  private context: Context = {};
+export class VarDirective<T> {
+  private context: Context<T> = {};
 
   @Input()
-  set appVar(context: unknown) {
+  set appVar(context: T) {
     this.context.$implicit = this.context.appVar = context;
     this.updateView();
   }
 
   constructor(
     private vcRef: ViewContainerRef,
-    private templateRef: TemplateRef<unknown>,
+    private templateRef: TemplateRef<T>,
   ) {}
 
   private updateView() {
     this.vcRef.clear();
-    this.vcRef.createEmbeddedView(this.templateRef, this.context);
+    this.vcRef.createEmbeddedView<Context<T>>(this.templateRef, this.context);
   }
 }
