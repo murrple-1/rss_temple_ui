@@ -15,7 +15,10 @@ import {
   ProgressService,
   UserCategoryService,
 } from '@app/services/data';
-import { FeedObservableService } from '@app/routes/main/services';
+import {
+  FeedCountsObservableService,
+  FeedObservableService,
+} from '@app/routes/main/services';
 import { VerticalNavComponent } from '@app/routes/main/components/shared/vertical-nav/vertical-nav.component';
 import { SubscribeModalComponent } from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
 import { OPMLModalComponent } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
@@ -25,6 +28,10 @@ import { FeedsComponent } from './feeds.component';
 async function setup() {
   const mockRoute = new MockActivatedRoute();
 
+  const mockFeedCountsObservableService = jasmine.createSpyObj<FeedCountsObservableService>(
+    'FeedCountsObservableService',
+    ['refresh'],
+  );
   const mockFeedService = jasmine.createSpyObj<FeedService>('FeedService', [
     'queryAll',
   ]);
@@ -59,6 +66,10 @@ async function setup() {
       },
 
       FeedObservableService,
+      {
+        provide: FeedCountsObservableService,
+        useValue: mockFeedCountsObservableService,
+      },
       {
         provide: FeedService,
         useValue: mockFeedService,
