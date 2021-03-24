@@ -40,6 +40,27 @@
           </div>
         </div>
         <div class="clr-row">
+          <div class="clr-col-12">
+            <span>
+              <ng-container *ngIf="feedCounts$ | async as feedCounts">
+                <ng-container *appVar="feedCounts[feed.uuid] as feedCount">
+                  <ng-container
+                    *ngIf="
+                      feedCount !== undefined;
+                      then realUnreadCount;
+                      else fakeUnreadCount
+                    "
+                  ></ng-container>
+                  <ng-template #realUnreadCount>
+                    {{ feedCount }} unread
+                  </ng-template>
+                  <ng-template #fakeUnreadCount> 0 unread </ng-template>
+                </ng-container>
+              </ng-container>
+            </span>
+          </div>
+        </div>
+        <div class="clr-row">
           <div class="clr-col-1">
             <ng-container
               *ngIf="

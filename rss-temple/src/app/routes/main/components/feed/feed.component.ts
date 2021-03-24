@@ -27,6 +27,7 @@ import {
   FeedImpl as BaseFeedImpl,
 } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 import { HttpErrorService } from '@app/services';
+import { FeedCountsObservableService } from '@app/routes/main/services';
 
 type FeedImpl = BaseFeedImpl &
   Required<
@@ -60,6 +61,10 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
     }
   }
 
+  get feedCounts$() {
+    return this.feedCountsObservableService.feedCounts$;
+  }
+
   @ViewChild(UserCategoriesModalComponent, { static: true })
   private userCategoriesModal?: UserCategoriesModalComponent;
 
@@ -67,6 +72,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
     private route: ActivatedRoute,
     private feedService: FeedService,
     private userCategoryService: UserCategoryService,
+    private feedCountsObservableService: FeedCountsObservableService,
 
     zone: NgZone,
     changeDetectorRef: ChangeDetectorRef,

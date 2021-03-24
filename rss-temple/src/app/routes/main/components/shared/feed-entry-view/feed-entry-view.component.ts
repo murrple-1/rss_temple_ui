@@ -6,6 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 import { FeedEntryService } from '@app/services/data';
 import { Feed } from '@app/models';
 import { FeedEntryImpl } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
+import { FeedCountsObservableService } from '@app/routes/main/services';
 
 type FeedImpl = Required<Pick<Feed, 'calculatedTitle' | 'homeUrl'>>;
 
@@ -31,6 +32,7 @@ export class FeedEntryViewComponent implements OnDestroy {
     private zone: NgZone,
     private elementRef: ElementRef,
     private feedEntryService: FeedEntryService,
+    private feedCountsObservableService: FeedCountsObservableService,
   ) {}
 
   ngOnDestroy() {
@@ -39,20 +41,21 @@ export class FeedEntryViewComponent implements OnDestroy {
   }
 
   read() {
-    if (this.feedEntry === undefined) {
+    const feedEntry = this.feedEntry;
+    if (feedEntry === undefined) {
       return;
     }
 
     this.feedEntryService
-      .read(this.feedEntry.uuid)
+      .read(feedEntry.uuid)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => {
           this.zone.run(() => {
-            if (this.feedEntry !== undefined) {
-              this.feedEntry.isRead = true;
-            }
+            feedEntry.isRead = true;
           });
+
+          this.feedCountsObservableService.decrement(feedEntry.feedUuid);
         },
         error: error => {
           console.log(error);
@@ -75,20 +78,21 @@ export class FeedEntryViewComponent implements OnDestroy {
   }
 
   unread() {
-    if (this.feedEntry === undefined) {
+    const feedEntry = this.feedEntry;
+    if (feedEntry === undefined) {
       return;
     }
 
     this.feedEntryService
-      .unread(this.feedEntry.uuid)
+      .unread(feedEntry.uuid)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => {
           this.zone.run(() => {
-            if (this.feedEntry !== undefined) {
-              this.feedEntry.isRead = false;
-            }
+            feedEntry.isRead = false;
           });
+
+          this.feedCountsObservableService.increment(feedEntry.feedUuid);
         },
         error: error => {
           console.log(error);

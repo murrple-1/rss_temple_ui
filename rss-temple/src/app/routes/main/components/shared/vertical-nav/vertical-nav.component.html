@@ -1,59 +1,64 @@
 <clr-vertical-nav>
-  <a clrVerticalNavLink routerLink="/main/feeds">
-    <cds-icon clrVerticalNavIcon shape="library"></cds-icon>
-    All
-  </a>
-  <clr-vertical-nav-group
-    *ngFor="let categoryDescriptor of categorizedFeeds.category"
-    routerLinkActive="active"
-  >
-    <cds-icon shape="folder" clrVerticalNavIcon></cds-icon>
-    {{ categoryDescriptor.name }}
-    <clr-vertical-nav-group-children>
-      <a
-        *ngFor="let feed of categoryDescriptor.feeds"
-        clrVerticalNavLink
-        [routerLink]="[
-          '/main/feed',
-          {
-            'url': feed.feedUrl
-          }
-        ]"
-        routerLinkActive="active"
-      >
-        {{ feed.calculatedTitle }}
-        <ng-container *ngIf="feedCounts$ | async as feedCounts">
+  <ng-container *ngIf="feedCounts$ | async as feedCounts">
+    <a clrVerticalNavLink routerLink="/main/feeds">
+      <cds-icon clrVerticalNavIcon shape="library"></cds-icon>
+      All
+    </a>
+    <clr-vertical-nav-group
+      *ngFor="let categoryDescriptor of categorizedFeeds.category"
+      routerLinkActive="active"
+    >
+      <cds-icon shape="folder" clrVerticalNavIcon></cds-icon>
+      {{ categoryDescriptor.name }}
+      <clr-vertical-nav-group-children>
+        <a
+          *ngFor="let feed of categoryDescriptor.feeds"
+          clrVerticalNavLink
+          [routerLink]="[
+            '/main/feed',
+            {
+              'url': feed.feedUrl
+            }
+          ]"
+          routerLinkActive="active"
+        >
+          {{ feed.calculatedTitle }}
           <ng-container *appVar="feedCounts[feed.uuid] as feedCount">
             <ng-container *ngIf="feedCount !== undefined && feedCount > 0">
               &nbsp;({{ feedCount }})
             </ng-container>
           </ng-container>
-        </ng-container>
-      </a>
-    </clr-vertical-nav-group-children>
-  </clr-vertical-nav-group>
-  <clr-vertical-nav-group
-    *ngIf="categorizedFeeds.noCategory.length > 0"
-    routerLinkActive="active"
-  >
-    <cds-icon shape="folder" clrVerticalNavIcon></cds-icon>
-    <span class="app--no-category-title">No Category</span>
-    <clr-vertical-nav-group-children>
-      <a
-        *ngFor="let feed of categorizedFeeds.noCategory"
-        clrVerticalNavLink
-        [routerLink]="[
-          '/main/feed',
-          {
-            'url': feed.feedUrl
-          }
-        ]"
-        routerLinkActive="active"
-      >
-        {{ feed.calculatedTitle }}
-      </a>
-    </clr-vertical-nav-group-children>
-  </clr-vertical-nav-group>
+        </a>
+      </clr-vertical-nav-group-children>
+    </clr-vertical-nav-group>
+    <clr-vertical-nav-group
+      *ngIf="categorizedFeeds.noCategory.length > 0"
+      routerLinkActive="active"
+    >
+      <cds-icon shape="folder" clrVerticalNavIcon></cds-icon>
+      <span class="app--no-category-title">No Category</span>
+      <clr-vertical-nav-group-children>
+        <a
+          *ngFor="let feed of categorizedFeeds.noCategory"
+          clrVerticalNavLink
+          [routerLink]="[
+            '/main/feed',
+            {
+              'url': feed.feedUrl
+            }
+          ]"
+          routerLinkActive="active"
+        >
+          {{ feed.calculatedTitle }}
+          <ng-container *appVar="feedCounts[feed.uuid] as feedCount">
+            <ng-container *ngIf="feedCount !== undefined && feedCount > 0">
+              &nbsp;({{ feedCount }})
+            </ng-container>
+          </ng-container>
+        </a>
+      </clr-vertical-nav-group-children>
+    </clr-vertical-nav-group>
+  </ng-container>
   <label
     *ngIf="
       categorizedFeeds.category.length < 1 &&

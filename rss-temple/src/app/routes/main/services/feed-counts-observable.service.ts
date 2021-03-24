@@ -101,4 +101,16 @@ export class FeedCountsObservableService implements OnDestroy {
       this._feedCounts$.next(feedCounts);
     }
   }
+
+  increment(feedUuid: string) {
+    const feedCounts: Record<string, number> = {
+      ...this._feedCounts$.getValue(),
+    };
+    const oldCount = feedCounts[feedUuid];
+    if (oldCount !== undefined) {
+      feedCounts[feedUuid] = oldCount + 1;
+
+      this._feedCounts$.next(feedCounts);
+    }
+  }
 }
