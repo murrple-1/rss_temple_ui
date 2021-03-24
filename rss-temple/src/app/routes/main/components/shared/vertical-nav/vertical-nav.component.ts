@@ -14,7 +14,10 @@ import {
 } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
 import { FeedService, UserCategoryService } from '@app/services/data';
 import { AppAlertsService, HttpErrorService } from '@app/services';
-import { FeedObservableService } from '@app/routes/main/services';
+import {
+  FeedObservableService,
+  FeedCountsObservableService,
+} from '@app/routes/main/services';
 import { UserCategory, Feed } from '@app/models';
 import { Sort } from '@app/services/data/sort.interface';
 
@@ -26,11 +29,18 @@ type FeedImpl2 = Required<
   Pick<Feed, 'uuid' | 'title' | 'subscribed' | 'homeUrl'>
 >;
 
+interface FeedDescriptor {
+  uuid: string;
+  calculatedTitle: string;
+  feedUrl: string;
+  homeUrl: string | null;
+}
+
 interface CategorizedFeeds {
-  noCategory: FeedImpl[];
+  noCategory: FeedDescriptor[];
   category: {
     name: string;
-    feeds: FeedImpl[];
+    feeds: FeedDescriptor[];
   }[];
 }
 
@@ -45,6 +55,10 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
     category: [],
   };
 
+  get feedCounts$() {
+    return this.feedCountsObservableService.feedCounts$;
+  }
+
   @ViewChild(SubscribeModalComponent, { static: true })
   private subscribeModal?: SubscribeModalComponent;
 
@@ -58,6 +72,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
     private feedService: FeedService,
     private userCategoryService: UserCategoryService,
     private feedObservableService: FeedObservableService,
+    private feedCountsObservableService: FeedCountsObservableService,
     private appAlertsService: AppAlertsService,
     private httpErrorService: HttpErrorService,
   ) {}
@@ -71,13 +86,27 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
     );
 
     return {
-      noCategory: feeds.filter(f => !categorizedFeedUuids.has(f.uuid)),
+      noCategory: feeds
+        .filter(f => !categorizedFeedUuids.has(f.uuid))
+        .map<FeedDescriptor>(f => ({
+          uuid: f.uuid,
+          calculatedTitle: f.calculatedTitle,
+          feedUrl: f.feedUrl,
+          homeUrl: f.homeUrl,
+        })),
       category: userCategories.map(uc => {
         const feedUuids = new Set<string>(uc.feedUuids);
 
         return {
           name: uc.text,
-          feeds: feeds.filter(f => feedUuids.has(f.uuid)),
+          feeds: feeds
+            .filter(f => feedUuids.has(f.uuid))
+            .map<FeedDescriptor>(f => ({
+              uuid: f.uuid,
+              calculatedTitle: f.calculatedTitle,
+              feedUrl: f.feedUrl,
+              homeUrl: f.homeUrl,
+            })),
         };
       }),
     };
@@ -181,7 +210,12 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
                     this.feedObservableService.feedAdded.next(feed);
 
                     this.categorizedFeeds.noCategory = this.categorizedFeeds.noCategory
-                      .concat(feed)
+                      .concat({
+                        uuid: feed.uuid,
+                        calculatedTitle: feed.calculatedTitle,
+                        feedUrl: feed.feedUrl,
+                        homeUrl: feed.homeUrl,
+                      })
                       .sort(VerticalNavComponent.sortFeeds);
                   });
                 },

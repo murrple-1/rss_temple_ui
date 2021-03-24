@@ -22,6 +22,13 @@
         routerLinkActive="active"
       >
         {{ feed.calculatedTitle }}
+        <ng-container *ngIf="feedCounts$ | async as feedCounts">
+          <ng-container *appVar="feedCounts[feed.uuid] as feedCount">
+            <ng-container *ngIf="feedCount !== undefined && feedCount > 0">
+              &nbsp;({{ feedCount }})
+            </ng-container>
+          </ng-container>
+        </ng-container>
       </a>
     </clr-vertical-nav-group-children>
   </clr-vertical-nav-group>

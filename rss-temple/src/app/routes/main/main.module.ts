@@ -11,7 +11,10 @@ import { AppSharedModule } from '@app/app-shared.module';
 
 import { routes } from '@app/routes/main/main.routing';
 
-import { FeedObservableService } from '@app/routes/main/services';
+import {
+  FeedObservableService,
+  FeedCountsObservableService,
+} from '@app/routes/main/services';
 
 import { InViewportDirective } from '@app/directives/inviewport.directive';
 
@@ -38,7 +41,7 @@ import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/routes/main
 
     RouterModule.forChild(routes),
   ],
-  providers: [FeedObservableService],
+  providers: [FeedObservableService, FeedCountsObservableService],
   declarations: [
     InViewportDirective,
 
