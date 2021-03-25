@@ -3,11 +3,11 @@ import {
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 
-export interface GetOptions<Field> extends CommonOptions {
+export interface GetOptions<Field extends string> extends CommonOptions {
   fields?: Field[];
 }
 
-export function toHeaders<Field>(
+export function toHeaders<Field extends string>(
   options: GetOptions<Field>,
   sessionTokenFn: () => string | null,
 ) {
@@ -15,7 +15,7 @@ export function toHeaders<Field>(
   return headers;
 }
 
-export function toParams<Field>(
+export function toParams<Field extends string>(
   options: GetOptions<Field>,
   fieldsFn: () => Field[],
 ) {

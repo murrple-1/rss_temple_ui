@@ -101,7 +101,7 @@ export class UserCategoryService {
     const headers = getToHeaders(options, () =>
       this.sessionService.sessionToken$.getValue(),
     );
-    const params = getToParams(options, () => ['uuid']);
+    const params = getToParams<Field>(options, () => ['uuid']);
 
     return this.http
       .get<JsonValue>(`${environment.apiHost}/api/usercategory/${uuid}`, {
@@ -116,7 +116,7 @@ export class UserCategoryService {
       this.sessionService.sessionToken$.getValue(),
     );
     const params = queryToParams('usercategories');
-    const body = queryToBody(options, () => ['uuid']);
+    const body = queryToBody<Field, SortField>(options, () => ['uuid']);
 
     return this.http
       .post<JsonValue>(
@@ -142,7 +142,7 @@ export class UserCategoryService {
       this.sessionService.sessionToken$.getValue(),
     );
 
-    const params = getToParams(options, () => ['uuid']);
+    const params = getToParams<Field>(options, () => ['uuid']);
 
     return this.http
       .post<JsonValue>(

@@ -6,7 +6,7 @@ import {
 } from '@app/services/data/common.interface';
 import { Sort } from '@app/services/data/sort.interface';
 
-export interface QueryOptions<Field, SortField extends string>
+export interface QueryOptions<Field extends string, SortField extends string>
   extends CommonOptions {
   count?: number;
   skip?: number;
@@ -17,7 +17,7 @@ export interface QueryOptions<Field, SortField extends string>
   returnTotalCount?: boolean;
 }
 
-export interface QueryBody<Field> {
+export interface QueryBody<Field extends string> {
   count?: number;
   skip?: number;
   fields?: Field[];
@@ -27,7 +27,7 @@ export interface QueryBody<Field> {
   totalCount?: boolean;
 }
 
-export function toBody<Field, SortField extends string>(
+export function toBody<Field extends string, SortField extends string>(
   options: QueryOptions<Field, SortField>,
   fieldsFn: () => Field[],
 ) {
@@ -68,7 +68,7 @@ export function toBody<Field, SortField extends string>(
   return body;
 }
 
-export function toHeaders<Field, SortField extends string>(
+export function toHeaders<Field extends string, SortField extends string>(
   options: QueryOptions<Field, SortField>,
   sessionTokenFn: () => string | null,
 ) {

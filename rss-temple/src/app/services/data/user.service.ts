@@ -108,7 +108,7 @@ export class UserService {
     const headers = getToHeaders(options, () =>
       this.sessionService.sessionToken$.getValue(),
     );
-    const params = getToParams(options, () => ['uuid']);
+    const params = getToParams<Field>(options, () => ['uuid']);
 
     return this.http
       .get<JsonValue>(`${environment.apiHost}/api/user`, {

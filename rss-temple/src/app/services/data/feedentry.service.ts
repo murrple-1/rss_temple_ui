@@ -203,7 +203,7 @@ export class FeedEntryService {
     const headers = getToHeaders(options, () =>
       this.sessionService.sessionToken$.getValue(),
     );
-    const params = getToParams(options, () => ['uuid']);
+    const params = getToParams<Field>(options, () => ['uuid']);
 
     return this.http
       .get<JsonValue>(`${environment.apiHost}/api/feedentry/${uuid}`, {
@@ -218,7 +218,7 @@ export class FeedEntryService {
       this.sessionService.sessionToken$.getValue(),
     );
     const params = queryToParams('feedentries');
-    const body = queryToBody(options, () => ['uuid']);
+    const body = queryToBody<Field, SortField>(options, () => ['uuid']);
 
     return this.http
       .post<JsonValue>(`${environment.apiHost}/api/feedentries/query`, body, {
