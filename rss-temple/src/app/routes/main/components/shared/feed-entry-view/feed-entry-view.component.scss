@@ -7,6 +7,14 @@
   p.app--date {
     margin-top: 0;
   }
+
+  &.app--content {
+    & ::ng-deep img {
+      display: block;
+      max-width: 600px;
+      max-height: 600px;
+    }
+  }
 }
 
 @keyframes flash {
