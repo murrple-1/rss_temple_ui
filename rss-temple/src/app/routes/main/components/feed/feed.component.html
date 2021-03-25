@@ -40,7 +40,18 @@
           </div>
         </div>
         <div class="clr-row">
-          <div class="clr-col-12">
+          <div class="clr-col-4">
+            <clr-checkbox-wrapper>
+              <input
+                type="checkbox"
+                clrCheckbox
+                [ngModel]="showRead"
+                (ngModelChange)="onShowReadChange($event)"
+              />
+              <label>Show Read?</label>
+            </clr-checkbox-wrapper>
+          </div>
+          <div class="clr-col-8">
             <span>
               <ng-container *ngIf="feedCounts$ | async as feedCounts">
                 <ng-container *appVar="feedCounts[feed.uuid] as feedCount">

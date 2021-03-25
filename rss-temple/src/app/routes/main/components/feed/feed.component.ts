@@ -55,6 +55,8 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
   feedUrl: string | null = null;
   userCategories: UserCategoryImpl[] = [];
 
+  showRead = false;
+
   get feeds() {
     if (this.feed !== null) {
       return [this.feed];
@@ -92,15 +94,39 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
           paramMap.get('count') ?? DEFAULT_COUNT.toString(10),
           10,
         );
+        const showRead = paramMap.get('showRead') === 'true';
 
         if (url) {
           this.feedUrl = url;
           this.zone.run(() => {
+            this.showRead = showRead;
             this.reload();
           });
         }
       },
     });
+  }
+
+  protected feedEntryQueryOptions_search(feeds: FeedImpl[]) {
+    const searchParts: string[] = [];
+
+    if (!this.showRead) {
+      searchParts.push('(isRead:"false")');
+    }
+
+    if (feeds.length >= 1) {
+      searchParts.push(
+        `(feedUuid:"${feeds.map(feed => feed.uuid).join(',')}")`,
+      );
+    }
+
+    if (this.startTime !== null) {
+      searchParts.push(
+        `(publishedAt:"|${format(this.startTime, 'yyyy-MM-dd HH:mm:ss')}")`,
+      );
+    }
+
+    return searchParts.join(' and ');
   }
 
   protected reload() {
@@ -190,6 +216,12 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
           this.httpErrorService.handleError(error);
         },
       });
+  }
+
+  onShowReadChange(showRead: boolean) {
+    this.showRead = showRead;
+
+    this.reload();
   }
 
   onSubscribe() {
