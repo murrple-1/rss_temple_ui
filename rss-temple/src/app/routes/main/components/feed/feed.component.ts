@@ -10,6 +10,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable, forkJoin } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 
+import { format } from 'date-fns';
+
 import {
   FeedService,
   FeedEntryService,
