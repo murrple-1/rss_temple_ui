@@ -20,10 +20,7 @@
       </p>
       <p class="p7 app--date">{{ feedEntry.publishedAt | dateFormat }}</p>
     </div>
-    <div
-      class="card-text app--content"
-      [innerHtml]="feedEntry.content | safeHtml"
-    ></div>
+    <div class="card-text app--content" [innerHtml]="feedEntry.content"></div>
   </div>
   <div class="card-footer">
     <ng-container
