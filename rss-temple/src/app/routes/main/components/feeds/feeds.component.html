@@ -9,19 +9,26 @@
     [infiniteScrollContainer]="'.content-area'"
     [fromRoot]="true"
   >
-    <div *ngIf="!favoritesOnly" class="clr-row">
-      <div class="clr-col-12">
-        <clr-checkbox-wrapper>
-          <input
-            type="checkbox"
-            clrCheckbox
-            [ngModel]="showRead"
-            (ngModelChange)="onShowReadChange($event)"
-          />
-          <label>Show Read?</label>
-        </clr-checkbox-wrapper>
-      </div>
-    </div>
+    <clr-accordion *ngIf="!favoritesOnly">
+      <clr-accordion-panel>
+        <clr-accordion-title>Feed Settings</clr-accordion-title>
+        <clr-accordion-content *clrIfExpanded>
+          <div class="clr-row">
+            <div class="clr-col-12">
+              <clr-checkbox-wrapper>
+                <input
+                  type="checkbox"
+                  clrCheckbox
+                  [ngModel]="showRead"
+                  (ngModelChange)="onShowReadChange($event)"
+                />
+                <label>Show Read?</label>
+              </clr-checkbox-wrapper>
+            </div>
+          </div>
+        </clr-accordion-content>
+      </clr-accordion-panel>
+    </clr-accordion>
     <ng-container
       *ngIf="feedEntries.length < 1; then hasNoEntries; else hasEntries"
     ></ng-container>

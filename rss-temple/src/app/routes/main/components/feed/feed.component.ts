@@ -60,6 +60,8 @@ export class FeedComponent
 
   showRead = false;
 
+  customNameInput = '';
+
   private navigationSubscription: Subscription | null = null;
 
   get feeds() {
@@ -154,9 +156,7 @@ export class FeedComponent
   }
 
   protected reload() {
-    this.feed = null;
     this.feedEntries = [];
-    this.userCategories = [];
 
     this.getFeed();
   }
@@ -190,6 +190,7 @@ export class FeedComponent
         next: feed => {
           this.zone.run(() => {
             this.feed = feed;
+            this.customNameInput = feed.customTitle ?? '';
           });
 
           let userCategoriesObservable: Observable<UserCategoryImpl[]>;
@@ -307,5 +308,9 @@ export class FeedComponent
         text: c,
       }));
     }
+  }
+
+  onFeedRename() {
+    // TODO this needs server support
   }
 }

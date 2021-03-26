@@ -9,26 +9,102 @@
     [infiniteScrollContainer]="'.content-area'"
     [fromRoot]="true"
   >
-    <ng-template #showReadCheckbox>
-      <div class="clr-row">
-        <div class="clr-col-12">
-          <clr-checkbox-wrapper>
-            <input
-              type="checkbox"
-              clrCheckbox
-              [ngModel]="showRead"
-              (ngModelChange)="onShowReadChange($event)"
-            />
-            <label>Show Read?</label>
-          </clr-checkbox-wrapper>
-        </div>
-      </div>
-    </ng-template>
+    <clr-accordion>
+      <clr-accordion-panel>
+        <clr-accordion-title>Feed Settings</clr-accordion-title>
+        <clr-accordion-content *clrIfExpanded>
+          <div *ngIf="feed !== null" class="clr-row">
+            <div class="clr-col-12">
+              <ng-container
+                *ngIf="
+                  feed.subscribed;
+                  then unsubscribeOptions;
+                  else subscribeOptions
+                "
+              ></ng-container>
+              <ng-template #unsubscribeOptions>
+                <button
+                  class="btn btn-warning btn-sm"
+                  (click)="onUnsubscribe()"
+                >
+                  Unsubscribe
+                </button>
+                <clr-input-container>
+                  <label>Custom Name</label>
+                  <input
+                    clrInput
+                    [placeholder]="feed.title"
+                    [(ngModel)]="customNameInput"
+                  />
+                </clr-input-container>
+                <button
+                  class="btn btn-secondary btn-sm"
+                  (click)="onFeedRename()"
+                >
+                  Rename Feed
+                </button>
+              </ng-template>
+              <ng-template #subscribeOptions>
+                <button class="btn btn-primary btn-sm" (click)="onSubscribe()">
+                  Subscribe
+                </button>
+              </ng-template>
+            </div>
+          </div>
+          <hr />
+          <div class="clr-row">
+            <div class="clr-col-12">
+              <ul class="list-unstyled">
+                <li>
+                  <h5 class="app--categories-header">Categories</h5>
+                </li>
+                <ng-container
+                  *ngIf="
+                    userCategories.length > 0;
+                    then userCategoryEntries;
+                    else noUserCategoriesEntry
+                  "
+                ></ng-container>
+                <ng-template #userCategoryEntries>
+                  <li *ngFor="let userCategory of userCategories">
+                    {{ userCategory.text }}
+                  </li>
+                </ng-template>
+                <ng-template #noUserCategoriesEntry>
+                  <li class="app--no-user-categories">Not Categorized</li>
+                </ng-template>
+                <li>
+                  <button
+                    class="btn btn-primary btn-sm"
+                    (click)="onAddUserCategory()"
+                  >
+                    Setup Categories
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <hr />
+          <div class="clr-row">
+            <div class="clr-col-12">
+              <clr-checkbox-wrapper>
+                <input
+                  type="checkbox"
+                  clrCheckbox
+                  [ngModel]="showRead"
+                  (ngModelChange)="onShowReadChange($event)"
+                />
+                <label>Show Previously Read Entries?</label>
+              </clr-checkbox-wrapper>
+            </div>
+          </div>
+        </clr-accordion-content>
+      </clr-accordion-panel>
+    </clr-accordion>
     <ng-container
       *ngIf="feed !== null; then hasFeed; else hasNoFeed"
     ></ng-container>
     <ng-template #hasNoFeed>
-      <ng-container *ngTemplateOutlet="showReadCheckbox"></ng-container>
       <div class="clr-row">
         <div class="clr-col-12">No Feed</div>
       </div>
@@ -74,58 +150,6 @@
                 </ng-container>
               </ng-container>
             </span>
-          </div>
-        </div>
-        <ng-container *ngTemplateOutlet="showReadCheckbox"></ng-container>
-        <div class="clr-row">
-          <div class="clr-col-2">
-            <ng-container
-              *ngIf="
-                feed.subscribed;
-                then unsubscribeButton;
-                else subscribeButton
-              "
-            ></ng-container>
-            <ng-template #unsubscribeButton>
-              <button class="btn btn-warning btn-sm" (click)="onUnsubscribe()">
-                Unsubscribe
-              </button>
-            </ng-template>
-            <ng-template #subscribeButton>
-              <button class="btn btn-primary btn-sm" (click)="onSubscribe()">
-                Subscribe
-              </button>
-            </ng-template>
-          </div>
-          <div class="clr-col-10">
-            <ul class="list-unstyled">
-              <li>
-                <h5 class="app--categories-header">Categories</h5>
-              </li>
-              <ng-container
-                *ngIf="
-                  userCategories.length > 0;
-                  then userCategoryEntries;
-                  else noUserCategoriesEntry
-                "
-              ></ng-container>
-              <ng-template #userCategoryEntries>
-                <li *ngFor="let userCategory of userCategories">
-                  {{ userCategory.text }}
-                </li>
-              </ng-template>
-              <ng-template #noUserCategoriesEntry>
-                <li class="app--no-user-categories">Not Categorized</li>
-              </ng-template>
-              <li>
-                <button
-                  class="btn btn-primary btn-sm"
-                  (click)="onAddUserCategory()"
-                >
-                  Setup Categories
-                </button>
-              </li>
-            </ul>
           </div>
         </div>
         <ng-container
