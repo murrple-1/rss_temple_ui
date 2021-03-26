@@ -1,6 +1,13 @@
-import { Component, NgZone, ChangeDetectorRef, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {
+  Component,
+  NgZone,
+  ChangeDetectorRef,
+  OnInit,
+  OnDestroy,
+} from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
+import { Subscription } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 
 import { format } from 'date-fns';
@@ -24,12 +31,18 @@ type FeedEntryImpl = BaseFeedEntryImpl;
   templateUrl: './feeds.component.html',
   styleUrls: ['./feeds.component.scss'],
 })
-export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
+export class FeedsComponent
+  extends AbstractFeedsComponent
+  implements OnInit, OnDestroy {
   feeds: FeedImpl[] = [];
 
   favoritesOnly = false;
+  showRead = false;
+
+  private navigationSubscription: Subscription | null = null;
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private feedService: FeedService,
     private feedObservableService: FeedObservableService,
@@ -49,11 +62,24 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
           paramMap.get('count') ?? DEFAULT_COUNT.toString(10),
           10,
         );
-        this.favoritesOnly = paramMap.get('favorites') === 'true';
+        const favoritesOnly = paramMap.get('favorites') === 'true';
+        const showRead = paramMap.get('showRead') === 'true';
 
         this.zone.run(() => {
+          this.favoritesOnly = favoritesOnly;
+          this.showRead = showRead;
           this.reload();
         });
+
+        if (this.navigationSubscription === null) {
+          this.navigationSubscription = this.router.events.subscribe({
+            next: navigationEvent => {
+              if (navigationEvent instanceof NavigationEnd) {
+                this.reload();
+              }
+            },
+          });
+        }
       },
     });
 
@@ -93,6 +119,14 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
       });
   }
 
+  ngOnDestroy() {
+    super.ngOnDestroy();
+
+    if (this.navigationSubscription !== null) {
+      this.navigationSubscription.unsubscribe();
+    }
+  }
+
   private getFeeds() {
     this.feedService
       .queryAll({
@@ -128,7 +162,9 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
     if (this.favoritesOnly) {
       searchParts.push('(isFavorite:"true")');
     } else {
-      searchParts.push('(isRead:"false")');
+      if (!this.showRead) {
+        searchParts.push('(isRead:"false")');
+      }
     }
 
     if (this.startTime !== null) {
@@ -164,6 +200,12 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
   findFeed(feedEntry: FeedEntryImpl) {
     const feed = this.feeds.find(_feed => _feed.uuid === feedEntry.feedUuid);
     return feed;
+  }
+
+  onShowReadChange(showRead: boolean) {
+    this.showRead = showRead;
+
+    this.reload();
   }
 
   feedAdded(feed: FeedImpl) {

@@ -79,7 +79,7 @@ export function clarityIconsFactory() {
 
     AppSharedModule,
 
-    RouterModule.forRoot(routes),
+    RouterModule.forRoot(routes, { onSameUrlNavigation: 'reload' }),
   ],
   declarations: [
     AppComponent,

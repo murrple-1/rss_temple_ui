@@ -94,9 +94,7 @@ export class NavComponent implements OnInit, OnDestroy {
     if (result) {
       this.sessionService.sessionToken$.next(null);
 
-      this.router.navigate(['/login'], {
-        replaceUrl: true,
-      });
+      this.router.navigate(['/login']);
     }
   }
 }

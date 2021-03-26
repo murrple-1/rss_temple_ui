@@ -99,23 +99,7 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
     };
   }
 
-  protected feedEntryQueryOptions_search(feeds: FeedImpl[]) {
-    const searchParts = ['(isRead:"false")'];
-
-    if (feeds.length >= 1) {
-      searchParts.push(
-        `(feedUuid:"${feeds.map(feed => feed.uuid).join(',')}")`,
-      );
-    }
-
-    if (this.startTime !== null) {
-      searchParts.push(
-        `(publishedAt:"|${format(this.startTime, 'yyyy-MM-dd HH:mm:ss')}")`,
-      );
-    }
-
-    return searchParts.join(' and ');
-  }
+  protected abstract feedEntryQueryOptions_search(feeds: FeedImpl[]): string;
 
   protected feedEntryQueryOptions_sort() {
     return new Sort([

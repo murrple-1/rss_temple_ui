@@ -9,10 +9,26 @@
     [infiniteScrollContainer]="'.content-area'"
     [fromRoot]="true"
   >
+    <ng-template #showReadCheckbox>
+      <div class="clr-row">
+        <div class="clr-col-12">
+          <clr-checkbox-wrapper>
+            <input
+              type="checkbox"
+              clrCheckbox
+              [ngModel]="showRead"
+              (ngModelChange)="onShowReadChange($event)"
+            />
+            <label>Show Read?</label>
+          </clr-checkbox-wrapper>
+        </div>
+      </div>
+    </ng-template>
     <ng-container
       *ngIf="feed !== null; then hasFeed; else hasNoFeed"
     ></ng-container>
     <ng-template #hasNoFeed>
+      <ng-container *ngTemplateOutlet="showReadCheckbox"></ng-container>
       <div class="clr-row">
         <div class="clr-col-12">No Feed</div>
       </div>
@@ -40,18 +56,7 @@
           </div>
         </div>
         <div class="clr-row">
-          <div class="clr-col-4">
-            <clr-checkbox-wrapper>
-              <input
-                type="checkbox"
-                clrCheckbox
-                [ngModel]="showRead"
-                (ngModelChange)="onShowReadChange($event)"
-              />
-              <label>Show Read?</label>
-            </clr-checkbox-wrapper>
-          </div>
-          <div class="clr-col-8">
+          <div class="clr-col-12">
             <span>
               <ng-container *ngIf="feedCounts$ | async as feedCounts">
                 <ng-container *appVar="feedCounts[feed.uuid] as feedCount">
@@ -71,6 +76,7 @@
             </span>
           </div>
         </div>
+        <ng-container *ngTemplateOutlet="showReadCheckbox"></ng-container>
         <div class="clr-row">
           <div class="clr-col-2">
             <ng-container
