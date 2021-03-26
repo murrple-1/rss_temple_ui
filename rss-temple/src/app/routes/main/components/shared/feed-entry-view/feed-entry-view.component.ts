@@ -22,6 +22,9 @@ export class FeedEntryViewComponent implements OnDestroy {
   @Input()
   feedEntry?: FeedEntryImpl;
 
+  @Input()
+  hasFocus = false;
+
   flashing = false;
 
   private hasAutoRead = false;

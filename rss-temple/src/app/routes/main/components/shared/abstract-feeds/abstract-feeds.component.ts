@@ -54,7 +54,7 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
 
   protected count = DEFAULT_COUNT;
 
-  protected focusedFeedEntryView: FeedEntryViewComponent | null = null;
+  focusedFeedEntryView: FeedEntryViewComponent | null = null;
 
   protected startTime: Date | null = null;
 

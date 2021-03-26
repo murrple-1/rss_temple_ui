@@ -3,7 +3,8 @@
   class="card"
   [ngClass]="{
     'app--flash': flashing,
-    'text-muted': feedEntry.isRead
+    'app--is-read': feedEntry.isRead,
+    'app--has-focus': hasFocus
   }"
   (click)="onClick($event)"
 >

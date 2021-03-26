@@ -22,12 +22,20 @@
   }
 }
 
+.app--is-read .card-block ::ng-deep *:not([class]) {
+  color: #b3b3b3;
+}
+
+.app--has-focus {
+  box-shadow: 0 0 1px 3px rgb(255, 255, 216);
+}
+
 @keyframes flash {
   0% {
     background-color: transparent;
   }
   50% {
-    background-color: yellow;
+    background-color: rgb(255, 255, 0);
   }
   100% {
     background-color: transparent;
@@ -36,7 +44,7 @@
 
 .app--flash {
   animation-name: flash;
-  animation-duration: 500ms;
+  animation-duration: 200ms;
   animation-iteration-count: 1;
-  animation-timing-function: ease-in-out;
+  animation-timing-function: linear;
 }
