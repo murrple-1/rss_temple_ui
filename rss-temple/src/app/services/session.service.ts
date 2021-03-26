@@ -19,7 +19,7 @@ export class SessionService implements OnDestroy {
   private unsubscribe$ = new Subject<void>();
 
   constructor() {
-    const sessionToken = localStorage.getItem('sessionToken');
+    const sessionToken = localStorage.getItem('session-service:sessionToken');
     this.sessionToken$ = new BehaviorSubject(sessionToken);
 
     this._isLoggedIn$ = new BehaviorSubject(sessionToken !== null);
@@ -28,10 +28,10 @@ export class SessionService implements OnDestroy {
     this.sessionToken$.pipe(skip(1), takeUntil(this.unsubscribe$)).subscribe({
       next: st => {
         if (st !== null) {
-          localStorage.setItem('sessionToken', st);
+          localStorage.setItem('session-service:sessionToken', st);
           this._isLoggedIn$.next(true);
         } else {
-          localStorage.removeItem('sessionToken');
+          localStorage.removeItem('session-service:sessionToken');
           this._isLoggedIn$.next(false);
         }
       },

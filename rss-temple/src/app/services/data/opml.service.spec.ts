@@ -26,7 +26,7 @@ function setup() {
 
 describe('OPMLService', () => {
   beforeEach(() => {
-    localStorage.removeItem('sessionToken');
+    localStorage.removeItem('session-service:sessionToken');
   });
 
   it('should download', fakeAsync(async () => {

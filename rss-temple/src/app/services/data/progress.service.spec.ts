@@ -23,7 +23,7 @@ function setup() {
 
 describe('ProgressService', () => {
   beforeEach(() => {
-    localStorage.removeItem('sessionToken');
+    localStorage.removeItem('session-service:sessionToken');
   });
 
   it('should check progress', fakeAsync(async () => {

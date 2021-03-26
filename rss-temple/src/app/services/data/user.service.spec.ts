@@ -28,7 +28,7 @@ function setup() {
 
 describe('UserService', () => {
   beforeEach(() => {
-    localStorage.removeItem('sessionToken');
+    localStorage.removeItem('session-service:sessionToken');
   });
 
   it('should get', fakeAsync(async () => {

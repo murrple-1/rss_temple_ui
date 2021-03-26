@@ -35,7 +35,7 @@ function setup() {
 
 describe('HttpErrorService', () => {
   beforeEach(() => {
-    localStorage.removeItem('sessionToken');
+    localStorage.removeItem('session-service:sessionToken');
   });
 
   it('should handle HttpErrorResponses', async () => {

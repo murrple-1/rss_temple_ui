@@ -26,7 +26,7 @@ function setup() {
 
 describe('LoginService', () => {
   beforeEach(() => {
-    localStorage.removeItem('sessionToken');
+    localStorage.removeItem('session-service:sessionToken');
   });
 
   it('should create a "my" login', fakeAsync(async () => {
