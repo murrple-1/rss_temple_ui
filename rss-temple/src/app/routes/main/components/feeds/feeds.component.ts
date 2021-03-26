@@ -4,6 +4,10 @@ import {
   ChangeDetectorRef,
   OnInit,
   OnDestroy,
+  ViewChildren,
+  QueryList,
+  ViewChild,
+  ElementRef,
 } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
@@ -22,6 +26,7 @@ import {
 } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 import { HttpErrorService } from '@app/services';
 import { Feed } from '@app/models';
+import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
 
 type FeedImpl = BaseFeedImpl &
   Required<Pick<Feed, 'homeUrl' | 'calculatedTitle'>>;
@@ -38,6 +43,12 @@ export class FeedsComponent
 
   favoritesOnly = false;
   showRead = false;
+
+  @ViewChildren(FeedEntryViewComponent)
+  protected feedEntryViews: QueryList<FeedEntryViewComponent> | undefined;
+
+  @ViewChild('scrollContainer', { static: true })
+  protected feedEntryViewsScollContainer: ElementRef<HTMLElement> | undefined;
 
   private navigationSubscription: Subscription | null = null;
 

@@ -5,6 +5,9 @@ import {
   OnInit,
   ViewChild,
   OnDestroy,
+  ViewChildren,
+  QueryList,
+  ElementRef,
 } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
@@ -31,6 +34,7 @@ import {
 } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 import { HttpErrorService } from '@app/services';
 import { FeedCountsObservableService } from '@app/routes/main/services';
+import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
 
 type FeedImpl = BaseFeedImpl &
   Required<
@@ -75,6 +79,12 @@ export class FeedComponent
   get feedCounts$() {
     return this.feedCountsObservableService.feedCounts$;
   }
+
+  @ViewChildren(FeedEntryViewComponent)
+  protected feedEntryViews: QueryList<FeedEntryViewComponent> | undefined;
+
+  @ViewChild('scrollContainer', { static: true })
+  protected feedEntryViewsScollContainer: ElementRef<HTMLElement> | undefined;
 
   @ViewChild(UserCategoriesModalComponent, { static: true })
   private userCategoriesModal?: UserCategoriesModalComponent;

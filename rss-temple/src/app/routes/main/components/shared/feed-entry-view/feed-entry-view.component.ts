@@ -33,7 +33,7 @@ export class FeedEntryViewComponent implements OnDestroy {
 
   constructor(
     private zone: NgZone,
-    private elementRef: ElementRef,
+    public elementRef: ElementRef<HTMLElement>,
     private feedEntryService: FeedEntryService,
     private feedCountsObservableService: FeedCountsObservableService,
   ) {}

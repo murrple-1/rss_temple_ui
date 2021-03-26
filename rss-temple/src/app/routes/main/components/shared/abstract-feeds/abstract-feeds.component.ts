@@ -5,12 +5,12 @@ import {
   NgZone,
   Directive,
   HostListener,
+  QueryList,
+  ElementRef,
 } from '@angular/core';
 
 import { Subject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
-
-import { format } from 'date-fns';
 
 import { HttpErrorService } from '@app/services';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
@@ -58,9 +58,16 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
 
   protected startTime: Date | null = null;
 
-  protected readonly unsubscribe$ = new Subject<void>();
-
   abstract get feeds(): FeedImpl[];
+
+  protected abstract get feedEntryViews():
+    | QueryList<FeedEntryViewComponent>
+    | undefined;
+  protected abstract get feedEntryViewsScollContainer():
+    | ElementRef<HTMLElement>
+    | undefined;
+
+  protected readonly unsubscribe$ = new Subject<void>();
 
   constructor(
     protected zone: NgZone,
@@ -169,46 +176,115 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
 
   protected abstract reload(): void;
 
+  private moveFocus(
+    indexFn: (currentIndex: number, listLength: number) => number,
+  ) {
+    if (this.feedEntryViews === undefined) {
+      throw new Error('feedEntryViews undefined');
+    }
+
+    if (this.feedEntryViewsScollContainer === undefined) {
+      throw new Error('feedEntryViewsScrollContainer undefined');
+    }
+
+    const feedEntryViews = this.feedEntryViews.toArray();
+    let newIndex: number;
+    if (this.focusedFeedEntryView !== null) {
+      const currentIndex = feedEntryViews.indexOf(this.focusedFeedEntryView);
+      if (currentIndex >= 0) {
+        newIndex = indexFn(currentIndex, feedEntryViews.length);
+      } else {
+        newIndex = 0;
+      }
+    } else {
+      newIndex = 0;
+    }
+
+    this.focusedFeedEntryView = feedEntryViews[newIndex] ?? null;
+    if (this.focusedFeedEntryView !== null) {
+      // TODO figure this out
+      const initialTop = (feedEntryViews[0] as FeedEntryViewComponent).elementRef.nativeElement.getBoundingClientRect()
+        .top;
+      const containerBoundingRect = this.feedEntryViewsScollContainer.nativeElement.getBoundingClientRect();
+      const entryBoundingRect = this.focusedFeedEntryView.elementRef.nativeElement.getBoundingClientRect();
+      let top =
+        entryBoundingRect.top -
+        (containerBoundingRect.height - entryBoundingRect.height) -
+        this.feedEntryViewsScollContainer.nativeElement.offsetTop -
+        initialTop;
+      if (top >= 0) {
+        this.feedEntryViewsScollContainer.nativeElement.scrollTo({
+          top,
+        });
+      }
+    }
+  }
+
   @HostListener('document:keypress', ['$event'])
   handleKeyPress(event: KeyboardEvent) {
-    if (event.key === 'm') {
-      const focusedFeedEntry = this.focusedFeedEntryView;
-      if (focusedFeedEntry !== null) {
-        const feedEntry = focusedFeedEntry.feedEntry;
-        if (feedEntry === undefined) {
-          return;
-        }
+    switch (event.key) {
+      case 'm': {
+        const focusedFeedEntry = this.focusedFeedEntryView;
+        if (focusedFeedEntry !== null) {
+          const feedEntry = focusedFeedEntry.feedEntry;
+          if (feedEntry === undefined) {
+            return;
+          }
 
-        if (!feedEntry.isRead) {
-          this.feedEntryService
-            .read(feedEntry.uuid)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
-              next: () => {
-                feedEntry.isRead = true;
-                this.changeDetectorRef.detectChanges();
-              },
-              error: error => {
-                this.httpErrorService.handleError(error);
-              },
-            });
-        } else {
-          this.feedEntryService
-            .unread(feedEntry.uuid)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
-              next: () => {
-                feedEntry.isRead = false;
-                this.changeDetectorRef.detectChanges();
-              },
-              error: error => {
-                this.httpErrorService.handleError(error);
-              },
-            });
+          if (!feedEntry.isRead) {
+            this.feedEntryService
+              .read(feedEntry.uuid)
+              .pipe(takeUntil(this.unsubscribe$))
+              .subscribe({
+                next: () => {
+                  feedEntry.isRead = true;
+                  this.changeDetectorRef.detectChanges();
+                },
+                error: error => {
+                  this.httpErrorService.handleError(error);
+                },
+              });
+          } else {
+            this.feedEntryService
+              .unread(feedEntry.uuid)
+              .pipe(takeUntil(this.unsubscribe$))
+              .subscribe({
+                next: () => {
+                  feedEntry.isRead = false;
+                  this.changeDetectorRef.detectChanges();
+                },
+                error: error => {
+                  this.httpErrorService.handleError(error);
+                },
+              });
+          }
         }
+        break;
       }
-    } else if (event.key === 'r') {
-      this.reload();
+      case 'j': {
+        this.moveFocus((currentIndex: number, listLength: number) => {
+          let newIndex = currentIndex + 1;
+          if (newIndex >= listLength - 1) {
+            newIndex = currentIndex;
+          }
+          return newIndex;
+        });
+        break;
+      }
+      case 'k': {
+        this.moveFocus((currentIndex: number, _listLength: number) => {
+          let newIndex = currentIndex - 1;
+          if (newIndex < 0) {
+            newIndex = 0;
+          }
+          return newIndex;
+        });
+        break;
+      }
+      case 'r': {
+        this.reload();
+        break;
+      }
     }
   }
 }
