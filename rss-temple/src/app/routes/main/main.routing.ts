@@ -12,7 +12,7 @@ export const routes: Routes = [
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'feeds' },
       { path: 'feeds', component: FeedsComponent },
-      { path: 'feed', component: FeedComponent },
+      { path: 'feed/:url', component: FeedComponent },
       { path: 'profile', component: ProfileComponent },
     ],
   },

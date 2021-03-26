@@ -14,12 +14,7 @@
         <a
           *ngFor="let feed of categoryDescriptor.feeds"
           clrVerticalNavLink
-          [routerLink]="[
-            '/main/feed',
-            {
-              'url': feed.feedUrl
-            }
-          ]"
+          [routerLink]="['/main/feed/', feed.feedUrl]"
           routerLinkActive="active"
         >
           {{ feed.calculatedTitle }}

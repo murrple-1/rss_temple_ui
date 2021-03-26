@@ -4,10 +4,11 @@ import {
   ChangeDetectorRef,
   OnInit,
   ViewChild,
+  OnDestroy,
 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
-import { Observable, forkJoin } from 'rxjs';
+import { Observable, forkJoin, Subscription } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 
 import { format } from 'date-fns';
@@ -50,12 +51,16 @@ type UserCategoryImpl = Required<Pick<UserCategory, 'text'>>;
   templateUrl: './feed.component.html',
   styleUrls: ['./feed.component.scss'],
 })
-export class FeedComponent extends AbstractFeedsComponent implements OnInit {
+export class FeedComponent
+  extends AbstractFeedsComponent
+  implements OnInit, OnDestroy {
   feed: FeedImpl | null = null;
   feedUrl: string | null = null;
   userCategories: UserCategoryImpl[] = [];
 
   showRead = false;
+
+  private navigationSubscription: Subscription | null = null;
 
   get feeds() {
     if (this.feed !== null) {
@@ -73,6 +78,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
   private userCategoriesModal?: UserCategoriesModalComponent;
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private feedService: FeedService,
     private userCategoryService: UserCategoryService,
@@ -103,8 +109,26 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
             this.reload();
           });
         }
+
+        if (this.navigationSubscription === null) {
+          this.navigationSubscription = this.router.events.subscribe({
+            next: navigationEvent => {
+              if (navigationEvent instanceof NavigationEnd) {
+                this.reload();
+              }
+            },
+          });
+        }
       },
     });
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+
+    if (this.navigationSubscription !== null) {
+      this.navigationSubscription.unsubscribe();
+    }
   }
 
   protected feedEntryQueryOptions_search(feeds: FeedImpl[]) {
