@@ -22,8 +22,11 @@
   }
 }
 
-.app--is-read .card-block ::ng-deep *:not([class]) {
-  color: #b3b3b3;
+.app--is-read .card-block {
+  &,
+  & ::ng-deep *:not([class]) {
+    color: #b3b3b3;
+  }
 }
 
 .app--has-focus {

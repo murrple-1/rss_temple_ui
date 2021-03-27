@@ -207,6 +207,8 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
 
     this.focusedFeedEntryView = feedEntryViews[newIndex] ?? null;
     if (this.focusedFeedEntryView !== null) {
+      this.focusedFeedEntryView.autoRead();
+
       const containerBoundingRect = this.feedEntryViewsScollContainer.nativeElement.getBoundingClientRect();
       const entryBoundingRect = this.focusedFeedEntryView.elementRef.nativeElement.getBoundingClientRect();
       if (

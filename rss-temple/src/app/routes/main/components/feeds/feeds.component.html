@@ -45,7 +45,8 @@
           [feedEntry]="feedEntry"
           [hasFocus]="feedEntryView === focusedFeedEntryView"
           appInViewport
-          [appInViewportOffset]="{ 'bottom': -350 }"
+          [appInViewportDisabled]="feedEntry.isRead"
+          [appInViewportOffset]="{ 'bottom': -64 }"
           (appInViewportWatch)="onEntryEnteredViewport($event, feedEntryView)"
           (click)="onEntryClicked($event, feedEntryView)"
         ></app-feed-entry-view>
