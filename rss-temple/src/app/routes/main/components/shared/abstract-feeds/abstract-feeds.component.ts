@@ -178,6 +178,11 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
 
   private moveFocus(
     indexFn: (currentIndex: number, listLength: number) => number,
+    scrollToTopFn: (
+      entryBoundingClientRect: DOMRect,
+      scrollContainerBoundingClientRect: DOMRect,
+      scrollContainerScrollTop: number,
+    ) => number,
   ) {
     if (this.feedEntryViews === undefined) {
       throw new Error('feedEntryViews undefined');
@@ -202,22 +207,98 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
 
     this.focusedFeedEntryView = feedEntryViews[newIndex] ?? null;
     if (this.focusedFeedEntryView !== null) {
-      // TODO figure this out
-      const initialTop = (feedEntryViews[0] as FeedEntryViewComponent).elementRef.nativeElement.getBoundingClientRect()
-        .top;
       const containerBoundingRect = this.feedEntryViewsScollContainer.nativeElement.getBoundingClientRect();
       const entryBoundingRect = this.focusedFeedEntryView.elementRef.nativeElement.getBoundingClientRect();
-      let top =
-        entryBoundingRect.top -
-        (containerBoundingRect.height - entryBoundingRect.height) -
-        this.feedEntryViewsScollContainer.nativeElement.offsetTop -
-        initialTop;
-      if (top >= 0) {
-        this.feedEntryViewsScollContainer.nativeElement.scrollTo({
-          top,
-        });
+      if (
+        !AbstractFeedsComponent.rectContainsRect(
+          containerBoundingRect,
+          entryBoundingRect,
+        )
+      ) {
+        const top = scrollToTopFn(
+          entryBoundingRect,
+          containerBoundingRect,
+          this.feedEntryViewsScollContainer.nativeElement.scrollTop,
+        );
+        if (top >= 0) {
+          this.feedEntryViewsScollContainer.nativeElement.scrollTo({
+            top,
+            behavior: 'smooth',
+          });
+        }
       }
     }
+  }
+
+  private static scrollToTopUp(
+    entryBoundingClientRect: DOMRect,
+    scrollContainerBoundingClientRect: DOMRect,
+    scrollContainerScrollTop: number,
+  ) {
+    return AbstractFeedsComponent.topAlignTop(
+      entryBoundingClientRect,
+      scrollContainerBoundingClientRect,
+      scrollContainerScrollTop,
+    );
+  }
+
+  private static scrollToTopDown(
+    entryBoundingClientRect: DOMRect,
+    scrollContainerBoundingClientRect: DOMRect,
+    scrollContainerScrollTop: number,
+  ) {
+    if (
+      entryBoundingClientRect.height <= scrollContainerBoundingClientRect.height
+    ) {
+      return AbstractFeedsComponent.bottomAlignTop(
+        entryBoundingClientRect,
+        scrollContainerBoundingClientRect,
+        scrollContainerScrollTop,
+      );
+    } else {
+      return AbstractFeedsComponent.topAlignTop(
+        entryBoundingClientRect,
+        scrollContainerBoundingClientRect,
+        scrollContainerScrollTop,
+      );
+    }
+  }
+
+  private static topAlignTop(
+    entryBoundingClientRect: DOMRect,
+    scrollContainerBoundingClientRect: DOMRect,
+    scrollContainerScrollTop: number,
+  ) {
+    return (
+      entryBoundingClientRect.top +
+      scrollContainerScrollTop -
+      scrollContainerBoundingClientRect.top -
+      8
+    );
+  }
+
+  private static bottomAlignTop(
+    entryBoundingClientRect: DOMRect,
+    scrollContainerBoundingClientRect: DOMRect,
+    scrollContainerScrollTop: number,
+  ) {
+    return (
+      entryBoundingClientRect.top +
+      scrollContainerScrollTop -
+      (scrollContainerBoundingClientRect.top +
+        scrollContainerBoundingClientRect.height) +
+      entryBoundingClientRect.height +
+      8
+    );
+  }
+
+  private static rectContainsRect(outerRect: DOMRect, innerRect: DOMRect) {
+    return (
+      outerRect.top <= innerRect.top &&
+      outerRect.bottom >= innerRect.bottom &&
+      outerRect.left <= innerRect.left &&
+      outerRect.right >= innerRect.right
+    );
   }
 
   @HostListener('document:keypress', ['$event'])
@@ -268,7 +349,7 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
             newIndex = currentIndex;
           }
           return newIndex;
-        });
+        }, AbstractFeedsComponent.scrollToTopDown);
         break;
       }
       case 'k': {
@@ -278,7 +359,7 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
             newIndex = 0;
           }
           return newIndex;
-        });
+        }, AbstractFeedsComponent.scrollToTopUp);
         break;
       }
       case 'r': {
