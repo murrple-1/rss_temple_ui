@@ -109,10 +109,7 @@ describe('HttpErrorService', () => {
       text: 'Session expired',
       type: 'danger',
     });
-    expect(routerSpy.navigate).toHaveBeenCalledWith(
-      ['/login'],
-      jasmine.any(Object),
-    );
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
   });
 
   it('should handle arbitrary errors', async () => {
