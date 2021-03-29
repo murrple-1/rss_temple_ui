@@ -5,8 +5,6 @@ import { FormsModule } from '@angular/forms';
 
 import { ClarityModule } from '@clr/angular';
 
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-
 import { AppSharedModule } from '@app/app-shared.module';
 
 import { routes } from '@app/routes/main/main.routing';
@@ -16,7 +14,8 @@ import {
   FeedCountsObservableService,
 } from '@app/routes/main/services';
 
-import { InViewportDirective } from '@app/directives/inviewport.directive';
+import { InViewportDirective } from '@app/routes/main/directives/inviewport.directive';
+import { InfiniteScrollDirective } from '@app/routes/main/directives/infinite-scroll.directive';
 
 import { MainComponent } from '@app/routes/main/main.component';
 import { FeedsComponent } from '@app/routes/main/components/feeds/feeds.component';
@@ -35,8 +34,6 @@ import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/routes/main
 
     ClarityModule,
 
-    InfiniteScrollModule,
-
     AppSharedModule,
 
     RouterModule.forChild(routes),
@@ -44,6 +41,7 @@ import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/routes/main
   providers: [FeedObservableService, FeedCountsObservableService],
   declarations: [
     InViewportDirective,
+    InfiniteScrollDirective,
 
     MainComponent,
     FeedsComponent,

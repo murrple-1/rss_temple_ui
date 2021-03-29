@@ -36,7 +36,6 @@
     "core-js": "^3.9.1",
     "date-fns": "^2.19.0",
     "email-validator": "^2.0.4",
-    "ngx-infinite-scroll": "^10.0.0",
     "rxjs": "~6.6.6",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.3"

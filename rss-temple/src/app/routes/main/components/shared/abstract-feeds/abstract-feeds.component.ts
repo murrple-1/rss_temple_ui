@@ -14,7 +14,7 @@ import { takeUntil, map } from 'rxjs/operators';
 
 import { HttpErrorService } from '@app/services';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
-import { InViewportEvent } from '@app/directives/inviewport.directive';
+import { InViewportEvent } from '@app/routes/main/directives/inviewport.directive';
 import { FeedEntry, Feed } from '@app/models';
 import { Sort } from '@app/services/data/sort.interface';
 import { FeedEntryService } from '@app/services/data';

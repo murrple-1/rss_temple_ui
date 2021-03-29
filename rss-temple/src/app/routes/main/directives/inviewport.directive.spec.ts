@@ -54,7 +54,7 @@ describe('InViewportDirective', () => {
     elementSpy.getBoundingClientRect.and.returnValue(scollParentRect);
 
     const emitPromise = new Promise<InViewportEvent>(resolve => {
-      inViewportDirective.appInViewportWatch.pipe(take(1)).subscribe({
+      inViewportDirective.watch.pipe(take(1)).subscribe({
         next: event => {
           resolve(event);
         },
@@ -95,7 +95,7 @@ describe('InViewportDirective', () => {
     elementSpy.getBoundingClientRect.and.returnValue(myRect);
 
     const emitPromise = new Promise<InViewportEvent>(resolve => {
-      inViewportDirective.appInViewportWatch.pipe(take(1)).subscribe({
+      inViewportDirective.watch.pipe(take(1)).subscribe({
         next: event => {
           resolve(event);
         },

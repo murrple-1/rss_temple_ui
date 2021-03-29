@@ -35,19 +35,33 @@ type CheckEventType = 'resize' | 'scroll';
   selector: '[appInViewport]',
 })
 export class InViewportDirective implements OnInit, OnDestroy {
+  @Input('appInViewport')
+  disabled = false;
+
+  private _scrollParent: ElementRef<HTMLElement> | HTMLElement = document.body;
+
+  @Input('appInViewportScrollParent')
+  get scrollParent() {
+    return this._scrollParent;
+  }
+
+  set scrollParent(value: ElementRef<HTMLElement> | HTMLElement) {
+    if (this.subscription !== null) {
+      this.subscription.unsubscribe();
+    }
+
+    this._scrollParent = value;
+    this.initEventListeners();
+  }
+
   @Input('appInViewportOffset')
   offset: Partial<Rect> = {};
 
   @Input('appInViewportRecognizedEventTypes')
   recognizedEventTypes = new Set<CheckEventType>(['resize', 'scroll']);
 
-  @Input('appInViewportDisabled')
-  disabled = false;
-
-  @Output()
-  appInViewportWatch = new EventEmitter<InViewportEvent>();
-
-  _scrollParent: Element | null = null;
+  @Output('appInViewportWatch')
+  watch = new EventEmitter<InViewportEvent>();
 
   private subscription: Subscription | null = null;
 
@@ -63,22 +77,7 @@ export class InViewportDirective implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const scrollParent =
-      getScrollParent(this.elementRef.nativeElement) ?? document.body;
-    this._scrollParent = scrollParent;
-
-    this.subscription = merge(
-      fromEvent(window, 'resize').pipe(mapTo<Event, CheckEventType>('resize')),
-      fromEvent(this._scrollParent, 'scroll').pipe(
-        mapTo<Event, CheckEventType>('scroll'),
-      ),
-    )
-      .pipe(debounceTime(100))
-      .subscribe({
-        next: checkEventType => {
-          this.check(checkEventType, scrollParent);
-        },
-      });
+    this.initEventListeners();
   }
 
   ngOnDestroy() {
@@ -87,14 +86,37 @@ export class InViewportDirective implements OnInit, OnDestroy {
     }
   }
 
-  private check(eventType: CheckEventType, scrollParent: Element) {
+  initEventListeners() {
+    const scrollParentNativeElement =
+      this.scrollParent instanceof ElementRef
+        ? this.scrollParent.nativeElement
+        : this.scrollParent;
+    this.subscription = merge(
+      fromEvent(window, 'resize').pipe(mapTo<Event, CheckEventType>('resize')),
+      fromEvent(scrollParentNativeElement, 'scroll').pipe(
+        mapTo<Event, CheckEventType>('scroll'),
+      ),
+    )
+      .pipe(debounceTime(100))
+      .subscribe({
+        next: checkEventType => {
+          this.check(checkEventType);
+        },
+      });
+  }
+
+  private check(eventType: CheckEventType) {
     if (this.disabled || !this.recognizedEventTypes.has(eventType)) {
       return;
     }
 
     const nativeElement = this.elementRef.nativeElement;
+    const scrollParentNativeElement =
+      this.scrollParent instanceof ElementRef
+        ? this.scrollParent.nativeElement
+        : this.scrollParent;
 
-    const scrollParentRect = scrollParent.getBoundingClientRect();
+    const scrollParentRect = scrollParentNativeElement.getBoundingClientRect();
     const offset = this.offset;
 
     const viewportRect: Rect = {
@@ -120,20 +142,6 @@ export class InViewportDirective implements OnInit, OnDestroy {
       };
     }
 
-    this.appInViewportWatch.emit(event);
-  }
-}
-
-function getScrollParent(node: (Node & ParentNode) | null): Element | null {
-  if (node instanceof Element) {
-    const overflowY = window.getComputedStyle(node).overflowY;
-
-    if (overflowY !== 'visible' && overflowY !== 'hidden') {
-      return node;
-    } else {
-      return getScrollParent(node.parentNode);
-    }
-  } else {
-    return null;
+    this.watch.emit(event);
   }
 }

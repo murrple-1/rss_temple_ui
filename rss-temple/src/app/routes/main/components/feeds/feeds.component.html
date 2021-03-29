@@ -1,56 +1,54 @@
 <app-vertical-nav></app-vertical-nav>
-<div #scrollContainer class="content-area">
-  <div
-    infinite-scroll
-    [infiniteScrollDisabled]="
-      [LoadingState.IsLoading, LoadingState.NoMoreToLoad].includes(loadingState)
-    "
-    (scrolled)="onApproachingBottom()"
-    [infiniteScrollContainer]="'.content-area'"
-    [fromRoot]="true"
-  >
-    <clr-accordion *ngIf="!favoritesOnly">
-      <clr-accordion-panel>
-        <clr-accordion-title>Feed Settings</clr-accordion-title>
-        <clr-accordion-content *clrIfExpanded>
-          <div class="clr-row">
-            <div class="clr-col-12">
-              <clr-checkbox-wrapper>
-                <input
-                  type="checkbox"
-                  clrCheckbox
-                  [ngModel]="showRead"
-                  (ngModelChange)="onShowReadChange($event)"
-                />
-                <label>Show Read?</label>
-              </clr-checkbox-wrapper>
-            </div>
+<div
+  class="content-area"
+  #scrollContainer
+  [appInfiniteScroll]="
+    [LoadingState.IsLoading, LoadingState.NoMoreToLoad].includes(loadingState)
+  "
+  [appInfiniteScrollOffset]="1024"
+  (appInfiniteScrollApproachingBottom)="onApproachingBottom()"
+>
+  <clr-accordion *ngIf="!favoritesOnly">
+    <clr-accordion-panel>
+      <clr-accordion-title>Feed Settings</clr-accordion-title>
+      <clr-accordion-content *clrIfExpanded>
+        <div class="clr-row">
+          <div class="clr-col-12">
+            <clr-checkbox-wrapper>
+              <input
+                type="checkbox"
+                clrCheckbox
+                [ngModel]="showRead"
+                (ngModelChange)="onShowReadChange($event)"
+              />
+              <label>Show Read?</label>
+            </clr-checkbox-wrapper>
           </div>
-        </clr-accordion-content>
-      </clr-accordion-panel>
-    </clr-accordion>
-    <ng-container
-      *ngIf="feedEntries.length < 1; then hasNoEntries; else hasEntries"
-    ></ng-container>
-    <ng-template #hasNoEntries>
-      <div class="clr-row">
-        <div class="clr-col-12">No Entries</div>
-      </div>
-    </ng-template>
-    <ng-template #hasEntries>
-      <div *ngFor="let feedEntry of feedEntries" class="clr-col-12">
-        <app-feed-entry-view
-          #feedEntryView
-          [feed]="findFeed(feedEntry)"
-          [feedEntry]="feedEntry"
-          [hasFocus]="feedEntryView === focusedFeedEntryView"
-          appInViewport
-          [appInViewportDisabled]="feedEntry.isRead"
-          [appInViewportOffset]="{ 'bottom': -64 }"
-          (appInViewportWatch)="onEntryEnteredViewport($event, feedEntryView)"
-          (click)="onEntryClicked($event, feedEntryView)"
-        ></app-feed-entry-view>
-      </div>
-    </ng-template>
-  </div>
+        </div>
+      </clr-accordion-content>
+    </clr-accordion-panel>
+  </clr-accordion>
+  <ng-container
+    *ngIf="feedEntries.length < 1; then hasNoEntries; else hasEntries"
+  ></ng-container>
+  <ng-template #hasNoEntries>
+    <div class="clr-row">
+      <div class="clr-col-12">No Entries</div>
+    </div>
+  </ng-template>
+  <ng-template #hasEntries>
+    <div *ngFor="let feedEntry of feedEntries" class="clr-col-12">
+      <app-feed-entry-view
+        #feedEntryView
+        [feed]="findFeed(feedEntry)"
+        [feedEntry]="feedEntry"
+        [hasFocus]="feedEntryView === focusedFeedEntryView"
+        [appInViewport]="feedEntry.isRead"
+        [appInViewportScrollParent]="scrollContainer"
+        [appInViewportOffset]="{ 'bottom': -64 }"
+        (appInViewportWatch)="onEntryEnteredViewport($event, feedEntryView)"
+        (click)="onEntryClicked($event, feedEntryView)"
+      ></app-feed-entry-view>
+    </div>
+  </ng-template>
 </div>

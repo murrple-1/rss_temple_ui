@@ -1,183 +1,173 @@
 <app-vertical-nav></app-vertical-nav>
-<div #scrollContainer class="content-area">
-  <div
-    infinite-scroll
-    [infiniteScrollDisabled]="
-      [LoadingState.IsLoading, LoadingState.NoMoreToLoad].includes(loadingState)
-    "
-    (scrolled)="onApproachingBottom()"
-    [infiniteScrollContainer]="'.content-area'"
-    [fromRoot]="true"
-  >
-    <clr-accordion>
-      <clr-accordion-panel>
-        <clr-accordion-title>Feed Settings</clr-accordion-title>
-        <clr-accordion-content *clrIfExpanded>
-          <div *ngIf="feed !== null" class="clr-row">
-            <div class="clr-col-12">
-              <ng-container
-                *ngIf="
-                  feed.subscribed;
-                  then unsubscribeOptions;
-                  else subscribeOptions
-                "
-              ></ng-container>
-              <ng-template #unsubscribeOptions>
-                <button
-                  class="btn btn-warning btn-sm"
-                  (click)="onUnsubscribe()"
-                >
-                  Unsubscribe
-                </button>
-                <clr-input-container>
-                  <label>Custom Name</label>
-                  <input
-                    clrInput
-                    [placeholder]="feed.title"
-                    [(ngModel)]="customNameInput"
-                  />
-                </clr-input-container>
-                <button
-                  class="btn btn-secondary btn-sm"
-                  (click)="onFeedRename()"
-                >
-                  Rename Feed
-                </button>
-              </ng-template>
-              <ng-template #subscribeOptions>
-                <button class="btn btn-primary btn-sm" (click)="onSubscribe()">
-                  Subscribe
-                </button>
-              </ng-template>
-            </div>
-          </div>
-          <hr />
-          <div class="clr-row">
-            <div class="clr-col-12">
-              <ul class="list-unstyled">
-                <li>
-                  <h5 class="app--categories-header">Categories</h5>
-                </li>
-                <ng-container
-                  *ngIf="
-                    userCategories.length > 0;
-                    then userCategoryEntries;
-                    else noUserCategoriesEntry
-                  "
-                ></ng-container>
-                <ng-template #userCategoryEntries>
-                  <li *ngFor="let userCategory of userCategories">
-                    {{ userCategory.text }}
-                  </li>
-                </ng-template>
-                <ng-template #noUserCategoriesEntry>
-                  <li class="app--no-user-categories">Not Categorized</li>
-                </ng-template>
-                <li>
-                  <button
-                    class="btn btn-primary btn-sm"
-                    (click)="onAddUserCategory()"
-                  >
-                    Setup Categories
-                  </button>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <hr />
-          <div class="clr-row">
-            <div class="clr-col-12">
-              <clr-checkbox-wrapper>
-                <input
-                  type="checkbox"
-                  clrCheckbox
-                  [ngModel]="showRead"
-                  (ngModelChange)="onShowReadChange($event)"
-                />
-                <label>Show Previously Read Entries?</label>
-              </clr-checkbox-wrapper>
-            </div>
-          </div>
-        </clr-accordion-content>
-      </clr-accordion-panel>
-    </clr-accordion>
-    <ng-container
-      *ngIf="feed !== null; then hasFeed; else hasNoFeed"
-    ></ng-container>
-    <ng-template #hasNoFeed>
-      <div class="clr-row">
-        <div class="clr-col-12">No Feed</div>
-      </div>
-    </ng-template>
-    <ng-template #hasFeed>
-      <ng-container *ngIf="feed !== null">
-        <div class="clr-row">
+<div
+  class="content-area"
+  #scrollContainer
+  [appInfiniteScroll]="
+    [LoadingState.IsLoading, LoadingState.NoMoreToLoad].includes(loadingState)
+  "
+  [appInfiniteScrollOffset]="1024"
+  (appInfiniteScrollApproachingBottom)="onApproachingBottom()"
+>
+  <clr-accordion>
+    <clr-accordion-panel>
+      <clr-accordion-title>Feed Settings</clr-accordion-title>
+      <clr-accordion-content *clrIfExpanded>
+        <div *ngIf="feed !== null" class="clr-row">
           <div class="clr-col-12">
             <ng-container
               *ngIf="
-                feed.customTitle !== null;
-                then hasCustomTitle;
-                else hasNoCustomTitle
+                feed.subscribed;
+                then unsubscribeOptions;
+                else subscribeOptions
               "
             ></ng-container>
-            <ng-template #hasCustomTitle>
-              <h2>
-                {{ feed.customTitle }}
-                <span class="app--regular-title">({{ feed.title }})</span>
-              </h2>
+            <ng-template #unsubscribeOptions>
+              <button class="btn btn-warning btn-sm" (click)="onUnsubscribe()">
+                Unsubscribe
+              </button>
+              <clr-input-container>
+                <label>Custom Name</label>
+                <input
+                  clrInput
+                  [placeholder]="feed.title"
+                  [(ngModel)]="customNameInput"
+                />
+              </clr-input-container>
+              <button class="btn btn-secondary btn-sm" (click)="onFeedRename()">
+                Rename Feed
+              </button>
             </ng-template>
-            <ng-template #hasNoCustomTitle>
-              <h2>{{ feed.title }}</h2>
+            <ng-template #subscribeOptions>
+              <button class="btn btn-primary btn-sm" (click)="onSubscribe()">
+                Subscribe
+              </button>
             </ng-template>
           </div>
         </div>
+        <hr />
         <div class="clr-row">
           <div class="clr-col-12">
-            <span>
-              <ng-container *ngIf="feedCounts$ | async as feedCounts">
-                <ng-container *appVar="feedCounts[feed.uuid] as feedCount">
-                  <ng-container
-                    *ngIf="
-                      feedCount !== undefined;
-                      then realUnreadCount;
-                      else fakeUnreadCount
-                    "
-                  ></ng-container>
-                  <ng-template #realUnreadCount>
-                    {{ feedCount }} unread
-                  </ng-template>
-                  <ng-template #fakeUnreadCount> 0 unread </ng-template>
-                </ng-container>
-              </ng-container>
-            </span>
+            <ul class="list-unstyled">
+              <li>
+                <h5 class="app--categories-header">Categories</h5>
+              </li>
+              <ng-container
+                *ngIf="
+                  userCategories.length > 0;
+                  then userCategoryEntries;
+                  else noUserCategoriesEntry
+                "
+              ></ng-container>
+              <ng-template #userCategoryEntries>
+                <li *ngFor="let userCategory of userCategories">
+                  {{ userCategory.text }}
+                </li>
+              </ng-template>
+              <ng-template #noUserCategoriesEntry>
+                <li class="app--no-user-categories">Not Categorized</li>
+              </ng-template>
+              <li>
+                <button
+                  class="btn btn-primary btn-sm"
+                  (click)="onAddUserCategory()"
+                >
+                  Setup Categories
+                </button>
+              </li>
+            </ul>
           </div>
         </div>
-        <ng-container
-          *ngIf="feedEntries.length < 1; then hasNoEntries; else hasEntries"
-        ></ng-container>
-        <ng-template #hasNoEntries>
-          <div class="clr-col-12">No Entries</div>
-        </ng-template>
-        <ng-template #hasEntries>
-          <div *ngFor="let feedEntry of feedEntries" class="clr-col-12">
-            <app-feed-entry-view
-              #feedEntryView
-              [feed]="feed"
-              [feedEntry]="feedEntry"
-              [hasFocus]="feedEntryView === focusedFeedEntryView"
-              appInViewport
-              [appInViewportDisabled]="feedEntry.isRead"
-              [appInViewportOffset]="{ 'bottom': -64 }"
-              (appInViewportWatch)="
-                onEntryEnteredViewport($event, feedEntryView)
-              "
-              (click)="onEntryClicked($event, feedEntryView)"
-            ></app-feed-entry-view>
+        <hr />
+        <div class="clr-row">
+          <div class="clr-col-12">
+            <clr-checkbox-wrapper>
+              <input
+                type="checkbox"
+                clrCheckbox
+                [ngModel]="showRead"
+                (ngModelChange)="onShowReadChange($event)"
+              />
+              <label>Show Previously Read Entries?</label>
+            </clr-checkbox-wrapper>
           </div>
-        </ng-template>
-      </ng-container>
-    </ng-template>
-  </div>
+        </div>
+      </clr-accordion-content>
+    </clr-accordion-panel>
+  </clr-accordion>
+  <ng-container
+    *ngIf="feed !== null; then hasFeed; else hasNoFeed"
+  ></ng-container>
+  <ng-template #hasNoFeed>
+    <div class="clr-row">
+      <div class="clr-col-12">No Feed</div>
+    </div>
+  </ng-template>
+  <ng-template #hasFeed>
+    <ng-container *ngIf="feed !== null">
+      <div class="clr-row">
+        <div class="clr-col-12">
+          <ng-container
+            *ngIf="
+              feed.customTitle !== null;
+              then hasCustomTitle;
+              else hasNoCustomTitle
+            "
+          ></ng-container>
+          <ng-template #hasCustomTitle>
+            <h2>
+              {{ feed.customTitle }}
+              <span class="app--regular-title">({{ feed.title }})</span>
+            </h2>
+          </ng-template>
+          <ng-template #hasNoCustomTitle>
+            <h2>{{ feed.title }}</h2>
+          </ng-template>
+        </div>
+      </div>
+      <div class="clr-row">
+        <div class="clr-col-12">
+          <span>
+            <ng-container *ngIf="feedCounts$ | async as feedCounts">
+              <ng-container *appVar="feedCounts[feed.uuid] as feedCount">
+                <ng-container
+                  *ngIf="
+                    feedCount !== undefined;
+                    then realUnreadCount;
+                    else fakeUnreadCount
+                  "
+                ></ng-container>
+                <ng-template #realUnreadCount>
+                  {{ feedCount }} unread
+                </ng-template>
+                <ng-template #fakeUnreadCount> 0 unread </ng-template>
+              </ng-container>
+            </ng-container>
+          </span>
+        </div>
+      </div>
+      <ng-container
+        *ngIf="feedEntries.length < 1; then hasNoEntries; else hasEntries"
+      ></ng-container>
+      <ng-template #hasNoEntries>
+        <div class="clr-col-12">No Entries</div>
+      </ng-template>
+      <ng-template #hasEntries>
+        <div *ngFor="let feedEntry of feedEntries" class="clr-col-12">
+          <app-feed-entry-view
+            #feedEntryView
+            [feed]="feed"
+            [feedEntry]="feedEntry"
+            [hasFocus]="feedEntryView === focusedFeedEntryView"
+            [appInViewport]="feedEntry.isRead"
+            [appInViewportScrollParent]="scrollContainer"
+            [appInViewportOffset]="{ 'bottom': -64 }"
+            (appInViewportWatch)="onEntryEnteredViewport($event, feedEntryView)"
+            (click)="onEntryClicked($event, feedEntryView)"
+          ></app-feed-entry-view>
+        </div>
+      </ng-template>
+    </ng-container>
+  </ng-template>
 </div>
 
 <app-user-categories-modal></app-user-categories-modal>
