@@ -45,11 +45,12 @@ describe('InViewportDirective', () => {
     const { elementSpy, inViewportDirective } = setup();
     inViewportDirective.ngOnInit();
 
-    if (inViewportDirective._scrollParent === null) {
-      throw new Error();
-    }
+    const scrollParentNativeElement =
+      inViewportDirective.scrollParent instanceof ElementRef
+        ? inViewportDirective.scrollParent.nativeElement
+        : inViewportDirective.scrollParent;
 
-    const scollParentRect = inViewportDirective._scrollParent.getBoundingClientRect();
+    const scollParentRect = scrollParentNativeElement.getBoundingClientRect();
 
     elementSpy.getBoundingClientRect.and.returnValue(scollParentRect);
 
@@ -61,7 +62,7 @@ describe('InViewportDirective', () => {
       });
     });
 
-    inViewportDirective._scrollParent.dispatchEvent(new Event('scroll'));
+    scrollParentNativeElement.dispatchEvent(new Event('scroll'));
 
     await expectAsync(emitPromise).toBeResolvedTo(
       jasmine.objectContaining({
@@ -74,11 +75,12 @@ describe('InViewportDirective', () => {
     const { elementSpy, inViewportDirective } = setup();
     inViewportDirective.ngOnInit();
 
-    if (inViewportDirective._scrollParent === null) {
-      throw new Error();
-    }
+    const scrollParentNativeElement =
+      inViewportDirective.scrollParent instanceof ElementRef
+        ? inViewportDirective.scrollParent.nativeElement
+        : inViewportDirective.scrollParent;
 
-    const scollParentRect = inViewportDirective._scrollParent.getBoundingClientRect();
+    const scollParentRect = scrollParentNativeElement.getBoundingClientRect();
 
     const myRect: DOMRect = {
       top: scollParentRect.top - 2,
@@ -102,7 +104,7 @@ describe('InViewportDirective', () => {
       });
     });
 
-    inViewportDirective._scrollParent.dispatchEvent(new Event('scroll'));
+    scrollParentNativeElement.dispatchEvent(new Event('scroll'));
 
     await expectAsync(emitPromise).toBeResolvedTo(
       jasmine.objectContaining({
