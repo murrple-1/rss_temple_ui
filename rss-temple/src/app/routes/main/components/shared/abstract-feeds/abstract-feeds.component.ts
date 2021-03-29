@@ -174,7 +174,12 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
     feedEntryView.autoRead();
   }
 
-  protected abstract reload(): void;
+  protected reload() {
+    this.loadingState = LoadingState.IsNotLoading;
+    this.focusedFeedEntryView = null;
+    this.startTime = null;
+    this.feedEntries = [];
+  }
 
   private moveFocus(
     indexFn: (currentIndex: number, listLength: number) => number,
@@ -347,7 +352,7 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
       case 'j': {
         this.moveFocus((currentIndex: number, listLength: number) => {
           let newIndex = currentIndex + 1;
-          if (newIndex >= listLength - 1) {
+          if (newIndex > listLength - 1) {
             newIndex = currentIndex;
           }
           return newIndex;

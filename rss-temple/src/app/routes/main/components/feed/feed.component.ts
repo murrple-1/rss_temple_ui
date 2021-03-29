@@ -4,15 +4,14 @@ import {
   ChangeDetectorRef,
   OnInit,
   ViewChild,
-  OnDestroy,
   ViewChildren,
   QueryList,
   ElementRef,
 } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
-import { Observable, forkJoin, Subscription } from 'rxjs';
-import { takeUntil, map } from 'rxjs/operators';
+import { Observable, forkJoin, combineLatest } from 'rxjs';
+import { takeUntil, map, startWith } from 'rxjs/operators';
 
 import { format } from 'date-fns';
 
@@ -55,9 +54,7 @@ type UserCategoryImpl = Required<Pick<UserCategory, 'text'>>;
   templateUrl: './feed.component.html',
   styleUrls: ['./feed.component.scss'],
 })
-export class FeedComponent
-  extends AbstractFeedsComponent
-  implements OnInit, OnDestroy {
+export class FeedComponent extends AbstractFeedsComponent implements OnInit {
   feed: FeedImpl | null = null;
   feedUrl: string | null = null;
   userCategories: UserCategoryImpl[] = [];
@@ -65,8 +62,6 @@ export class FeedComponent
   showRead = false;
 
   customNameInput = '';
-
-  private navigationSubscription: Subscription | null = null;
 
   get feeds() {
     if (this.feed !== null) {
@@ -105,42 +100,40 @@ export class FeedComponent
   }
 
   ngOnInit() {
-    this.route.paramMap.pipe(takeUntil(this.unsubscribe$)).subscribe({
-      next: paramMap => {
-        const url = paramMap.get('url');
-        this.count = parseInt(
-          paramMap.get('count') ?? DEFAULT_COUNT.toString(10),
-          10,
-        );
-        const showRead = paramMap.get('showRead') === 'true';
+    combineLatest([
+      this.route.paramMap.pipe(startWith(undefined)),
+      this.router.events.pipe(startWith(undefined)),
+    ])
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: ([paramMap, navigationEvent]) => {
+          if (
+            paramMap !== undefined &&
+            (navigationEvent === undefined ||
+              navigationEvent instanceof NavigationEnd)
+          ) {
+            const url = paramMap.get('url');
+            this.count = parseInt(
+              paramMap.get('count') ?? DEFAULT_COUNT.toString(10),
+              10,
+            );
+            const showRead = paramMap.get('showRead') === 'true';
 
-        if (url) {
-          this.feedUrl = url;
-          this.zone.run(() => {
-            this.showRead = showRead;
-            this.reload();
-          });
-        }
-
-        if (this.navigationSubscription === null) {
-          this.navigationSubscription = this.router.events.subscribe({
-            next: navigationEvent => {
-              if (navigationEvent instanceof NavigationEnd) {
+            if (url !== null) {
+              this.feedUrl = url;
+              this.zone.run(() => {
+                this.showRead = showRead;
                 this.reload();
-              }
-            },
-          });
-        }
-      },
-    });
-  }
-
-  ngOnDestroy() {
-    super.ngOnDestroy();
-
-    if (this.navigationSubscription !== null) {
-      this.navigationSubscription.unsubscribe();
-    }
+              });
+            } else {
+              this.zone.run(() => {
+                this.feed = null;
+                this.feedEntries = [];
+              });
+            }
+          }
+        },
+      });
   }
 
   protected feedEntryQueryOptions_search(feeds: FeedImpl[]) {
@@ -166,7 +159,7 @@ export class FeedComponent
   }
 
   protected reload() {
-    this.feedEntries = [];
+    super.reload();
 
     this.getFeed();
   }

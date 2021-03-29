@@ -3,7 +3,6 @@ import {
   NgZone,
   ChangeDetectorRef,
   OnInit,
-  OnDestroy,
   ViewChildren,
   QueryList,
   ViewChild,
@@ -11,8 +10,8 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
-import { Subscription } from 'rxjs';
-import { takeUntil, map } from 'rxjs/operators';
+import { combineLatest } from 'rxjs';
+import { takeUntil, map, startWith } from 'rxjs/operators';
 
 import { format } from 'date-fns';
 
@@ -36,9 +35,7 @@ type FeedEntryImpl = BaseFeedEntryImpl;
   templateUrl: './feeds.component.html',
   styleUrls: ['./feeds.component.scss'],
 })
-export class FeedsComponent
-  extends AbstractFeedsComponent
-  implements OnInit, OnDestroy {
+export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
   feeds: FeedImpl[] = [];
 
   favoritesOnly = false;
@@ -49,8 +46,6 @@ export class FeedsComponent
 
   @ViewChild('scrollContainer', { static: true })
   protected feedEntryViewsScollContainer: ElementRef<HTMLElement> | undefined;
-
-  private navigationSubscription: Subscription | null = null;
 
   constructor(
     private router: Router,
@@ -67,34 +62,33 @@ export class FeedsComponent
   }
 
   ngOnInit() {
-    this.route.paramMap.pipe(takeUntil(this.unsubscribe$)).subscribe({
-      next: paramMap => {
-        this.count = parseInt(
-          paramMap.get('count') ?? DEFAULT_COUNT.toString(10),
-          10,
-        );
-        const favoritesOnly = paramMap.get('favorites') === 'true';
-        const showRead = paramMap.get('showRead') === 'true';
+    combineLatest([
+      this.route.paramMap.pipe(startWith(undefined)),
+      this.router.events.pipe(startWith(undefined)),
+    ])
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: ([paramMap, navigationEvent]) => {
+          if (
+            paramMap !== undefined &&
+            (navigationEvent === undefined ||
+              navigationEvent instanceof NavigationEnd)
+          ) {
+            this.count = parseInt(
+              paramMap.get('count') ?? DEFAULT_COUNT.toString(10),
+              10,
+            );
+            const favoritesOnly = paramMap.get('favorites') === 'true';
+            const showRead = paramMap.get('showRead') === 'true';
 
-        this.zone.run(() => {
-          this.favoritesOnly = favoritesOnly;
-          this.showRead = showRead;
-          this.reload();
-        });
-
-        if (this.navigationSubscription === null) {
-          this.navigationSubscription = this.router.events.subscribe({
-            next: navigationEvent => {
-              if (navigationEvent instanceof NavigationEnd) {
-                this.reload();
-              }
-            },
-          });
-        }
-      },
-    });
-
-    this.getFeeds();
+            this.zone.run(() => {
+              this.favoritesOnly = favoritesOnly;
+              this.showRead = showRead;
+              this.reload();
+            });
+          }
+        },
+      });
 
     this.feedObservableService.feedAdded
       .pipe(
@@ -130,14 +124,6 @@ export class FeedsComponent
       });
   }
 
-  ngOnDestroy() {
-    super.ngOnDestroy();
-
-    if (this.navigationSubscription !== null) {
-      this.navigationSubscription.unsubscribe();
-    }
-  }
-
   private getFeeds() {
     this.feedService
       .queryAll({
@@ -158,9 +144,22 @@ export class FeedsComponent
         next: feeds => {
           this.feeds = feeds;
 
-          this.zone.run(() => {
-            this.reload();
-          });
+          this.getFeedEntries()
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+              next: feedEntries => {
+                if (this.startTime === null) {
+                  this.startTime = feedEntries[0]?.publishedAt ?? null;
+                }
+
+                this.zone.run(() => {
+                  this.feedEntries = feedEntries;
+                });
+              },
+              error: error => {
+                this.httpErrorService.handleError(error);
+              },
+            });
         },
         error: error => {
           this.httpErrorService.handleError(error);
@@ -188,24 +187,9 @@ export class FeedsComponent
   }
 
   protected reload() {
-    this.feedEntries = [];
+    super.reload();
 
-    this.getFeedEntries()
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe({
-        next: feedEntries => {
-          if (this.startTime === null) {
-            this.startTime = feedEntries[0]?.publishedAt ?? null;
-          }
-
-          this.zone.run(() => {
-            this.feedEntries = feedEntries;
-          });
-        },
-        error: error => {
-          this.httpErrorService.handleError(error);
-        },
-      });
+    this.getFeeds();
   }
 
   findFeed(feedEntry: FeedEntryImpl) {
