@@ -35,6 +35,10 @@ export class InfiniteScrollDirective implements OnInit, OnDestroy {
       .pipe(debounce(() => debouncer))
       .subscribe({
         next: () => {
+          if (this.disabled) {
+            return;
+          }
+
           const nativeElement = this.elementRef.nativeElement;
 
           if (

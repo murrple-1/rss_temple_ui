@@ -33,6 +33,7 @@
         "@typescript-eslint/naming-convention": "off",
         "@typescript-eslint/member-ordering": "off",
         "@typescript-eslint/no-shadow": ["error"],
+        "@angular-eslint/no-output-rename": "off",
         "prefer-arrow/prefer-arrow-functions": "off",
         "brace-style": ["error", "1tbs"],
         "id-blacklist": "off",
