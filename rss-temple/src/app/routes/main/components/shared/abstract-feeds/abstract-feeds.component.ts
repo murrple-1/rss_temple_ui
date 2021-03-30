@@ -230,7 +230,6 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
         if (top >= 0) {
           this.feedEntryViewsScollContainer.nativeElement.scrollTo({
             top,
-            behavior: 'smooth',
           });
         }
       }
