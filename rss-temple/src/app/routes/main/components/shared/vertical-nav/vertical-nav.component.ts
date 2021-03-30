@@ -170,6 +170,13 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
+  getTotalCount(feedCounts: Record<string, number>) {
+    return Object.values(feedCounts).reduce(
+      (previousValue, currentValue) => currentValue + previousValue,
+      0,
+    );
+  }
+
   async addFeed() {
     if (this.subscribeModal === undefined) {
       throw new Error();

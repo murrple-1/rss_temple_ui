@@ -1,8 +1,14 @@
 <clr-vertical-nav>
   <ng-container *ngIf="feedCounts$ | async as feedCounts">
-    <a clrVerticalNavLink routerLink="/main/feeds">
+    <a
+      *appVar="getTotalCount(feedCounts) as totalCount"
+      clrVerticalNavLink
+      routerLink="/main/feeds"
+    >
       <cds-icon clrVerticalNavIcon shape="library"></cds-icon>
-      All
+      All<ng-container *ngIf="totalCount > 0"
+        >&nbsp;({{ totalCount }})</ng-container
+      >
     </a>
     <clr-vertical-nav-group
       *ngFor="let categoryDescriptor of categorizedFeeds.category"
