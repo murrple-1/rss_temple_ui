@@ -8,8 +8,8 @@ import {
   EventEmitter,
 } from '@angular/core';
 
-import { fromEvent, interval, merge, Subscription } from 'rxjs';
-import { debounce, mapTo } from 'rxjs/operators';
+import { fromEvent, interval, merge, Observable, Subscription } from 'rxjs';
+import { debounce, map, mapTo, share } from 'rxjs/operators';
 
 const debouncer = interval(100);
 
@@ -32,6 +32,48 @@ export interface Rect {
 }
 
 type CheckEventType = 'resize' | 'scroll';
+
+const windowResizeObservable = fromEvent(window, 'resize').pipe(
+  mapTo<Event, CheckEventType>('resize'),
+);
+
+let appInViewportHashStepper = 1;
+const containerScrollObservables = new Map<
+  string,
+  Observable<[CheckEventType, DOMRect]>
+>();
+function getContainerScrollObservable(scrollParentNativeElement: HTMLElement) {
+  let hash = scrollParentNativeElement.dataset['appInViewportHash'];
+  if (hash === undefined) {
+    hash = scrollParentNativeElement.dataset[
+      'appInViewportHash'
+    ] = `id-${appInViewportHashStepper++}`;
+  }
+
+  let observable = containerScrollObservables.get(hash);
+  if (observable === undefined) {
+    observable = merge(
+      fromEvent(scrollParentNativeElement, 'scroll').pipe(
+        mapTo<Event, CheckEventType>('scroll'),
+      ),
+      windowResizeObservable,
+    ).pipe(
+      debounce(() => debouncer),
+      map(
+        checkEventType =>
+          [
+            checkEventType,
+            scrollParentNativeElement.getBoundingClientRect(),
+          ] as [CheckEventType, DOMRect],
+      ),
+      share(),
+    );
+
+    containerScrollObservables.set(hash, observable);
+  }
+
+  return observable;
+}
 
 @Directive({
   selector: '[appInViewport]',
@@ -113,32 +155,22 @@ export class InViewportDirective implements OnInit, OnDestroy {
       this.scrollParent instanceof ElementRef
         ? this.scrollParent.nativeElement
         : this.scrollParent;
-    this.subscription = merge(
-      fromEvent(window, 'resize').pipe(mapTo<Event, CheckEventType>('resize')),
-      fromEvent(scrollParentNativeElement, 'scroll').pipe(
-        mapTo<Event, CheckEventType>('scroll'),
-      ),
-    )
-      .pipe(debounce(() => debouncer))
-      .subscribe({
-        next: checkEventType => {
-          this.check(checkEventType);
-        },
-      });
+    this.subscription = getContainerScrollObservable(
+      scrollParentNativeElement,
+    ).subscribe({
+      next: ([checkEventType, scrollParentBoundingRect]) => {
+        this.check(checkEventType, scrollParentBoundingRect);
+      },
+    });
   }
 
-  private check(eventType: CheckEventType) {
+  private check(eventType: CheckEventType, scrollParentRect: DOMRect) {
     if (this.disabled || !this.recognizedEventTypes.has(eventType)) {
       return;
     }
 
     const nativeElement = this.elementRef.nativeElement;
-    const scrollParentNativeElement =
-      this.scrollParent instanceof ElementRef
-        ? this.scrollParent.nativeElement
-        : this.scrollParent;
 
-    const scrollParentRect = scrollParentNativeElement.getBoundingClientRect();
     const offset = this.offset;
 
     const viewportRect: Rect = {
