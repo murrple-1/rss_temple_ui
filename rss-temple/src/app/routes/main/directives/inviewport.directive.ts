@@ -8,8 +8,10 @@ import {
   EventEmitter,
 } from '@angular/core';
 
-import { fromEvent, merge, Subscription } from 'rxjs';
-import { debounceTime, mapTo } from 'rxjs/operators';
+import { fromEvent, interval, merge, Subscription } from 'rxjs';
+import { debounce, mapTo } from 'rxjs/operators';
+
+const debouncer = interval(100);
 
 export type InViewportEvent =
   | {
@@ -35,8 +37,23 @@ type CheckEventType = 'resize' | 'scroll';
   selector: '[appInViewport]',
 })
 export class InViewportDirective implements OnInit, OnDestroy {
+  private _disabled = false;
+
   @Input('appInViewport')
-  disabled = false;
+  get disabled() {
+    return this._disabled;
+  }
+
+  set disabled(value: boolean) {
+    this._disabled = value;
+
+    if (this._disabled && this.subscription !== null) {
+      this.subscription.unsubscribe();
+      this.subscription = null;
+    } else if (!this._disabled && this.subscription === null) {
+      this.initEventListeners();
+    }
+  }
 
   private _scrollParent: ElementRef<HTMLElement> | HTMLElement = document.body;
 
@@ -51,7 +68,10 @@ export class InViewportDirective implements OnInit, OnDestroy {
     }
 
     this._scrollParent = value;
-    this.initEventListeners();
+
+    if (!this._disabled) {
+      this.initEventListeners();
+    }
   }
 
   @Input('appInViewportOffset')
@@ -77,7 +97,9 @@ export class InViewportDirective implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.initEventListeners();
+    if (!this._disabled) {
+      this.initEventListeners();
+    }
   }
 
   ngOnDestroy() {
@@ -97,7 +119,7 @@ export class InViewportDirective implements OnInit, OnDestroy {
         mapTo<Event, CheckEventType>('scroll'),
       ),
     )
-      .pipe(debounceTime(100))
+      .pipe(debounce(() => debouncer))
       .subscribe({
         next: checkEventType => {
           this.check(checkEventType);

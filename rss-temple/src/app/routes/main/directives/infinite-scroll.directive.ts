@@ -8,8 +8,10 @@ import {
   OnDestroy,
 } from '@angular/core';
 
-import { fromEvent, Subscription } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { fromEvent, interval, Subscription } from 'rxjs';
+import { debounce } from 'rxjs/operators';
+
+const debouncer = interval(100);
 
 @Directive({
   selector: '[appInfiniteScroll]',
@@ -30,7 +32,7 @@ export class InfiniteScrollDirective implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscription = fromEvent(this.elementRef.nativeElement, 'scroll')
-      .pipe(debounceTime(100))
+      .pipe(debounce(() => debouncer))
       .subscribe({
         next: () => {
           const nativeElement = this.elementRef.nativeElement;
