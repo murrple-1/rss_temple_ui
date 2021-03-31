@@ -6,7 +6,7 @@ export class FeedEntry {
   updatedAt?: Date | null;
   title?: string;
   url?: string;
-  content?: string | null;
+  content?: string;
   authorName?: string | null;
   feedUuid?: string;
   fromSubscription?: boolean;

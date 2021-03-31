@@ -142,9 +142,7 @@ function toFeedEntry(value: JsonValue) {
 
   if (value.content !== undefined) {
     const content = value.content;
-    if (content === null) {
-      feedEntry.content = null;
-    } else if (typeof content === 'string') {
+    if (typeof content === 'string') {
       feedEntry.content = content;
     } else {
       throw new Error("'content' must be string");
