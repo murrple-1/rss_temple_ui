@@ -524,18 +524,6 @@ describe('FeedEntryService', () => {
       .toPromise();
 
     expect(feedEntry.content).toBe(content);
-
-    httpClientSpy.get.and.returnValue(
-      of({
-        content: null,
-      }),
-    );
-
-    feedEntry = await feedEntryService
-      .get('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
-
-    expect(feedEntry.content).toBeNull();
   }));
 
   it('should `content` type error', fakeAsync(async () => {
@@ -544,6 +532,16 @@ describe('FeedEntryService', () => {
     httpClientSpy.get.and.returnValue(
       of({
         content: 0,
+      }),
+    );
+
+    await expectAsync(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+    ).toBeRejectedWithError(Error, /content.*?must be string/);
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        content: null,
       }),
     );
 
