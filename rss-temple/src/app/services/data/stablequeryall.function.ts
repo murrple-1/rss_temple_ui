@@ -25,8 +25,8 @@ export function stableQueryAllFn<
     sort: options.sort,
     sessionToken: options.sessionToken,
   }).pipe(
-    mergeMap(token => {
-      return queryFn({
+    mergeMap(token =>
+      queryFn({
         token,
         count: pageSize,
         skip: 0,
@@ -83,7 +83,7 @@ export function stableQueryAllFn<
             }),
           );
         }),
-      );
-    }),
+      ),
+    ),
   );
 }

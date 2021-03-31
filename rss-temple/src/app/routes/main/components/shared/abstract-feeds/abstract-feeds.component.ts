@@ -139,11 +139,11 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
           tap(token => {
             this.stableQueryToken = token;
           }),
-          mergeMap(token => {
-            return this.feedEntryService.stableQuery(
+          mergeMap(token =>
+            this.feedEntryService.stableQuery(
               this.feedEntryStableQueryOptions(token, this.count, skip),
-            );
-          }),
+            ),
+          ),
         );
     } else {
       feedEntriesObservale = this.feedEntryService.stableQuery(

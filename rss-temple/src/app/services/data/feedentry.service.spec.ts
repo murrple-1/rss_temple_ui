@@ -519,7 +519,7 @@ describe('FeedEntryService', () => {
       }),
     );
 
-    let feedEntry = await feedEntryService
+    const feedEntry = await feedEntryService
       .get('123e4567-e89b-12d3-a456-426614174000')
       .toPromise();
 
