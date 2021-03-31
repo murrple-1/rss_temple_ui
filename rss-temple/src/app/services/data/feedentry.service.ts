@@ -21,10 +21,21 @@ import {
 import { AllOptions } from '@app/services/data/all.interface';
 import { queryAllFn } from '@app/services/data/queryall.function';
 import {
+  CreateStableQueryOptions,
+  StableQueryOptions,
+  toCreateStableQueryBody,
+  toCreateStableQueryHeaders,
+  toCreateStableQueryParams,
+  toStableQueryBody,
+  toStableQueryHeaders,
+  toStableQueryParams,
+} from '@app/services/data/stablequery.interface';
+import { stableQueryAllFn } from '@app/services/data/stablequeryall.function';
+import {
   CommonOptions,
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
-import { JsonValue, isJsonObject } from '@app/libs/json.lib';
+import { JsonValue, isJsonObject, isJsonArray } from '@app/libs/json.lib';
 import { SessionService } from '@app/services/session.service';
 
 import { environment } from '@environments/environment';
@@ -187,6 +198,20 @@ function toFeedEntry(value: JsonValue) {
     }
   }
 
+  if (value.readAt !== undefined) {
+    const readAt = value.readAt;
+    if (readAt === null) {
+      feedEntry.readAt = null;
+    } else if (typeof readAt === 'string') {
+      feedEntry.readAt = parseDate(readAt, 'yyyy-MM-dd HH:mm:ss', new Date());
+      if (isNaN(feedEntry.readAt.getTime())) {
+        throw new Error("'readAt' malformed");
+      }
+    } else {
+      throw new Error("'readAt' must be datetime or null");
+    }
+  }
+
   return feedEntry;
 }
 
@@ -232,18 +257,88 @@ export class FeedEntryService {
     return queryAllFn(options, this.query.bind(this), pageSize);
   }
 
+  createStableQuery(options: CreateStableQueryOptions<SortField> = {}) {
+    const headers = toCreateStableQueryHeaders(options, () =>
+      this.sessionService.sessionToken$.getValue(),
+    );
+    const params = toCreateStableQueryParams('feedentries');
+    const body = toCreateStableQueryBody(options);
+
+    return this.http
+      .post<JsonValue>(
+        `${environment.apiHost}/api/feedentries/query/stable/create`,
+        body,
+        {
+          headers,
+          params,
+        },
+      )
+      .pipe(
+        map(retObj => {
+          if (typeof retObj !== 'string') {
+            throw new Error('JSON body must be string');
+          }
+
+          return retObj;
+        }),
+      );
+  }
+
+  stableQuery(options: StableQueryOptions<Field>) {
+    const headers = toStableQueryHeaders(options, () =>
+      this.sessionService.sessionToken$.getValue(),
+    );
+    const params = toStableQueryParams('feedentries');
+    const body = toStableQueryBody<Field>(options, () => ['uuid']);
+
+    return this.http
+      .post<JsonValue>(
+        `${environment.apiHost}/api/feedentries/query/stable`,
+        body,
+        {
+          headers,
+          params,
+        },
+      )
+      .pipe(map(retObj => toObjects<FeedEntry>(retObj, toFeedEntry)));
+  }
+
+  stableQueryAll(options: AllOptions<Field, SortField> = {}, pageSize = 1000) {
+    return stableQueryAllFn(
+      options,
+      this.createStableQuery.bind(this),
+      this.query.bind(this),
+      pageSize,
+    );
+  }
+
   read(feedEntryUuid: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
       this.sessionService.sessionToken$.getValue(),
     );
 
-    return this.http.post<void>(
-      `${environment.apiHost}/api/feedentry/${feedEntryUuid}/read`,
-      null,
-      {
-        headers,
-      },
-    );
+    return this.http
+      .post<JsonValue>(
+        `${environment.apiHost}/api/feedentry/${feedEntryUuid}/read`,
+        null,
+        {
+          headers,
+        },
+      )
+      .pipe(
+        map(response => {
+          if (typeof response !== 'string') {
+            throw new Error('JSON body must be string');
+          }
+
+          const readAt = parseDate(response, 'yyyy-MM-dd HH:mm:ss', new Date());
+          if (isNaN(readAt.getTime())) {
+            throw new Error('JSON body malformed');
+          }
+
+          return readAt;
+        }),
+      );
   }
 
   unread(feedEntryUuid: string, options: CommonOptions = {}) {
@@ -264,13 +359,64 @@ export class FeedEntryService {
       this.sessionService.sessionToken$.getValue(),
     );
 
-    return this.http.post<void>(
-      `${environment.apiHost}/api/feedentries/read/`,
-      feedEntryUuids,
-      {
-        headers,
-      },
-    );
+    return this.http
+      .post<JsonValue>(
+        `${environment.apiHost}/api/feedentries/read/`,
+        feedEntryUuids,
+        {
+          headers,
+        },
+      )
+      .pipe(
+        map(response => {
+          if (!isJsonArray(response)) {
+            throw new Error('JSON body must be array');
+          }
+
+          const entries = response.map<{
+            uuid: string;
+            readAt: Date;
+          }>(entry => {
+            if (!isJsonObject(entry)) {
+              throw new Error('JSON body entry must be object');
+            }
+
+            const uuid = entry.uuid;
+            if (uuid === undefined) {
+              throw new Error("'uuid' missing");
+            }
+
+            if (typeof uuid !== 'string') {
+              throw new Error("'uuid' must be string");
+            }
+
+            const readAt_ = entry.readAt;
+            if (readAt_ === undefined) {
+              throw new Error("'readAt' missing");
+            }
+
+            if (typeof readAt_ !== 'string') {
+              throw new Error("'readAt' must be string");
+            }
+
+            const readAt = parseDate(
+              readAt_,
+              'yyyy-MM-dd HH:mm:ss',
+              new Date(),
+            );
+            if (isNaN(readAt.getTime())) {
+              throw new Error("'readAt' malformed");
+            }
+
+            return {
+              uuid,
+              readAt,
+            };
+          });
+
+          return entries;
+        }),
+      );
   }
 
   unreadSome(feedEntryUuids: string[], options: CommonOptions = {}) {

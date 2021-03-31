@@ -9,8 +9,8 @@ import {
   ElementRef,
 } from '@angular/core';
 
-import { Subject } from 'rxjs';
-import { takeUntil, map } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil, map, mergeMap, tap } from 'rxjs/operators';
 
 import { HttpErrorService } from '@app/services';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
@@ -18,8 +18,12 @@ import { InViewportEvent } from '@app/routes/main/directives/inviewport.directiv
 import { FeedEntry, Feed } from '@app/models';
 import { Sort } from '@app/services/data/sort.interface';
 import { FeedEntryService } from '@app/services/data';
-import { QueryOptions } from '@app/services/data/query.interface';
 import { Field, SortField } from '@app/services/data/feedentry.service';
+import {
+  CreateStableQueryOptions,
+  StableQueryOptions,
+} from '@app/services/data/stablequery.interface';
+import { Objects } from '@app/services/data/objects';
 
 export const DEFAULT_COUNT = 10;
 
@@ -56,7 +60,7 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
 
   focusedFeedEntryView: FeedEntryViewComponent | null = null;
 
-  protected startTime: Date | null = null;
+  protected stableQueryToken: string | null = null;
 
   abstract get feeds(): FeedImpl[];
 
@@ -81,12 +85,24 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  protected feedEntryQueryOptions(
+  protected feedEntryCreateStableQueryOptions(
     feeds: FeedImpl[],
+  ): CreateStableQueryOptions<SortField> {
+    return {
+      search: this.feedEntryCreateStableQueryOptions_search(feeds),
+      sort: this.feedEntryCreateStableQueryOptions_sort(),
+    };
+  }
+
+  protected feedEntryStableQueryOptions(
+    token: string,
     count: number,
     skip?: number,
-  ): QueryOptions<Field, SortField> {
+  ): StableQueryOptions<Field> {
     return {
+      token,
+      count,
+      skip,
       fields: [
         'uuid',
         'url',
@@ -99,16 +115,14 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
         'feedUuid',
       ],
       returnTotalCount: false,
-      count,
-      skip,
-      search: this.feedEntryQueryOptions_search(feeds),
-      sort: this.feedEntryQueryOptions_sort(),
     };
   }
 
-  protected abstract feedEntryQueryOptions_search(feeds: FeedImpl[]): string;
+  protected abstract feedEntryCreateStableQueryOptions_search(
+    feeds: FeedImpl[],
+  ): string | undefined;
 
-  protected feedEntryQueryOptions_sort() {
+  protected feedEntryCreateStableQueryOptions_sort() {
     return new Sort([
       ['publishedAt', 'DESC'],
       ['createdAt', 'DESC'],
@@ -117,16 +131,38 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
   }
 
   protected getFeedEntries(skip?: number) {
-    return this.feedEntryService
-      .query(this.feedEntryQueryOptions(this.feeds, this.count, skip))
-      .pipe(
-        map(feedEntries => {
-          if (feedEntries.objects !== undefined) {
-            return feedEntries.objects as FeedEntryImpl[];
-          }
-          throw new Error('malformed response');
-        }),
+    let feedEntriesObservale: Observable<Objects<FeedEntry>>;
+    if (this.stableQueryToken === null) {
+      feedEntriesObservale = this.feedEntryService
+        .createStableQuery(this.feedEntryCreateStableQueryOptions(this.feeds))
+        .pipe(
+          tap(token => {
+            this.stableQueryToken = token;
+          }),
+          mergeMap(token => {
+            return this.feedEntryService.stableQuery(
+              this.feedEntryStableQueryOptions(token, this.count, skip),
+            );
+          }),
+        );
+    } else {
+      feedEntriesObservale = this.feedEntryService.stableQuery(
+        this.feedEntryStableQueryOptions(
+          this.stableQueryToken,
+          this.count,
+          skip,
+        ),
       );
+    }
+
+    return feedEntriesObservale.pipe(
+      map(feedEntries => {
+        if (feedEntries.objects !== undefined) {
+          return feedEntries.objects as FeedEntryImpl[];
+        }
+        throw new Error('malformed response');
+      }),
+    );
   }
 
   onApproachingBottom() {
@@ -177,7 +213,7 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
   protected reload() {
     this.loadingState = LoadingState.IsNotLoading;
     this.focusedFeedEntryView = null;
-    this.startTime = null;
+    this.stableQueryToken = null;
     this.feedEntries = [];
   }
 

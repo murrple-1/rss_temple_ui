@@ -13,8 +13,6 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import { takeUntil, map, startWith } from 'rxjs/operators';
 
-import { format } from 'date-fns';
-
 import { FeedService, FeedEntryService } from '@app/services/data';
 import { FeedObservableService } from '@app/routes/main/services';
 import {
@@ -148,10 +146,6 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
               next: feedEntries => {
-                if (this.startTime === null) {
-                  this.startTime = feedEntries[0]?.publishedAt ?? null;
-                }
-
                 this.zone.run(() => {
                   this.feedEntries = feedEntries;
                 });
@@ -167,8 +161,14 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
       });
   }
 
-  protected feedEntryQueryOptions_search(_feeds: FeedImpl[]) {
+  protected feedEntryCreateStableQueryOptions_search(feeds: FeedImpl[]) {
     const searchParts: string[] = [];
+    if (feeds.length >= 1) {
+      searchParts.push(
+        `(feedUuid:"${feeds.map(feed => feed.uuid).join(',')}")`,
+      );
+    }
+
     if (this.favoritesOnly) {
       searchParts.push('(isFavorite:"true")');
     } else {
@@ -177,13 +177,11 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
       }
     }
 
-    if (this.startTime !== null) {
-      searchParts.push(
-        `(publishedAt:"|${format(this.startTime, 'yyyy-MM-dd HH:mm:ss')}")`,
-      );
+    if (searchParts.length > 0) {
+      return searchParts.join(' and ');
+    } else {
+      return undefined;
     }
-
-    return searchParts.join(' and ');
   }
 
   protected reload() {

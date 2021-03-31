@@ -12,4 +12,5 @@ export class FeedEntry {
   fromSubscription?: boolean;
   isRead?: boolean;
   isFavorite?: boolean;
+  readAt?: Date | null;
 }
