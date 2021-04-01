@@ -130,12 +130,12 @@ describe('query.interface', () => {
 
   it('should parse params', () => {
     const params = toParams();
-    expect(params.keys()).toEqual([]);
+    expect(Object.keys(params)).toEqual([]);
   });
 
   it('should parse params with descriptor', () => {
     const params = toParams('objects');
-    expect(params.keys()).toEqual(['_']);
-    expect(params.get('_')).toEqual('objects');
+    expect(Object.keys(params)).toEqual(['_']);
+    expect(params['_']).toEqual('objects');
   });
 });

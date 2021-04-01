@@ -1,5 +1,3 @@
-import { HttpParams } from '@angular/common/http';
-
 import {
   CommonOptions,
   toHeaders as commonToHeaders,
@@ -106,20 +104,20 @@ export function toStableQueryHeaders<
 }
 
 export function toCreateStableQueryParams(descriptor?: string) {
-  let params = new HttpParams();
+  const params: Record<string, string | string[]> = {};
 
   if (descriptor !== undefined) {
-    params = params.set('_', descriptor);
+    params['_'] = descriptor;
   }
 
   return params;
 }
 
 export function toStableQueryParams(descriptor?: string) {
-  let params = new HttpParams();
+  const params: Record<string, string | string[]> = {};
 
   if (descriptor !== undefined) {
-    params = params.set('_', descriptor);
+    params['_'] = descriptor;
   }
 
   return params;
