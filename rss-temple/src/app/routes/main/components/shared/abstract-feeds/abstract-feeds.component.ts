@@ -24,6 +24,10 @@ import {
   StableQueryOptions,
 } from '@app/services/data/stablequery.interface';
 import { Objects } from '@app/services/data/objects';
+import {
+  FeedsFooterComponent,
+  State as FeedsFooterState,
+} from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
 
 export const DEFAULT_COUNT = 10;
 
@@ -43,7 +47,7 @@ export type FeedEntryImpl = Required<
   >
 >;
 
-enum LoadingState {
+export enum LoadingState {
   IsLoading,
   IsNotLoading,
   NoMoreToLoad,
@@ -70,6 +74,28 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
   protected abstract get feedEntryViewsScollContainer():
     | ElementRef<HTMLElement>
     | undefined;
+
+  get feedsFooterState() {
+    switch (this.loadingState) {
+      case LoadingState.IsNotLoading: {
+        if (this.feedEntries.length > 0) {
+          return FeedsFooterState.IsNotLoading;
+        } else {
+          return FeedsFooterState.Start;
+        }
+      }
+      case LoadingState.IsLoading: {
+        return FeedsFooterState.IsLoading;
+      }
+      case LoadingState.NoMoreToLoad: {
+        if (this.feedEntries.length > 0) {
+          return FeedsFooterState.HasNoMoreToLoad;
+        } else {
+          return FeedsFooterState.IsEmpty;
+        }
+      }
+    }
+  }
 
   protected readonly unsubscribe$ = new Subject<void>();
 

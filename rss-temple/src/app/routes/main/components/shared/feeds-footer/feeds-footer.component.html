@@ -1,0 +1,8 @@
+<ng-container [ngSwitch]="state">
+  <ng-container *ngSwitchCase="State.IsNotLoading">Is Not Loading</ng-container>
+  <ng-container *ngSwitchCase="State.IsLoading">Is Loading</ng-container>
+  <ng-container *ngSwitchCase="State.IsEmpty">Is Empty</ng-container>
+  <ng-container *ngSwitchCase="State.HasNoMoreToLoad"
+    >Has No More To Load</ng-container
+  >
+</ng-container>

@@ -20,6 +20,7 @@ import {
   DEFAULT_COUNT,
   FeedImpl as BaseFeedImpl,
   FeedEntryImpl as BaseFeedEntryImpl,
+  LoadingState,
 } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 import { HttpErrorService } from '@app/services';
 import { Feed } from '@app/models';
@@ -123,6 +124,9 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
   }
 
   private getFeeds() {
+    this.loadingState = LoadingState.IsLoading;
+
+    const count = this.count;
     this.feedService
       .queryAll({
         fields: ['uuid', 'calculatedTitle', 'homeUrl'],
@@ -147,16 +151,28 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
             .subscribe({
               next: feedEntries => {
                 this.zone.run(() => {
+                  if (feedEntries.length < count) {
+                    this.loadingState = LoadingState.NoMoreToLoad;
+                  }
+
                   this.feedEntries = feedEntries;
                 });
               },
               error: error => {
                 this.httpErrorService.handleError(error);
+
+                this.zone.run(() => {
+                  this.loadingState = LoadingState.NoMoreToLoad;
+                });
               },
             });
         },
         error: error => {
           this.httpErrorService.handleError(error);
+
+          this.zone.run(() => {
+            this.loadingState = LoadingState.NoMoreToLoad;
+          });
         },
       });
   }

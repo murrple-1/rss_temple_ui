@@ -22,6 +22,7 @@ import {
 import { VerticalNavComponent } from '@app/routes/main/components/shared/vertical-nav/vertical-nav.component';
 import { SubscribeModalComponent } from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
 import { OPMLModalComponent } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
+import { FeedsFooterComponent } from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
 
 import { FeedsComponent } from './feeds.component';
 
@@ -58,6 +59,7 @@ async function setup() {
       VerticalNavComponent,
       SubscribeModalComponent,
       OPMLModalComponent,
+      FeedsFooterComponent,
     ],
     providers: [
       {

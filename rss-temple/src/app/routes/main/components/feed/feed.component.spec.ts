@@ -19,6 +19,7 @@ import { VerticalNavComponent } from '@app/routes/main/components/shared/vertica
 import { SubscribeModalComponent } from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
 import { OPMLModalComponent } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
 import { UserCategoriesModalComponent } from '@app/routes/main/components/feed/user-categories-modal/user-categories-modal.component';
+import { FeedsFooterComponent } from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
 
 import { FeedComponent } from './feed.component';
 
@@ -56,6 +57,7 @@ async function setup() {
       SubscribeModalComponent,
       OPMLModalComponent,
       UserCategoriesModalComponent,
+      FeedsFooterComponent,
     ],
     providers: [
       FeedObservableService,

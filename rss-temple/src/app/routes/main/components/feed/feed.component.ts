@@ -28,6 +28,7 @@ import {
   AbstractFeedsComponent,
   DEFAULT_COUNT,
   FeedImpl as BaseFeedImpl,
+  LoadingState,
 } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 import { HttpErrorService } from '@app/services';
 import { FeedCountsObservableService } from '@app/routes/main/services';
@@ -166,6 +167,8 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
       return;
     }
 
+    this.loadingState = LoadingState.IsLoading;
+
     this.feedService
       .get(url, {
         fields: [
@@ -218,22 +221,35 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
             );
           }
 
+          const count = this.count;
           forkJoin([this.getFeedEntries(), userCategoriesObservable])
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe({
               next: ([feedEntries, userCategories]) => {
                 this.zone.run(() => {
+                  if (feedEntries.length < count) {
+                    this.loadingState = LoadingState.NoMoreToLoad;
+                  }
+
                   this.feedEntries = feedEntries;
                   this.userCategories = userCategories;
                 });
               },
               error: error => {
                 this.httpErrorService.handleError(error);
+
+                this.zone.run(() => {
+                  this.loadingState = LoadingState.NoMoreToLoad;
+                });
               },
             });
         },
         error: error => {
           this.httpErrorService.handleError(error);
+
+          this.zone.run(() => {
+            this.loadingState = LoadingState.NoMoreToLoad;
+          });
         },
       });
   }
