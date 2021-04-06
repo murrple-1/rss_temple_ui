@@ -11,10 +11,17 @@ import { MockGAuthService } from '@app/test/gauth.service.mock';
 import { MockFBAuthService } from '@app/test/fbauth.service.mock';
 import { FeedService, FeedEntryService, UserService } from '@app/services/data';
 import { GAuthService, FBAuthService } from '@app/services';
+import { FeedCountsObservableService } from '@app/routes/main/services';
 
 import { ProfileComponent } from './profile.component';
 
 async function setup() {
+  const mockFeedCountsObservableService = jasmine.createSpyObj<FeedCountsObservableService>(
+    'FeedCountsObservableService',
+    ['refresh'],
+  );
+  (mockFeedCountsObservableService as any).feedCounts$ = of({});
+
   const mockFeedService = jasmine.createSpyObj<FeedService>('FeedService', [
     'query',
   ]);
@@ -36,6 +43,10 @@ async function setup() {
     ],
     declarations: [ProfileComponent],
     providers: [
+      {
+        provide: FeedCountsObservableService,
+        useValue: mockFeedCountsObservableService,
+      },
       {
         provide: GAuthService,
         useClass: MockGAuthService,
@@ -60,6 +71,7 @@ async function setup() {
   }).compileComponents();
 
   return {
+    mockFeedCountsObservableService,
     mockFeedService,
     mockFeedEntryService,
     mockUserService,

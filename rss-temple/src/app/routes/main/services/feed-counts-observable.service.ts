@@ -14,7 +14,7 @@ const timeoutInterval = 20000;
 @Injectable()
 export class FeedCountsObservableService implements OnDestroy {
   private _feedCounts$ = new BehaviorSubject<Record<string, number>>({});
-  feedCounts$: Observable<Record<string, number>> = this._feedCounts$;
+  readonly feedCounts$: Observable<Record<string, number>> = this._feedCounts$;
 
   private refreshTimeoutId: number | null = null;
 
