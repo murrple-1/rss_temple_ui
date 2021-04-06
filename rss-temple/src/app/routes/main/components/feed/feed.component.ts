@@ -229,6 +229,8 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
                 this.zone.run(() => {
                   if (feedEntries.length < count) {
                     this.loadingState = LoadingState.NoMoreToLoad;
+                  } else {
+                    this.loadingState = LoadingState.IsNotLoading;
                   }
 
                   this.feedEntries = feedEntries;

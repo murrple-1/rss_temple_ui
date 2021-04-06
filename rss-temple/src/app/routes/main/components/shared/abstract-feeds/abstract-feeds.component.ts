@@ -436,4 +436,12 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
       }
     }
   }
+
+  onReload() {
+    this.reload();
+  }
+
+  onLoadMore() {
+    this.onApproachingBottom();
+  }
 }

@@ -20,4 +20,15 @@ export class FeedsFooterComponent {
 
   @Output()
   loadMoreButtonClicked = new EventEmitter<void>();
+
+  @Output()
+  reloadButtonClicked = new EventEmitter<void>();
+
+  onLoadMoreClick() {
+    this.loadMoreButtonClicked.emit();
+  }
+
+  onReloadClick() {
+    this.reloadButtonClicked.emit();
+  }
 }

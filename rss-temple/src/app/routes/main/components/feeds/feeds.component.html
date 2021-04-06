@@ -41,5 +41,13 @@
       (click)="onEntryClicked($event, feedEntryView)"
     ></app-feed-entry-view>
   </div>
-  <app-feeds-footer [state]="feedsFooterState"></app-feeds-footer>
+  <div class="clr-row">
+    <div class="clr-col-12">
+      <app-feeds-footer
+        [state]="feedsFooterState"
+        (loadMoreButtonClicked)="onLoadMore()"
+        (reloadButtonClicked)="onReload()"
+      ></app-feeds-footer>
+    </div>
+  </div>
 </div>
