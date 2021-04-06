@@ -19,6 +19,7 @@ import {
   SpecialCharacters as PasswordSpecialCharacters,
 } from '@app/libs/password.lib';
 import { User } from '@app/models';
+import { FeedCountsObservableService } from '@app/routes/main/services';
 
 type UserImpl = Required<
   Pick<User, 'email' | 'hasGoogleLogin' | 'hasFacebookLogin'>
@@ -51,7 +52,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   numberOfFeeds = 0;
   numberOfReadFeedEntries = 0;
-  numberOfUnreadFeedEntries = 0;
+  numberOfUnreadFeedEntries$ = this.feedCountsObservableService.feedCounts$.pipe(
+    map(feedCounts =>
+      Object.values(feedCounts).reduce(
+        (previousValue, currentValue) => previousValue + currentValue,
+        0,
+      ),
+    ),
+  );
 
   gLoaded = false;
   fbLoaded = false;
@@ -80,6 +88,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private feedService: FeedService,
     private feedEntryService: FeedEntryService,
     private userService: UserService,
+    private feedCountsObservableService: FeedCountsObservableService,
     private httpErrorService: HttpErrorService,
     private gAuthService: GAuthService,
     private fbAuthService: FBAuthService,
@@ -152,7 +161,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
             this.numberOfFeeds = feedsCount;
             this.numberOfReadFeedEntries = readFeedEntriesCount;
-            this.numberOfUnreadFeedEntries = unreadFeedEntriesCount;
 
             this.state = State.LoadSuccess;
           });
