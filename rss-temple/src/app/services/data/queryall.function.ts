@@ -1,4 +1,4 @@
-import { Observable, forkJoin } from 'rxjs';
+import { Observable, forkJoin, of } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 
 import { Objects } from '@app/services/data/objects';
@@ -21,14 +21,7 @@ export function queryAllFn<Field extends string, SortField extends string, T>(
     sessionToken: options.sessionToken,
   }).pipe(
     mergeMap(retObj => {
-      const allCalls: Observable<Objects<T>>[] = [];
-
-      allCalls.push(
-        new Observable<Objects<T>>(observer => {
-          observer.next(retObj);
-          observer.complete();
-        }),
-      );
+      const allCalls: Observable<Objects<T>>[] = [of(retObj)];
 
       let skip = pageSize;
 

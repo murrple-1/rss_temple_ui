@@ -1,8 +1,8 @@
 import { Component, OnInit, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { forkJoin, Subject } from 'rxjs';
-import { takeUntil, map } from 'rxjs/operators';
+import { forkJoin, Observable, of, Subject } from 'rxjs';
+import { takeUntil, map, mergeMap } from 'rxjs/operators';
 
 import {
   openModal as openSubscribeModal,
@@ -194,45 +194,43 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.unsubscribe$),
         map(feed => feed as FeedImpl2),
+        mergeMap(_feed => {
+          let observables: [Observable<FeedImpl2>, Observable<void>];
+          if (!_feed.subscribed) {
+            observables = [
+              of(_feed),
+              this.feedService.subscribe(result.feedUrl, result.customTitle),
+            ];
+          } else {
+            observables = [of(_feed), of<void>()];
+          }
+          return forkJoin(observables);
+        }),
       )
       .subscribe({
-        next: _feed => {
+        next: ([_feed]) => {
           const feed: FeedImpl = {
             uuid: _feed.uuid,
             feedUrl: result.feedUrl,
-            calculatedTitle: _feed.title,
+            calculatedTitle:
+              result.customTitle !== undefined
+                ? result.customTitle
+                : _feed.title,
             homeUrl: _feed.homeUrl,
           };
-          if (!_feed.subscribed) {
-            this.feedService
-              .subscribe(result.feedUrl, result.customTitle)
-              .pipe(takeUntil(this.unsubscribe$))
-              .subscribe({
-                next: () => {
-                  if (result.customTitle !== undefined) {
-                    feed.calculatedTitle = result.customTitle;
-                  }
 
-                  this.zone.run(() => {
-                    this.feedObservableService.feedAdded.next(feed);
+          this.feedObservableService.feedAdded.next(feed);
 
-                    this.categorizedFeeds.noCategory = this.categorizedFeeds.noCategory
-                      .concat({
-                        uuid: feed.uuid,
-                        calculatedTitle: feed.calculatedTitle,
-                        feedUrl: feed.feedUrl,
-                        homeUrl: feed.homeUrl,
-                      })
-                      .sort(VerticalNavComponent.sortFeeds);
-                  });
-                },
-                error: error => {
-                  this.httpErrorService.handleError(error);
-                },
-              });
-          } else {
-            // TODO already subscribed. do anything?
-          }
+          this.zone.run(() => {
+            this.categorizedFeeds.noCategory = this.categorizedFeeds.noCategory
+              .concat({
+                uuid: feed.uuid,
+                calculatedTitle: feed.calculatedTitle,
+                feedUrl: feed.feedUrl,
+                homeUrl: feed.homeUrl,
+              })
+              .sort(VerticalNavComponent.sortFeeds);
+          });
         },
         error: error => {
           let errorHandled = false;

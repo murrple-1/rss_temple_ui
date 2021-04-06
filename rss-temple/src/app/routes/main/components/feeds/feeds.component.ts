@@ -11,7 +11,7 @@ import {
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
 import { combineLatest } from 'rxjs';
-import { takeUntil, map, startWith } from 'rxjs/operators';
+import { takeUntil, map, startWith, mergeMap, tap } from 'rxjs/operators';
 
 import { FeedService, FeedEntryService } from '@app/services/data';
 import { FeedObservableService } from '@app/routes/main/services';
@@ -141,33 +141,22 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
           }
           throw new Error('malformed response');
         }),
+        tap(feeds => {
+          this.feeds = feeds;
+        }),
+        mergeMap(() => this.getFeedEntries()),
       )
       .subscribe({
-        next: feeds => {
-          this.feeds = feeds;
+        next: feedEntries => {
+          this.zone.run(() => {
+            if (feedEntries.length < count) {
+              this.loadingState = LoadingState.NoMoreToLoad;
+            } else {
+              this.loadingState = LoadingState.IsNotLoading;
+            }
 
-          this.getFeedEntries()
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
-              next: feedEntries => {
-                this.zone.run(() => {
-                  if (feedEntries.length < count) {
-                    this.loadingState = LoadingState.NoMoreToLoad;
-                  } else {
-                    this.loadingState = LoadingState.IsNotLoading;
-                  }
-
-                  this.feedEntries = feedEntries;
-                });
-              },
-              error: error => {
-                this.httpErrorService.handleError(error);
-
-                this.zone.run(() => {
-                  this.loadingState = LoadingState.NoMoreToLoad;
-                });
-              },
-            });
+            this.feedEntries = feedEntries;
+          });
         },
         error: error => {
           this.httpErrorService.handleError(error);

@@ -9,7 +9,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ClarityModule } from '@clr/angular';
 
-import { of, Observable } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { MockActivatedRoute } from '@app/test/activatedroute.mock';
@@ -469,13 +469,11 @@ describe('LoginComponent', () => {
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
       mockLoginService.getMyLoginSession.and.returnValue(
-        new Observable<string>(subscriber => {
-          subscriber.error(
-            new HttpErrorResponse({
-              status: 0,
-            }),
-          );
-        }),
+        throwError(
+          new HttpErrorResponse({
+            status: 0,
+          }),
+        ),
       );
       spyOn(console, 'error');
       const appAlertService = TestBed.inject(AppAlertsService);
@@ -528,13 +526,11 @@ describe('LoginComponent', () => {
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
       mockLoginService.getMyLoginSession.and.returnValue(
-        new Observable<string>(subscriber => {
-          subscriber.error(
-            new HttpErrorResponse({
-              status: 403,
-            }),
-          );
-        }),
+        throwError(
+          new HttpErrorResponse({
+            status: 403,
+          }),
+        ),
       );
       spyOn(console, 'error');
 
@@ -581,9 +577,7 @@ describe('LoginComponent', () => {
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
       mockLoginService.getMyLoginSession.and.returnValue(
-        new Observable<string>(subscriber => {
-          subscriber.error(new Error('unknown error'));
-        }),
+        throwError(new Error('unknown error')),
       );
       spyOn(console, 'error');
       const appAlertService = TestBed.inject(AppAlertsService);
@@ -636,13 +630,11 @@ describe('LoginComponent', () => {
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
       mockLoginService.getGoogleLoginSession.and.returnValue(
-        new Observable<string>(subscriber => {
-          subscriber.error(
-            new HttpErrorResponse({
-              status: 0,
-            }),
-          );
-        }),
+        throwError(
+          new HttpErrorResponse({
+            status: 0,
+          }),
+        ),
       );
       spyOn(console, 'error');
       const appAlertService = TestBed.inject(AppAlertsService);
@@ -680,17 +672,15 @@ describe('LoginComponent', () => {
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
       mockLoginService.getGoogleLoginSession.and.returnValue(
-        new Observable<string>(subscriber => {
-          subscriber.error(
-            new HttpErrorResponse({
-              status: 422,
-              error: {
-                token: 'atoken',
-                email: 'test@test.com',
-              },
-            }),
-          );
-        }),
+        throwError(
+          new HttpErrorResponse({
+            status: 422,
+            error: {
+              token: 'atoken',
+              email: 'test@test.com',
+            },
+          }),
+        ),
       );
       spyOn(console, 'error');
       const router = TestBed.inject(Router);
@@ -723,9 +713,7 @@ describe('LoginComponent', () => {
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
       mockLoginService.getGoogleLoginSession.and.returnValue(
-        new Observable<string>(subscriber => {
-          subscriber.error(new Error('unknown error'));
-        }),
+        throwError(new Error('unknown error')),
       );
       spyOn(console, 'error');
       const appAlertService = TestBed.inject(AppAlertsService);
@@ -763,13 +751,11 @@ describe('LoginComponent', () => {
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
       mockLoginService.getFacebookLoginSession.and.returnValue(
-        new Observable<string>(subscriber => {
-          subscriber.error(
-            new HttpErrorResponse({
-              status: 0,
-            }),
-          );
-        }),
+        throwError(
+          new HttpErrorResponse({
+            status: 0,
+          }),
+        ),
       );
       spyOn(console, 'error');
       const appAlertService = TestBed.inject(AppAlertsService);
@@ -807,17 +793,15 @@ describe('LoginComponent', () => {
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
       mockLoginService.getFacebookLoginSession.and.returnValue(
-        new Observable<string>(subscriber => {
-          subscriber.error(
-            new HttpErrorResponse({
-              status: 422,
-              error: {
-                token: 'atoken',
-                email: 'test@test.com',
-              },
-            }),
-          );
-        }),
+        throwError(
+          new HttpErrorResponse({
+            status: 422,
+            error: {
+              token: 'atoken',
+              email: 'test@test.com',
+            },
+          }),
+        ),
       );
       spyOn(console, 'error');
       const router = TestBed.inject(Router);
@@ -850,9 +834,7 @@ describe('LoginComponent', () => {
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
       mockLoginService.getFacebookLoginSession.and.returnValue(
-        new Observable<string>(subscriber => {
-          subscriber.error(new Error('unknown error'));
-        }),
+        throwError(new Error('unknown error')),
       );
       spyOn(console, 'error');
       const appAlertService = TestBed.inject(AppAlertsService);

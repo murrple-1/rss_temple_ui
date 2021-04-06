@@ -9,7 +9,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ClarityModule } from '@clr/angular';
 
-import { Observable, of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { AppAlertsService } from '@app/services';
@@ -552,13 +552,11 @@ describe('RegisterComponent', () => {
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
       mockLoginService.createMyLogin.and.returnValue(
-        new Observable<void>(subscriber => {
-          subscriber.error(
-            new HttpErrorResponse({
-              status: 0,
-            }),
-          );
-        }),
+        throwError(
+          new HttpErrorResponse({
+            status: 0,
+          }),
+        ),
       );
       spyOn(console, 'error');
       const appAlertService = TestBed.inject(AppAlertsService);
@@ -621,13 +619,11 @@ describe('RegisterComponent', () => {
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
       mockLoginService.createMyLogin.and.returnValue(
-        new Observable<void>(subscriber => {
-          subscriber.error(
-            new HttpErrorResponse({
-              status: 409,
-            }),
-          );
-        }),
+        throwError(
+          new HttpErrorResponse({
+            status: 409,
+          }),
+        ),
       );
       const appAlertService = TestBed.inject(AppAlertsService);
       const appAlertEmitPromise = new Promise<AppAlertDescriptor>(resolve => {

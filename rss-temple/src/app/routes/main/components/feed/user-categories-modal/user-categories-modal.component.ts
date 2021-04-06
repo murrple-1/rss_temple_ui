@@ -1,7 +1,7 @@
 import { Component, OnDestroy, NgZone, Input } from '@angular/core';
 
-import { forkJoin, Observable, Subject } from 'rxjs';
-import { takeUntil, map, take, tap } from 'rxjs/operators';
+import { forkJoin, Observable, of, Subject } from 'rxjs';
+import { takeUntil, map, take, tap, mergeMap } from 'rxjs/operators';
 
 import { UserCategoryService } from '@app/services/data';
 import { HttpErrorService } from '@app/services';
@@ -180,44 +180,32 @@ export class UserCategoriesModalComponent implements OnDestroy {
     }
 
     if (createObservables.length < 1) {
-      createObservables.push(
-        new Observable(subscriber => {
-          subscriber.next();
-          subscriber.complete();
-        }),
-      );
+      createObservables.push(of());
     }
 
     forkJoin(createObservables)
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe({
-        next: () => {
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        mergeMap(() => {
           const applyBody: IApply = {
             [this.feedUuid]: new Set<string>(
               this.selectedCategoryDescriptors.map(cd => cd._uuid),
             ),
           };
 
-          this.userCategoryService
-            .apply(applyBody)
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
-              next: () => {
-                const result: Result = {
-                  categories: this.selectedCategoryDescriptors.map(
-                    cd => cd.text,
-                  ),
-                };
-                this.result.next(result);
+          return this.userCategoryService.apply(applyBody);
+        }),
+      )
+      .subscribe({
+        next: () => {
+          const result: Result = {
+            categories: this.selectedCategoryDescriptors.map(cd => cd.text),
+          };
+          this.result.next(result);
 
-                this.zone.run(() => {
-                  this.open = false;
-                });
-              },
-              error: error => {
-                this.httpErrorService.handleError(error);
-              },
-            });
+          this.zone.run(() => {
+            this.open = false;
+          });
         },
         error: error => {
           this.httpErrorService.handleError(error);

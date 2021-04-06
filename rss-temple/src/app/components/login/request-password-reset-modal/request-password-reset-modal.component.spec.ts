@@ -7,7 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ClarityModule, ClrLoadingState } from '@clr/angular';
 
-import { of, Observable } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { PasswordResetTokenService } from '@app/services/data';
 import { EmailValidatorDirective } from '@app/directives/email-validator.directive';
@@ -171,13 +171,11 @@ describe('RequestPasswordResetModalComponent', () => {
     waitForAsync(async () => {
       const { mockPasswordResetTokenService } = await setup();
       mockPasswordResetTokenService.request.and.returnValue(
-        new Observable<void>(subscriber => {
-          subscriber.error(
-            new HttpErrorResponse({
-              status: 0,
-            }),
-          );
-        }),
+        throwError(
+          new HttpErrorResponse({
+            status: 0,
+          }),
+        ),
       );
       spyOn(console, 'error');
 

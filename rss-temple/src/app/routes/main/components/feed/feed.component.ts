@@ -10,8 +10,8 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
-import { Observable, forkJoin, combineLatest } from 'rxjs';
-import { takeUntil, map, startWith } from 'rxjs/operators';
+import { Observable, forkJoin, combineLatest, of } from 'rxjs';
+import { takeUntil, map, startWith, mergeMap } from 'rxjs/operators';
 
 import {
   FeedService,
@@ -169,6 +169,8 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
 
     this.loadingState = LoadingState.IsLoading;
 
+    const count = this.count;
+
     this.feedService
       .get(url, {
         fields: [
@@ -187,14 +189,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
           feed.feedUrl = url;
           return feed as FeedImpl;
         }),
-      )
-      .subscribe({
-        next: feed => {
-          this.zone.run(() => {
-            this.feed = feed;
-            this.customNameInput = feed.customTitle ?? '';
-          });
-
+        mergeMap(feed => {
           let userCategoriesObservable: Observable<UserCategoryImpl[]>;
           if (feed.userCategoryUuids.length > 0) {
             userCategoriesObservable = this.userCategoryService
@@ -213,38 +208,31 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
                 }),
               );
           } else {
-            userCategoriesObservable = new Observable<UserCategoryImpl[]>(
-              subscriber => {
-                subscriber.next([]);
-                subscriber.complete();
-              },
-            );
+            userCategoriesObservable = of<UserCategoryImpl[]>([]);
           }
 
-          const count = this.count;
-          forkJoin([this.getFeedEntries(), userCategoriesObservable])
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe({
-              next: ([feedEntries, userCategories]) => {
-                this.zone.run(() => {
-                  if (feedEntries.length < count) {
-                    this.loadingState = LoadingState.NoMoreToLoad;
-                  } else {
-                    this.loadingState = LoadingState.IsNotLoading;
-                  }
+          return forkJoin([
+            of(feed),
+            this.getFeedEntries(),
+            userCategoriesObservable,
+          ]);
+        }),
+      )
+      .subscribe({
+        next: ([feed, feedEntries, userCategories]) => {
+          this.zone.run(() => {
+            this.feed = feed;
+            this.customNameInput = feed.customTitle ?? '';
 
-                  this.feedEntries = feedEntries;
-                  this.userCategories = userCategories;
-                });
-              },
-              error: error => {
-                this.httpErrorService.handleError(error);
+            this.feedEntries = feedEntries;
+            this.userCategories = userCategories;
 
-                this.zone.run(() => {
-                  this.loadingState = LoadingState.NoMoreToLoad;
-                });
-              },
-            });
+            if (feedEntries.length < count) {
+              this.loadingState = LoadingState.NoMoreToLoad;
+            } else {
+              this.loadingState = LoadingState.IsNotLoading;
+            }
+          });
         },
         error: error => {
           this.httpErrorService.handleError(error);
