@@ -1,0 +1,34 @@
+<div class="content-area">
+  <div class="clr-row">
+    <div class="clr-col-12">
+      <h1>Profile</h1>
+    </div>
+  </div>
+  <div class="clr-row">
+    <div *ngFor="let tagEntry of tagEntries" class="clr-col-6">
+      <div class="card">
+        <div class="card-header">
+          {{ tagEntry.name }}
+        </div>
+        <ng-container *ngFor="let feed of tagEntry.feeds">
+          <div class="card-block">
+            <a [href]="feed.homeUrl">{{ feed.name }}</a>
+          </div>
+          <div *ngIf="feed.imageSrc !== null" class="card-img">
+            <img [src]="feed.imageSrc" />
+          </div>
+          <div class="card-block">
+            <ul class="list">
+              <li *ngFor="let exampleTitle of feed.exampleTitles">
+                {{ exampleTitle }}
+              </li>
+            </ul>
+          </div>
+          <div class="card-block">
+            <button class="btn btn-primary">Subscribe</button>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

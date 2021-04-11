@@ -34,6 +34,10 @@ export class NavComponent implements OnInit, OnDestroy {
     name: 'Home',
     routerLink: '/main/feeds',
   };
+  private readonly exploreLink: NavLink = {
+    name: 'Explore',
+    routerLink: '/main/explore',
+  };
   private readonly profileLink: NavLink = {
     name: 'Profile',
     routerLink: '/main/profile',
@@ -64,7 +68,11 @@ export class NavComponent implements OnInit, OnDestroy {
         next: isLoggedIn => {
           this.zone.run(() => {
             if (isLoggedIn) {
-              this.navLinks = [this.homeLink, this.profileLink];
+              this.navLinks = [
+                this.homeLink,
+                this.exploreLink,
+                this.profileLink,
+              ];
               this.navActions = [this.logoutAction];
             } else {
               this.navLinks = [this.loginLink];
