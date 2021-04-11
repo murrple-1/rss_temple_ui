@@ -1,34 +1,54 @@
 <div class="content-area">
   <div class="clr-row">
     <div class="clr-col-12">
-      <h1>Profile</h1>
+      <h1>Explore</h1>
     </div>
   </div>
-  <div class="clr-row">
-    <div *ngFor="let tagEntry of tagEntries" class="clr-col-6">
-      <div class="card">
-        <div class="card-header">
-          {{ tagEntry.name }}
-        </div>
-        <ng-container *ngFor="let feed of tagEntry.feeds">
-          <div class="card-block">
+  <ng-container *ngFor="let tagEntry of tagEntries">
+    <div class="clr-row">
+      <div class="clr-col-12">
+        <h3>{{ tagEntry.name }}</h3>
+      </div>
+    </div>
+    <div class="clr-row">
+      <div *ngFor="let feed of tagEntry.feeds" class="clr-col-3">
+        <div class="card">
+          <div class="card-header">
             <a [href]="feed.homeUrl">{{ feed.name }}</a>
           </div>
-          <div *ngIf="feed.imageSrc !== null" class="card-img">
+          <div *ngIf="feed.imageSrc !== null" class="card-img app--feed-image">
             <img [src]="feed.imageSrc" />
           </div>
           <div class="card-block">
+            <p>Example Articles</p>
             <ul class="list">
               <li *ngFor="let exampleTitle of feed.exampleTitles">
                 {{ exampleTitle }}
               </li>
+              <li>And More...</li>
             </ul>
           </div>
-          <div class="card-block">
-            <button class="btn btn-primary">Subscribe</button>
+          <div class="card-footer">
+            <ng-container
+              *ngIf="
+                feed.isSubscribed;
+                then unsubscribeButton;
+                else subscribeButton
+              "
+            ></ng-container>
+            <ng-template #unsubscribeButton>
+              <button class="btn btn-warning" (click)="unsubscribe(feed)">
+                Unubscribe
+              </button>
+            </ng-template>
+            <ng-template #subscribeButton>
+              <button class="btn btn-primary" (click)="subscribe(feed)">
+                Subscribe
+              </button>
+            </ng-template>
           </div>
-        </ng-container>
+        </div>
       </div>
     </div>
-  </div>
+  </ng-container>
 </div>
