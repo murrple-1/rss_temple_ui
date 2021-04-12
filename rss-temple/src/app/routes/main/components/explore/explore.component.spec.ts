@@ -7,7 +7,12 @@ import { ClarityModule } from '@clr/angular';
 
 import { of } from 'rxjs';
 
-import { FeedService, FeedEntryService, UserService } from '@app/services/data';
+import {
+  FeedService,
+  FeedEntryService,
+  UserService,
+  ExploreService,
+} from '@app/services/data';
 import { FeedCountsObservableService } from '@app/routes/main/services';
 
 import { ExploreComponent } from './explore.component';
@@ -22,6 +27,10 @@ async function setup() {
   const mockFeedService = jasmine.createSpyObj<FeedService>('FeedService', [
     'query',
   ]);
+  const mockExploreService = jasmine.createSpyObj<ExploreService>(
+    'ExploreService',
+    ['explore'],
+  );
   const mockFeedEntryService = jasmine.createSpyObj<FeedEntryService>(
     'FeedEntryService',
     ['query'],
@@ -44,12 +53,17 @@ async function setup() {
         provide: FeedService,
         useValue: mockFeedService,
       },
+      {
+        provide: ExploreService,
+        useValue: mockExploreService,
+      },
     ],
   }).compileComponents();
 
   return {
     mockFeedCountsObservableService,
     mockFeedService,
+    mockExploreService,
     mockFeedEntryService,
     mockUserService,
   };
@@ -73,6 +87,7 @@ describe('ExploreComponent', () => {
       const {
         mockUserService,
         mockFeedService,
+        mockExploreService,
         mockFeedEntryService,
       } = await setup();
       mockUserService.get.and.returnValue(of({}));
@@ -82,6 +97,7 @@ describe('ExploreComponent', () => {
           totalCount: 0,
         }),
       );
+      mockExploreService.explore.and.returnValue(of([]));
       mockFeedEntryService.query.and.returnValue(
         of({
           objects: [],
