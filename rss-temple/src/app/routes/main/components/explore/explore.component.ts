@@ -3,13 +3,13 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { forkJoin, Subject } from 'rxjs';
 import { takeUntil, skip, map } from 'rxjs/operators';
 
-import { FeedService } from '@app/services/data';
+import { FeedService, ExploreService } from '@app/services/data';
 import { HttpErrorService, AppAlertsService } from '@app/services';
 
 interface FeedDescriptor {
   name: string;
   imageSrc: string | null;
-  homeUrl: string;
+  homeUrl: string | null;
   feedUrl: string;
   exampleTitles: string[];
   isSubscribed: boolean;
@@ -25,97 +25,44 @@ interface TagEntry {
   styleUrls: ['./explore.component.scss'],
 })
 export class ExploreComponent implements OnInit, OnDestroy {
-  tagEntries: TagEntry[] = [
-    {
-      name: 'American News',
-      feeds: [
-        {
-          exampleTitles: ['Cat lives with dog', 'A Bad Day happened today'],
-          feedUrl: '',
-          homeUrl: '',
-          imageSrc:
-            'https://pbs.twimg.com/profile_banners/759251/1607983278/1080x360',
-          isSubscribed: false,
-          name: 'CNN News',
-        },
-        {
-          exampleTitles: ['Cat lives with dog', 'A Bad Day happened today'],
-          feedUrl: '',
-          homeUrl: '',
-          imageSrc: null,
-          isSubscribed: false,
-          name: 'CNN News',
-        },
-        {
-          exampleTitles: ['Cat lives with dog', 'A Bad Day happened today'],
-          feedUrl: '',
-          homeUrl: '',
-          imageSrc:
-            'https://pbs.twimg.com/profile_banners/759251/1607983278/1080x360',
-          isSubscribed: false,
-          name: 'CNN News',
-        },
-        {
-          exampleTitles: ['Cat lives with dog', 'A Bad Day happened today'],
-          feedUrl: '',
-          homeUrl: '',
-          imageSrc: null,
-          isSubscribed: false,
-          name: 'CNN News',
-        },
-        {
-          exampleTitles: ['Cat lives with dog', 'A Bad Day happened today'],
-          feedUrl: '',
-          homeUrl: '',
-          imageSrc: null,
-          isSubscribed: false,
-          name: 'CNN News',
-        },
-      ],
-    },
-    {
-      name: 'American News',
-      feeds: [
-        {
-          exampleTitles: ['Cat lives with dog', 'A Bad Day happened today'],
-          feedUrl: '',
-          homeUrl: '',
-          imageSrc:
-            'https://pbs.twimg.com/profile_images/1278259160644227073/MfCyF7CG_400x400.jpg',
-          isSubscribed: false,
-          name: 'CNN News',
-        },
-        {
-          exampleTitles: ['Cat lives with dog', 'A Bad Day happened today'],
-          feedUrl: '',
-          homeUrl: '',
-          imageSrc: null,
-          isSubscribed: false,
-          name: 'CNN News',
-        },
-        {
-          exampleTitles: ['Cat lives with dog', 'A Bad Day happened today'],
-          feedUrl: '',
-          homeUrl: '',
-          imageSrc: null,
-          isSubscribed: false,
-          name: 'CNN News',
-        },
-      ],
-    },
-  ];
+  tagEntries: TagEntry[] = [];
 
   private readonly unsubscribe$ = new Subject<void>();
 
   constructor(
     private zone: NgZone,
     private feedService: FeedService,
+    private exploreService: ExploreService,
     private httpErrorService: HttpErrorService,
     private appAlertsService: AppAlertsService,
   ) {}
 
   ngOnInit() {
-    // TODO implement
+    this.exploreService
+      .explore()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: tagDescriptors => {
+          const tagEntries = tagDescriptors.map<TagEntry>(tagDescriptor => ({
+            name: tagDescriptor.tagName,
+            feeds: tagDescriptor.feeds.map(feedDescriptor => ({
+              name: feedDescriptor.name,
+              feedUrl: feedDescriptor.feedUrl,
+              homeUrl: feedDescriptor.homeUrl,
+              exampleTitles: feedDescriptor.entryTitles,
+              imageSrc: feedDescriptor.imageSrc,
+              isSubscribed: feedDescriptor.isSubscribed,
+            })),
+          }));
+
+          this.zone.run(() => {
+            this.tagEntries = tagEntries;
+          });
+        },
+        error: error => {
+          this.httpErrorService.handleError(error);
+        },
+      });
   }
 
   ngOnDestroy() {

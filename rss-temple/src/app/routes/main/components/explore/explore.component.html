@@ -14,7 +14,21 @@
       <div *ngFor="let feed of tagEntry.feeds" class="clr-col-3">
         <div class="card">
           <div class="card-header">
-            <a [href]="feed.homeUrl">{{ feed.name }}</a>
+            <ng-container
+              *ngIf="
+                feed.homeUrl !== null;
+                then feedNameLink;
+                else feedNameText
+              "
+            ></ng-container>
+            <ng-template #feedNameLink>
+              <a *ngIf="feed.homeUrl !== null" [href]="feed.homeUrl">{{
+                feed.name
+              }}</a>
+            </ng-template>
+            <ng-template #feedNameText>
+              {{ feed.name }}
+            </ng-template>
           </div>
           <div *ngIf="feed.imageSrc !== null" class="card-img app--feed-image">
             <img [src]="feed.imageSrc" />
