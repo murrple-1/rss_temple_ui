@@ -73,6 +73,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   gButtonInUse = false;
   fbButtonInUse = false;
 
+  isDownloadOPMLButtonDisabled: boolean;
+
   @ViewChild('profileDetailsForm', { static: true })
   profileDetailsForm?: NgForm;
 
@@ -101,7 +103,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private gAuthService: GAuthService,
     private fbAuthService: FBAuthService,
     private appAlertsService: AppAlertsService,
-  ) {}
+  ) {
+    this.isDownloadOPMLButtonDisabled = window.Blob === undefined;
+  }
 
   ngOnInit() {
     forkJoin([

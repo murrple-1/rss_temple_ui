@@ -193,7 +193,11 @@
       <div class="card">
         <div class="card-header">Tools</div>
         <div class="card-block">
-          <button class="btn btn-primary" (click)="downloadOPML()">
+          <button
+            class="btn btn-primary"
+            (click)="downloadOPML()"
+            [disabled]="isDownloadOPMLButtonDisabled"
+          >
             Download OPML...
           </button>
         </div>
