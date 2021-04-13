@@ -2,7 +2,13 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/app",
-    "types": ["gapi", "gapi.auth2", "facebook-js-sdk", "node"]
+    "types": [
+      "gapi",
+      "gapi.auth2",
+      "facebook-js-sdk",
+      "node",
+      "wicg-file-system-access"
+    ]
   },
   "files": ["main.ts", "polyfills.ts"],
   "include": ["**/*.d.ts"]

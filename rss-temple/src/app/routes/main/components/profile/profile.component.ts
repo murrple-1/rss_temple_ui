@@ -5,7 +5,12 @@ import { NgForm } from '@angular/forms';
 import { forkJoin, Subject } from 'rxjs';
 import { takeUntil, skip, map } from 'rxjs/operators';
 
-import { FeedService, FeedEntryService, UserService } from '@app/services/data';
+import {
+  FeedService,
+  FeedEntryService,
+  UserService,
+  OPMLService,
+} from '@app/services/data';
 import {
   HttpErrorService,
   GAuthService,
@@ -88,6 +93,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private feedService: FeedService,
     private feedEntryService: FeedEntryService,
     private userService: UserService,
+    private opmlService: OPMLService,
     private feedCountsObservableService: FeedCountsObservableService,
     private httpErrorService: HttpErrorService,
     private gAuthService: GAuthService,
@@ -437,6 +443,38 @@ export class ProfileComponent implements OnInit, OnDestroy {
           this.zone.run(() => {
             this.state = State.SaveError;
           });
+        },
+      });
+  }
+
+  downloadOPML() {
+    this.opmlService
+      .download()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: async opmlData => {
+          let fileHandle: FileSystemFileHandle;
+          try {
+            fileHandle = await window.showSaveFilePicker({
+              types: [
+                {
+                  description: 'OPML Files',
+                  accept: {
+                    'text/x-opml': ['.opml'],
+                  },
+                },
+              ],
+            });
+          } catch {
+            return;
+          }
+
+          const writable = await fileHandle.createWritable();
+          await writable.write(opmlData);
+          await writable.close();
+        },
+        error: error => {
+          this.httpErrorService.handleError(error);
         },
       });
   }
