@@ -42,12 +42,7 @@
         <a
           *ngFor="let feed of categorizedFeeds.noCategory"
           clrVerticalNavLink
-          [routerLink]="[
-            '/main/feed',
-            {
-              'url': feed.feedUrl
-            }
-          ]"
+          [routerLink]="['/main/feed/', feed.feedUrl]"
           routerLinkActive="active"
         >
           {{ feed.calculatedTitle }}
