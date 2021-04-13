@@ -5,6 +5,8 @@ import { NgForm } from '@angular/forms';
 import { forkJoin, Subject } from 'rxjs';
 import { takeUntil, skip, map } from 'rxjs/operators';
 
+import { saveAs } from 'file-saver';
+
 import {
   FeedService,
   FeedEntryService,
@@ -452,26 +454,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
       .download()
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: async opmlData => {
-          let fileHandle: FileSystemFileHandle;
-          try {
-            fileHandle = await window.showSaveFilePicker({
-              types: [
-                {
-                  description: 'OPML Files',
-                  accept: {
-                    'text/x-opml': ['.opml'],
-                  },
-                },
-              ],
-            });
-          } catch {
-            return;
-          }
-
-          const writable = await fileHandle.createWritable();
-          await writable.write(opmlData);
-          await writable.close();
+        next: opmlData => {
+          saveAs(new Blob([opmlData]), 'temple.opml');
         },
         error: error => {
           this.httpErrorService.handleError(error);
