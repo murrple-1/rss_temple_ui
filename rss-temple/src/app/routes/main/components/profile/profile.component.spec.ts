@@ -9,7 +9,12 @@ import { of } from 'rxjs';
 
 import { MockGAuthService } from '@app/test/gauth.service.mock';
 import { MockFBAuthService } from '@app/test/fbauth.service.mock';
-import { FeedService, FeedEntryService, UserService } from '@app/services/data';
+import {
+  FeedService,
+  FeedEntryService,
+  UserService,
+  OPMLService,
+} from '@app/services/data';
 import { GAuthService, FBAuthService } from '@app/services';
 import { FeedCountsObservableService } from '@app/routes/main/services';
 
@@ -32,6 +37,9 @@ async function setup() {
   const mockUserService = jasmine.createSpyObj<UserService>('UserService', [
     'get',
     'update',
+  ]);
+  const mockOPMLService = jasmine.createSpyObj<OPMLService>('OPMLService', [
+    'download',
   ]);
 
   await TestBed.configureTestingModule({
@@ -66,6 +74,10 @@ async function setup() {
       {
         provide: UserService,
         useValue: mockUserService,
+      },
+      {
+        provide: OPMLService,
+        useValue: mockOPMLService,
       },
     ],
   }).compileComponents();
