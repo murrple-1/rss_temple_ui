@@ -10,28 +10,30 @@
         >&nbsp;({{ totalCount }})</ng-container
       >
     </a>
-    <clr-vertical-nav-group
-      *ngFor="let categoryDescriptor of categorizedFeeds.category"
-      routerLinkActive="active"
-    >
-      <cds-icon shape="folder" clrVerticalNavIcon></cds-icon>
-      {{ categoryDescriptor.name }}
-      <clr-vertical-nav-group-children>
-        <a
-          *ngFor="let feed of categoryDescriptor.feeds"
-          clrVerticalNavLink
-          [routerLink]="['/main/feed/', feed.feedUrl]"
-          routerLinkActive="active"
-        >
-          {{ feed.calculatedTitle }}
-          <ng-container *appVar="feedCounts[feed.uuid] as feedCount">
-            <ng-container *ngIf="feedCount !== undefined && feedCount > 0">
-              &nbsp;({{ feedCount }})
+    <ng-container *ngFor="let categoryDescriptor of categorizedFeeds.category">
+      <clr-vertical-nav-group
+        *ngIf="categoryDescriptor.feeds.length > 0"
+        routerLinkActive="active"
+      >
+        <cds-icon shape="folder" clrVerticalNavIcon></cds-icon>
+        {{ categoryDescriptor.name }}
+        <clr-vertical-nav-group-children>
+          <a
+            *ngFor="let feed of categoryDescriptor.feeds"
+            clrVerticalNavLink
+            [routerLink]="['/main/feed/', feed.feedUrl]"
+            routerLinkActive="active"
+          >
+            {{ feed.calculatedTitle }}
+            <ng-container *appVar="feedCounts[feed.uuid] as feedCount">
+              <ng-container *ngIf="feedCount !== undefined && feedCount > 0">
+                &nbsp;({{ feedCount }})
+              </ng-container>
             </ng-container>
-          </ng-container>
-        </a>
-      </clr-vertical-nav-group-children>
-    </clr-vertical-nav-group>
+          </a>
+        </clr-vertical-nav-group-children>
+      </clr-vertical-nav-group>
+    </ng-container>
     <clr-vertical-nav-group
       *ngIf="categorizedFeeds.noCategory.length > 0"
       routerLinkActive="active"

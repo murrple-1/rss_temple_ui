@@ -466,4 +466,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
         },
       });
   }
+
+  deleteUserCategory() {
+    // TODO not a real function (yet) - need a way to remove user categories...do we put it on this component?
+  }
 }
