@@ -6,6 +6,7 @@ import { EmailValidatorDirective } from '@app/directives/email-validator.directi
 import { VarDirective } from '@app/directives/var.directive';
 
 import { DateFormatPipe } from '@app/pipes/dayjs-format.pipe';
+import { SafeHtmlPipe } from '@app/pipes/safe-html.pipe';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { DateFormatPipe } from '@app/pipes/dayjs-format.pipe';
     VarDirective,
 
     DateFormatPipe,
+    SafeHtmlPipe,
   ],
   exports: [
     PasswordValidatorDirective,
@@ -23,6 +25,7 @@ import { DateFormatPipe } from '@app/pipes/dayjs-format.pipe';
     VarDirective,
 
     DateFormatPipe,
+    SafeHtmlPipe,
   ],
 })
 export class AppSharedModule {}
