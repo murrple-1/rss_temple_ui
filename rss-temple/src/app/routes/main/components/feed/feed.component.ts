@@ -11,7 +11,7 @@ import {
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
 import { Observable, forkJoin, combineLatest, of } from 'rxjs';
-import { takeUntil, map, startWith, mergeMap } from 'rxjs/operators';
+import { takeUntil, map, startWith, mergeMap, tap } from 'rxjs/operators';
 
 import {
   FeedService,
@@ -189,6 +189,11 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
           feed.feedUrl = url;
           return feed as FeedImpl;
         }),
+        tap(feed => {
+          this.zone.run(() => {
+            this.feed = feed;
+          });
+        }),
         mergeMap(feed => {
           let userCategoriesObservable: Observable<UserCategoryImpl[]>;
           if (feed.userCategoryUuids.length > 0) {
@@ -221,7 +226,6 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
       .subscribe({
         next: ([feed, feedEntries, userCategories]) => {
           this.zone.run(() => {
-            this.feed = feed;
             this.customNameInput = feed.customTitle ?? '';
 
             this.feedEntries = feedEntries;
