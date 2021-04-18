@@ -6,9 +6,7 @@ export function toHeaders(
   options: CommonOptions,
   sessionTokenFn: () => string | null,
 ) {
-  const headers: {
-    [param: string]: string | string[];
-  } = {};
+  const headers: Record<string, string | string[]> = {};
 
   const sessionToken = options.sessionToken ?? sessionTokenFn();
   if (sessionToken !== null) {

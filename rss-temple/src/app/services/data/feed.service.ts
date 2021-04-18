@@ -218,9 +218,7 @@ export class FeedService {
     const headers = commonToHeaders(options, () =>
       this.sessionService.sessionToken$.getValue(),
     );
-    const params: {
-      [header: string]: string | string[];
-    } = {
+    const params: Record<string, string | string[]> = {
       url,
     };
 
@@ -242,9 +240,7 @@ export class FeedService {
     const headers = commonToHeaders(options, () =>
       this.sessionService.sessionToken$.getValue(),
     );
-    const params: {
-      [header: string]: string | string[];
-    } = {
+    const params: Record<string, string | string[]> = {
       url,
     };
 
