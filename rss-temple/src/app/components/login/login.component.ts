@@ -173,7 +173,9 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
           } else {
             localStorage.removeItem('login:cached_email');
           }
-          this.handleLoginSuccess(sessionToken);
+          this.zone.run(() => {
+            this.handleLoginSuccess(sessionToken);
+          });
         },
         error: error => {
           let errorHandled = false;
@@ -246,7 +248,11 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
       .getGoogleLoginSession(user)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: this.handleLoginSuccess.bind(this),
+        next: sessionToken => {
+          this.zone.run(() => {
+            this.handleLoginSuccess(sessionToken);
+          });
+        },
         error: error => {
           this.zone.run(() => {
             this.gButtonInUse = false;
@@ -305,7 +311,11 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
       .getFacebookLoginSession(user)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: this.handleLoginSuccess.bind(this),
+        next: sessionToken => {
+          this.zone.run(() => {
+            this.handleLoginSuccess(sessionToken);
+          });
+        },
         error: error => {
           this.zone.run(() => {
             this.fbButtonInUse = false;
