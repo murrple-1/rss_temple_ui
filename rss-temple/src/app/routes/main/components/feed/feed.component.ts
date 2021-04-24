@@ -61,6 +61,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
   showRead = false;
 
   customNameInput = '';
+  isRenaming = false;
 
   get feeds() {
     if (this.feed !== null) {
@@ -316,6 +317,35 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
   }
 
   onFeedRename() {
-    // TODO this needs server support
+    const feed = this.feed;
+    if (feed === null) {
+      throw new Error('feed null');
+    }
+
+    let customTitle: string | null = this.customNameInput.trim();
+    if (customTitle.length < 1) {
+      customTitle = null;
+    }
+
+    this.isRenaming = true;
+
+    this.feedService
+      .updateSubscriptions(feed.feedUrl, customTitle)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: () => {
+          this.zone.run(() => {
+            feed.customTitle = customTitle;
+            this.isRenaming = false;
+          });
+        },
+        error: error => {
+          this.httpErrorService.handleError(error);
+
+          this.zone.run(() => {
+            this.isRenaming = false;
+          });
+        },
+      });
   }
 }

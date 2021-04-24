@@ -236,6 +236,32 @@ export class FeedService {
     );
   }
 
+  updateSubscriptions(
+    url: string,
+    customTitle: string | null,
+    options: CommonOptions = {},
+  ) {
+    const headers = commonToHeaders(options, () =>
+      this.sessionService.sessionToken$.getValue(),
+    );
+    const params: Record<string, string | string[]> = {
+      url,
+    };
+
+    if (customTitle !== null) {
+      params['customtitle'] = customTitle;
+    }
+
+    return this.http.put<void>(
+      `${environment.apiHost}/api/feed/subscribe`,
+      null,
+      {
+        headers,
+        params,
+      },
+    );
+  }
+
   unsubscribe(url: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
       this.sessionService.sessionToken$.getValue(),

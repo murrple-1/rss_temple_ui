@@ -31,9 +31,14 @@
                   clrInput
                   [placeholder]="feed.title"
                   [(ngModel)]="customNameInput"
+                  [disabled]="isRenaming"
                 />
               </clr-input-container>
-              <button class="btn btn-secondary btn-sm" (click)="onFeedRename()">
+              <button
+                class="btn btn-secondary btn-sm"
+                (click)="onFeedRename()"
+                [disabled]="isRenaming"
+              >
                 Rename Feed
               </button>
             </ng-template>
