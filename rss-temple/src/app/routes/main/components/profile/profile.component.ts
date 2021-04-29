@@ -27,6 +27,10 @@ import {
 } from '@app/libs/password.lib';
 import { User } from '@app/models';
 import { FeedCountsObservableService } from '@app/routes/main/services';
+import {
+  GlobalUserCategoriesModalComponent,
+  openModal as openGlobalUserCategoriesModal,
+} from '@app/routes/main/components/profile/global-user-categories-modal/global-user-categories-modal.component';
 
 type UserImpl = Required<
   Pick<User, 'email' | 'hasGoogleLogin' | 'hasFacebookLogin'>
@@ -77,6 +81,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   @ViewChild('profileDetailsForm', { static: true })
   profileDetailsForm?: NgForm;
+
+  @ViewChild(GlobalUserCategoriesModalComponent, { static: true })
+  private globalUserCategoriesModal?: GlobalUserCategoriesModalComponent;
 
   readonly passwordHelperTextHtml = passwordRequirementsTextHtml('en');
   readonly passwordMinLength = PasswordMinLength;
@@ -142,29 +149,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
             throw new Error('malformed response');
           }),
         ),
-      this.feedEntryService
-        .query({
-          returnObjects: false,
-          returnTotalCount: true,
-          search: 'isRead:"false"',
-        })
-        .pipe(
-          map(response => {
-            if (response.totalCount !== undefined) {
-              return response.totalCount;
-            }
-            throw new Error('malformed response');
-          }),
-        ),
     ])
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: ([
-          user,
-          feedsCount,
-          readFeedEntriesCount,
-          unreadFeedEntriesCount,
-        ]) => {
+        next: ([user, feedsCount, readFeedEntriesCount]) => {
           this.zone.run(() => {
             this.email = user.email;
 
@@ -467,7 +455,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
       });
   }
 
-  deleteUserCategory() {
-    // TODO not a real function (yet) - need a way to remove user categories...do we put it on this component?
+  async editUserCategories() {
+    if (this.globalUserCategoriesModal === undefined) {
+      throw new Error();
+    }
+
+    await openGlobalUserCategoriesModal(this.globalUserCategoriesModal);
   }
 }

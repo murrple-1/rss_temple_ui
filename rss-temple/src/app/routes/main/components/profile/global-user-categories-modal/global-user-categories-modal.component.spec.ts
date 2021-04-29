@@ -6,12 +6,12 @@ import { ClarityModule } from '@clr/angular';
 
 import { UserCategoryService } from '@app/services/data';
 
-import { UserCategoriesModalComponent } from './user-categories-modal.component';
+import { GlobalUserCategoriesModalComponent } from './global-user-categories-modal.component';
 
 async function setup() {
   const mockUserCategoryService = jasmine.createSpyObj<UserCategoryService>(
     'UserCategoryService',
-    ['queryAll', 'create'],
+    ['queryAll', 'create', 'delete'],
   );
 
   await TestBed.configureTestingModule({
@@ -20,7 +20,7 @@ async function setup() {
       ClarityModule,
       RouterTestingModule.withRoutes([]),
     ],
-    declarations: [UserCategoriesModalComponent],
+    declarations: [GlobalUserCategoriesModalComponent],
     providers: [
       {
         provide: UserCategoryService,
@@ -34,14 +34,14 @@ async function setup() {
   };
 }
 
-describe('UserCategoriesModalComponent', () => {
+describe('GlobalUserCategoriesModalComponent', () => {
   it(
     'should create the component',
     waitForAsync(async () => {
       await setup();
 
       const componentFixture = TestBed.createComponent(
-        UserCategoriesModalComponent,
+        GlobalUserCategoriesModalComponent,
       );
       const component = componentFixture.componentInstance;
       expect(component).toBeTruthy();

@@ -24,6 +24,7 @@ import { UserCategoriesModalComponent } from '@app/routes/main/components/feed/u
 import { FeedsFooterComponent } from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
 import { ExploreComponent } from '@app/routes/main/components/explore/explore.component';
 import { ProfileComponent } from '@app/routes/main/components/profile/profile.component';
+import { GlobalUserCategoriesModalComponent } from '@app/routes/main/components/profile/global-user-categories-modal/global-user-categories-modal.component';
 import { VerticalNavComponent } from '@app/routes/main/components/shared/vertical-nav/vertical-nav.component';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
 import { SubscribeModalComponent as HeaderSubscribeModalComponent } from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
@@ -52,6 +53,7 @@ import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/routes/main
     UserCategoriesModalComponent,
     ExploreComponent,
     ProfileComponent,
+    GlobalUserCategoriesModalComponent,
     VerticalNavComponent,
     FeedEntryViewComponent,
     HeaderSubscribeModalComponent,
