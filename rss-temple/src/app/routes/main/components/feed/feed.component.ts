@@ -31,7 +31,10 @@ import {
   LoadingState,
 } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 import { HttpErrorService } from '@app/services';
-import { FeedCountsObservableService } from '@app/routes/main/services';
+import {
+  FeedCountsObservableService,
+  UserCategoryObservableService,
+} from '@app/routes/main/services';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
 
 type FeedImpl = BaseFeedImpl &
@@ -90,6 +93,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
     private feedService: FeedService,
     private userCategoryService: UserCategoryService,
     private feedCountsObservableService: FeedCountsObservableService,
+    private userCategoryObservableService: UserCategoryObservableService,
 
     zone: NgZone,
     changeDetectorRef: ChangeDetectorRef,
@@ -293,7 +297,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
     }
   }
 
-  async onAddUserCategory() {
+  async onEditUserCategories() {
     if (this.userCategoriesModal === undefined) {
       throw new Error();
     }
@@ -313,6 +317,8 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
       this.userCategories = returnData.categories.map<UserCategoryImpl>(c => ({
         text: c,
       }));
+
+      this.userCategoryObservableService.userCategoriesChanged$.next();
     }
   }
 

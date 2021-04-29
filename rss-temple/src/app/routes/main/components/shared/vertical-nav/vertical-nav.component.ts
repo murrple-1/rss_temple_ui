@@ -2,7 +2,7 @@ import { Component, OnInit, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { forkJoin, Observable, of, Subject } from 'rxjs';
-import { takeUntil, map, mergeMap } from 'rxjs/operators';
+import { takeUntil, map, mergeMap, startWith } from 'rxjs/operators';
 
 import {
   openModal as openSubscribeModal,
@@ -17,6 +17,7 @@ import { AppAlertsService, HttpErrorService } from '@app/services';
 import {
   FeedObservableService,
   FeedCountsObservableService,
+  UserCategoryObservableService,
 } from '@app/routes/main/services';
 import { UserCategory, Feed } from '@app/models';
 import { Sort } from '@app/services/data/sort.interface';
@@ -73,6 +74,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
     private userCategoryService: UserCategoryService,
     private feedObservableService: FeedObservableService,
     private feedCountsObservableService: FeedCountsObservableService,
+    private userCategoryObservableService: UserCategoryObservableService,
     private appAlertsService: AppAlertsService,
     private httpErrorService: HttpErrorService,
   ) {}
@@ -117,6 +119,28 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.userCategoryObservableService.userCategoriesChanged$
+      .pipe(takeUntil(this.unsubscribe$), startWith(undefined))
+      .subscribe({
+        next: () => {
+          this.refresh();
+        },
+      });
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
+
+  getTotalCount(feedCounts: Record<string, number>) {
+    return Object.values(feedCounts).reduce(
+      (previousValue, currentValue) => currentValue + previousValue,
+      0,
+    );
+  }
+
+  private refresh() {
     forkJoin([
       this.userCategoryService
         .queryAll({
@@ -163,18 +187,6 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
           this.httpErrorService.handleError(error);
         },
       });
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
-  }
-
-  getTotalCount(feedCounts: Record<string, number>) {
-    return Object.values(feedCounts).reduce(
-      (previousValue, currentValue) => currentValue + previousValue,
-      0,
-    );
   }
 
   async addFeed() {

@@ -16,6 +16,7 @@ import {
 import {
   FeedCountsObservableService,
   FeedObservableService,
+  UserCategoryObservableService,
 } from '@app/routes/main/services';
 import { SubscribeModalComponent } from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
 import { OPMLModalComponent } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
@@ -58,6 +59,7 @@ async function setup() {
     ],
     providers: [
       FeedObservableService,
+      UserCategoryObservableService,
       {
         provide: FeedCountsObservableService,
         useValue: mockFeedCountsObservableService,
