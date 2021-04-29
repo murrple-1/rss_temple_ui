@@ -1,7 +1,13 @@
 import { Injectable, OnDestroy } from '@angular/core';
 
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  combineLatest,
+  fromEvent,
+  Observable,
+  Subject,
+} from 'rxjs';
+import { map, startWith, takeUntil } from 'rxjs/operators';
 
 import { Feed } from '@app/models';
 import { HttpErrorService, SessionService } from '@app/services';
@@ -25,11 +31,17 @@ export class FeedCountsObservableService implements OnDestroy {
     private feedService: FeedService,
     private httpErrorService: HttpErrorService,
   ) {
-    this.sessionService.isLoggedIn$
+    combineLatest([
+      fromEvent(document, 'visibilitychange').pipe(
+        map(_event => undefined),
+        startWith(undefined),
+      ),
+      this.sessionService.isLoggedIn$,
+    ])
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: isLoggedIn => {
-          if (isLoggedIn) {
+        next: ([_visibilityChangeEvent, isLoggedIn]) => {
+          if (isLoggedIn && document.visibilityState === 'visible') {
             this.refresh();
           } else {
             if (this.refreshTimeoutId !== null) {
