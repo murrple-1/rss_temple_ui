@@ -14,9 +14,11 @@ import {
   FeedEntryService,
   UserService,
   OPMLService,
+  UserCategoryService,
 } from '@app/services/data';
 import { GAuthService, FBAuthService } from '@app/services';
 import { FeedCountsObservableService } from '@app/routes/main/services';
+import { GlobalUserCategoriesModalComponent } from '@app/routes/main/components/profile/global-user-categories-modal/global-user-categories-modal.component';
 
 import { ProfileComponent } from './profile.component';
 
@@ -41,6 +43,10 @@ async function setup() {
   const mockOPMLService = jasmine.createSpyObj<OPMLService>('OPMLService', [
     'download',
   ]);
+  const mockUserCategoryService = jasmine.createSpyObj<UserCategoryService>(
+    'UserCategoryService',
+    ['queryAll'],
+  );
 
   await TestBed.configureTestingModule({
     imports: [
@@ -49,7 +55,7 @@ async function setup() {
       ClarityModule,
       RouterTestingModule.withRoutes([]),
     ],
-    declarations: [ProfileComponent],
+    declarations: [ProfileComponent, GlobalUserCategoriesModalComponent],
     providers: [
       {
         provide: FeedCountsObservableService,
@@ -78,6 +84,10 @@ async function setup() {
       {
         provide: OPMLService,
         useValue: mockOPMLService,
+      },
+      {
+        provide: UserCategoryService,
+        useValue: mockUserCategoryService,
       },
     ],
   }).compileComponents();
