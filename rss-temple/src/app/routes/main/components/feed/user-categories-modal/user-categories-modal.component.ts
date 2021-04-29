@@ -29,16 +29,19 @@ export interface Result {
 export class UserCategoriesModalComponent implements OnDestroy {
   open = false;
 
+  isLoading = false;
+
   newUserCategoryText = '';
 
   @Input()
   feedUuid = '';
 
   @Input()
-  initialSelectedUserCategories?: Set<string>;
+  initialAssignedUserCategoryTexts?: Set<string>;
 
   private initialCategoryDescriptors: CategoryDescriptor[] = [];
   categoryDescriptors: CategoryDescriptor[] = [];
+  assignedCategoryDescriptors: CategoryDescriptor[] = [];
   selectedCategoryDescriptors: CategoryDescriptor[] = [];
 
   result = new Subject<Result | undefined>();
@@ -59,15 +62,18 @@ export class UserCategoriesModalComponent implements OnDestroy {
   reset() {
     this.feedUuid = '';
     this.newUserCategoryText = '';
-    this.initialSelectedUserCategories = undefined;
-    this.initialCategoryDescriptors = this.categoryDescriptors = this.selectedCategoryDescriptors = [];
+    this.initialAssignedUserCategoryTexts = undefined;
+    this.initialCategoryDescriptors = this.categoryDescriptors = this.assignedCategoryDescriptors = [];
   }
 
   load() {
-    const initialUserCategories = this.initialSelectedUserCategories;
-    if (initialUserCategories === undefined) {
+    const initialAssignedUserCategoryTexts = this
+      .initialAssignedUserCategoryTexts;
+    if (initialAssignedUserCategoryTexts === undefined) {
       throw new Error();
     }
+
+    this.isLoading = true;
 
     this.userCategoryService
       .queryAll({
@@ -86,24 +92,29 @@ export class UserCategoriesModalComponent implements OnDestroy {
       )
       .subscribe({
         next: userCategories => {
-          const categoryDescriptors = userCategories
-            .map<CategoryDescriptor>(uc => ({
+          const categoryDescriptors = userCategories.map<CategoryDescriptor>(
+            uc => ({
               _uuid: uc.uuid,
               text: uc.text,
-            }))
-            .sort(sortCategoryDescriptor);
+            }),
+          );
 
-          const selectedCategoryDescriptors = categoryDescriptors.filter(cd =>
-            initialUserCategories.has(cd.text),
+          const assignedCategoryDescriptors = categoryDescriptors.filter(cd =>
+            initialAssignedUserCategoryTexts.has(cd.text),
           );
 
           this.zone.run(() => {
-            this.initialCategoryDescriptors = this.categoryDescriptors = categoryDescriptors;
-            this.selectedCategoryDescriptors = selectedCategoryDescriptors;
+            this.categoryDescriptors = this.initialCategoryDescriptors = categoryDescriptors;
+            this.assignedCategoryDescriptors = assignedCategoryDescriptors;
+            this.isLoading = false;
           });
         },
         error: error => {
           this.httpErrorService.handleError(error);
+
+          this.zone.run(() => {
+            this.isLoading = false;
+          });
         },
       });
   }
@@ -128,16 +139,16 @@ export class UserCategoriesModalComponent implements OnDestroy {
       this.categoryDescriptors = [
         ...this.categoryDescriptors,
         categoryDescriptor,
-      ].sort(sortCategoryDescriptor);
+      ];
     }
 
     if (
-      this.selectedCategoryDescriptors.find(
+      this.assignedCategoryDescriptors.find(
         cd => cd.text === this.newUserCategoryText,
       ) === undefined
     ) {
-      this.selectedCategoryDescriptors = [
-        ...this.selectedCategoryDescriptors,
+      this.assignedCategoryDescriptors = [
+        ...this.assignedCategoryDescriptors,
         categoryDescriptor,
       ];
     }
@@ -145,25 +156,51 @@ export class UserCategoriesModalComponent implements OnDestroy {
     this.newUserCategoryText = '';
   }
 
-  removeUserCategory(categoryDescriptor: CategoryDescriptor) {
-    this.selectedCategoryDescriptors = this.selectedCategoryDescriptors.filter(
-      cd => cd !== categoryDescriptor,
+  removeUserCategories() {
+    const uuids = new Set(
+      this.selectedCategoryDescriptors.map(scd => scd._uuid),
+    );
+
+    this.assignedCategoryDescriptors = this.assignedCategoryDescriptors.filter(
+      cd => !uuids.has(cd._uuid),
     );
   }
 
   finish() {
+    if (this.initialAssignedUserCategoryTexts === undefined) {
+      throw new Error();
+    }
+
+    const finalUserCategoryTexts = new Set(
+      this.assignedCategoryDescriptors.map(acd => acd.text),
+    );
+    if (
+      finalUserCategoryTexts.size ===
+        this.initialAssignedUserCategoryTexts.size &&
+      Array.from(this.initialAssignedUserCategoryTexts).every(t =>
+        finalUserCategoryTexts.has(t),
+      )
+    ) {
+      const result: Result = {
+        categories: this.assignedCategoryDescriptors.map(cd => cd.text),
+      };
+      this.result.next(result);
+      this.open = false;
+      return;
+    }
+
     const createObservables: Observable<unknown>[] = [];
-    for (const selectedCategoryDescriptor of this.selectedCategoryDescriptors) {
+    for (const assignedCategoryDescriptor of this.assignedCategoryDescriptors) {
       if (
         this.initialCategoryDescriptors.every(
-          cd => cd.text !== selectedCategoryDescriptor.text,
+          cd => cd.text !== assignedCategoryDescriptor.text,
         )
       ) {
         createObservables.push(
           this.userCategoryService
             .create(
               {
-                text: selectedCategoryDescriptor.text,
+                text: assignedCategoryDescriptor.text,
               },
               {
                 fields: ['uuid'],
@@ -172,7 +209,7 @@ export class UserCategoriesModalComponent implements OnDestroy {
             .pipe(
               map(response => response as UserCategoryImpl2),
               tap(uc => {
-                selectedCategoryDescriptor._uuid = uc.uuid;
+                assignedCategoryDescriptor._uuid = uc.uuid;
               }),
             ),
         );
@@ -180,8 +217,10 @@ export class UserCategoriesModalComponent implements OnDestroy {
     }
 
     if (createObservables.length < 1) {
-      createObservables.push(of());
+      createObservables.push(of(undefined));
     }
+
+    this.isLoading = true;
 
     forkJoin(createObservables)
       .pipe(
@@ -189,7 +228,7 @@ export class UserCategoriesModalComponent implements OnDestroy {
         mergeMap(() => {
           const applyBody: IApply = {
             [this.feedUuid]: new Set<string>(
-              this.selectedCategoryDescriptors.map(cd => cd._uuid),
+              this.assignedCategoryDescriptors.map(cd => cd._uuid),
             ),
           };
 
@@ -199,7 +238,7 @@ export class UserCategoriesModalComponent implements OnDestroy {
       .subscribe({
         next: () => {
           const result: Result = {
-            categories: this.selectedCategoryDescriptors.map(cd => cd.text),
+            categories: this.assignedCategoryDescriptors.map(cd => cd.text),
           };
           this.result.next(result);
 
@@ -209,6 +248,10 @@ export class UserCategoriesModalComponent implements OnDestroy {
         },
         error: error => {
           this.httpErrorService.handleError(error);
+
+          this.zone.run(() => {
+            this.isLoading = false;
+          });
         },
       });
   }
@@ -216,18 +259,14 @@ export class UserCategoriesModalComponent implements OnDestroy {
 
 export function openModal(
   feedUuid: string,
-  initialUserCategories: Set<string>,
+  initialAssignedUserCategories: Set<string>,
   modal: UserCategoriesModalComponent,
 ) {
   modal.reset();
   modal.feedUuid = feedUuid;
-  modal.initialSelectedUserCategories = initialUserCategories;
+  modal.initialAssignedUserCategoryTexts = initialAssignedUserCategories;
   modal.open = true;
   modal.load();
 
   return modal.result.pipe(take(1)).toPromise();
-}
-
-function sortCategoryDescriptor(a: CategoryDescriptor, b: CategoryDescriptor) {
-  return a.text.localeCompare(b.text);
 }

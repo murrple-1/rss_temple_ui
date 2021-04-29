@@ -1,37 +1,12 @@
 <clr-modal [clrModalOpen]="open" (clrModalOpenChange)="openChanged($event)">
   <h4 class="modal-title">Categories</h4>
   <div class="modal-body">
-    <ng-container
-      *ngIf="
-        selectedCategoryDescriptors.length > 0;
-        then userCategoryEntries;
-        else noUserCategoriesEntry
-      "
-    ></ng-container>
-    <ng-template #noUserCategoriesEntry>
-      <p class="p4 app--no-user-categories">No Categories</p>
-    </ng-template>
-    <ng-template #userCategoryEntries>
-      <ul class="list">
-        <li
-          *ngFor="let selectedCategoryDescriptor of selectedCategoryDescriptors"
-        >
-          {{ selectedCategoryDescriptor.text }}
-          <button
-            type="button"
-            class="btn btn-icon btn-link"
-            (click)="removeUserCategory(selectedCategoryDescriptor)"
-          >
-            <cds-icon shape="minus"></cds-icon>
-          </button>
-        </li>
-      </ul>
-    </ng-template>
     <clr-datalist-container>
       <input
         clrDatalistInput
         [(ngModel)]="newUserCategoryText"
         placeholder="Category Name"
+        [disabled]="isLoading"
       />
       <datalist>
         <option
@@ -43,13 +18,47 @@
     <button
       type="button"
       class="btn btn-icon btn-sm"
-      [disabled]="newUserCategoryText.length < 1"
+      [disabled]="newUserCategoryText.length < 1 || isLoading"
       (click)="addUserCategory()"
     >
-      <cds-icon shape="plus"></cds-icon>
+      Add Category
     </button>
+    <clr-datagrid
+      class="datagrid-compact"
+      [(clrDgSelected)]="selectedCategoryDescriptors"
+    >
+      <clr-dg-action-bar>
+        <div class="btn-group">
+          <button
+            type="button"
+            class="btn btn-sm btn-secondary"
+            (click)="removeUserCategories()"
+            [disabled]="selectedCategoryDescriptors.length < 1 || isLoading"
+          >
+            Remove Categories
+          </button>
+        </div>
+      </clr-dg-action-bar>
+      <clr-dg-column [clrDgField]="'text'">Name</clr-dg-column>
+      <clr-dg-row
+        *clrDgItems="
+          let assignedCategoryDescriptor of assignedCategoryDescriptors
+        "
+        [clrDgItem]="assignedCategoryDescriptor"
+      >
+        <clr-dg-cell>{{ assignedCategoryDescriptor.text }}</clr-dg-cell>
+      </clr-dg-row>
+      <clr-dg-footer>
+        <clr-dg-pagination #pagination [clrDgPageSize]="5">
+          {{ pagination.firstItem + 1 }} - {{ pagination.lastItem + 1 }} of
+          {{ pagination.totalItems }} categories
+        </clr-dg-pagination>
+      </clr-dg-footer>
+    </clr-datagrid>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary" (click)="finish()">Finish</button>
+    <button class="btn btn-primary" (click)="finish()" [disabled]="isLoading">
+      Finish
+    </button>
   </div>
 </clr-modal>

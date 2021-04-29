@@ -1,6 +1,6 @@
 import { Component, OnDestroy, NgZone } from '@angular/core';
 
-import { Subject } from 'rxjs';
+import { forkJoin, Observable, Subject } from 'rxjs';
 import { takeUntil, map, take } from 'rxjs/operators';
 
 import { UserCategoryService } from '@app/services/data';
@@ -29,6 +29,7 @@ export class GlobalUserCategoriesModalComponent implements OnDestroy {
   newUserCategoryText = '';
 
   categoryDescriptors: CategoryDescriptor[] = [];
+  selectedCategoryDescriptors: CategoryDescriptor[] = [];
 
   result = new Subject<void>();
 
@@ -122,7 +123,7 @@ export class GlobalUserCategoriesModalComponent implements OnDestroy {
                 _uuid: userCategory.uuid,
                 text: newUserCategoryText,
               },
-            ].sort(sortCategoryDescriptor);
+            ];
 
             this.zone.run(() => {
               this.categoryDescriptors = categoryDescriptors;
@@ -143,19 +144,29 @@ export class GlobalUserCategoriesModalComponent implements OnDestroy {
     }
   }
 
-  removeUserCategory(categoryDescriptor: CategoryDescriptor) {
+  removeUserCategories() {
+    const uuids = new Set(
+      this.selectedCategoryDescriptors.map(scd => scd._uuid),
+    );
+
+    const observables: Observable<void>[] = [];
+    for (const uuid of uuids) {
+      observables.push(this.userCategoryService.delete(uuid));
+    }
+
     this.isLoading = true;
-    this.userCategoryService
-      .delete(categoryDescriptor._uuid)
+
+    forkJoin(observables)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => {
           const categoryDescriptors = this.categoryDescriptors.filter(
-            cd => cd._uuid !== categoryDescriptor._uuid,
+            cd => !uuids.has(cd._uuid),
           );
 
           this.zone.run(() => {
             this.categoryDescriptors = categoryDescriptors;
+            this.selectedCategoryDescriptors = [];
             this.isLoading = false;
           });
         },
@@ -176,8 +187,4 @@ export function openModal(modal: GlobalUserCategoriesModalComponent) {
   modal.load();
 
   return modal.result.pipe(take(1)).toPromise();
-}
-
-function sortCategoryDescriptor(a: CategoryDescriptor, b: CategoryDescriptor) {
-  return a.text.localeCompare(b.text);
 }
