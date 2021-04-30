@@ -33,6 +33,7 @@ import {
 import { HttpErrorService } from '@app/services';
 import {
   FeedCountsObservableService,
+  ReadBufferService,
   UserCategoryObservableService,
 } from '@app/routes/main/services';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
@@ -92,15 +93,23 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
     private route: ActivatedRoute,
     private feedService: FeedService,
     private userCategoryService: UserCategoryService,
-    private feedCountsObservableService: FeedCountsObservableService,
     private userCategoryObservableService: UserCategoryObservableService,
 
     zone: NgZone,
     changeDetectorRef: ChangeDetectorRef,
     feedEntryService: FeedEntryService,
+    feedCountsObservableService: FeedCountsObservableService,
+    readBufferService: ReadBufferService,
     httpErrorService: HttpErrorService,
   ) {
-    super(zone, changeDetectorRef, feedEntryService, httpErrorService);
+    super(
+      zone,
+      changeDetectorRef,
+      feedEntryService,
+      feedCountsObservableService,
+      readBufferService,
+      httpErrorService,
+    );
   }
 
   ngOnInit() {

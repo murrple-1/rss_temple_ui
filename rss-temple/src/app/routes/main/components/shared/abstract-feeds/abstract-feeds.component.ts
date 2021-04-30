@@ -24,10 +24,11 @@ import {
   StableQueryOptions,
 } from '@app/services/data/stablequery.interface';
 import { Objects } from '@app/services/data/objects';
+import { State as FeedsFooterState } from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
 import {
-  FeedsFooterComponent,
-  State as FeedsFooterState,
-} from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
+  FeedCountsObservableService,
+  ReadBufferService,
+} from '@app/routes/main/services';
 
 export const DEFAULT_COUNT = 10;
 
@@ -103,6 +104,8 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
     protected zone: NgZone,
     protected changeDetectorRef: ChangeDetectorRef,
     protected feedEntryService: FeedEntryService,
+    protected feedCountsObservableService: FeedCountsObservableService,
+    protected readBufferService: ReadBufferService,
     protected httpErrorService: HttpErrorService,
   ) {}
 
@@ -192,7 +195,10 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
   }
 
   onApproachingBottom() {
-    if (this.feedEntries.length > 0) {
+    if (
+      this.feedEntries.length > 0 &&
+      this.loadingState !== LoadingState.IsLoading
+    ) {
       this.loadingState = LoadingState.IsLoading;
 
       this.getFeedEntries(this.feedEntries.length)
@@ -295,6 +301,10 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
           });
         }
       }
+
+      if (feedEntryViews.length - 1 <= newIndex) {
+        this.onApproachingBottom();
+      }
     }
   }
 
@@ -381,31 +391,13 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
           }
 
           if (!feedEntry.isRead) {
-            this.feedEntryService
-              .read(feedEntry.uuid)
-              .pipe(takeUntil(this.unsubscribe$))
-              .subscribe({
-                next: () => {
-                  feedEntry.isRead = true;
-                  this.changeDetectorRef.detectChanges();
-                },
-                error: error => {
-                  this.httpErrorService.handleError(error);
-                },
-              });
+            feedEntry.isRead = true;
+            this.readBufferService.markRead(feedEntry.uuid);
+            this.feedCountsObservableService.decrement(feedEntry.uuid);
           } else {
-            this.feedEntryService
-              .unread(feedEntry.uuid)
-              .pipe(takeUntil(this.unsubscribe$))
-              .subscribe({
-                next: () => {
-                  feedEntry.isRead = false;
-                  this.changeDetectorRef.detectChanges();
-                },
-                error: error => {
-                  this.httpErrorService.handleError(error);
-                },
-              });
+            feedEntry.isRead = false;
+            this.readBufferService.markUnread(feedEntry.uuid);
+            this.feedCountsObservableService.increment(feedEntry.uuid);
           }
         }
         break;

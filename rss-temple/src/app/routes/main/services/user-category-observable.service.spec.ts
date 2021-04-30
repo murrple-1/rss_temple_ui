@@ -9,7 +9,7 @@ function setup() {
 }
 
 describe('UserCategoryObservableService', () => {
-  it('should fire feedAdded', () => {
+  it('should fire userCategoriesChanged$', () => {
     const { userCategoryObservableService } = setup();
 
     const fn = jasmine.createSpy();

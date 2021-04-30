@@ -6,7 +6,10 @@ import { takeUntil } from 'rxjs/operators';
 import { FeedEntryService } from '@app/services/data';
 import { Feed } from '@app/models';
 import { FeedEntryImpl } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
-import { FeedCountsObservableService } from '@app/routes/main/services';
+import {
+  FeedCountsObservableService,
+  ReadBufferService,
+} from '@app/routes/main/services';
 
 type FeedImpl = Required<Pick<Feed, 'calculatedTitle' | 'homeUrl'>>;
 
@@ -36,6 +39,7 @@ export class FeedEntryViewComponent implements OnDestroy {
     public elementRef: ElementRef<HTMLElement>,
     private feedEntryService: FeedEntryService,
     private feedCountsObservableService: FeedCountsObservableService,
+    private readBufferService: ReadBufferService,
   ) {}
 
   ngOnDestroy() {
@@ -48,22 +52,9 @@ export class FeedEntryViewComponent implements OnDestroy {
     if (feedEntry === undefined) {
       return;
     }
-
-    this.feedEntryService
-      .read(feedEntry.uuid)
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe({
-        next: () => {
-          this.zone.run(() => {
-            feedEntry.isRead = true;
-          });
-
-          this.feedCountsObservableService.decrement(feedEntry.feedUuid);
-        },
-        error: error => {
-          console.log(error);
-        },
-      });
+    feedEntry.isRead = true;
+    this.readBufferService.markRead(feedEntry.uuid);
+    this.feedCountsObservableService.decrement(feedEntry.feedUuid);
   }
 
   autoRead() {
@@ -86,21 +77,9 @@ export class FeedEntryViewComponent implements OnDestroy {
       return;
     }
 
-    this.feedEntryService
-      .unread(feedEntry.uuid)
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe({
-        next: () => {
-          this.zone.run(() => {
-            feedEntry.isRead = false;
-          });
-
-          this.feedCountsObservableService.increment(feedEntry.feedUuid);
-        },
-        error: error => {
-          console.log(error);
-        },
-      });
+    feedEntry.isRead = false;
+    this.readBufferService.markUnread(feedEntry.uuid);
+    this.feedCountsObservableService.increment(feedEntry.feedUuid);
   }
 
   favorite() {

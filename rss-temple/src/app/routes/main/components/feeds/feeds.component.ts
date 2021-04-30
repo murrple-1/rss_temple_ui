@@ -14,7 +14,11 @@ import { combineLatest } from 'rxjs';
 import { takeUntil, map, startWith, mergeMap, tap } from 'rxjs/operators';
 
 import { FeedService, FeedEntryService } from '@app/services/data';
-import { FeedObservableService } from '@app/routes/main/services';
+import {
+  FeedCountsObservableService,
+  FeedObservableService,
+  ReadBufferService,
+} from '@app/routes/main/services';
 import {
   AbstractFeedsComponent,
   DEFAULT_COUNT,
@@ -55,9 +59,18 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
     zone: NgZone,
     changeDetectorRef: ChangeDetectorRef,
     feedEntryService: FeedEntryService,
+    feedCountsObservableService: FeedCountsObservableService,
+    readBufferService: ReadBufferService,
     httpErrorService: HttpErrorService,
   ) {
-    super(zone, changeDetectorRef, feedEntryService, httpErrorService);
+    super(
+      zone,
+      changeDetectorRef,
+      feedEntryService,
+      feedCountsObservableService,
+      readBufferService,
+      httpErrorService,
+    );
   }
 
   ngOnInit() {
