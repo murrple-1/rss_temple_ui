@@ -14,14 +14,14 @@ function setup() {
 
   const appAlertService = new AppAlertsService();
   const sessionService = new SessionService();
-  const mockFeedService = jasmine.createSpyObj<FeedService>('FeedService', [
-    'queryAll',
-  ]);
   const httpErrorService = new HttpErrorService(
     routerSpy,
     appAlertService,
     sessionService,
   );
+  const mockFeedService = jasmine.createSpyObj<FeedService>('FeedService', [
+    'queryAll',
+  ]);
 
   const feedCountsObservableService = new FeedCountsObservableService(
     sessionService,
