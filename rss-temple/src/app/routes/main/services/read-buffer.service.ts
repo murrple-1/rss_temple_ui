@@ -1,11 +1,11 @@
 import { Injectable, OnDestroy } from '@angular/core';
 
-import { forkJoin, interval, Observable, of, race, Subject } from 'rxjs';
+import { concat, forkJoin, Observable, of, race, Subject } from 'rxjs';
 import {
   buffer,
   debounceTime,
   elementAt,
-  expand,
+  switchMap,
   take,
   takeUntil,
 } from 'rxjs/operators';
@@ -13,14 +13,34 @@ import {
 import { FeedEntryService } from '@app/services/data';
 import { HttpErrorService } from '@app/services';
 
-const bufferInterval = 1000;
-const bufferCount = 25;
+function generateNotifierForBufferByCountAndDebouce(
+  subject$: Observable<unknown>,
+  bufferInterval: number,
+  bufferCount: number,
+): Observable<unknown> {
+  return race([
+    subject$.pipe(debounceTime(bufferInterval), take(1)),
+    subject$.pipe(elementAt(bufferCount - 1)),
+  ]).pipe(
+    take(1),
+    switchMap(value =>
+      concat(
+        of(value),
+        generateNotifierForBufferByCountAndDebouce(
+          subject$,
+          bufferInterval,
+          bufferCount,
+        ),
+      ),
+    ),
+  );
+}
 
 @Injectable()
 export class ReadBufferService implements OnDestroy {
-  private read$ = new Subject<
-    [[string, number] | null, [string, number] | null]
-  >();
+  private readUuids = new Set<string>();
+  private unreadUuids = new Set<string>();
+  private change$ = new Subject<void>();
 
   private unsubscribe$ = new Subject<void>();
 
@@ -28,78 +48,55 @@ export class ReadBufferService implements OnDestroy {
     private feedEntryService: FeedEntryService,
     private httpErrorService: HttpErrorService,
   ) {
-    const readDebouncing$ = this.read$.pipe(
-      debounceTime(bufferInterval),
-      take(1),
-    );
-    const readLimiting$ = this.read$.pipe(elementAt(bufferCount - 1));
-    const readNotifier$ = interval(0).pipe(
-      take(1),
-      expand(() => race(readDebouncing$, readLimiting$)),
-    );
-    this.read$.pipe(buffer(this.read$.pipe(buffer(readNotifier$)))).subscribe({
-      next: data => {
-        const readUuids = data.map(d => d[0]).filter(e => e !== null) as [
-          string,
-          number,
-        ][];
-        const unreadUuids = data.map(d => d[1]).filter(e => e !== null) as [
-          string,
-          number,
-        ][];
+    this.change$
+      .pipe(
+        buffer(
+          generateNotifierForBufferByCountAndDebouce(this.change$, 1000, 25),
+        ),
+      )
+      .subscribe({
+        next: () => {
+          const readUuids = Array.from(this.readUuids);
+          const unreadUuids = Array.from(this.unreadUuids);
 
-        const filteredReadUuids = readUuids
-          .filter(([uuid, ts]) => {
-            const unreadUuidEntry = unreadUuids.find(d => d[0] === uuid);
-            if (unreadUuidEntry === undefined) {
-              return true;
-            } else {
-              return unreadUuidEntry[1] < ts;
-            }
-          })
-          .map(d => d[0]);
+          this.readUuids.clear();
+          this.unreadUuids.clear();
 
-        const filteredUnreadUuids = unreadUuids
-          .filter(([uuid, ts]) => {
-            const readUuidEntry = readUuids.find(d => d[0] === uuid);
-            if (readUuidEntry === undefined) {
-              return true;
-            } else {
-              return readUuidEntry[1] < ts;
-            }
-          })
-          .map(d => d[0]);
+          const readSomeObservable =
+            readUuids.length > 0
+              ? this.feedEntryService.readSome(readUuids)
+              : of(undefined);
+          const unreadSomeObservable =
+            unreadUuids.length > 0
+              ? this.feedEntryService.unreadSome(unreadUuids)
+              : of(undefined);
 
-        const readSomeObservable: Observable<unknown> =
-          filteredReadUuids.length > 0
-            ? this.feedEntryService.readSome(filteredReadUuids)
-            : of(undefined);
-        const unreadSomeObservable: Observable<unknown> =
-          filteredUnreadUuids.length > 0
-            ? this.feedEntryService.unreadSome(filteredUnreadUuids)
-            : of(undefined);
-
-        forkJoin([readSomeObservable, unreadSomeObservable])
-          .pipe(takeUntil(this.unsubscribe$))
-          .subscribe({
-            error: error => {
-              this.httpErrorService.handleError(error);
-            },
-          });
-      },
-    });
+          forkJoin([readSomeObservable, unreadSomeObservable])
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+              error: error => {
+                this.httpErrorService.handleError(error);
+              },
+            });
+        },
+      });
   }
 
   ngOnDestroy() {
+    this.change$.complete();
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
 
   markRead(feedEntryUuid: string) {
-    this.read$.next([[feedEntryUuid, Date.now()], null]);
+    this.readUuids.add(feedEntryUuid);
+    this.unreadUuids.delete(feedEntryUuid);
+    this.change$.next();
   }
 
   markUnread(feedEntryUuid: string) {
-    this.read$.next([null, [feedEntryUuid, Date.now()]]);
+    this.unreadUuids.add(feedEntryUuid);
+    this.readUuids.delete(feedEntryUuid);
+    this.change$.next();
   }
 }
