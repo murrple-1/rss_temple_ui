@@ -1,4 +1,8 @@
-<clr-modal [clrModalOpen]="open" (clrModalOpenChange)="openChanged($event)">
+<clr-modal
+  [clrModalOpen]="open"
+  (clrModalOpenChange)="openChanged($event)"
+  [clrModalClosable]="!isLoading"
+>
   <h4 class="modal-title">Categories</h4>
   <div class="modal-body">
     <clr-datalist-container>

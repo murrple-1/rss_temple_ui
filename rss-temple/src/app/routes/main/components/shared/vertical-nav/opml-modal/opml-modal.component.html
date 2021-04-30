@@ -1,4 +1,8 @@
-<clr-modal [clrModalOpen]="open" (clrModalOpenChange)="openChanged($event)">
+<clr-modal
+  [clrModalOpen]="open"
+  (clrModalOpenChange)="openChanged($event)"
+  [clrModalClosable]="!uploading"
+>
   <h4 class="modal-title">Upload OPML</h4>
   <div class="modal-body">
     <clr-input-container>
