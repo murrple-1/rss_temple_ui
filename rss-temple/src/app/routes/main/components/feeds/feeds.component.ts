@@ -232,4 +232,25 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
   opmlUploaded() {
     this.getFeeds();
   }
+
+  readAll() {
+    this.feedEntryService
+      .readSome(
+        undefined,
+        this.feeds.map(f => f.uuid),
+      )
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: () => {
+          this.feedCountsObservableService.zero();
+
+          this.zone.run(() => {
+            this.reload();
+          });
+        },
+        error: error => {
+          this.httpErrorService.handleError(error);
+        },
+      });
+  }
 }

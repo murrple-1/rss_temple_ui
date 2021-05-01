@@ -21,8 +21,15 @@
                 [ngModel]="showRead"
                 (ngModelChange)="onShowReadChange($event)"
               />
-              <label>Show Read?</label>
+              <label>Show Previously Read Entries?</label>
             </clr-checkbox-wrapper>
+          </div>
+        </div>
+        <div class="clr-row">
+          <div class="clr-col-12">
+            <button class="btn btn-primary btn-sm" (click)="readAll()">
+              Read All
+            </button>
           </div>
         </div>
       </clr-accordion-content>

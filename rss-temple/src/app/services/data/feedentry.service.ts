@@ -352,69 +352,25 @@ export class FeedEntryService {
     );
   }
 
-  readSome(feedEntryUuids: string[], options: CommonOptions = {}) {
+  readSome(
+    feedEntryUuids: string[] | undefined,
+    feedUuids: string[] | undefined,
+    options: CommonOptions = {},
+  ) {
     const headers = commonToHeaders(options, () =>
       this.sessionService.sessionToken$.getValue(),
     );
 
-    return this.http
-      .post<JsonValue>(
-        `${environment.apiHost}/api/feedentries/read/`,
+    return this.http.post<void>(
+      `${environment.apiHost}/api/feedentries/read/`,
+      {
         feedEntryUuids,
-        {
-          headers,
-        },
-      )
-      .pipe(
-        map(response => {
-          if (!isJsonArray(response)) {
-            throw new Error('JSON body must be array');
-          }
-
-          const entries = response.map<{
-            uuid: string;
-            readAt: Date;
-          }>(entry => {
-            if (!isJsonObject(entry)) {
-              throw new Error('JSON body entry must be object');
-            }
-
-            const uuid = entry.uuid;
-            if (uuid === undefined) {
-              throw new Error("'uuid' missing");
-            }
-
-            if (typeof uuid !== 'string') {
-              throw new Error("'uuid' must be string");
-            }
-
-            const readAt_ = entry.readAt;
-            if (readAt_ === undefined) {
-              throw new Error("'readAt' missing");
-            }
-
-            if (typeof readAt_ !== 'string') {
-              throw new Error("'readAt' must be string");
-            }
-
-            const readAt = parseDate(
-              readAt_,
-              'yyyy-MM-dd HH:mm:ss',
-              new Date(),
-            );
-            if (isNaN(readAt.getTime())) {
-              throw new Error("'readAt' malformed");
-            }
-
-            return {
-              uuid,
-              readAt,
-            };
-          });
-
-          return entries;
-        }),
-      );
+        feedUuids,
+      },
+      {
+        headers,
+      },
+    );
   }
 
   unreadSome(feedEntryUuids: string[], options: CommonOptions = {}) {

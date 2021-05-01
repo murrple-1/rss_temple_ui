@@ -125,4 +125,15 @@ export class FeedCountsObservableService implements OnDestroy {
       this._feedCounts$.next(feedCounts);
     }
   }
+
+  zero() {
+    const feedCounts: Record<string, number> = {
+      ...this._feedCounts$.getValue(),
+    };
+    for (const feedUuid of Object.keys(feedCounts)) {
+      feedCounts[feedUuid] = 0;
+    }
+
+    this._feedCounts$.next(feedCounts);
+  }
 }

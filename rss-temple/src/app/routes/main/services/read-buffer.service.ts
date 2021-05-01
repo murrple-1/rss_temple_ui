@@ -64,7 +64,7 @@ export class ReadBufferService implements OnDestroy {
 
           const readSomeObservable =
             readUuids.length > 0
-              ? this.feedEntryService.readSome(readUuids)
+              ? this.feedEntryService.readSome(readUuids, undefined)
               : of(undefined);
           const unreadSomeObservable =
             unreadUuids.length > 0
