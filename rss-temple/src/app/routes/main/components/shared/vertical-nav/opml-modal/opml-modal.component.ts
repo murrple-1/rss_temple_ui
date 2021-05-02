@@ -157,7 +157,7 @@ export class OPMLModalComponent implements OnDestroy {
                   finishedCount: status.finishedCount,
                 };
               });
-              setTimeout(
+              window.setTimeout(
                 this.checkProgress.bind(this, progressUuid),
                 this.progressCheckInterval,
               );
