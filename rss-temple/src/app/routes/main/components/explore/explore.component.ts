@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 
-import { forkJoin, Subject } from 'rxjs';
-import { takeUntil, skip, map } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { FeedService, ExploreService } from '@app/services/data';
 import { HttpErrorService, AppAlertsService } from '@app/services';
