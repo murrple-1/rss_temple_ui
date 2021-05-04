@@ -1,8 +1,8 @@
 import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Observable, of, Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
 import {
   ConfirmModalComponent,
@@ -13,6 +13,7 @@ import { SessionService } from '@app/services';
 interface NavLink {
   name: string;
   routerLink: string;
+  routerLinkActiveAlt$: Observable<boolean>;
 }
 
 interface NavAction {
@@ -29,18 +30,30 @@ export class NavComponent implements OnInit, OnDestroy {
   private readonly loginLink: NavLink = {
     name: 'Login',
     routerLink: '/login',
+    routerLinkActiveAlt$: of(false),
   };
   private readonly homeLink: NavLink = {
     name: 'Home',
     routerLink: '/main/feeds',
+    routerLinkActiveAlt$: this.router.events.pipe(
+      filter(navEvent => navEvent instanceof NavigationEnd),
+      map(navEvent => /^\/main\/feed/.test((navEvent as NavigationEnd).url)),
+    ),
   };
   private readonly exploreLink: NavLink = {
     name: 'Explore',
     routerLink: '/main/explore',
+    routerLinkActiveAlt$: of(false),
   };
   private readonly profileLink: NavLink = {
     name: 'Profile',
     routerLink: '/main/profile',
+    routerLinkActiveAlt$: of(false),
+  };
+  private readonly supportLink: NavLink = {
+    name: 'Support',
+    routerLink: '/main/support',
+    routerLinkActiveAlt$: of(false),
   };
   private readonly logoutAction: NavAction = {
     clrIconShape: 'logout',
@@ -72,6 +85,7 @@ export class NavComponent implements OnInit, OnDestroy {
                 this.homeLink,
                 this.exploreLink,
                 this.profileLink,
+                this.supportLink,
               ];
               this.navActions = [this.logoutAction];
             } else {

@@ -422,6 +422,18 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
         }, AbstractFeedsComponent.scrollToTopUp);
         break;
       }
+      case 'n': {
+        const focusedFeedEntry = this.focusedFeedEntryView;
+        if (focusedFeedEntry !== null) {
+          const feedEntry = focusedFeedEntry.feedEntry;
+          if (feedEntry === undefined) {
+            return;
+          }
+
+          window.open(feedEntry.url, '_blank');
+        }
+        break;
+      }
       case 'r': {
         this.reload();
         break;

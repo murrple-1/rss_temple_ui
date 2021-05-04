@@ -3,6 +3,9 @@
     *ngFor="let navLink of navLinks"
     [routerLink]="navLink.routerLink"
     routerLinkActive="active"
+    [ngClass]="{
+      'active': navLink.routerLinkActiveAlt$ | async
+    }"
     class="nav-link nav-text"
     >{{ navLink.name }}</a
   >

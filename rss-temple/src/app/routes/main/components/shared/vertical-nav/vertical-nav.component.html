@@ -14,6 +14,7 @@
       <clr-vertical-nav-group
         *ngIf="categoryDescriptor.feeds.length > 0"
         routerLinkActive="active"
+        [(clrVerticalNavGroupExpanded)]="categoryDescriptor.isExpanded"
       >
         <cds-icon shape="folder" clrVerticalNavIcon></cds-icon>
         {{ categoryDescriptor.name }}
@@ -35,14 +36,15 @@
       </clr-vertical-nav-group>
     </ng-container>
     <clr-vertical-nav-group
-      *ngIf="categorizedFeeds.noCategory.length > 0"
+      *ngIf="categorizedFeeds.noCategory.feeds.length > 0"
       routerLinkActive="active"
+      [(clrVerticalNavGroupExpanded)]="categorizedFeeds.noCategory.isExpanded"
     >
       <cds-icon shape="folder" clrVerticalNavIcon></cds-icon>
       <span class="app--no-category-title">No Category</span>
       <clr-vertical-nav-group-children>
         <a
-          *ngFor="let feed of categorizedFeeds.noCategory"
+          *ngFor="let feed of categorizedFeeds.noCategory.feeds"
           clrVerticalNavLink
           [routerLink]="['/main/feed/', feed.feedUrl]"
           routerLinkActive="active"
@@ -60,7 +62,7 @@
   <label
     *ngIf="
       categorizedFeeds.category.length < 1 &&
-      categorizedFeeds.noCategory.length < 1
+      categorizedFeeds.noCategory.feeds.length < 1
     "
     class="nav-header"
   >

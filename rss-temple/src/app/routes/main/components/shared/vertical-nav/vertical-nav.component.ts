@@ -2,7 +2,7 @@ import { Component, OnInit, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { forkJoin, Observable, of, Subject } from 'rxjs';
-import { takeUntil, map, mergeMap, startWith } from 'rxjs/operators';
+import { takeUntil, map, mergeMap, startWith, filter } from 'rxjs/operators';
 
 import {
   openModal as openSubscribeModal,
@@ -21,6 +21,7 @@ import {
 } from '@app/routes/main/services';
 import { UserCategory, Feed } from '@app/models';
 import { Sort } from '@app/services/data/sort.interface';
+import { NavigationEnd, Router } from '@angular/router';
 
 type UserCategoryImpl = Required<Pick<UserCategory, 'text' | 'feedUuids'>>;
 type FeedImpl = Required<
@@ -38,9 +39,13 @@ interface FeedDescriptor {
 }
 
 interface CategorizedFeeds {
-  noCategory: FeedDescriptor[];
+  noCategory: {
+    isExpanded: boolean;
+    feeds: FeedDescriptor[];
+  };
   category: {
     name: string;
+    isExpanded: boolean;
     feeds: FeedDescriptor[];
   }[];
 }
@@ -52,7 +57,10 @@ interface CategorizedFeeds {
 })
 export class VerticalNavComponent implements OnInit, OnDestroy {
   categorizedFeeds: CategorizedFeeds = {
-    noCategory: [],
+    noCategory: {
+      isExpanded: false,
+      feeds: [],
+    },
     category: [],
   };
 
@@ -70,6 +78,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
 
   constructor(
     private zone: NgZone,
+    private router: Router,
     private feedService: FeedService,
     private userCategoryService: UserCategoryService,
     private feedObservableService: FeedObservableService,
@@ -80,35 +89,47 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
   ) {}
 
   private static buildCategorizedFeeds(
+    currentUrl: string,
     userCategories: UserCategoryImpl[],
     feeds: FeedImpl[],
   ) {
+    currentUrl = decodeURIComponent(currentUrl);
     const categorizedFeedUuids = new Set<string>(
       userCategories.flatMap(uc => uc.feedUuids),
     );
 
+    const noCategoryFeeds = feeds.filter(
+      f => !categorizedFeedUuids.has(f.uuid),
+    );
+
     return {
-      noCategory: feeds
-        .filter(f => !categorizedFeedUuids.has(f.uuid))
-        .map<FeedDescriptor>(f => ({
+      noCategory: {
+        isExpanded: noCategoryFeeds.some(
+          f => currentUrl === `/main/feed/${f.feedUrl}`,
+        ),
+        feeds: noCategoryFeeds.map<FeedDescriptor>(f => ({
           uuid: f.uuid,
           calculatedTitle: f.calculatedTitle,
           feedUrl: f.feedUrl,
           homeUrl: f.homeUrl,
         })),
+      },
       category: userCategories.map(uc => {
         const feedUuids = new Set<string>(uc.feedUuids);
 
+        const categoryFeeds = feeds.filter(f => feedUuids.has(f.uuid));
+
         return {
           name: uc.text,
-          feeds: feeds
-            .filter(f => feedUuids.has(f.uuid))
-            .map<FeedDescriptor>(f => ({
-              uuid: f.uuid,
-              calculatedTitle: f.calculatedTitle,
-              feedUrl: f.feedUrl,
-              homeUrl: f.homeUrl,
-            })),
+          isExpanded: categoryFeeds.some(
+            f => currentUrl === `/main/feed/${f.feedUrl}`,
+          ),
+          feeds: categoryFeeds.map<FeedDescriptor>(f => ({
+            uuid: f.uuid,
+            calculatedTitle: f.calculatedTitle,
+            feedUrl: f.feedUrl,
+            homeUrl: f.homeUrl,
+          })),
         };
       }),
     };
@@ -124,6 +145,33 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
       .subscribe({
         next: () => {
           this.refresh();
+        },
+      });
+
+    this.router.events
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        filter(navEvent => navEvent instanceof NavigationEnd),
+      )
+      .subscribe({
+        next: navEvent => {
+          const currentUrl = decodeURIComponent(
+            (navEvent as NavigationEnd).url,
+          );
+          this.zone.run(() => {
+            this.categorizedFeeds.noCategory.isExpanded =
+              this.categorizedFeeds.noCategory.isExpanded ||
+              this.categorizedFeeds.noCategory.feeds.some(
+                f => currentUrl === `/main/feed/${f.feedUrl}`,
+              );
+            for (const category of this.categorizedFeeds.category) {
+              category.isExpanded =
+                category.isExpanded ||
+                category.feeds.some(
+                  f => currentUrl === `/main/feed/${f.feedUrl}`,
+                );
+            }
+          });
         },
       });
   }
@@ -176,6 +224,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
       .subscribe({
         next: ([userCategories, feeds]) => {
           const categorizedFeeds = VerticalNavComponent.buildCategorizedFeeds(
+            this.router.url,
             userCategories,
             feeds,
           );
@@ -234,7 +283,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
           this.feedObservableService.feedAdded.next(feed);
 
           this.zone.run(() => {
-            this.categorizedFeeds.noCategory = this.categorizedFeeds.noCategory
+            this.categorizedFeeds.noCategory.feeds = this.categorizedFeeds.noCategory.feeds
               .concat({
                 uuid: feed.uuid,
                 calculatedTitle: feed.calculatedTitle,
@@ -312,6 +361,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
       .subscribe({
         next: ([userCategories, feeds]) => {
           const categorizedFeeds = VerticalNavComponent.buildCategorizedFeeds(
+            this.router.url,
             userCategories,
             feeds,
           );

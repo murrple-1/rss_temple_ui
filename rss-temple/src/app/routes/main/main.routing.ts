@@ -16,6 +16,7 @@ export const routes: Routes = [
       { path: 'feed/:url', component: FeedComponent },
       { path: 'explore', component: ExploreComponent },
       { path: 'profile', component: ProfileComponent },
+      // TODO support path
     ],
   },
 ];
