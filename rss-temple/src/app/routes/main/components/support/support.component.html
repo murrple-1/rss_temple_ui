@@ -3,14 +3,54 @@
     <div class="clr-col-12">
       <clr-accordion>
         <clr-accordion-panel>
-          <clr-accordion-title>What is RSS?</clr-accordion-title>
-          <clr-accordion-content *clrIfExpanded
-            >RSS (Real Simple Syndication)</clr-accordion-content
-          >
+          <clr-accordion-title>What is RSS/Atom?</clr-accordion-title>
+          <clr-accordion-content *clrIfExpanded>
+            <p>
+              RSS (Really Simple Syndication) and Atom are standard "web feed"
+              technologies. They are a way for computers to notify each other
+              when new "articles" are posted.
+            </p>
+          </clr-accordion-content>
         </clr-accordion-panel>
         <clr-accordion-panel>
           <clr-accordion-title>Hotkeys</clr-accordion-title>
-          <clr-accordion-content *clrIfExpanded>J, M</clr-accordion-content>
+          <clr-accordion-content *clrIfExpanded>
+            <p>
+              RSS Temple has several hotkeys to use on the "Feed" pages, to make
+              navigation easier.
+            </p>
+            <table class="table">
+              <thead>
+                <th>Key</th>
+                <th>Action</th>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>J</td>
+                  <td>Select the next article</td>
+                </tr>
+                <tr>
+                  <td>K</td>
+                  <td>Select the previous article</td>
+                </tr>
+                <tr>
+                  <td>M</td>
+                  <td>
+                    Toggle to read/unread state of the currently-selected
+                    article
+                  </td>
+                </tr>
+                <tr>
+                  <td>N</td>
+                  <td>Open the currently-selected article in a new tab</td>
+                </tr>
+                <tr>
+                  <td>R</td>
+                  <td>Reload the current feed view</td>
+                </tr>
+              </tbody>
+            </table>
+          </clr-accordion-content>
         </clr-accordion-panel>
       </clr-accordion>
     </div>
