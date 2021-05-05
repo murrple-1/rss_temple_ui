@@ -7,11 +7,6 @@
     "lint": "grunt",
     "build": "grunt build"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged"
-    }
-  },
   "prettier": {
     "singleQuote": false,
     "trailingComma": "none",
@@ -29,33 +24,32 @@
     ]
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.1",
-    "bootstrap": "^4.5.3",
-    "jquery": "^3.5.1",
+    "@fortawesome/fontawesome-free": "^5.15.3",
+    "bootstrap": "^5.0.0",
+    "jquery": "^3.6.0",
     "simple-line-icons": "^2.5.5"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.3.1",
+    "eslint": "^7.25.0",
     "fibers": "^5.0.0",
-    "grunt": "^1.0.4",
+    "grunt": "^1.4.0",
     "grunt-contrib-clean": "^2.0.0",
-    "grunt-contrib-compress": "^1.6.0",
+    "grunt-contrib-compress": "^2.0.0",
     "grunt-contrib-copy": "^1.0",
-    "grunt-contrib-cssmin": "^3.0.0",
+    "grunt-contrib-cssmin": "^4.0.0",
     "grunt-contrib-htmlmin": "^3.1.0",
     "grunt-contrib-imagemin": "^4.0.0",
     "grunt-eslint": "^23.0.0",
     "grunt-handlebars-layouts": "^0.3.0",
     "grunt-sass": "^3.1.0",
-    "grunt-webpack": "^3.1.3",
-    "husky": "^4.2.5",
-    "imagemin-mozjpeg": "^8.0.0",
+    "grunt-webpack": "^4.0.3",
+    "imagemin-mozjpeg": "^9.0.0",
     "load-grunt-tasks": "^5.1.0",
-    "node-sass": "^4.14.1",
+    "node-sass": "^5.0.0",
     "prettier": "^2.0.5",
-    "pretty-quick": "^2.0.1",
+    "pretty-quick": "^3.1.0",
     "time-grunt": "^2.0.0",
-    "webpack": "^4.42.0"
+    "webpack": "^5.36.2"
   }
 }

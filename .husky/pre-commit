@@ -3,3 +3,8 @@
 
 cd "$(dirname "$0")/../rss-temple/"
 yarn pretty-quick --staged
+cd ..
+
+cd "$(dirname "$0")/../rss-temple-home/"
+yarn pretty-quick --staged
+cd ..
