@@ -1,5 +1,10 @@
 "use strict";
 module.exports = function (grunt) {
+  grunt.config("app-url", grunt.option("app-url") || "#");
+  grunt.config("fb-url", grunt.option("fb-url") || "#");
+  grunt.config("twitter-url", grunt.option("twitter-url") || "#");
+  grunt.config("insta-url", grunt.option("insta-url") || "#");
+
   require("time-grunt")(grunt);
 
   require("load-grunt-tasks")(grunt);
@@ -23,7 +28,14 @@ module.exports = function (grunt) {
       },
       "dist index": {
         options: {
-          context: [{}]
+          context: [
+            {
+              app_url: grunt.config("app-url"),
+              fb_url: grunt.config("fb-url"),
+              twitter_url: grunt.config("twitter-url"),
+              "insta-url": grunt.config("insta-url")
+            }
+          ]
         },
         files: {
           ".tmp/index.html": "<%= yeoman.app %>/index.hbs"
@@ -135,6 +147,12 @@ module.exports = function (grunt) {
             cwd: "node_modules/simple-line-icons/fonts/",
             src: ["*"],
             dest: "<%= yeoman.dist %>/media/fonts/"
+          },
+          {
+            expand: true,
+            cwd: "<%= yeoman.app %>/media/",
+            src: ["*.svg"],
+            dest: "<%= yeoman.dist %>/media/"
           }
         ]
       }

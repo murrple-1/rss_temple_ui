@@ -28,16 +28,6 @@ header.app--masthead {
   padding-top: 8rem;
   padding-bottom: 8rem;
 
-  .app--overlay {
-    position: absolute;
-    background-color: black;
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left: 0;
-    opacity: 0.3;
-  }
-
   h1 {
     font-size: 2rem;
   }
@@ -98,16 +88,6 @@ header.app--masthead {
   background-size: cover;
   padding-top: 7rem;
   padding-bottom: 7rem;
-
-  .app--overlay {
-    position: absolute;
-    background-color: black;
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left: 0;
-    opacity: 0.3;
-  }
 }
 
 footer.app--footer {
