@@ -40,6 +40,51 @@ module.exports = function (grunt) {
         files: {
           ".tmp/index.html": "<%= yeoman.app %>/index.hbs"
         }
+      },
+      "dist contact": {
+        options: {
+          context: [
+            {
+              app_url: grunt.config("app-url"),
+              fb_url: grunt.config("fb-url"),
+              twitter_url: grunt.config("twitter-url"),
+              "insta-url": grunt.config("insta-url")
+            }
+          ]
+        },
+        files: {
+          ".tmp/contact.html": "<%= yeoman.app %>/contact.hbs"
+        }
+      },
+      "dist tos": {
+        options: {
+          context: [
+            {
+              app_url: grunt.config("app-url"),
+              fb_url: grunt.config("fb-url"),
+              twitter_url: grunt.config("twitter-url"),
+              "insta-url": grunt.config("insta-url")
+            }
+          ]
+        },
+        files: {
+          ".tmp/tos.html": "<%= yeoman.app %>/tos.hbs"
+        }
+      },
+      "dist privacy": {
+        options: {
+          context: [
+            {
+              app_url: grunt.config("app-url"),
+              fb_url: grunt.config("fb-url"),
+              twitter_url: grunt.config("twitter-url"),
+              "insta-url": grunt.config("insta-url")
+            }
+          ]
+        },
+        files: {
+          ".tmp/privacy.html": "<%= yeoman.app %>/privacy.hbs"
+        }
       }
     },
 
@@ -195,6 +240,9 @@ module.exports = function (grunt) {
 
     // HTML
     "handlebarslayouts:dist index",
+    "handlebarslayouts:dist contact",
+    "handlebarslayouts:dist tos",
+    "handlebarslayouts:dist privacy",
     "htmlmin:dist",
 
     // CSS
