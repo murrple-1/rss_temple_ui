@@ -1,11 +1,8 @@
 @import "bootstrap.scss";
 $fa-font-path: "/media/fonts";
 @import "fontawesome.scss";
-@import "regular.scss";
 @import "solid.scss";
 @import "brands.scss";
-$simple-line-font-path: "/media/fonts/";
-@import "simple-line-icons.scss";
 
 body {
   font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -23,7 +20,7 @@ h6 {
 header.app--masthead {
   position: relative;
   background-color: #343a40;
-  background: url("/media/bg-masthead.jpg") no-repeat center center;
+  background: url("/media/bg-masthead1.jpg") no-repeat center center;
   background-size: cover;
   padding-top: 8rem;
   padding-bottom: 8rem;
@@ -84,7 +81,7 @@ header.app--masthead {
 .app--call-to-action {
   position: relative;
   background-color: #343a40;
-  background: url("/media/bg-masthead.jpg") no-repeat center center;
+  background: url("/media/bg-masthead2.jpg") no-repeat center center;
   background-size: cover;
   padding-top: 7rem;
   padding-bottom: 7rem;
