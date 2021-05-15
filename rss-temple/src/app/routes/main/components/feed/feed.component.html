@@ -9,7 +9,7 @@
   (appInfiniteScrollApproachingBottom)="onApproachingBottom()"
 >
   <clr-accordion>
-    <clr-accordion-panel>
+    <clr-accordion-panel [(clrAccordionPanelOpen)]="feedSettingsOpen">
       <clr-accordion-title>Feed Settings</clr-accordion-title>
       <clr-accordion-content *clrIfExpanded>
         <div *ngIf="feed !== null" class="clr-row">

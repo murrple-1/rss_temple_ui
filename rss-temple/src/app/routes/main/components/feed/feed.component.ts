@@ -67,6 +67,8 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
   customNameInput = '';
   isRenaming = false;
 
+  feedSettingsOpen = false;
+
   get feeds() {
     if (this.feed !== null) {
       return [this.feed];
@@ -135,11 +137,13 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
             if (url !== null) {
               this.feedUrl = url;
               this.zone.run(() => {
+                this.feedSettingsOpen = false;
                 this.showRead = showRead;
                 this.reload();
               });
             } else {
               this.zone.run(() => {
+                this.feedSettingsOpen = false;
                 this.feed = null;
                 this.feedEntries = [];
               });
