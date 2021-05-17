@@ -152,7 +152,7 @@ jobs:
             - ~/.cache/yarn
       - run:
           name: build
-          command: yarn run grunt build --app-url="$APP_URL" --twitter-url="$TWITTER_URL"
+          command: yarn run grunt build --app-url="$APP_URL" --twitter-url="$TWITTER_URL" --fb-url="$FACEBOOK_URL" --insta-url="$INSTAGRAM_URL"
           working_directory: ~/rss_temple_http/rss-temple-home/
       - run:
           name: tarball
