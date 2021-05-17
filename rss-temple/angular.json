@@ -64,9 +64,6 @@
                   "maximumWarning": "6kb"
                 }
               ]
-            },
-            "_e2e": {
-              "progress": false
             }
           }
         },
@@ -78,9 +75,6 @@
           "configurations": {
             "production": {
               "browserTarget": "rss-temple:build:production"
-            },
-            "_e2e": {
-              "browserTarget": "rss-temple:build:_e2e"
             }
           }
         },
@@ -106,13 +100,6 @@
               "src/app/test/**"
             ],
             "progress": false
-          }
-        },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "protractor.conf.js",
-            "devServerTarget": "rss-temple:serve:_e2e"
           }
         }
       }
