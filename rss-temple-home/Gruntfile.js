@@ -33,7 +33,7 @@ module.exports = function (grunt) {
               app_url: grunt.config("app-url"),
               fb_url: grunt.config("fb-url"),
               twitter_url: grunt.config("twitter-url"),
-              "insta-url": grunt.config("insta-url")
+              insta_url: grunt.config("insta-url")
             }
           ]
         },
