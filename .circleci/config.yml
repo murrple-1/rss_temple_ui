@@ -10,7 +10,7 @@ jobs:
   build_app:
     working_directory: ~/rss_temple_http/
     docker:
-      - image: circleci/node:10-browsers
+      - image: circleci/node:14
     steps:
       - checkout
       - restore_cache:
@@ -57,7 +57,7 @@ jobs:
   test_app:
     working_directory: ~/rss_temple_http/
     docker:
-      - image: circleci/node:10-browsers
+      - image: circleci/node:14-browsers
     steps:
       - checkout
       - restore_cache:
@@ -99,7 +99,7 @@ jobs:
   build_home:
     working_directory: ~/rss_temple_http/
     docker:
-      - image: circleci/node:10-browsers
+      - image: circleci/node:14
     steps:
       - checkout
       - restore_cache:
