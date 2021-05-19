@@ -462,4 +462,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     await openGlobalUserCategoriesModal(this.globalUserCategoriesModal);
   }
+
+  resetOnboarding() {
+    this.userService
+      .updateAttributes({
+        onboarded: null,
+      })
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe();
+  }
 }

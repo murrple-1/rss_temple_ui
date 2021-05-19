@@ -1,3 +1,7 @@
 .modal-body {
   padding-bottom: 0.4rem;
 }
+
+app-local-alerts ::ng-deep .alert {
+  margin-bottom: 8px;
+}
