@@ -27,8 +27,6 @@ import { AppSharedModule } from '@app/app-shared.module';
 import { routes } from '@app/app.routing';
 
 import { AppComponent } from '@app/app.component';
-import { ConfirmModalComponent } from '@app/components/shared/confirm-modal/confirm-modal.component';
-import { LocalAlertsComponent } from '@app/components/shared/local-alerts/local-alerts.component';
 import { NavComponent } from '@app/components/nav/nav.component';
 import { SubNavComponent } from '@app/components/subnav/subnav.component';
 import { AppAlertsComponent } from '@app/components/app-alerts/app-alerts.component';
@@ -83,8 +81,6 @@ export function clarityIconsFactory() {
   ],
   declarations: [
     AppComponent,
-    ConfirmModalComponent,
-    LocalAlertsComponent,
     NavComponent,
     SubNavComponent,
     AppAlertsComponent,

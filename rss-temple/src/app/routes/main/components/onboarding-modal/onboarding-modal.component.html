@@ -1,6 +1,15 @@
 <clr-modal [clrModalOpen]="open" (clrModalOpenChange)="openChanged($event)">
   <h4 class="modal-title">Welcome!</h4>
   <div class="modal-body">
+    <app-local-alerts
+      [alertEntries]="[
+        {
+          'text': 'This is a placeholder as I prepare the onboarding process',
+          'iconShape': null,
+          'type': 'info'
+        }
+      ]"
+    ></app-local-alerts>
     <iframe width="520" height="315" [src]="iframeSrc" allowfullscreen></iframe>
   </div>
   <div class="modal-footer">
