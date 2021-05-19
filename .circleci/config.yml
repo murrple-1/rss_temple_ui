@@ -42,6 +42,7 @@ jobs:
           command: |
             sed -i "s/googleApiClientId: '',/googleApiClientId: '$GOOGLE_API_CLIENT_ID',/g" environment.prod.ts
             sed -i "s/facebookAppId: '',/facebookAppId: '$FACEBOOK_APP_ID',/g" environment.prod.ts
+            sed -i "s/onboardingYoutubeEmbededUrl: '',/onboardingYoutubeEmbededUrl: '$ONBOARDING_YOUTUBE_EMBEDED_URL',/g" environment.prod.ts
           working_directory: ~/rss_temple_http/rss-temple/src/environments/
       - run:
           name: angular-build

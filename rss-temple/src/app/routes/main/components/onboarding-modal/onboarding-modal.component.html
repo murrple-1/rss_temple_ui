@@ -1,0 +1,11 @@
+<clr-modal [clrModalOpen]="open" (clrModalOpenChange)="openChanged($event)">
+  <h4 class="modal-title">Welcome!</h4>
+  <div class="modal-body">
+    <iframe width="520" height="315" [src]="iframeSrc" allowfullscreen></iframe>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" type="button" (click)="close()">
+      Close
+    </button>
+  </div>
+</clr-modal>

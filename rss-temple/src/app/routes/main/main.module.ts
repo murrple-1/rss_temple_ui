@@ -20,6 +20,7 @@ import { InViewportDirective } from '@app/routes/main/directives/inviewport.dire
 import { InfiniteScrollDirective } from '@app/routes/main/directives/infinite-scroll.directive';
 
 import { MainComponent } from '@app/routes/main/main.component';
+import { OnboardingModalComponent } from '@app/routes/main/components/onboarding-modal/onboarding-modal.component';
 import { FeedsComponent } from '@app/routes/main/components/feeds/feeds.component';
 import { FeedComponent } from '@app/routes/main/components/feed/feed.component';
 import { UserCategoriesModalComponent } from '@app/routes/main/components/feed/user-categories-modal/user-categories-modal.component';
@@ -55,6 +56,7 @@ import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/routes/main
     InfiniteScrollDirective,
 
     MainComponent,
+    OnboardingModalComponent,
     FeedsComponent,
     FeedComponent,
     FeedsFooterComponent,

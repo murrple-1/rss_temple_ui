@@ -13,7 +13,12 @@ import {
   CommonOptions,
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
-import { JsonValue, isJsonObject, isJsonArray } from '@app/libs/json.lib';
+import {
+  JsonValue,
+  isJsonObject,
+  isJsonArray,
+  JsonObject,
+} from '@app/libs/json.lib';
 import { SessionService } from '@app/services/session.service';
 
 import { environment } from '@environments/environment';
@@ -42,6 +47,15 @@ function toUser(value: JsonValue) {
       user.email = email;
     } else {
       throw new Error("'email' must be string");
+    }
+  }
+
+  if (value.attributes !== undefined) {
+    const attributes = value.attributes;
+    if (isJsonObject(attributes)) {
+      user.attributes = attributes;
+    } else {
+      throw new Error("'attributes' must be object");
     }
   }
 
@@ -135,6 +149,20 @@ export class UserService {
     return this.http.post<void>(
       `${environment.apiHost}/api/user/verify`,
       formData,
+    );
+  }
+
+  updateAttributes(attributes: JsonObject, options: CommonOptions = {}) {
+    const headers = commonToHeaders(options, () =>
+      this.sessionService.sessionToken$.getValue(),
+    );
+
+    return this.http.put<void>(
+      `${environment.apiHost}/api/user/attributes`,
+      attributes,
+      {
+        headers,
+      },
     );
   }
 }

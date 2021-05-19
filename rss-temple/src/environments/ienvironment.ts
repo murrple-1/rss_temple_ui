@@ -3,4 +3,5 @@ export interface IEnvironment {
   apiHost: string;
   googleApiClientId: string;
   facebookAppId: string;
+  onboardingYoutubeEmbededUrl: string;
 }

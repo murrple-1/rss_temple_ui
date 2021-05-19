@@ -5,4 +5,5 @@ export const environment: IEnvironment = {
   apiHost: 'https://api.rsstemple.com',
   googleApiClientId: '',
   facebookAppId: '',
+  onboardingYoutubeEmbededUrl: '',
 };

@@ -2,56 +2,26 @@ import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { APP_BASE_HREF } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule } from '@angular/forms';
 
 import { ClarityModule } from '@clr/angular';
 
-import { VerticalNavComponent } from '@app/routes/main/components/shared/vertical-nav/vertical-nav.component';
-import { OPMLModalComponent } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
-import { SubscribeModalComponent } from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
-import {
-  FeedService,
-  OPMLService,
-  ProgressService,
-  UserCategoryService,
-  LoginService,
-} from '@app/services/data';
-import { FeedObservableService } from '@app/routes/main/services';
+import { OnboardingModalComponent } from '@app/routes/main/components/onboarding-modal/onboarding-modal.component';
+import { UserService } from '@app/services/data';
 
 import { MainComponent } from './main.component';
 
 async function setup() {
-  const mockOPMLService = jasmine.createSpyObj<OPMLService>('OPMLService', [
-    'upload',
-  ]);
-  const mockFeedService = jasmine.createSpyObj<FeedService>('FeedService', [
+  const mockUserService = jasmine.createSpyObj<UserService>('UserService', [
     'get',
   ]);
-  const mockUserCategoryService = jasmine.createSpyObj<UserCategoryService>(
-    'UserCategoryService',
-    ['get'],
-  );
-  const mockLoginService = jasmine.createSpyObj<LoginService>('LoginService', [
-    'createMyLogin',
-  ]);
-  const mockProgressService = jasmine.createSpyObj<ProgressService>(
-    'ProgressService',
-    ['checkProgress'],
-  );
 
   await TestBed.configureTestingModule({
     imports: [
-      FormsModule,
       BrowserAnimationsModule,
       ClarityModule,
       RouterTestingModule.withRoutes([]),
     ],
-    declarations: [
-      MainComponent,
-      VerticalNavComponent,
-      OPMLModalComponent,
-      SubscribeModalComponent,
-    ],
+    declarations: [MainComponent, OnboardingModalComponent],
     providers: [
       {
         provide: APP_BASE_HREF,
@@ -59,35 +29,14 @@ async function setup() {
       },
 
       {
-        provide: OPMLService,
-        useValue: mockOPMLService,
+        provide: UserService,
+        useValue: mockUserService,
       },
-      {
-        provide: FeedService,
-        useValue: mockFeedService,
-      },
-      {
-        provide: UserCategoryService,
-        useValue: mockUserCategoryService,
-      },
-      {
-        provide: LoginService,
-        useValue: mockLoginService,
-      },
-      {
-        provide: ProgressService,
-        useValue: mockProgressService,
-      },
-      FeedObservableService,
     ],
   }).compileComponents();
 
   return {
-    mockOPMLService,
-    mockFeedService,
-    mockUserCategoryService,
-    mockLoginService,
-    mockProgressService,
+    mockUserService,
   };
 }
 
@@ -100,18 +49,5 @@ describe('MainComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('handles collapsed events', async () => {
-    await setup();
-
-    const componentFixture = TestBed.createComponent(MainComponent);
-    const component = componentFixture.componentInstance;
-
-    expect(component.collapedSideBar).toBeFalse();
-
-    component.receiveCollapsed(false);
-    expect(component.collapedSideBar).toBeFalse();
-
-    component.receiveCollapsed(true);
-    expect(component.collapedSideBar).toBeTrue();
-  });
+  // TODO more tests
 });
