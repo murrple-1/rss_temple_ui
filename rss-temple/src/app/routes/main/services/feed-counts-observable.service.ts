@@ -15,7 +15,8 @@ import { FeedService } from '@app/services/data';
 
 type FeedImpl = Required<Pick<Feed, 'uuid' | 'unreadCount'>>;
 
-const timeoutInterval = 20000;
+const refreshTimeoutInterval = 20000;
+const actionQueueTimeoutInterval = 250;
 
 @Injectable()
 export class FeedCountsObservableService implements OnDestroy {
@@ -23,6 +24,9 @@ export class FeedCountsObservableService implements OnDestroy {
   readonly feedCounts$: Observable<Record<string, number>> = this._feedCounts$;
 
   private refreshTimeoutId: number | null = null;
+
+  private actionQueueTimeoutId: number | null = null;
+  private actionQueue: (() => Promise<void>)[] = [];
 
   private unsubscribe$ = new Subject<void>();
 
@@ -43,9 +47,16 @@ export class FeedCountsObservableService implements OnDestroy {
         next: ([_visibilityChangeEvent, isLoggedIn]) => {
           if (isLoggedIn && document.visibilityState === 'visible') {
             this.refresh();
+            this.handleActions();
           } else {
+            this.actionQueue = [];
+
             if (this.refreshTimeoutId !== null) {
               window.clearTimeout(this.refreshTimeoutId);
+            }
+
+            if (this.actionQueueTimeoutId !== null) {
+              window.clearTimeout(this.actionQueueTimeoutId);
             }
           }
         },
@@ -59,6 +70,32 @@ export class FeedCountsObservableService implements OnDestroy {
     if (this.refreshTimeoutId !== null) {
       window.clearTimeout(this.refreshTimeoutId);
     }
+
+    if (this.actionQueueTimeoutId !== null) {
+      window.clearTimeout(this.actionQueueTimeoutId);
+    }
+  }
+
+  async handleActions() {
+    if (this.actionQueueTimeoutId !== null) {
+      window.clearTimeout(this.actionQueueTimeoutId);
+      this.actionQueueTimeoutId = null;
+    }
+
+    let action = this.actionQueue.pop();
+    while (action !== undefined) {
+      try {
+        await action.bind(this)();
+      } catch (e) {
+        console.error(e);
+      }
+      action = this.actionQueue.pop();
+    }
+
+    this.actionQueueTimeoutId = window.setTimeout(
+      this.handleActions.bind(this),
+      actionQueueTimeoutInterval,
+    );
   }
 
   refresh() {
@@ -67,73 +104,82 @@ export class FeedCountsObservableService implements OnDestroy {
       this.refreshTimeoutId = null;
     }
 
-    this.feedService
-      .queryAll({
-        fields: ['uuid', 'unreadCount'],
-        returnTotalCount: false,
-        search: 'subscribed:"true"',
-      })
-      .pipe(
-        takeUntil(this.unsubscribe$),
-        map(response => {
-          if (response.objects !== undefined) {
-            return response.objects as FeedImpl[];
-          }
-          throw new Error('malformed response');
-        }),
-      )
-      .subscribe({
-        next: feeds => {
-          const feedCounts: Record<string, number> = {};
-          for (const feed of feeds) {
-            feedCounts[feed.uuid] = feed.unreadCount;
-          }
+    this.actionQueue.push(() =>
+      this.feedService
+        .queryAll({
+          fields: ['uuid', 'unreadCount'],
+          returnTotalCount: false,
+          search: 'subscribed:"true"',
+        })
+        .pipe(
+          takeUntil(this.unsubscribe$),
+          map(response => {
+            if (response.objects !== undefined) {
+              return response.objects as FeedImpl[];
+            }
+            throw new Error('malformed response');
+          }),
+        )
+        .toPromise()
+        .then(
+          feeds => {
+            const feedCounts: Record<string, number> = {};
+            for (const feed of feeds) {
+              feedCounts[feed.uuid] = feed.unreadCount;
+            }
 
-          this._feedCounts$.next(feedCounts);
+            this._feedCounts$.next(feedCounts);
 
-          this.refreshTimeoutId = window.setTimeout(
-            this.refresh.bind(this),
-            timeoutInterval,
-          );
-        },
-        error: error => {
-          this.httpErrorService.handleError(error);
-        },
-      });
+            this.refreshTimeoutId = window.setTimeout(
+              this.refresh.bind(this),
+              refreshTimeoutInterval,
+            );
+          },
+          reason => {
+            this.httpErrorService.handleError(reason);
+          },
+        ),
+    );
   }
 
   decrement(feedUuid: string) {
-    const feedCounts: Record<string, number> = {
-      ...this._feedCounts$.getValue(),
-    };
-    const oldCount = feedCounts[feedUuid];
-    if (oldCount !== undefined && oldCount > 0) {
-      feedCounts[feedUuid] = oldCount - 1;
+    this.actionQueue.push(async () => {
+      const feedCounts: Record<string, number> = {
+        ...this._feedCounts$.getValue(),
+      };
+      const oldCount = feedCounts[feedUuid];
+      if (oldCount !== undefined && oldCount > 0) {
+        feedCounts[feedUuid] = oldCount - 1;
 
-      this._feedCounts$.next(feedCounts);
-    }
+        this._feedCounts$.next(feedCounts);
+      }
+    });
   }
 
   increment(feedUuid: string) {
-    const feedCounts: Record<string, number> = {
-      ...this._feedCounts$.getValue(),
-    };
-    const oldCount = feedCounts[feedUuid];
-    if (oldCount !== undefined) {
-      feedCounts[feedUuid] = oldCount + 1;
+    this.actionQueue.push(async () => {
+      const feedCounts: Record<string, number> = {
+        ...this._feedCounts$.getValue(),
+      };
+      const oldCount = feedCounts[feedUuid];
+      if (oldCount !== undefined) {
+        feedCounts[feedUuid] = oldCount + 1;
 
-      this._feedCounts$.next(feedCounts);
-    }
+        this._feedCounts$.next(feedCounts);
+      }
+    });
   }
 
   zero() {
-    const feedCounts: Record<string, number> = {
-      ...this._feedCounts$.getValue(),
-    };
-    for (const feedUuid of Object.keys(feedCounts)) {
-      feedCounts[feedUuid] = 0;
-    }
+    this.actionQueue.push(async () => {
+      const feedCounts: Record<string, number> = {
+        ...this._feedCounts$.getValue(),
+      };
+      for (const feedUuid of Object.keys(feedCounts)) {
+        feedCounts[feedUuid] = 0;
+      }
 
-    this._feedCounts$.next(feedCounts);
+      this._feedCounts$.next(feedCounts);
+    });
   }
 }
