@@ -12,7 +12,7 @@ import {
 import { Observable, of, Subject } from 'rxjs';
 import { takeUntil, map, mergeMap, tap } from 'rxjs/operators';
 
-import { HttpErrorService } from '@app/services';
+import { HttpErrorService, ModalOpenService } from '@app/services';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
 import { InViewportEvent } from '@app/routes/main/directives/inviewport.directive';
 import { FeedEntry, Feed } from '@app/models';
@@ -109,6 +109,7 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
     protected feedCountsObservableService: FeedCountsObservableService,
     protected readBufferService: ReadBufferService,
     protected httpErrorService: HttpErrorService,
+    protected modalOpenService: ModalOpenService,
   ) {}
 
   ngOnDestroy() {
@@ -395,6 +396,18 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
 
   @HostListener('document:keypress', ['$event'])
   handleKeyPress(event: KeyboardEvent) {
+    if (this.modalOpenService.isModalOpen$.getValue()) {
+      return;
+    }
+
+    const activeElement = document.activeElement;
+    if (
+      activeElement !== null &&
+      ['INPUT', 'TEXTAREA'].includes(activeElement.tagName)
+    ) {
+      return;
+    }
+
     switch (event.key) {
       case 'm': {
         const focusedFeedEntry = this.focusedFeedEntryView;

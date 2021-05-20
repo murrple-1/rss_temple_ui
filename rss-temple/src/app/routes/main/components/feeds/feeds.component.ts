@@ -27,7 +27,7 @@ import {
   LoadingState,
   NoLoadError,
 } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
-import { HttpErrorService } from '@app/services';
+import { HttpErrorService, ModalOpenService } from '@app/services';
 import { Feed } from '@app/models';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
 
@@ -63,6 +63,7 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
     feedCountsObservableService: FeedCountsObservableService,
     readBufferService: ReadBufferService,
     httpErrorService: HttpErrorService,
+    modalOpenService: ModalOpenService,
   ) {
     super(
       zone,
@@ -71,6 +72,7 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
       feedCountsObservableService,
       readBufferService,
       httpErrorService,
+      modalOpenService,
     );
   }
 

@@ -22,6 +22,7 @@ import {
   AppAlertsService,
   FBAuthService,
   GAuthService,
+  ModalOpenService,
   SessionService,
 } from '@app/services';
 import {
@@ -70,6 +71,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
     private loginService: LoginService,
     private appAlertsService: AppAlertsService,
     private sessionService: SessionService,
+    private modalOpenService: ModalOpenService,
   ) {}
 
   ngOnInit() {
@@ -361,7 +363,8 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this._requestPasswordResetModal === undefined) {
       throw new Error();
     }
-
+    this.modalOpenService.isModalOpen$.next(true);
     await openRequestPasswordResetModal(this._requestPasswordResetModal);
+    this.modalOpenService.isModalOpen$.next(false);
   }
 }

@@ -8,7 +8,7 @@ import {
   ConfirmModalComponent,
   openModal as openConfirmModal,
 } from '@app/components/shared/confirm-modal/confirm-modal.component';
-import { SessionService } from '@app/services';
+import { ModalOpenService, SessionService } from '@app/services';
 
 interface NavLink {
   name: string;
@@ -63,8 +63,8 @@ export class NavComponent implements OnInit, OnDestroy {
   navLinks: NavLink[] = [];
   navActions: NavAction[] = [];
 
-  @ViewChild('logoutConfirmDialog', { static: true })
-  private logoutConfirmDialog?: ConfirmModalComponent;
+  @ViewChild('logoutConfirmModal', { static: true })
+  private logoutConfirmModal?: ConfirmModalComponent;
 
   private unsubscribe$ = new Subject<void>();
 
@@ -72,6 +72,7 @@ export class NavComponent implements OnInit, OnDestroy {
     private zone: NgZone,
     private router: Router,
     private sessionService: SessionService,
+    private modalOpenService: ModalOpenService,
   ) {}
 
   ngOnInit() {
@@ -103,15 +104,17 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   private async logout() {
-    if (this.logoutConfirmDialog === undefined) {
+    if (this.logoutConfirmModal === undefined) {
       throw new Error();
     }
 
+    this.modalOpenService.isModalOpen$.next(true);
     const result = await openConfirmModal(
       'Logout?',
       'Are you sure you want to log-out?',
-      this.logoutConfirmDialog,
+      this.logoutConfirmModal,
     );
+    this.modalOpenService.isModalOpen$.next(false);
 
     if (result) {
       this.sessionService.sessionToken$.next(null);

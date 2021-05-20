@@ -13,7 +13,7 @@
 <div class="header-actions">
   <a
     *ngFor="let navAction of navActions"
-    [routerLink]=""
+    href="javascript:;"
     class="nav-link nav-icon"
     (click)="navAction.onClick()"
   >
@@ -21,4 +21,4 @@
   </a>
 </div>
 
-<app-confirm-modal #logoutConfirmDialog></app-confirm-modal>
+<app-confirm-modal #logoutConfirmModal></app-confirm-modal>

@@ -31,7 +31,7 @@ import {
   LoadingState,
   NoLoadError,
 } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
-import { HttpErrorService } from '@app/services';
+import { HttpErrorService, ModalOpenService } from '@app/services';
 import {
   FeedCountsObservableService,
   ReadBufferService,
@@ -104,6 +104,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
     feedCountsObservableService: FeedCountsObservableService,
     readBufferService: ReadBufferService,
     httpErrorService: HttpErrorService,
+    modalOpenService: ModalOpenService,
   ) {
     super(
       zone,
@@ -112,6 +113,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
       feedCountsObservableService,
       readBufferService,
       httpErrorService,
+      modalOpenService,
     );
   }
 
@@ -320,6 +322,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
       throw new Error();
     }
 
+    this.modalOpenService.isModalOpen$.next(true);
     const returnData = await openUserCategoriesModal(
       this.feed.uuid,
       new Set<string>(
@@ -327,6 +330,8 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
       ),
       this.userCategoriesModal,
     );
+    this.modalOpenService.isModalOpen$.next(false);
+
     if (returnData !== undefined) {
       this.userCategories = returnData.categories.map<UserCategoryImpl>(c => ({
         text: c,

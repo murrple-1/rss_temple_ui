@@ -8,7 +8,7 @@ import {
   openModal as openOnboardingModal,
 } from '@app/routes/main/components/onboarding-modal/onboarding-modal.component';
 import { UserService } from '@app/services/data';
-import { SessionService } from '@app/services';
+import { ModalOpenService, SessionService } from '@app/services';
 import { User } from '@app/models';
 
 type UserImpl = Required<Pick<User, 'attributes'>>;
@@ -27,6 +27,7 @@ export class MainComponent implements OnInit, OnDestroy {
     private zone: NgZone,
     private userService: UserService,
     private sessionService: SessionService,
+    private modalOpenService: ModalOpenService,
   ) {}
 
   ngOnInit() {
@@ -50,7 +51,9 @@ export class MainComponent implements OnInit, OnDestroy {
                   if (attributes.onboarded !== true) {
                     this.zone.run(async () => {
                       if (this.onboardingModal !== undefined) {
+                        this.modalOpenService.isModalOpen$.next(true);
                         await openOnboardingModal(this.onboardingModal);
+                        this.modalOpenService.isModalOpen$.next(false);
 
                         this.userService
                           .updateAttributes({

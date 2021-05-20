@@ -13,7 +13,11 @@ import {
   OPMLModalComponent,
 } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
 import { FeedService, UserCategoryService } from '@app/services/data';
-import { AppAlertsService, HttpErrorService } from '@app/services';
+import {
+  AppAlertsService,
+  HttpErrorService,
+  ModalOpenService,
+} from '@app/services';
 import {
   FeedObservableService,
   FeedCountsObservableService,
@@ -88,6 +92,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
     private userCategoryObservableService: UserCategoryObservableService,
     private appAlertsService: AppAlertsService,
     private httpErrorService: HttpErrorService,
+    private modalOpenService: ModalOpenService,
   ) {
     this.collapsed = window.innerWidth <= 800;
   }
@@ -247,7 +252,10 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
       throw new Error();
     }
 
+    this.modalOpenService.isModalOpen$.next(true);
     const result = await openSubscribeModal(this.subscribeModal);
+    this.modalOpenService.isModalOpen$.next(false);
+
     if (result === undefined) {
       return;
     }
@@ -287,14 +295,15 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
           this.feedObservableService.feedAdded.next(feed);
 
           this.zone.run(() => {
-            this.categorizedFeeds.noCategory.feeds = this.categorizedFeeds.noCategory.feeds
-              .concat({
-                uuid: feed.uuid,
-                calculatedTitle: feed.calculatedTitle,
-                feedUrl: feed.feedUrl,
-                homeUrl: feed.homeUrl,
-              })
-              .sort(VerticalNavComponent.sortFeeds);
+            this.categorizedFeeds.noCategory.feeds =
+              this.categorizedFeeds.noCategory.feeds
+                .concat({
+                  uuid: feed.uuid,
+                  calculatedTitle: feed.calculatedTitle,
+                  feedUrl: feed.feedUrl,
+                  homeUrl: feed.homeUrl,
+                })
+                .sort(VerticalNavComponent.sortFeeds);
           });
         },
         error: error => {
@@ -306,8 +315,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
               this.appAlertsService.appAlertDescriptor$.next({
                 autoCloseInterval: null,
                 canClose: true,
-                text:
-                  'Feed is unable to be read. Please ensure URL points to a valid RSS/Atom feed.',
+                text: 'Feed is unable to be read. Please ensure URL points to a valid RSS/Atom feed.',
                 type: 'danger',
               });
               errorHandled = true;
@@ -326,7 +334,9 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
       throw new Error();
     }
 
+    this.modalOpenService.isModalOpen$.next(true);
     await openOPMLModal(this.opmlModal);
+    this.modalOpenService.isModalOpen$.next(false);
 
     this.feedObservableService.feedsChanged.next();
 

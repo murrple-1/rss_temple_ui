@@ -18,6 +18,7 @@ import {
   GAuthService,
   FBAuthService,
   AppAlertsService,
+  ModalOpenService,
 } from '@app/services';
 import { UpdateUserBody } from '@app/services/data/user.service';
 import {
@@ -63,14 +64,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   numberOfFeeds = 0;
   numberOfReadFeedEntries = 0;
-  numberOfUnreadFeedEntries$ = this.feedCountsObservableService.feedCounts$.pipe(
-    map(feedCounts =>
-      Object.values(feedCounts).reduce(
-        (previousValue, currentValue) => previousValue + currentValue,
-        0,
+  numberOfUnreadFeedEntries$ =
+    this.feedCountsObservableService.feedCounts$.pipe(
+      map(feedCounts =>
+        Object.values(feedCounts).reduce(
+          (previousValue, currentValue) => previousValue + currentValue,
+          0,
+        ),
       ),
-    ),
-  );
+    );
 
   gLoaded = false;
   fbLoaded = false;
@@ -110,6 +112,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private gAuthService: GAuthService,
     private fbAuthService: FBAuthService,
     private appAlertsService: AppAlertsService,
+    private modalOpenService: ModalOpenService,
   ) {
     this.isDownloadOPMLButtonDisabled = window.Blob === undefined;
   }
@@ -460,7 +463,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
       throw new Error();
     }
 
+    this.modalOpenService.isModalOpen$.next(true);
     await openGlobalUserCategoriesModal(this.globalUserCategoriesModal);
+    this.modalOpenService.isModalOpen$.next(false);
   }
 
   resetOnboarding() {
