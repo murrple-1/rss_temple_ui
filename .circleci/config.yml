@@ -46,7 +46,7 @@ jobs:
           working_directory: ~/rss_temple_http/rss-temple/src/environments/
       - run:
           name: angular-build
-          command: yarn run ng build --prod --progress=false
+          command: yarn run ng build --progress=false
           working_directory: ~/rss_temple_http/rss-temple/
       - run:
           name: tarball
