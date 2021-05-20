@@ -34,6 +34,7 @@ jobs:
               apiHost: 'http://localhost:8000',
               googleApiClientId: '',
               facebookAppId: '',
+              onboardingYoutubeEmbededUrl: '',
             };
             EOF
           working_directory: ~/rss_temple_http/rss-temple/src/environments/
@@ -46,7 +47,7 @@ jobs:
           working_directory: ~/rss_temple_http/rss-temple/src/environments/
       - run:
           name: angular-build
-          command: yarn run ng build --progress=false
+          command: yarn run ng build --configuration=production --progress=false
           working_directory: ~/rss_temple_http/rss-temple/
       - run:
           name: tarball
@@ -81,7 +82,7 @@ jobs:
               apiHost: 'http://localhost:8000',
               googleApiClientId: '',
               facebookAppId: '',
-              onboardingYoutubeEmbededUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+              onboardingYoutubeEmbededUrl: '',
             };
             EOF
           working_directory: ~/rss_temple_http/rss-temple/src/environments/
