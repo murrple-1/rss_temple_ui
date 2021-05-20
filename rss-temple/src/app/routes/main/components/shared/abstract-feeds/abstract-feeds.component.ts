@@ -54,6 +54,8 @@ export enum LoadingState {
   NoMoreToLoad,
 }
 
+export class NoLoadError extends Error {}
+
 @Directive()
 export abstract class AbstractFeedsComponent implements OnDestroy {
   feedEntries: FeedEntryImpl[] = [];
@@ -116,15 +118,11 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
 
   protected feedEntryCreateStableQueryOptions(
     feeds: FeedImpl[],
-  ): CreateStableQueryOptions<SortField> | null {
-    if (feeds.length > 0) {
-      return {
-        search: this.feedEntryCreateStableQueryOptions_search(feeds),
-        sort: this.feedEntryCreateStableQueryOptions_sort(),
-      };
-    } else {
-      return null;
-    }
+  ): CreateStableQueryOptions<SortField> {
+    return {
+      search: this.feedEntryCreateStableQueryOptions_search(feeds),
+      sort: this.feedEntryCreateStableQueryOptions_sort(),
+    };
   }
 
   protected feedEntryStableQueryOptions(
@@ -155,7 +153,9 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
     feeds: FeedImpl[],
   ): string | undefined;
 
-  protected feedEntryCreateStableQueryOptions_sort() {
+  protected feedEntryCreateStableQueryOptions_sort():
+    | Sort<SortField>
+    | undefined {
     return new Sort([
       ['publishedAt', 'DESC'],
       ['createdAt', 'DESC'],
@@ -166,11 +166,9 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
   protected getFeedEntries(skip?: number) {
     let feedEntriesObservale: Observable<Objects<FeedEntry>>;
     if (this.stableQueryToken === null) {
-      const feedEntryCreateStableQueryOptions =
-        this.feedEntryCreateStableQueryOptions(this.feeds);
-      if (feedEntryCreateStableQueryOptions !== null) {
+      try {
         feedEntriesObservale = this.feedEntryService
-          .createStableQuery(feedEntryCreateStableQueryOptions)
+          .createStableQuery(this.feedEntryCreateStableQueryOptions(this.feeds))
           .pipe(
             tap(token => {
               this.stableQueryToken = token;
@@ -181,8 +179,12 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
               ),
             ),
           );
-      } else {
-        return of([]);
+      } catch (e) {
+        if (e instanceof NoLoadError) {
+          return of([]);
+        } else {
+          throw e;
+        }
       }
     } else {
       feedEntriesObservale = this.feedEntryService.stableQuery(

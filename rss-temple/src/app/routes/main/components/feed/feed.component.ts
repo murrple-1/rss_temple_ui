@@ -29,6 +29,7 @@ import {
   DEFAULT_COUNT,
   FeedImpl as BaseFeedImpl,
   LoadingState,
+  NoLoadError,
 } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 import { HttpErrorService } from '@app/services';
 import {
@@ -154,6 +155,10 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
   }
 
   protected feedEntryCreateStableQueryOptions_search(feeds: FeedImpl[]) {
+    if (feeds.length < 1) {
+      throw new NoLoadError();
+    }
+
     const searchParts = [
       `(feedUuid:"${feeds.map(feed => feed.uuid).join(',')}")`,
     ];
