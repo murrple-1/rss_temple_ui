@@ -2,9 +2,9 @@
 . "$(dirname "$0")/_/husky.sh"
 
 cd "$(dirname "$0")/../rss-temple/"
-yarn pretty-quick --staged
+yarn pretty-quick --staged --pattern "rss-temple/**"
 cd ..
 
 cd "$(dirname "$0")/../rss-temple-home/"
-yarn pretty-quick --staged
+yarn pretty-quick --staged --pattern "rss-temple-home/**"
 cd ..

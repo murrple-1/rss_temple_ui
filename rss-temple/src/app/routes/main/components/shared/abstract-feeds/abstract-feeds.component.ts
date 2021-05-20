@@ -9,7 +9,7 @@ import {
   ElementRef,
 } from '@angular/core';
 
-import { Observable, Subject } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { takeUntil, map, mergeMap, tap } from 'rxjs/operators';
 
 import { HttpErrorService } from '@app/services';
@@ -116,11 +116,15 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
 
   protected feedEntryCreateStableQueryOptions(
     feeds: FeedImpl[],
-  ): CreateStableQueryOptions<SortField> {
-    return {
-      search: this.feedEntryCreateStableQueryOptions_search(feeds),
-      sort: this.feedEntryCreateStableQueryOptions_sort(),
-    };
+  ): CreateStableQueryOptions<SortField> | null {
+    if (feeds.length > 0) {
+      return {
+        search: this.feedEntryCreateStableQueryOptions_search(feeds),
+        sort: this.feedEntryCreateStableQueryOptions_sort(),
+      };
+    } else {
+      return null;
+    }
   }
 
   protected feedEntryStableQueryOptions(
@@ -162,18 +166,24 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
   protected getFeedEntries(skip?: number) {
     let feedEntriesObservale: Observable<Objects<FeedEntry>>;
     if (this.stableQueryToken === null) {
-      feedEntriesObservale = this.feedEntryService
-        .createStableQuery(this.feedEntryCreateStableQueryOptions(this.feeds))
-        .pipe(
-          tap(token => {
-            this.stableQueryToken = token;
-          }),
-          mergeMap(token =>
-            this.feedEntryService.stableQuery(
-              this.feedEntryStableQueryOptions(token, this.count, skip),
+      const feedEntryCreateStableQueryOptions =
+        this.feedEntryCreateStableQueryOptions(this.feeds);
+      if (feedEntryCreateStableQueryOptions !== null) {
+        feedEntriesObservale = this.feedEntryService
+          .createStableQuery(feedEntryCreateStableQueryOptions)
+          .pipe(
+            tap(token => {
+              this.stableQueryToken = token;
+            }),
+            mergeMap(token =>
+              this.feedEntryService.stableQuery(
+                this.feedEntryStableQueryOptions(token, this.count, skip),
+              ),
             ),
-          ),
-        );
+          );
+      } else {
+        return of([]);
+      }
     } else {
       feedEntriesObservale = this.feedEntryService.stableQuery(
         this.feedEntryStableQueryOptions(
@@ -282,8 +292,10 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
     if (this.focusedFeedEntryView !== null) {
       this.focusedFeedEntryView.autoRead();
 
-      const containerBoundingRect = this.feedEntryViewsScollContainer.nativeElement.getBoundingClientRect();
-      const entryBoundingRect = this.focusedFeedEntryView.elementRef.nativeElement.getBoundingClientRect();
+      const containerBoundingRect =
+        this.feedEntryViewsScollContainer.nativeElement.getBoundingClientRect();
+      const entryBoundingRect =
+        this.focusedFeedEntryView.elementRef.nativeElement.getBoundingClientRect();
       if (
         !AbstractFeedsComponent.rectContainsRect(
           containerBoundingRect,

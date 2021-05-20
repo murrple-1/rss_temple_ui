@@ -182,12 +182,9 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
   }
 
   protected feedEntryCreateStableQueryOptions_search(feeds: FeedImpl[]) {
-    const searchParts: string[] = [];
-    if (feeds.length >= 1) {
-      searchParts.push(
-        `(feedUuid:"${feeds.map(feed => feed.uuid).join(',')}")`,
-      );
-    }
+    const searchParts = [
+      `(feedUuid:"${feeds.map(feed => feed.uuid).join(',')}")`,
+    ];
 
     if (this.favoritesOnly) {
       searchParts.push('(isFavorite:"true")');

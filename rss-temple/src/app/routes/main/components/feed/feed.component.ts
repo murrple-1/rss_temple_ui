@@ -154,16 +154,12 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
   }
 
   protected feedEntryCreateStableQueryOptions_search(feeds: FeedImpl[]) {
-    const searchParts: string[] = [];
+    const searchParts = [
+      `(feedUuid:"${feeds.map(feed => feed.uuid).join(',')}")`,
+    ];
 
     if (!this.showRead) {
       searchParts.push('(isRead:"false")');
-    }
-
-    if (feeds.length >= 1) {
-      searchParts.push(
-        `(feedUuid:"${feeds.map(feed => feed.uuid).join(',')}")`,
-      );
     }
 
     if (searchParts.length > 0) {
