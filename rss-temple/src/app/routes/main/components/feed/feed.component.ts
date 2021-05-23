@@ -33,8 +33,7 @@ import {
 } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 import { HttpErrorService, ModalOpenService } from '@app/services';
 import {
-  FeedCountsObservableService,
-  ReadBufferService,
+  ReadCounterService,
   UserCategoryObservableService,
 } from '@app/routes/main/services';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
@@ -79,7 +78,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
   }
 
   get feedCounts$() {
-    return this.feedCountsObservableService.feedCounts$;
+    return this.readCounterService.feedCounts$;
   }
 
   @ViewChildren(FeedEntryViewComponent)
@@ -101,8 +100,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
     zone: NgZone,
     changeDetectorRef: ChangeDetectorRef,
     feedEntryService: FeedEntryService,
-    feedCountsObservableService: FeedCountsObservableService,
-    readBufferService: ReadBufferService,
+    readCounterService: ReadCounterService,
     httpErrorService: HttpErrorService,
     modalOpenService: ModalOpenService,
   ) {
@@ -110,8 +108,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
       zone,
       changeDetectorRef,
       feedEntryService,
-      feedCountsObservableService,
-      readBufferService,
+      readCounterService,
       httpErrorService,
       modalOpenService,
     );
@@ -383,7 +380,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => {
-          this.feedCountsObservableService.zero();
+          this.readCounterService.readAll();
 
           this.zone.run(() => {
             this.reload();

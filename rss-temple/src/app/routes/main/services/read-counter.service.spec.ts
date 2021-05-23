@@ -1,13 +1,15 @@
 import { Router } from '@angular/router';
 
+import { of } from 'rxjs';
+
 import {
   AppAlertsService,
   HttpErrorService,
   SessionService,
 } from '@app/services';
-import { FeedEntryService } from '@app/services/data';
+import { FeedEntryService, FeedService } from '@app/services/data';
 
-import { ReadBufferService } from './read-buffer.service';
+import { ReadCounterService } from './read-counter.service';
 
 function setup() {
   const routerSpy = jasmine.createSpyObj<Router>('Router', ['navigate']);
@@ -20,13 +22,25 @@ function setup() {
     sessionService,
   );
 
+  const mockFeedService = jasmine.createSpyObj<FeedService>('FeedService', [
+    'queryAll',
+  ]);
+  mockFeedService.queryAll.and.returnValue(
+    of({
+      objects: [],
+      totalCount: 0,
+    }),
+  );
+
   const mockFeedEntryService = jasmine.createSpyObj<FeedEntryService>(
     'FeedEntryService',
     ['query'],
   );
 
-  const readBufferService = new ReadBufferService(
+  const readCounterService = new ReadCounterService(
+    sessionService,
     mockFeedEntryService,
+    mockFeedService,
     httpErrorService,
   );
 
@@ -36,14 +50,14 @@ function setup() {
     sessionService,
     httpErrorService,
 
-    readBufferService,
+    readCounterService,
   };
 }
 
 describe('UserCategoryObservableService', () => {
   it('should initialize', () => {
-    const { readBufferService } = setup();
-    expect(readBufferService).toBeTruthy();
+    const { readCounterService } = setup();
+    expect(readCounterService).toBeTruthy();
   });
 
   // TODO more tests

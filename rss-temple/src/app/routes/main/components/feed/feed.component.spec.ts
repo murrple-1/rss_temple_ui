@@ -1,9 +1,10 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 
 import { ClarityModule } from '@clr/angular';
+
+import { of } from 'rxjs';
 
 import {
   FeedService,
@@ -14,54 +15,30 @@ import {
 } from '@app/services/data';
 import {
   FeedObservableService,
-  FeedCountsObservableService,
   UserCategoryObservableService,
-  ReadBufferService,
+  ReadCounterService,
 } from '@app/routes/main/services';
 import { VerticalNavComponent } from '@app/routes/main/components/shared/vertical-nav/vertical-nav.component';
 import { SubscribeModalComponent } from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
 import { OPMLModalComponent } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
 import { UserCategoriesModalComponent } from '@app/routes/main/components/feed/user-categories-modal/user-categories-modal.component';
 import { FeedsFooterComponent } from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
-import {
-  AppAlertsService,
-  HttpErrorService,
-  SessionService,
-} from '@app/services';
 
 import { FeedComponent } from './feed.component';
 
 async function setup() {
-  const routerSpy = jasmine.createSpyObj<Router>('Router', ['navigate']);
-
-  const mockFeedCountsObservableService = jasmine.createSpyObj<FeedCountsObservableService>(
-    'FeedCountsObservableService',
-    ['refresh'],
+  const mockReadCounterService = jasmine.createSpyObj<ReadCounterService>(
+    'ReadCounterService',
+    ['readAll'],
   );
-
   const mockFeedEntryService = jasmine.createSpyObj<FeedEntryService>(
     'FeedEntryService',
-    ['query', 'read', 'unread'],
+    ['query', 'readSome', 'unreadSome'],
   );
-
-  const appAlertService = new AppAlertsService();
-  const sessionService = new SessionService();
-  const httpErrorService = new HttpErrorService(
-    routerSpy,
-    appAlertService,
-    sessionService,
-  );
-
-  const readBufferService = new ReadBufferService(
-    mockFeedEntryService,
-    httpErrorService,
-  );
-
   const mockFeedService = jasmine.createSpyObj<FeedService>('FeedService', [
-    'get',
-    'subscribe',
-    'unsubscribe',
+    'queryAll',
   ]);
+
   const mockUserCategoryService = jasmine.createSpyObj<UserCategoryService>(
     'UserCategoryService',
     ['queryAll', 'apply'],
@@ -88,10 +65,6 @@ async function setup() {
       FeedObservableService,
       UserCategoryObservableService,
       {
-        provide: FeedCountsObservableService,
-        useValue: mockFeedCountsObservableService,
-      },
-      {
         provide: FeedService,
         useValue: mockFeedService,
       },
@@ -112,14 +85,13 @@ async function setup() {
         useValue: mockProgressService,
       },
       {
-        provide: ReadBufferService,
-        useValue: readBufferService,
+        provide: ReadCounterService,
+        useValue: mockReadCounterService,
       },
     ],
   }).compileComponents();
 
   return {
-    mockFeedCountsObservableService,
     mockFeedService,
     mockUserCategoryService,
     mockFeedEntryService,
@@ -143,7 +115,13 @@ describe('FeedComponent', () => {
   it(
     'can run ngOnInit',
     waitForAsync(async () => {
-      await setup();
+      const { mockFeedEntryService } = await setup();
+      mockFeedEntryService.query.and.returnValue(
+        of({
+          objects: [],
+          totalCount: 0,
+        }),
+      );
 
       const componentFixture = TestBed.createComponent(FeedComponent);
       const component = componentFixture.componentInstance;

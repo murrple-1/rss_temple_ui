@@ -7,6 +7,7 @@ import { ClarityModule } from '@clr/angular';
 
 import { OnboardingModalComponent } from '@app/routes/main/components/onboarding-modal/onboarding-modal.component';
 import { UserService } from '@app/services/data';
+import { LocalAlertsComponent } from '@app/components/shared/local-alerts/local-alerts.component';
 
 import { MainComponent } from './main.component';
 
@@ -21,7 +22,11 @@ async function setup() {
       ClarityModule,
       RouterTestingModule.withRoutes([]),
     ],
-    declarations: [MainComponent, OnboardingModalComponent],
+    declarations: [
+      MainComponent,
+      OnboardingModalComponent,
+      LocalAlertsComponent,
+    ],
     providers: [
       {
         provide: APP_BASE_HREF,

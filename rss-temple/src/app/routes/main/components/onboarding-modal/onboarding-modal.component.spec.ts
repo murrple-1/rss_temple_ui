@@ -3,12 +3,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ClarityModule } from '@clr/angular';
 
+import { LocalAlertsComponent } from '@app/components/shared/local-alerts/local-alerts.component';
+
 import { OnboardingModalComponent } from './onboarding-modal.component';
 
 async function setup() {
   await TestBed.configureTestingModule({
     imports: [BrowserAnimationsModule, ClarityModule],
-    declarations: [OnboardingModalComponent],
+    declarations: [OnboardingModalComponent, LocalAlertsComponent],
   }).compileComponents();
 
   return {};

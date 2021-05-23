@@ -20,7 +20,7 @@ import {
 } from '@app/services';
 import {
   FeedObservableService,
-  FeedCountsObservableService,
+  ReadCounterService,
   UserCategoryObservableService,
 } from '@app/routes/main/services';
 import { UserCategory, Feed } from '@app/models';
@@ -71,7 +71,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
   };
 
   get feedCounts$() {
-    return this.feedCountsObservableService.feedCounts$;
+    return this.readCounterService.feedCounts$;
   }
 
   @ViewChild(SubscribeModalComponent, { static: true })
@@ -88,7 +88,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
     private feedService: FeedService,
     private userCategoryService: UserCategoryService,
     private feedObservableService: FeedObservableService,
-    private feedCountsObservableService: FeedCountsObservableService,
+    private readCounterService: ReadCounterService,
     private userCategoryObservableService: UserCategoryObservableService,
     private appAlertsService: AppAlertsService,
     private httpErrorService: HttpErrorService,

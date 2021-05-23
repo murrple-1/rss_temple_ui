@@ -14,7 +14,7 @@ import {
   UserCategoryService,
 } from '@app/services/data';
 import {
-  FeedCountsObservableService,
+  ReadCounterService,
   FeedObservableService,
   UserCategoryObservableService,
 } from '@app/routes/main/services';
@@ -24,9 +24,9 @@ import { OPMLModalComponent } from '@app/routes/main/components/shared/vertical-
 import { VerticalNavComponent } from './vertical-nav.component';
 
 async function setup() {
-  const mockFeedCountsObservableService = jasmine.createSpyObj<FeedCountsObservableService>(
-    'FeedCountsObservableService',
-    ['refresh'],
+  const mockReadCounterService = jasmine.createSpyObj<ReadCounterService>(
+    'ReadCounterService',
+    ['readAll'],
   );
   const mockFeedService = jasmine.createSpyObj<FeedService>('FeedService', [
     'queryAll',
@@ -61,8 +61,8 @@ async function setup() {
       FeedObservableService,
       UserCategoryObservableService,
       {
-        provide: FeedCountsObservableService,
-        useValue: mockFeedCountsObservableService,
+        provide: ReadCounterService,
+        useValue: mockReadCounterService,
       },
       {
         provide: FeedService,

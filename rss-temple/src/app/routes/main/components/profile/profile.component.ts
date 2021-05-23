@@ -27,7 +27,7 @@ import {
   SpecialCharacters as PasswordSpecialCharacters,
 } from '@app/libs/password.lib';
 import { User } from '@app/models';
-import { FeedCountsObservableService } from '@app/routes/main/services';
+import { ReadCounterService } from '@app/routes/main/services';
 import {
   GlobalUserCategoriesModalComponent,
   openModal as openGlobalUserCategoriesModal,
@@ -64,15 +64,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   numberOfFeeds = 0;
   numberOfReadFeedEntries = 0;
-  numberOfUnreadFeedEntries$ =
-    this.feedCountsObservableService.feedCounts$.pipe(
-      map(feedCounts =>
-        Object.values(feedCounts).reduce(
-          (previousValue, currentValue) => previousValue + currentValue,
-          0,
-        ),
+  numberOfUnreadFeedEntries$ = this.readCounterService.feedCounts$.pipe(
+    map(feedCounts =>
+      Object.values(feedCounts).reduce(
+        (previousValue, currentValue) => previousValue + currentValue,
+        0,
       ),
-    );
+    ),
+  );
 
   gLoaded = false;
   fbLoaded = false;
@@ -107,7 +106,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private feedEntryService: FeedEntryService,
     private userService: UserService,
     private opmlService: OPMLService,
-    private feedCountsObservableService: FeedCountsObservableService,
+    private readCounterService: ReadCounterService,
     private httpErrorService: HttpErrorService,
     private gAuthService: GAuthService,
     private fbAuthService: FBAuthService,

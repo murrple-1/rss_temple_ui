@@ -17,17 +17,17 @@ import {
   UserCategoryService,
 } from '@app/services/data';
 import { GAuthService, FBAuthService } from '@app/services';
-import { FeedCountsObservableService } from '@app/routes/main/services';
+import { ReadCounterService } from '@app/routes/main/services';
 import { GlobalUserCategoriesModalComponent } from '@app/routes/main/components/profile/global-user-categories-modal/global-user-categories-modal.component';
 
 import { ProfileComponent } from './profile.component';
 
 async function setup() {
-  const mockFeedCountsObservableService = jasmine.createSpyObj<FeedCountsObservableService>(
-    'FeedCountsObservableService',
-    ['refresh'],
+  const mockReadCounterService = jasmine.createSpyObj<ReadCounterService>(
+    'ReadCounterService',
+    ['readAll'],
   );
-  (mockFeedCountsObservableService as any).feedCounts$ = of({});
+  (mockReadCounterService as any).feedCounts$ = of({});
 
   const mockFeedService = jasmine.createSpyObj<FeedService>('FeedService', [
     'query',
@@ -58,8 +58,8 @@ async function setup() {
     declarations: [ProfileComponent, GlobalUserCategoriesModalComponent],
     providers: [
       {
-        provide: FeedCountsObservableService,
-        useValue: mockFeedCountsObservableService,
+        provide: ReadCounterService,
+        useValue: mockReadCounterService,
       },
       {
         provide: GAuthService,
@@ -93,7 +93,7 @@ async function setup() {
   }).compileComponents();
 
   return {
-    mockFeedCountsObservableService,
+    mockReadCounterService,
     mockFeedService,
     mockFeedEntryService,
     mockUserService,
@@ -115,11 +115,8 @@ describe('ProfileComponent', () => {
   it(
     'can run ngOnInit',
     waitForAsync(async () => {
-      const {
-        mockUserService,
-        mockFeedService,
-        mockFeedEntryService,
-      } = await setup();
+      const { mockUserService, mockFeedService, mockFeedEntryService } =
+        await setup();
       mockUserService.get.and.returnValue(of({}));
       mockFeedService.query.and.returnValue(
         of({

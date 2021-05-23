@@ -6,10 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 import { FeedEntryService } from '@app/services/data';
 import { Feed } from '@app/models';
 import { FeedEntryImpl } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
-import {
-  FeedCountsObservableService,
-  ReadBufferService,
-} from '@app/routes/main/services';
+import { ReadCounterService } from '@app/routes/main/services';
 
 type FeedImpl = Required<Pick<Feed, 'calculatedTitle' | 'homeUrl'>>;
 
@@ -38,8 +35,7 @@ export class FeedEntryViewComponent implements OnDestroy {
     private zone: NgZone,
     public elementRef: ElementRef<HTMLElement>,
     private feedEntryService: FeedEntryService,
-    private feedCountsObservableService: FeedCountsObservableService,
-    private readBufferService: ReadBufferService,
+    private readCounterService: ReadCounterService,
   ) {}
 
   ngOnDestroy() {
@@ -53,8 +49,7 @@ export class FeedEntryViewComponent implements OnDestroy {
       return;
     }
     feedEntry.isRead = true;
-    this.readBufferService.markRead(feedEntry.uuid);
-    this.feedCountsObservableService.decrement(feedEntry.feedUuid);
+    this.readCounterService.markRead(feedEntry);
   }
 
   autoRead() {
@@ -78,8 +73,7 @@ export class FeedEntryViewComponent implements OnDestroy {
     }
 
     feedEntry.isRead = false;
-    this.readBufferService.markUnread(feedEntry.uuid);
-    this.feedCountsObservableService.increment(feedEntry.feedUuid);
+    this.readCounterService.markUnread(feedEntry);
   }
 
   favorite() {

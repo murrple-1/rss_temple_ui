@@ -3,57 +3,32 @@ import { Router } from '@angular/router';
 
 import { FeedEntryService } from '@app/services/data';
 import { DateFormatPipe } from '@app/pipes/dayjs-format.pipe';
-import {
-  FeedCountsObservableService,
-  ReadBufferService,
-} from '@app/routes/main/services';
-import {
-  AppAlertsService,
-  HttpErrorService,
-  SessionService,
-} from '@app/services';
+import { ReadCounterService } from '@app/routes/main/services';
 
 import { FeedEntryViewComponent } from './feed-entry-view.component';
 
 async function setup() {
   const routerSpy = jasmine.createSpyObj<Router>('Router', ['navigate']);
 
-  const mockFeedCountsObservableService = jasmine.createSpyObj<FeedCountsObservableService>(
-    'FeedCountsObservableService',
-    ['refresh'],
-  );
   const mockFeedEntryService = jasmine.createSpyObj<FeedEntryService>(
     'FeedEntryService',
-    ['query', 'read', 'unread'],
+    ['query', 'readSome', 'unreadSome'],
   );
-
-  const appAlertService = new AppAlertsService();
-  const sessionService = new SessionService();
-  const httpErrorService = new HttpErrorService(
-    routerSpy,
-    appAlertService,
-    sessionService,
-  );
-
-  const readBufferService = new ReadBufferService(
-    mockFeedEntryService,
-    httpErrorService,
+  const mockReadCounterService = jasmine.createSpyObj<ReadCounterService>(
+    'ReadCounterService',
+    ['readAll'],
   );
 
   await TestBed.configureTestingModule({
     declarations: [FeedEntryViewComponent, DateFormatPipe],
     providers: [
       {
-        provide: FeedCountsObservableService,
-        useValue: mockFeedCountsObservableService,
-      },
-      {
         provide: FeedEntryService,
         useValue: mockFeedEntryService,
       },
       {
-        provide: ReadBufferService,
-        useValue: readBufferService,
+        provide: ReadCounterService,
+        useValue: mockReadCounterService,
       },
     ],
   }).compileComponents();
@@ -61,9 +36,8 @@ async function setup() {
   return {
     routerSpy,
 
-    mockFeedCountsObservableService,
     mockFeedEntryService,
-    readBufferService,
+    mockReadCounterService,
   };
 }
 

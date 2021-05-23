@@ -11,9 +11,8 @@ import { routes } from '@app/routes/main/main.routing';
 
 import {
   FeedObservableService,
-  FeedCountsObservableService,
   UserCategoryObservableService,
-  ReadBufferService,
+  ReadCounterService,
 } from '@app/routes/main/services';
 
 import { InViewportDirective } from '@app/routes/main/directives/inviewport.directive';
@@ -47,9 +46,8 @@ import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/routes/main
   ],
   providers: [
     FeedObservableService,
-    FeedCountsObservableService,
     UserCategoryObservableService,
-    ReadBufferService,
+    ReadCounterService,
   ],
   declarations: [
     InViewportDirective,

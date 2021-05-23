@@ -16,50 +16,28 @@ import {
   UserCategoryService,
 } from '@app/services/data';
 import {
-  FeedCountsObservableService,
   FeedObservableService,
-  ReadBufferService,
+  ReadCounterService,
   UserCategoryObservableService,
 } from '@app/routes/main/services';
 import { VerticalNavComponent } from '@app/routes/main/components/shared/vertical-nav/vertical-nav.component';
 import { SubscribeModalComponent } from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
 import { OPMLModalComponent } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
 import { FeedsFooterComponent } from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
-import {
-  AppAlertsService,
-  HttpErrorService,
-  SessionService,
-} from '@app/services';
 
 import { FeedsComponent } from './feeds.component';
 
 async function setup() {
   const mockRoute = new MockActivatedRoute();
-  const routerSpy = jasmine.createSpyObj<Router>('Router', ['navigate']);
 
-  const mockFeedCountsObservableService = jasmine.createSpyObj<FeedCountsObservableService>(
-    'FeedCountsObservableService',
-    ['refresh'],
+  const mockReadCounterService = jasmine.createSpyObj<ReadCounterService>(
+    'ReadCounterService',
+    ['readAll'],
   );
-
   const mockFeedEntryService = jasmine.createSpyObj<FeedEntryService>(
     'FeedEntryService',
-    ['query', 'read', 'unread'],
+    ['query', 'readSome', 'unreadSome'],
   );
-
-  const appAlertService = new AppAlertsService();
-  const sessionService = new SessionService();
-  const httpErrorService = new HttpErrorService(
-    routerSpy,
-    appAlertService,
-    sessionService,
-  );
-
-  const readBufferService = new ReadBufferService(
-    mockFeedEntryService,
-    httpErrorService,
-  );
-
   const mockFeedService = jasmine.createSpyObj<FeedService>('FeedService', [
     'queryAll',
   ]);
@@ -94,10 +72,6 @@ async function setup() {
       FeedObservableService,
       UserCategoryObservableService,
       {
-        provide: FeedCountsObservableService,
-        useValue: mockFeedCountsObservableService,
-      },
-      {
         provide: FeedService,
         useValue: mockFeedService,
       },
@@ -118,8 +92,8 @@ async function setup() {
         useValue: mockUserCategoryService,
       },
       {
-        provide: ReadBufferService,
-        useValue: readBufferService,
+        provide: ReadCounterService,
+        useValue: mockReadCounterService,
       },
     ],
   }).compileComponents();
@@ -132,6 +106,7 @@ async function setup() {
     mockOPMLService,
     mockProgressService,
     mockUserCategoryService,
+    mockReadCounterService,
   };
 }
 
@@ -150,13 +125,7 @@ describe('FeedsComponent', () => {
   it(
     'can run ngOnInit',
     waitForAsync(async () => {
-      const { mockFeedService, mockFeedEntryService } = await setup();
-      mockFeedService.queryAll.and.returnValue(
-        of({
-          objects: [],
-          totalCount: 0,
-        }),
-      );
+      const { mockFeedEntryService } = await setup();
       mockFeedEntryService.query.and.returnValue(
         of({
           objects: [],

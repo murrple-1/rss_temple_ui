@@ -15,9 +15,8 @@ import { takeUntil, map, startWith, mergeMap, tap } from 'rxjs/operators';
 
 import { FeedService, FeedEntryService } from '@app/services/data';
 import {
-  FeedCountsObservableService,
   FeedObservableService,
-  ReadBufferService,
+  ReadCounterService,
 } from '@app/routes/main/services';
 import {
   AbstractFeedsComponent,
@@ -60,8 +59,7 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
     zone: NgZone,
     changeDetectorRef: ChangeDetectorRef,
     feedEntryService: FeedEntryService,
-    feedCountsObservableService: FeedCountsObservableService,
-    readBufferService: ReadBufferService,
+    readCounterService: ReadCounterService,
     httpErrorService: HttpErrorService,
     modalOpenService: ModalOpenService,
   ) {
@@ -69,8 +67,7 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
       zone,
       changeDetectorRef,
       feedEntryService,
-      feedCountsObservableService,
-      readBufferService,
+      readCounterService,
       httpErrorService,
       modalOpenService,
     );
@@ -246,7 +243,7 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => {
-          this.feedCountsObservableService.zero();
+          this.readCounterService.readAll();
 
           this.zone.run(() => {
             this.reload();

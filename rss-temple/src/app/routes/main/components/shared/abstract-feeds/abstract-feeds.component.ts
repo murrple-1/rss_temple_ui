@@ -25,10 +25,7 @@ import {
 } from '@app/services/data/stablequery.interface';
 import { Objects } from '@app/services/data/objects';
 import { State as FeedsFooterState } from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
-import {
-  FeedCountsObservableService,
-  ReadBufferService,
-} from '@app/routes/main/services';
+import { ReadCounterService } from '@app/routes/main/services';
 
 export const DEFAULT_COUNT = 10;
 
@@ -106,8 +103,7 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
     protected zone: NgZone,
     protected changeDetectorRef: ChangeDetectorRef,
     protected feedEntryService: FeedEntryService,
-    protected feedCountsObservableService: FeedCountsObservableService,
-    protected readBufferService: ReadBufferService,
+    protected readCounterService: ReadCounterService,
     protected httpErrorService: HttpErrorService,
     protected modalOpenService: ModalOpenService,
   ) {}
@@ -419,12 +415,10 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
 
           if (!feedEntry.isRead) {
             feedEntry.isRead = true;
-            this.readBufferService.markRead(feedEntry.uuid);
-            this.feedCountsObservableService.decrement(feedEntry.uuid);
+            this.readCounterService.markRead(feedEntry);
           } else {
             feedEntry.isRead = false;
-            this.readBufferService.markUnread(feedEntry.uuid);
-            this.feedCountsObservableService.increment(feedEntry.uuid);
+            this.readCounterService.markUnread(feedEntry);
           }
         }
         break;

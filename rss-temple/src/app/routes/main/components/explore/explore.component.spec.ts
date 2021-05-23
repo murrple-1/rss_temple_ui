@@ -13,16 +13,16 @@ import {
   UserService,
   ExploreService,
 } from '@app/services/data';
-import { FeedCountsObservableService } from '@app/routes/main/services';
+import { ReadCounterService } from '@app/routes/main/services';
 
 import { ExploreComponent } from './explore.component';
 
 async function setup() {
-  const mockFeedCountsObservableService = jasmine.createSpyObj<FeedCountsObservableService>(
-    'FeedCountsObservableService',
-    ['refresh'],
+  const mockReadCounterService = jasmine.createSpyObj<ReadCounterService>(
+    'ReadCounterService',
+    ['readAll'],
   );
-  (mockFeedCountsObservableService as any).feedCounts$ = of({});
+  (mockReadCounterService as any).feedCounts$ = of({});
 
   const mockFeedService = jasmine.createSpyObj<FeedService>('FeedService', [
     'query',
@@ -61,7 +61,7 @@ async function setup() {
   }).compileComponents();
 
   return {
-    mockFeedCountsObservableService,
+    mockReadCounterService,
     mockFeedService,
     mockExploreService,
     mockFeedEntryService,
