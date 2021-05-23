@@ -14,11 +14,10 @@ describe('UserCategoryObservableService', () => {
 
     const fn = jasmine.createSpy();
 
-    const subscription = userCategoryObservableService.userCategoriesChanged$.subscribe(
-      {
+    const subscription =
+      userCategoryObservableService.userCategoriesChanged$.subscribe({
         next: fn,
-      },
-    );
+      });
 
     try {
       userCategoryObservableService.userCategoriesChanged$.next();

@@ -86,7 +86,7 @@ export function toStableQueryBody<Field extends string>(
 
 export function toCreateStableQueryHeaders<
   Field extends string,
-  SortField extends string
+  SortField extends string,
 >(
   options: CreateStableQueryOptions<SortField>,
   sessionTokenFn: () => string | null,
@@ -97,7 +97,7 @@ export function toCreateStableQueryHeaders<
 
 export function toStableQueryHeaders<
   Field extends string,
-  SortField extends string
+  SortField extends string,
 >(options: StableQueryOptions<Field>, sessionTokenFn: () => string | null) {
   const headers = commonToHeaders(options, sessionTokenFn);
   return headers;

@@ -11,7 +11,7 @@ import {
 export function stableQueryAllFn<
   Field extends string,
   SortField extends string,
-  T
+  T,
 >(
   options: AllOptions<Field, SortField>,
   createFn: (
