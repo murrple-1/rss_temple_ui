@@ -238,20 +238,22 @@ export class ReadCounterService implements OnDestroy {
       this.actionQueueTimeoutId = null;
     }
 
-    let action = this.actionQueue.pop();
-    while (action !== undefined) {
-      try {
-        await action.bind(this)();
-      } catch (e) {
-        console.error(e);
+    try {
+      let action = this.actionQueue.shift();
+      while (action !== undefined) {
+        try {
+          await action.bind(this)();
+        } catch (e) {
+          console.error(e);
+        }
+        action = this.actionQueue.shift();
       }
-      action = this.actionQueue.pop();
+    } finally {
+      this.actionQueueTimeoutId = window.setTimeout(
+        this.handleActions.bind(this),
+        actionQueueTimeoutInterval,
+      );
     }
-
-    this.actionQueueTimeoutId = window.setTimeout(
-      this.handleActions.bind(this),
-      actionQueueTimeoutInterval,
-    );
   }
 
   private refresh() {
@@ -260,41 +262,37 @@ export class ReadCounterService implements OnDestroy {
       this.refreshTimeoutId = null;
     }
 
-    this.actionQueue.push(() =>
-      this.feedService
-        .queryAll({
-          fields: ['uuid', 'unreadCount'],
-          returnTotalCount: false,
-          search: 'subscribed:"true"',
-        })
-        .pipe(
-          takeUntil(this.unsubscribe$),
-          map(response => {
-            if (response.objects !== undefined) {
-              return response.objects as FeedImpl[];
-            }
-            throw new Error('malformed response');
-          }),
-        )
-        .toPromise()
-        .then(
-          feeds => {
-            const feedCounts: Record<string, number> = {};
-            for (const feed of feeds) {
-              feedCounts[feed.uuid] = feed.unreadCount;
-            }
+    this.actionQueue.push(async () => {
+      try {
+        const feeds = await this.feedService
+          .queryAll({
+            fields: ['uuid', 'unreadCount'],
+            returnTotalCount: false,
+            search: 'subscribed:"true"',
+          })
+          .pipe(
+            takeUntil(this.unsubscribe$),
+            map(response => {
+              if (response.objects !== undefined) {
+                return response.objects as FeedImpl[];
+              }
+              throw new Error('malformed response');
+            }),
+          )
+          .toPromise();
 
-            this.refreshTimeoutId = window.setTimeout(
-              this.refresh.bind(this),
-              refreshTimeoutInterval,
-            );
+        const feedCounts: Record<string, number> = {};
+        for (const feed of feeds) {
+          feedCounts[feed.uuid] = feed.unreadCount;
+        }
 
-            this._feedCounts$.next(feedCounts);
-          },
-          reason => {
-            this.httpErrorService.handleError(reason);
-          },
-        ),
-    );
+        this._feedCounts$.next(feedCounts);
+      } finally {
+        this.refreshTimeoutId = window.setTimeout(
+          this.refresh.bind(this),
+          refreshTimeoutInterval,
+        );
+      }
+    });
   }
 }
