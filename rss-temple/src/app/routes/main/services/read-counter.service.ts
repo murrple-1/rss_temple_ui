@@ -85,22 +85,21 @@ export class ReadCounterService implements OnDestroy {
       )
       .subscribe({
         next: () => {
-          const readUuids = Array.from(this.readUuids);
-          const unreadUuids = Array.from(this.unreadUuids);
-
-          this.readUuids.clear();
-          this.unreadUuids.clear();
-
-          const readSomeObservable =
-            readUuids.length > 0
-              ? this.feedEntryService.readSome(readUuids, undefined)
-              : of(undefined);
-          const unreadSomeObservable =
-            unreadUuids.length > 0
-              ? this.feedEntryService.unreadSome(unreadUuids)
-              : of(undefined);
-
           this.actionQueue.push(async () => {
+            const readUuids = Array.from(this.readUuids);
+            const unreadUuids = Array.from(this.unreadUuids);
+
+            this.readUuids.clear();
+            this.unreadUuids.clear();
+
+            const readSomeObservable =
+              readUuids.length > 0
+                ? this.feedEntryService.readSome(readUuids, undefined)
+                : of(undefined);
+            const unreadSomeObservable =
+              unreadUuids.length > 0
+                ? this.feedEntryService.unreadSome(unreadUuids)
+                : of(undefined);
             try {
               await forkJoin([
                 readSomeObservable,
@@ -158,12 +157,12 @@ export class ReadCounterService implements OnDestroy {
 
   markRead(feedEntry: FeedEntryImpl) {
     return new Promise<void>((resolve, reject) => {
-      this.readUuids.add(feedEntry.uuid);
-      this.unreadUuids.delete(feedEntry.uuid);
-      this.change$.next();
-
       this.actionQueue.push(async () => {
         try {
+          this.readUuids.add(feedEntry.uuid);
+          this.unreadUuids.delete(feedEntry.uuid);
+          this.change$.next();
+
           const feedCounts: Record<string, number> = {
             ...this._feedCounts$.getValue(),
           };
@@ -185,12 +184,12 @@ export class ReadCounterService implements OnDestroy {
 
   markUnread(feedEntry: FeedEntryImpl) {
     return new Promise<void>((resolve, reject) => {
-      this.unreadUuids.add(feedEntry.uuid);
-      this.readUuids.delete(feedEntry.uuid);
-      this.change$.next();
-
       this.actionQueue.push(async () => {
         try {
+          this.unreadUuids.add(feedEntry.uuid);
+          this.readUuids.delete(feedEntry.uuid);
+          this.change$.next();
+
           const feedCounts: Record<string, number> = {
             ...this._feedCounts$.getValue(),
           };
