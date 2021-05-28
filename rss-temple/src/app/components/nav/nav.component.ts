@@ -37,7 +37,9 @@ export class NavComponent implements OnInit, OnDestroy {
     routerLink: '/main/feeds',
     routerLinkActiveAlt$: this.router.events.pipe(
       filter(navEvent => navEvent instanceof NavigationEnd),
-      map(navEvent => /^\/main\/feed/.test((navEvent as NavigationEnd).url)),
+      map(navEvent =>
+        /^\/main\/feed/.test((navEvent as NavigationEnd).urlAfterRedirects),
+      ),
     ),
   };
   private readonly exploreLink: NavLink = {
