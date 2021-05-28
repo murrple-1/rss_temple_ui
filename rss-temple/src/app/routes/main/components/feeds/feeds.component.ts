@@ -234,24 +234,12 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
     this.getFeeds();
   }
 
-  readAll() {
-    this.feedEntryService
-      .readSome(
-        undefined,
-        this.feeds.map(f => f.uuid),
-      )
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe({
-        next: () => {
-          this.readCounterService.readAll();
-
-          this.zone.run(() => {
-            this.reload();
-          });
-        },
-        error: error => {
-          this.httpErrorService.handleError(error);
-        },
-      });
+  async readAll() {
+    try {
+      await this.readCounterService.readAll(this.feeds.map(f => f.uuid));
+      this.reload();
+    } catch (reason) {
+      this.httpErrorService.handleError(reason);
+    }
   }
 }

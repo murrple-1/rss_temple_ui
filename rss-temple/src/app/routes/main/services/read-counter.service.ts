@@ -30,7 +30,6 @@ type FeedImpl = Required<Pick<Feed, 'uuid' | 'unreadCount'>>;
 type FeedEntryImpl = Required<Pick<FeedEntry, 'uuid' | 'feedUuid'>>;
 
 const refreshTimeoutInterval = 20000;
-const actionQueueTimeoutInterval = 250;
 
 function generateNotifierForBufferByCountAndDebouce(
   subject$: Observable<unknown>,
@@ -64,10 +63,12 @@ export class ReadCounterService implements OnDestroy {
   private unreadUuids = new Set<string>();
   private change$ = new Subject<void>();
 
-  private actionQueueTimeoutId: number | null = null;
-  private actionQueue: (() => Promise<void>)[] = [];
+  private refreshTimeoutId: number | null | undefined = undefined;
 
-  private refreshTimeoutId: number | null = null;
+  private shouldRefresh = true;
+  private readAllFeedUuids: string[] | null = null;
+
+  private isNetworking = false;
 
   private unsubscribe$ = new Subject<void>();
 
@@ -84,32 +85,12 @@ export class ReadCounterService implements OnDestroy {
         ),
       )
       .subscribe({
-        next: () => {
-          this.actionQueue.push(async () => {
-            const readUuids = Array.from(this.readUuids);
-            const unreadUuids = Array.from(this.unreadUuids);
+        next: async () => {
+          await this.syncServer();
 
-            this.readUuids.clear();
-            this.unreadUuids.clear();
-
-            const readSomeObservable =
-              readUuids.length > 0
-                ? this.feedEntryService.readSome(readUuids, undefined)
-                : of(undefined);
-            const unreadSomeObservable =
-              unreadUuids.length > 0
-                ? this.feedEntryService.unreadSome(unreadUuids)
-                : of(undefined);
-            try {
-              await forkJoin([
-                readSomeObservable,
-                unreadSomeObservable,
-              ]).toPromise();
-            } catch (reason) {
-              this.httpErrorService.handleError(reason);
-              throw reason;
-            }
-          });
+          if (this.unreadUuids.size > 0 || this.readUuids.size > 0) {
+            this.change$.next();
+          }
         },
       });
 
@@ -125,16 +106,20 @@ export class ReadCounterService implements OnDestroy {
         next: ([_visibilityChangeEvent, isLoggedIn]) => {
           if (isLoggedIn && document.visibilityState === 'visible') {
             this.refresh();
-            this.handleActions();
           } else {
-            this.actionQueue = [];
-
-            if (this.refreshTimeoutId !== null) {
+            if (
+              this.refreshTimeoutId !== null &&
+              this.refreshTimeoutId !== undefined
+            ) {
               window.clearTimeout(this.refreshTimeoutId);
             }
+            this.refreshTimeoutId = undefined;
 
-            if (this.actionQueueTimeoutId !== null) {
-              window.clearTimeout(this.actionQueueTimeoutId);
+            if (!isLoggedIn) {
+              this.shouldRefresh = false;
+              this.readUuids.clear();
+              this.unreadUuids.clear();
+              this._feedCounts$.next({});
             }
           }
         },
@@ -146,123 +131,128 @@ export class ReadCounterService implements OnDestroy {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
 
-    if (this.refreshTimeoutId !== null) {
+    if (this.refreshTimeoutId !== null && this.refreshTimeoutId !== undefined) {
       window.clearTimeout(this.refreshTimeoutId);
-    }
-
-    if (this.actionQueueTimeoutId !== null) {
-      window.clearTimeout(this.actionQueueTimeoutId);
     }
   }
 
   markRead(feedEntry: FeedEntryImpl) {
-    return new Promise<void>((resolve, reject) => {
-      this.actionQueue.push(async () => {
-        try {
-          this.readUuids.add(feedEntry.uuid);
-          this.unreadUuids.delete(feedEntry.uuid);
-          this.change$.next();
+    const feedCounts: Record<string, number> = {
+      ...this._feedCounts$.getValue(),
+    };
+    const oldCount = feedCounts[feedEntry.feedUuid];
+    if (oldCount !== undefined && oldCount > 0) {
+      feedCounts[feedEntry.feedUuid] = oldCount - 1;
 
-          const feedCounts: Record<string, number> = {
-            ...this._feedCounts$.getValue(),
-          };
-          const oldCount = feedCounts[feedEntry.feedUuid];
-          if (oldCount !== undefined && oldCount > 0) {
-            feedCounts[feedEntry.feedUuid] = oldCount - 1;
+      this._feedCounts$.next(feedCounts);
+    }
 
-            this._feedCounts$.next(feedCounts);
-          }
-
-          resolve();
-        } catch (reason) {
-          reject(reason);
-          throw reason;
-        }
-      });
-    });
+    this.readUuids.add(feedEntry.uuid);
+    this.unreadUuids.delete(feedEntry.uuid);
+    this.change$.next();
   }
 
   markUnread(feedEntry: FeedEntryImpl) {
-    return new Promise<void>((resolve, reject) => {
-      this.actionQueue.push(async () => {
-        try {
-          this.unreadUuids.add(feedEntry.uuid);
-          this.readUuids.delete(feedEntry.uuid);
-          this.change$.next();
+    const feedCounts: Record<string, number> = {
+      ...this._feedCounts$.getValue(),
+    };
+    const oldCount = feedCounts[feedEntry.feedUuid];
+    if (oldCount !== undefined) {
+      feedCounts[feedEntry.feedUuid] = oldCount + 1;
 
-          const feedCounts: Record<string, number> = {
-            ...this._feedCounts$.getValue(),
-          };
-          const oldCount = feedCounts[feedEntry.feedUuid];
-          if (oldCount !== undefined) {
-            feedCounts[feedEntry.feedUuid] = oldCount + 1;
-
-            this._feedCounts$.next(feedCounts);
-          }
-
-          resolve();
-        } catch (reason) {
-          reject(reason);
-          throw reason;
-        }
-      });
-    });
-  }
-
-  readAll() {
-    return new Promise<void>((resolve, reject) => {
-      this.actionQueue.push(async () => {
-        try {
-          const feedCounts: Record<string, number> = {
-            ...this._feedCounts$.getValue(),
-          };
-          for (const feedUuid of Object.keys(feedCounts)) {
-            feedCounts[feedUuid] = 0;
-          }
-
-          this._feedCounts$.next(feedCounts);
-
-          resolve();
-        } catch (reason) {
-          reject(reason);
-          throw reason;
-        }
-      });
-    });
-  }
-
-  private async handleActions() {
-    if (this.actionQueueTimeoutId !== null) {
-      window.clearTimeout(this.actionQueueTimeoutId);
-      this.actionQueueTimeoutId = null;
+      this._feedCounts$.next(feedCounts);
     }
 
-    try {
-      let action = this.actionQueue.shift();
-      while (action !== undefined) {
-        try {
-          await action.bind(this)();
-        } catch (e) {
-          console.error(e);
-        }
-        action = this.actionQueue.shift();
-      }
-    } finally {
-      this.actionQueueTimeoutId = window.setTimeout(
-        this.handleActions.bind(this),
-        actionQueueTimeoutInterval,
+    this.unreadUuids.add(feedEntry.uuid);
+    this.readUuids.delete(feedEntry.uuid);
+    this.change$.next();
+  }
+
+  async readAll(feedUuids: string[]) {
+    const feedCounts: Record<string, number> = {
+      ...this._feedCounts$.getValue(),
+    };
+    for (const feedUuid of Object.keys(feedCounts)) {
+      feedCounts[feedUuid] = 0;
+    }
+
+    this._feedCounts$.next(feedCounts);
+
+    this.readUuids.clear();
+    this.unreadUuids.clear();
+    this.readAllFeedUuids = feedUuids;
+
+    await this.syncServer();
+  }
+
+  private async refresh() {
+    if (this.refreshTimeoutId !== null && this.refreshTimeoutId !== undefined) {
+      window.clearTimeout(this.refreshTimeoutId);
+    }
+    this.refreshTimeoutId = null;
+
+    this.shouldRefresh = true;
+    await this.syncServer();
+
+    if (this.refreshTimeoutId !== undefined) {
+      this.refreshTimeoutId = window.setTimeout(
+        this.refresh.bind(this),
+        refreshTimeoutInterval,
       );
     }
   }
 
-  private refresh() {
-    if (this.refreshTimeoutId !== null) {
-      window.clearTimeout(this.refreshTimeoutId);
-      this.refreshTimeoutId = null;
+  private async syncServer() {
+    if (this.isNetworking) {
+      return;
     }
 
-    this.actionQueue.push(async () => {
-      try {
+    try {
+      this.isNetworking = true;
+
+      if (this.readUuids.size > 0 || this.unreadUuids.size > 0) {
+        const readUuids = Array.from(this.readUuids);
+        const unreadUuids = Array.from(this.unreadUuids);
+
+        this.readUuids.clear();
+        this.unreadUuids.clear();
+
+        const readSomeObservable =
+          readUuids.length > 0
+            ? this.feedEntryService.readSome(readUuids, undefined)
+            : of(undefined);
+        const unreadSomeObservable =
+          unreadUuids.length > 0
+            ? this.feedEntryService.unreadSome(unreadUuids)
+            : of(undefined);
+
+        try {
+          await forkJoin([
+            readSomeObservable,
+            unreadSomeObservable,
+          ]).toPromise();
+        } catch (reason) {
+          this.httpErrorService.handleError(reason);
+          throw reason;
+        }
+      }
+
+      if (this.readAllFeedUuids !== null) {
+        try {
+          const feedUuids = this.readAllFeedUuids;
+          this.readAllFeedUuids = null;
+          await this.feedEntryService
+            .readSome(undefined, feedUuids)
+            .toPromise();
+        } catch (reason) {
+          this.httpErrorService.handleError(reason);
+          throw reason;
+        }
+      }
+
+      if (this.shouldRefresh) {
+        this.shouldRefresh = false;
+
         const feeds = await this.feedService
           .queryAll({
             fields: ['uuid', 'unreadCount'],
@@ -286,12 +276,9 @@ export class ReadCounterService implements OnDestroy {
         }
 
         this._feedCounts$.next(feedCounts);
-      } finally {
-        this.refreshTimeoutId = window.setTimeout(
-          this.refresh.bind(this),
-          refreshTimeoutInterval,
-        );
       }
-    });
+    } finally {
+      this.isNetworking = false;
+    }
   }
 }
