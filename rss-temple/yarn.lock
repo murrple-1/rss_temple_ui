@@ -1232,10 +1232,10 @@
   resolved "https://registry.yarnpkg.com/@cds/city/-/city-1.1.0.tgz#5b7323750d3d64671ce2e3a804bcf260fbea1154"
   integrity sha512-S9K+Q39BGOghyLHmR0Wdcmu1i1noSUk8HcvMj+3IaohZw02WFd99aPTQDHJeseXrXZP3CNovaSlePI0R11NcFg==
 
-"@cds/core@^5.2.0":
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/@cds/core/-/core-5.2.0.tgz#9df140f3bf5711dc344b478e46932ce0234bbb73"
-  integrity sha512-2INy/23X2FwLP0olKs8CQGRYBv1mfCxYWVPa9cej6LtE62oFreL3ME4inU8gCyFoE91f11N9o0R4a6wtloy3tg==
+"@cds/core@^5.3.0":
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/@cds/core/-/core-5.3.0.tgz#ba844d77cad775c6df304405dae1ecdc2af9a7db"
+  integrity sha512-nlqLXpiC5sXasAQxBDrPY+BZMzsZSxVAE+zZBmaHfAsJ2lP9mTcdLlCduHGPtRD5QhRuC7yWGKdooE5NOOPF4Q==
   dependencies:
     "@types/resize-observer-browser" "^0.1.3"
     lit-element "^2.3.1"
@@ -1246,22 +1246,22 @@
     "@cds/city" "^1.1.0"
     normalize.css "^8.0.1"
 
-"@clr/angular@^5.2.0":
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/@clr/angular/-/angular-5.2.0.tgz#b0cd299c5c6ff2f5dbb87a0dfa081348e910a129"
-  integrity sha512-AZlYG8Z/QpPtOcnzKktmV9EJaGFf8Gg5TkwaxRqngtEY2RuLcIwfewipXU/+Z1YbbH+nffl92iaNNlNAmzgupQ==
+"@clr/angular@^5.3.0":
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/@clr/angular/-/angular-5.3.0.tgz#05c7026da8ca921e65c7fc2e274f04c4bc693066"
+  integrity sha512-+eXd/gNLaMNIQkbkA+4gapcqW4lBwb8Wg1QqCsoTvHCXqu1+/tQDrnGR7tV6vp0NKFmD9weF+ZPy/+b+qM3ZSg==
   dependencies:
     tslib "^2.0.0"
 
-"@clr/icons@^5.2.0":
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/@clr/icons/-/icons-5.2.0.tgz#24ceb7234ab58896c439c67ed78b456b3ea417e6"
-  integrity sha512-nxeuEU+L1ch4y4sh4U6mCxI1Fc5GzNeFYzsKsKWqrK2ZPWVWlBkFVu/S2Wg7rV9OCjJ2ak7o0KJ8vUtyhkZpeA==
+"@clr/icons@^5.3.0":
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/@clr/icons/-/icons-5.3.0.tgz#067259ce63cea5ed8e7f12e38480bc0ccb74402e"
+  integrity sha512-UYoKd/aVipYOWTQdwWSWFezx5rW/h+P1wPlvPLjcj9O8mTezmRtETxiyklZvYnsSNiK7k+p5faGNuv8vI4cPPQ==
 
-"@clr/ui@^5.2.0":
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/@clr/ui/-/ui-5.2.0.tgz#a16cc2867ac0e149a7c130956ea184239921242e"
-  integrity sha512-BYPVKq4CfSbB33ktQbC7fkCYawtTg12W/oliq6BketR90+CFtGNaQ588dJXdACS74y0VJmPgNVJ4wl/1/Z6a/g==
+"@clr/ui@^5.3.0":
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/@clr/ui/-/ui-5.3.0.tgz#27e85d4a5d7139b43b4625e398640b7255aa3da2"
+  integrity sha512-ttYTS5wPjjhtnaFt3XPSPKCQzWTVOoDgLjucx/WZ8IsRnXqi/zL45nqm4q2evrsUD3lJFjqABhksUVUC+rphWQ==
 
 "@csstools/convert-colors@^1.4.0":
   version "1.4.0"
