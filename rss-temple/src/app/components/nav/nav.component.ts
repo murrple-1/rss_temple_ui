@@ -1,8 +1,8 @@
 import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 
-import { Observable, of, Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import {
   ConfirmModalComponent,
@@ -27,35 +27,46 @@ interface NavAction {
   styleUrls: ['./nav.component.scss'],
 })
 export class NavComponent implements OnInit, OnDestroy {
+  private readonly navEnd$ = this.router.events.pipe(
+    filter(navEvent => navEvent instanceof NavigationEnd),
+    map(navEvent => navEvent as NavigationEnd),
+    share(),
+  );
+
   private readonly loginLink: NavLink = {
     name: 'Login',
     routerLink: '/login',
-    routerLinkActiveAlt$: of(false),
+    routerLinkActiveAlt$: this.navEnd$.pipe(
+      map(navEnd => /^\/login/.test(navEnd.urlAfterRedirects)),
+    ),
   };
   private readonly homeLink: NavLink = {
     name: 'Home',
     routerLink: '/main/feeds',
-    routerLinkActiveAlt$: this.router.events.pipe(
-      filter(navEvent => navEvent instanceof NavigationEnd),
-      map(navEvent =>
-        /^\/main\/feed/.test((navEvent as NavigationEnd).urlAfterRedirects),
-      ),
+    routerLinkActiveAlt$: this.navEnd$.pipe(
+      map(navEnd => /^\/main\/feed/.test(navEnd.urlAfterRedirects)),
     ),
   };
   private readonly exploreLink: NavLink = {
     name: 'Explore',
     routerLink: '/main/explore',
-    routerLinkActiveAlt$: of(false),
+    routerLinkActiveAlt$: this.navEnd$.pipe(
+      map(navEnd => /^\/main\/explore/.test(navEnd.urlAfterRedirects)),
+    ),
   };
   private readonly profileLink: NavLink = {
     name: 'Profile',
     routerLink: '/main/profile',
-    routerLinkActiveAlt$: of(false),
+    routerLinkActiveAlt$: this.navEnd$.pipe(
+      map(navEnd => /^\/main\/profile/.test(navEnd.urlAfterRedirects)),
+    ),
   };
   private readonly supportLink: NavLink = {
     name: 'Support',
     routerLink: '/main/support',
-    routerLinkActiveAlt$: of(false),
+    routerLinkActiveAlt$: this.navEnd$.pipe(
+      map(navEnd => /^\/main\/support/.test(navEnd.urlAfterRedirects)),
+    ),
   };
   private readonly logoutAction: NavAction = {
     clrIconShape: 'logout',

@@ -2,7 +2,6 @@
   <a
     *ngFor="let navLink of navLinks"
     [routerLink]="navLink.routerLink"
-    routerLinkActive="active"
     [ngClass]="{
       'active': navLink.routerLinkActiveAlt$ | async
     }"
