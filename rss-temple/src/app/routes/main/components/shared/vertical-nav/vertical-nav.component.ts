@@ -60,8 +60,6 @@ interface CategorizedFeeds {
   styleUrls: ['./vertical-nav.component.scss'],
 })
 export class VerticalNavComponent implements OnInit, OnDestroy {
-  collapsed: boolean;
-
   categorizedFeeds: CategorizedFeeds = {
     noCategory: {
       isExpanded: false,
@@ -93,9 +91,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
     private appAlertsService: AppAlertsService,
     private httpErrorService: HttpErrorService,
     private modalOpenService: ModalOpenService,
-  ) {
-    this.collapsed = window.innerWidth <= 800;
-  }
+  ) {}
 
   private static buildCategorizedFeeds(
     currentUrl: string,

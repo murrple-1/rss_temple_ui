@@ -5,6 +5,11 @@
 .app--no-entries {
   width: 100%;
   text-align: center;
+
+  img {
+    max-width: calc(100vw * (2 / 3));
+    max-height: calc(100vh * (2 / 3));
+  }
 }
 
 .app--loading-text {

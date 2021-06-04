@@ -1,7 +1,4 @@
-<clr-vertical-nav
-  [clrVerticalNavCollapsible]="true"
-  [(clrVerticalNavCollapsed)]="collapsed"
->
+<clr-vertical-nav [clrVerticalNavCollapsible]="true" [clr-nav-level]="2">
   <ng-container *ngIf="feedCounts$ | async as feedCounts">
     <a
       *appVar="getTotalCount(feedCounts) as totalCount"
