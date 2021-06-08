@@ -24,8 +24,12 @@
 
 .app--is-read .card-block {
   &,
-  & ::ng-deep *:not([class]) {
+  & ::ng-deep *:not([class]):not(a) {
     color: #b3b3b3;
+  }
+
+  & ::ng-deep a:not([class]) {
+    color: #8fbed2;
   }
 }
 
