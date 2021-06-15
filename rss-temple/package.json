@@ -37,6 +37,7 @@
     "email-validator": "^2.0.4",
     "file-saver": "^2.0.5",
     "rxjs": "~6.6.7",
+    "tinyqueue": "^2.0.3",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.4"
   },
