@@ -42,7 +42,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 
   private token: string | null = null;
 
-  @ViewChild('resetPasswordForm', { static: true })
+  @ViewChild('resetPasswordForm', { static: false })
   _resetPasswordForm?: NgForm;
 
   private redirectTimeoutHandle: number | null = null;
