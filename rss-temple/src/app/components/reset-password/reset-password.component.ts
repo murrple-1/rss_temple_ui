@@ -28,7 +28,7 @@ enum State {
   styleUrls: ['./reset-password.component.scss'],
 })
 export class ResetPasswordComponent implements OnInit, OnDestroy {
-  private static readonly timeoutInterval = 2000;
+  private static readonly redirectTimeoutInterval = 2000;
 
   state = State.NotStarted;
   readonly State = State;
@@ -44,6 +44,8 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 
   @ViewChild('resetPasswordForm', { static: true })
   _resetPasswordForm?: NgForm;
+
+  private redirectTimeoutHandle: number | null = null;
 
   private readonly unsubscribe$ = new Subject<void>();
 
@@ -66,6 +68,10 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
+
+    if (this.redirectTimeoutHandle !== null) {
+      window.clearTimeout(this.redirectTimeoutHandle);
+    }
   }
 
   onSave() {
@@ -95,9 +101,9 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
             this.state = State.Success;
           });
 
-          window.setTimeout(() => {
+          this.redirectTimeoutHandle = window.setTimeout(() => {
             this.router.navigate(['/login']);
-          }, ResetPasswordComponent.timeoutInterval);
+          }, ResetPasswordComponent.redirectTimeoutInterval);
         },
         error: error => {
           if (error instanceof HttpErrorResponse && error.status === 404) {
