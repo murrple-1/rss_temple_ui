@@ -76,6 +76,9 @@ export class NavComponent implements OnInit, OnDestroy {
   navLinks: NavLink[] = [];
   navActions: NavAction[] = [];
 
+  isSearchVisible = false;
+  searchText = '';
+
   @ViewChild('logoutConfirmModal', { static: true })
   private logoutConfirmModal?: ConfirmModalComponent;
 
@@ -102,9 +105,11 @@ export class NavComponent implements OnInit, OnDestroy {
                 this.supportLink,
               ];
               this.navActions = [this.logoutAction];
+              this.isSearchVisible = true;
             } else {
               this.navLinks = [this.loginLink];
               this.navActions = [];
+              this.isSearchVisible = false;
             }
           });
         },
@@ -114,6 +119,10 @@ export class NavComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
+  }
+
+  onSearch() {
+    this.router.navigate(['/main/search']);
   }
 
   private async logout() {

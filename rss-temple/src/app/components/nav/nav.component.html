@@ -9,6 +9,17 @@
     >{{ navLink.name }}</a
   >
 </div>
+<form *ngIf="isSearchVisible" clrForm class="search" (ngSubmit)="onSearch()">
+  <label for="search-input">
+    <input
+      id="search-input"
+      name="searchText"
+      [(ngModel)]="searchText"
+      type="text"
+      placeholder="Search feeds..."
+    />
+  </label>
+</form>
 <div class="header-actions">
   <a
     *ngFor="let navAction of navActions"
