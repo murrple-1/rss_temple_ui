@@ -236,6 +236,8 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
 
   async readAll() {
     try {
+      this.feedEntries = [];
+      this.loadingState = LoadingState.IsLoading;
       await this.readCounterService.readAll(this.feeds.map(f => f.uuid));
       this.reload();
     } catch (reason) {
