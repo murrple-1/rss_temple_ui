@@ -122,7 +122,12 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   onSearch() {
-    this.router.navigate(['/main/search']);
+    const searchText = this.searchText.trim();
+    if (searchText.length < 1) {
+      return;
+    }
+
+    this.router.navigate(['/main/search', { searchText }]);
   }
 
   private async logout() {
