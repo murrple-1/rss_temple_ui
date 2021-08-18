@@ -19,7 +19,7 @@
     </clr-input-container>
     <div *ngIf="uploading">
       <span *ngIf="progressStatus"
-        >Loading new feeds ({{ progressStatus.finishedCount }}/{{
+        >Loading new feeds ({{ progressStatus.finishedCount | number }}/{{
           progressStatus.totalCount
         }})...</span
       >

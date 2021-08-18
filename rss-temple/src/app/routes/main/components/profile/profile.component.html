@@ -176,13 +176,14 @@
         <div class="card-header">Profile Stats</div>
         <div class="card-block">
           <div class="card-text">
-            Number of Feeds subscribed to: {{ numberOfFeeds }}
+            Number of Feeds subscribed to: {{ numberOfFeeds | number }}
           </div>
           <div class="card-text">
-            Number of Read Articles: {{ numberOfReadFeedEntries }}
+            Number of Read Articles: {{ numberOfReadFeedEntries | number }}
           </div>
           <div class="card-text">
-            Number of Unread Articles: {{ numberOfUnreadFeedEntries$ | async }}
+            Number of Unread Articles:
+            {{ numberOfUnreadFeedEntries$ | async | number }}
           </div>
         </div>
       </div>
