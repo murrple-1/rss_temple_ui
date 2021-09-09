@@ -120,8 +120,8 @@ describe('LoginComponent', () => {
 
       const componentFixture = TestBed.createComponent(LoginComponent);
       const component = componentFixture.componentInstance;
-
-      component.ngOnInit();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
       expect(component._returnUrl).toBe(returnUrl);
     }),
@@ -136,9 +136,6 @@ describe('LoginComponent', () => {
       spyOn(router, 'navigate');
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      const component = componentFixture.componentInstance;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -157,9 +154,6 @@ describe('LoginComponent', () => {
       spyOn(router, 'navigate');
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      const component = componentFixture.componentInstance;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -181,7 +175,6 @@ describe('LoginComponent', () => {
       const gAuthService = TestBed.inject(GAuthService);
       gAuthService.signIn();
 
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -200,7 +193,6 @@ describe('LoginComponent', () => {
       const fbAuthService = TestBed.inject(FBAuthService);
       fbAuthService.signIn();
 
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -216,8 +208,6 @@ describe('LoginComponent', () => {
       const componentFixture = TestBed.createComponent(LoginComponent);
       const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -257,8 +247,6 @@ describe('LoginComponent', () => {
       const componentFixture = TestBed.createComponent(LoginComponent);
       const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -299,10 +287,7 @@ describe('LoginComponent', () => {
       spyOn(router, 'navigate');
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -343,10 +328,7 @@ describe('LoginComponent', () => {
       const gAuthService = TestBed.inject(GAuthService) as MockGAuthService;
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -369,10 +351,7 @@ describe('LoginComponent', () => {
       const fbAuthService = TestBed.inject(FBAuthService) as MockFBAuthService;
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -393,8 +372,6 @@ describe('LoginComponent', () => {
       const componentFixture = TestBed.createComponent(LoginComponent);
       const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -419,9 +396,6 @@ describe('LoginComponent', () => {
       const gAuthService = TestBed.inject(GAuthService) as MockGAuthService;
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      const component = componentFixture.componentInstance;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -441,9 +415,6 @@ describe('LoginComponent', () => {
       const fbAuthService = TestBed.inject(FBAuthService) as MockFBAuthService;
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      const component = componentFixture.componentInstance;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -476,10 +447,7 @@ describe('LoginComponent', () => {
       });
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -525,10 +493,7 @@ describe('LoginComponent', () => {
       spyOn(console, 'error');
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -580,10 +545,7 @@ describe('LoginComponent', () => {
       });
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -637,10 +599,7 @@ describe('LoginComponent', () => {
       });
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -677,10 +636,7 @@ describe('LoginComponent', () => {
       spyOn(router, 'navigate');
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -716,10 +672,7 @@ describe('LoginComponent', () => {
       });
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -758,10 +711,7 @@ describe('LoginComponent', () => {
       });
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -798,10 +748,7 @@ describe('LoginComponent', () => {
       spyOn(router, 'navigate');
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -837,10 +784,7 @@ describe('LoginComponent', () => {
       });
 
       const componentFixture = TestBed.createComponent(LoginComponent);
-      const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 

@@ -97,8 +97,8 @@ describe('RegisterComponent', () => {
 
       const componentFixture = TestBed.createComponent(RegisterComponent);
       const component = componentFixture.componentInstance;
-
-      component.ngOnInit();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
 
       expect(component.email).toBe(email);
     }),
@@ -112,8 +112,6 @@ describe('RegisterComponent', () => {
       const componentFixture = TestBed.createComponent(RegisterComponent);
       const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -161,8 +159,6 @@ describe('RegisterComponent', () => {
       const componentFixture = TestBed.createComponent(RegisterComponent);
       const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -212,8 +208,6 @@ describe('RegisterComponent', () => {
       const componentFixture = TestBed.createComponent(RegisterComponent);
       const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -262,8 +256,6 @@ describe('RegisterComponent', () => {
       const componentFixture = TestBed.createComponent(RegisterComponent);
       const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -321,8 +313,6 @@ describe('RegisterComponent', () => {
       const componentFixture = TestBed.createComponent(RegisterComponent);
       const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -389,8 +379,6 @@ describe('RegisterComponent', () => {
       const componentFixture = TestBed.createComponent(RegisterComponent);
       const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -440,8 +428,6 @@ describe('RegisterComponent', () => {
       const componentFixture = TestBed.createComponent(RegisterComponent);
       const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -493,8 +479,6 @@ describe('RegisterComponent', () => {
       const componentFixture = TestBed.createComponent(RegisterComponent);
       const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -557,11 +541,7 @@ describe('RegisterComponent', () => {
       });
 
       const componentFixture = TestBed.createComponent(RegisterComponent);
-      const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
@@ -623,10 +603,7 @@ describe('RegisterComponent', () => {
       });
 
       const componentFixture = TestBed.createComponent(RegisterComponent);
-      const component = componentFixture.componentInstance;
       const debugElement = componentFixture.debugElement;
-
-      component.ngOnInit();
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
