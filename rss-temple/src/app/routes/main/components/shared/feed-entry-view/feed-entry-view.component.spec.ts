@@ -50,6 +50,8 @@ describe('FeedEntryViewComponent', () => {
       const componentFixture = TestBed.createComponent(FeedEntryViewComponent);
       const component = componentFixture.componentInstance;
       expect(component).toBeTruthy();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
     }),
   );
 

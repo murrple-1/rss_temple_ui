@@ -82,6 +82,8 @@ describe('RegisterComponent', () => {
       const componentFixture = TestBed.createComponent(RegisterComponent);
       const component = componentFixture.componentInstance;
       expect(component).toBeTruthy();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
     }),
   );
 
@@ -99,20 +101,6 @@ describe('RegisterComponent', () => {
       component.ngOnInit();
 
       expect(component.email).toBe(email);
-    }),
-  );
-
-  it(
-    'can run ngOnInit',
-    waitForAsync(async () => {
-      await setup();
-
-      const componentFixture = TestBed.createComponent(RegisterComponent);
-      const component = componentFixture.componentInstance;
-
-      component.ngOnInit();
-
-      expect().nothing();
     }),
   );
 

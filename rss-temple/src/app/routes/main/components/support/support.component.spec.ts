@@ -1,4 +1,5 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ClarityModule } from '@clr/angular';
 
@@ -6,7 +7,7 @@ import { SupportComponent } from './support.component';
 
 async function setup() {
   await TestBed.configureTestingModule({
-    imports: [ClarityModule],
+    imports: [BrowserAnimationsModule, ClarityModule],
     declarations: [SupportComponent],
   }).compileComponents();
 
@@ -22,6 +23,8 @@ describe('SupportComponent', () => {
       const componentFixture = TestBed.createComponent(SupportComponent);
       const component = componentFixture.componentInstance;
       expect(component).toBeTruthy();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
     }),
   );
 

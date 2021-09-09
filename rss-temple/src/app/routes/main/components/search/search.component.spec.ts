@@ -53,6 +53,8 @@ describe('SearchComponent', () => {
       const componentFixture = TestBed.createComponent(SearchComponent);
       const component = componentFixture.componentInstance;
       expect(component).toBeTruthy();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
     }),
   );
 

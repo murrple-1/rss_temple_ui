@@ -6,14 +6,16 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClarityModule } from '@clr/angular';
 
 import { PasswordResetTokenService } from '@app/services/data';
+import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-match-validator.directive';
 
 import { ResetPasswordComponent } from './reset-password.component';
 
 async function setup() {
-  const mockPasswordResetTokenService = jasmine.createSpyObj<PasswordResetTokenService>(
-    'PasswordResetTokenService',
-    ['reset'],
-  );
+  const mockPasswordResetTokenService =
+    jasmine.createSpyObj<PasswordResetTokenService>(
+      'PasswordResetTokenService',
+      ['reset'],
+    );
 
   await TestBed.configureTestingModule({
     imports: [
@@ -22,7 +24,7 @@ async function setup() {
       ClarityModule,
       RouterTestingModule.withRoutes([]),
     ],
-    declarations: [ResetPasswordComponent],
+    declarations: [ResetPasswordComponent, PasswordsMatchValidatorDirective],
     providers: [
       {
         provide: PasswordResetTokenService,
@@ -45,20 +47,8 @@ describe('ResetPasswordComponent', () => {
       const componentFixture = TestBed.createComponent(ResetPasswordComponent);
       const component = componentFixture.componentInstance;
       expect(component).toBeTruthy();
-    }),
-  );
-
-  it(
-    'can run ngOnInit',
-    waitForAsync(async () => {
-      await setup();
-
-      const componentFixture = TestBed.createComponent(ResetPasswordComponent);
-      const component = componentFixture.componentInstance;
-
-      component.ngOnInit();
-
-      expect().nothing();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
     }),
   );
 

@@ -15,10 +15,11 @@ import { EmailValidatorDirective } from '@app/directives/email-validator.directi
 import { RequestPasswordResetModalComponent } from './request-password-reset-modal.component';
 
 async function setup() {
-  const mockPasswordResetTokenService = jasmine.createSpyObj<PasswordResetTokenService>(
-    'PasswordResetTokenService',
-    ['request'],
-  );
+  const mockPasswordResetTokenService =
+    jasmine.createSpyObj<PasswordResetTokenService>(
+      'PasswordResetTokenService',
+      ['request'],
+    );
 
   await TestBed.configureTestingModule({
     imports: [
@@ -52,6 +53,8 @@ describe('RequestPasswordResetModalComponent', () => {
       );
       const component = componentFixture.componentInstance;
       expect(component).toBeTruthy();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
     }),
   );
 

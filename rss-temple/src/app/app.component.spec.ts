@@ -1,7 +1,8 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { APP_BASE_HREF } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule } from '@angular/forms';
 
 import { ClarityModule } from '@clr/angular';
 
@@ -12,9 +13,10 @@ import { ConfirmModalComponent } from '@app/components/shared/confirm-modal/conf
 
 import { AppComponent } from './app.component';
 
-function setup() {
-  TestBed.configureTestingModule({
+async function setup() {
+  await TestBed.configureTestingModule({
     imports: [
+      FormsModule,
       BrowserAnimationsModule,
       ClarityModule,
       RouterTestingModule.withRoutes([]),
@@ -36,11 +38,16 @@ function setup() {
 }
 
 describe('AppComponent', () => {
-  it('should create the app', () => {
-    setup();
+  it(
+    'should create the app',
+    waitForAsync(async () => {
+      await setup();
 
-    const componentFixture = TestBed.createComponent(AppComponent);
-    const component = componentFixture.componentInstance;
-    expect(component).toBeTruthy();
-  });
+      const componentFixture = TestBed.createComponent(AppComponent);
+      const component = componentFixture.componentInstance;
+      expect(component).toBeTruthy();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
+    }),
+  );
 });

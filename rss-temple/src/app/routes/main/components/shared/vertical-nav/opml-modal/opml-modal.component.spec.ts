@@ -50,6 +50,8 @@ describe('OPMLModalComponent', () => {
       const componentFixture = TestBed.createComponent(OPMLModalComponent);
       const component = componentFixture.componentInstance;
       expect(component).toBeTruthy();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
     }),
   );
 

@@ -19,6 +19,7 @@ import {
 import { GAuthService, FBAuthService } from '@app/services';
 import { ReadCounterService } from '@app/routes/main/services';
 import { GlobalUserCategoriesModalComponent } from '@app/routes/main/components/profile/global-user-categories-modal/global-user-categories-modal.component';
+import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-match-validator.directive';
 
 import { ProfileComponent } from './profile.component';
 
@@ -55,7 +56,11 @@ async function setup() {
       ClarityModule,
       RouterTestingModule.withRoutes([]),
     ],
-    declarations: [ProfileComponent, GlobalUserCategoriesModalComponent],
+    declarations: [
+      ProfileComponent,
+      GlobalUserCategoriesModalComponent,
+      PasswordsMatchValidatorDirective,
+    ],
     providers: [
       {
         provide: ReadCounterService,
@@ -104,17 +109,6 @@ describe('ProfileComponent', () => {
   it(
     'should create the component',
     waitForAsync(async () => {
-      await setup();
-
-      const componentFixture = TestBed.createComponent(ProfileComponent);
-      const component = componentFixture.componentInstance;
-      expect(component).toBeTruthy();
-    }),
-  );
-
-  it(
-    'can run ngOnInit',
-    waitForAsync(async () => {
       const { mockUserService, mockFeedService, mockFeedEntryService } =
         await setup();
       mockUserService.get.and.returnValue(of({}));
@@ -133,10 +127,9 @@ describe('ProfileComponent', () => {
 
       const componentFixture = TestBed.createComponent(ProfileComponent);
       const component = componentFixture.componentInstance;
-
-      component.ngOnInit();
-
-      expect().nothing();
+      expect(component).toBeTruthy();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
     }),
   );
 

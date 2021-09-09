@@ -68,17 +68,6 @@ describe('ExploreComponent', () => {
   it(
     'should create the component',
     waitForAsync(async () => {
-      await setup();
-
-      const componentFixture = TestBed.createComponent(ExploreComponent);
-      const component = componentFixture.componentInstance;
-      expect(component).toBeTruthy();
-    }),
-  );
-
-  it(
-    'can run ngOnInit',
-    waitForAsync(async () => {
       const { mockUserService, mockFeedService, mockExploreService } =
         await setup();
       mockUserService.get.and.returnValue(of({}));
@@ -92,10 +81,9 @@ describe('ExploreComponent', () => {
 
       const componentFixture = TestBed.createComponent(ExploreComponent);
       const component = componentFixture.componentInstance;
-
-      component.ngOnInit();
-
-      expect().nothing();
+      expect(component).toBeTruthy();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
     }),
   );
 

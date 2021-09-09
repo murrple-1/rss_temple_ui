@@ -34,10 +34,11 @@ async function setup() {
     'getGoogleLoginSession',
     'getFacebookLoginSession',
   ]);
-  const mockPasswordResetTokenService = jasmine.createSpyObj<PasswordResetTokenService>(
-    'PasswordResetTokenService',
-    ['request'],
-  );
+  const mockPasswordResetTokenService =
+    jasmine.createSpyObj<PasswordResetTokenService>(
+      'PasswordResetTokenService',
+      ['request'],
+    );
 
   await TestBed.configureTestingModule({
     imports: [
@@ -104,6 +105,8 @@ describe('LoginComponent', () => {
       const componentFixture = TestBed.createComponent(LoginComponent);
       const component = componentFixture.componentInstance;
       expect(component).toBeTruthy();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
     }),
   );
 
@@ -121,19 +124,6 @@ describe('LoginComponent', () => {
       component.ngOnInit();
 
       expect(component._returnUrl).toBe(returnUrl);
-    }),
-  );
-
-  it(
-    'can run ngOnInit',
-    waitForAsync(async () => {
-      await setup();
-
-      const componentFixture = TestBed.createComponent(LoginComponent);
-      const component = componentFixture.componentInstance;
-
-      component.ngOnInit();
-      expect().nothing();
     }),
   );
 

@@ -1,7 +1,8 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ClarityModule } from '@clr/angular';
 
@@ -24,6 +25,7 @@ import { VerticalNavComponent } from '@app/routes/main/components/shared/vertica
 import { SubscribeModalComponent } from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
 import { OPMLModalComponent } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
 import { FeedsFooterComponent } from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
+import { InfiniteScrollDirective } from '@app/routes/main/directives/infinite-scroll.directive';
 
 import { FeedsComponent } from './feeds.component';
 
@@ -55,13 +57,19 @@ async function setup() {
   );
 
   await TestBed.configureTestingModule({
-    imports: [FormsModule, ClarityModule, RouterTestingModule.withRoutes([])],
+    imports: [
+      FormsModule,
+      BrowserAnimationsModule,
+      ClarityModule,
+      RouterTestingModule.withRoutes([]),
+    ],
     declarations: [
       FeedsComponent,
       VerticalNavComponent,
       SubscribeModalComponent,
       OPMLModalComponent,
       FeedsFooterComponent,
+      InfiniteScrollDirective,
     ],
     providers: [
       {
@@ -114,19 +122,14 @@ describe('FeedsComponent', () => {
   it(
     'should create the component',
     waitForAsync(async () => {
-      await setup();
-
-      const componentFixture = TestBed.createComponent(FeedsComponent);
-      const component = componentFixture.componentInstance;
-      expect(component).toBeTruthy();
-    }),
-  );
-
-  it(
-    'can run ngOnInit',
-    waitForAsync(async () => {
-      const { mockFeedEntryService } = await setup();
-      mockFeedEntryService.query.and.returnValue(
+      const { mockUserCategoryService, mockFeedService } = await setup();
+      mockUserCategoryService.queryAll.and.returnValue(
+        of({
+          objects: [],
+          totalCount: 0,
+        }),
+      );
+      mockFeedService.queryAll.and.returnValue(
         of({
           objects: [],
           totalCount: 0,
@@ -135,10 +138,9 @@ describe('FeedsComponent', () => {
 
       const componentFixture = TestBed.createComponent(FeedsComponent);
       const component = componentFixture.componentInstance;
-
-      component.ngOnInit();
-
-      expect().nothing();
+      expect(component).toBeTruthy();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
     }),
   );
 

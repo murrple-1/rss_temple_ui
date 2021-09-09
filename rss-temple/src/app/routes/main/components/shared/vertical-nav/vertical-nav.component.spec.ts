@@ -90,20 +90,9 @@ async function setup() {
   };
 }
 
-describe('HeaderComponent', () => {
+describe('VerticalNavComponent', () => {
   it(
     'should create the component',
-    waitForAsync(async () => {
-      await setup();
-
-      const componentFixture = TestBed.createComponent(VerticalNavComponent);
-      const component = componentFixture.componentInstance;
-      expect(component).toBeTruthy();
-    }),
-  );
-
-  it(
-    'can run ngOnInit',
     waitForAsync(async () => {
       const { mockUserCategoryService, mockFeedService } = await setup();
       mockUserCategoryService.queryAll.and.returnValue(
@@ -121,10 +110,9 @@ describe('HeaderComponent', () => {
 
       const componentFixture = TestBed.createComponent(VerticalNavComponent);
       const component = componentFixture.componentInstance;
-
-      component.ngOnInit();
-
-      expect().nothing();
+      expect(component).toBeTruthy();
+      componentFixture.detectChanges();
+      await componentFixture.whenStable();
     }),
   );
 
