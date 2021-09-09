@@ -31,10 +31,6 @@ async function setup() {
     'ExploreService',
     ['explore'],
   );
-  const mockFeedEntryService = jasmine.createSpyObj<FeedEntryService>(
-    'FeedEntryService',
-    ['query'],
-  );
   const mockUserService = jasmine.createSpyObj<UserService>('UserService', [
     'get',
     'update',
@@ -64,7 +60,6 @@ async function setup() {
     mockReadCounterService,
     mockFeedService,
     mockExploreService,
-    mockFeedEntryService,
     mockUserService,
   };
 }
@@ -84,12 +79,8 @@ describe('ExploreComponent', () => {
   it(
     'can run ngOnInit',
     waitForAsync(async () => {
-      const {
-        mockUserService,
-        mockFeedService,
-        mockExploreService,
-        mockFeedEntryService,
-      } = await setup();
+      const { mockUserService, mockFeedService, mockExploreService } =
+        await setup();
       mockUserService.get.and.returnValue(of({}));
       mockFeedService.query.and.returnValue(
         of({
@@ -98,12 +89,6 @@ describe('ExploreComponent', () => {
         }),
       );
       mockExploreService.explore.and.returnValue(of([]));
-      mockFeedEntryService.query.and.returnValue(
-        of({
-          objects: [],
-          totalCount: 0,
-        }),
-      );
 
       const componentFixture = TestBed.createComponent(ExploreComponent);
       const component = componentFixture.componentInstance;

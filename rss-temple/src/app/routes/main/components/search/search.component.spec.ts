@@ -5,9 +5,19 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ClarityModule } from '@clr/angular';
 
+import { FeedService, FeedEntryService } from '@app/services/data';
+
 import { SearchComponent } from './search.component';
 
 async function setup() {
+  const mockFeedService = jasmine.createSpyObj<FeedService>('FeedService', [
+    'query',
+  ]);
+  const mockFeedEntryService = jasmine.createSpyObj<FeedEntryService>(
+    'FeedEntryService',
+    ['query'],
+  );
+
   await TestBed.configureTestingModule({
     imports: [
       FormsModule,
@@ -16,9 +26,22 @@ async function setup() {
       RouterTestingModule.withRoutes([]),
     ],
     declarations: [SearchComponent],
+    providers: [
+      {
+        provide: FeedService,
+        useValue: mockFeedService,
+      },
+      {
+        provide: FeedEntryService,
+        useValue: mockFeedEntryService,
+      },
+    ],
   }).compileComponents();
 
-  return {};
+  return {
+    mockFeedService,
+    mockFeedEntryService,
+  };
 }
 
 describe('SearchComponent', () => {
