@@ -28,38 +28,85 @@
     <div class="clr-col-12">Searching: "{{ searchText }}"</div>
   </div>
   <div class="clr-row">
-    <div
-      *ngFor="let feedEntryDescriptor of feedEntryDescriptors"
-      class="clr-col-4"
-    >
-      <div class="card">
-        <div class="card-header">
-          <a [attr.href]="feedEntryDescriptor.url" target="_blank">{{
-            feedEntryDescriptor.title
-          }}</a>
-        </div>
-        <div class="card-block">
-          <div class="card-text">
-            <p class="p4 app--creator">
-              From
-              <a [attr.href]="feedEntryDescriptor.feedHomeUrl">{{
-                feedEntryDescriptor.feedTitle
-              }}</a>
-            </p>
-            <p class="p7 app--date">
-              {{ feedEntryDescriptor.publishedAt | dateFormat }}
-            </p>
+    <div class="clr-col-12">
+      <h2>Entries</h2>
+    </div>
+  </div>
+  <div class="clr-row">
+    <ng-container
+      *ngIf="
+        feedEntryDescriptors.length > 0;
+        then feedEntries;
+        else noFeedEntries
+      "
+    ></ng-container>
+    <ng-template #feedEntries>
+      <div
+        *ngFor="let feedEntryDescriptor of feedEntryDescriptors"
+        class="clr-col-4"
+      >
+        <div class="card">
+          <div class="card-header">
+            <a [attr.href]="feedEntryDescriptor.url" target="_blank">{{
+              feedEntryDescriptor.title
+            }}</a>
+          </div>
+          <div class="card-block">
+            <div class="card-text">
+              <p class="p4 app--creator">
+                From
+                <a
+                  [attr.href]="feedEntryDescriptor.feedHomeUrl"
+                  target="_blank"
+                  >{{ feedEntryDescriptor.feedTitle }}</a
+                >
+              </p>
+              <p class="p7 app--date">
+                {{ feedEntryDescriptor.publishedAt | dateFormat }}
+              </p>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button
+              class="btn btn-outline-success btn-sm"
+              (click)="goTo(feedEntryDescriptor.feedUrl)"
+            >
+              Go To Feed
+            </button>
           </div>
         </div>
-        <div class="card-footer">
-          <button
-            class="btn btn-outline-success btn-sm"
-            (click)="goTo(feedEntryDescriptor)"
-          >
-            Go To Feed
-          </button>
+      </div>
+    </ng-template>
+    <ng-template #noFeedEntries> No Entries Found </ng-template>
+  </div>
+  <div class="clr-row">
+    <div class="clr-col-12">
+      <h2>Feeds</h2>
+    </div>
+  </div>
+  <div class="clr-row">
+    <ng-container
+      *ngIf="feedDescriptors.length > 0; then feeds; else noFeeds"
+    ></ng-container>
+    <ng-template #feeds>
+      <div *ngFor="let feedDescriptor of feedDescriptors" class="clr-col-4">
+        <div class="card">
+          <div class="card-header">
+            <a [attr.href]="feedDescriptor.homeUrl" target="_blank">{{
+              feedDescriptor.title
+            }}</a>
+          </div>
+          <div class="card-footer">
+            <button
+              class="btn btn-outline-success btn-sm"
+              (click)="goTo(feedDescriptor.feedUrl)"
+            >
+              Go To Feed
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </ng-template>
+    <ng-template #noFeeds> No feeds found </ng-template>
   </div>
 </div>

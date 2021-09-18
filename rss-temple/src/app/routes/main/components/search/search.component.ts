@@ -1,7 +1,7 @@
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { of, Subject } from 'rxjs';
+import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 
 import { Feed, FeedEntry } from '@app/models';
@@ -13,6 +13,7 @@ type FeedImpl = Required<Pick<Feed, 'uuid' | 'title' | 'feedUrl' | 'homeUrl'>>;
 type FeedEntryImpl = Required<
   Pick<FeedEntry, 'publishedAt' | 'feedUuid' | 'title' | 'url'>
 >;
+type FeedImpl2 = Required<Pick<Feed, 'title' | 'feedUrl' | 'homeUrl'>>;
 
 interface FeedEntryDescriptor {
   title: string;
@@ -23,6 +24,12 @@ interface FeedEntryDescriptor {
   feedHomeUrl: string | null;
 }
 
+interface FeedDescriptor {
+  title: string;
+  feedUrl: string;
+  homeUrl: string | null;
+}
+
 @Component({
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
@@ -31,6 +38,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   searchText = '';
 
   feedEntryDescriptors: FeedEntryDescriptor[] = [];
+  feedDescriptors: FeedDescriptor[] = [];
 
   private readonly unsubscribe$ = new Subject<void>();
 
@@ -68,58 +76,83 @@ export class SearchComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.feedEntryService
-      .query({
-        fields: [
-          'authorName',
-          'content',
-          'publishedAt',
-          'feedUuid',
-          'title',
-          'url',
-        ],
-        count: 12,
-        returnTotalCount: false,
-        search: `title:"${searchText}" or content:"${searchText}"`,
-        sort: new Sort([['publishedAt', 'DESC']]),
-      })
-      .pipe(
-        takeUntil(this.unsubscribe$),
-        map(response => {
-          if (response.objects !== undefined) {
-            return response.objects as FeedEntryImpl[];
-          }
-          throw new Error('malformed response');
-        }),
-        switchMap(feedEntries => {
-          const feedUuids = Array.from(
-            new Set(feedEntries.map(fe => fe.feedUuid)),
-          );
+    forkJoin([
+      this.feedEntryService
+        .query({
+          fields: [
+            'authorName',
+            'content',
+            'publishedAt',
+            'feedUuid',
+            'title',
+            'url',
+          ],
+          count: 12,
+          returnTotalCount: false,
+          search: `title:"${searchText}" or content:"${searchText}"`,
+          sort: new Sort([['publishedAt', 'DESC']]),
+        })
+        .pipe(
+          map(response => {
+            if (response.objects !== undefined) {
+              return response.objects as FeedEntryImpl[];
+            }
+            throw new Error('malformed response');
+          }),
+          switchMap(feedEntries => {
+            let feedsObservable: Observable<FeedImpl[]>;
+            if (feedEntries.length > 0) {
+              const feedUuids = Array.from(
+                new Set(feedEntries.map(fe => fe.feedUuid)),
+              );
 
-          return this.feedService
-            .queryAll({
-              fields: ['uuid', 'title', 'feedUrl', 'homeUrl'],
-              returnTotalCount: false,
-              search: `uuid:"${feedUuids.join(',')}"`,
-            })
-            .pipe(
-              map(response => {
-                if (response.objects !== undefined) {
-                  return [feedEntries, response.objects] as [
-                    FeedEntryImpl[],
-                    FeedImpl[],
-                  ];
-                }
-                throw new Error('malformed response');
+              feedsObservable = this.feedService
+                .queryAll({
+                  fields: ['uuid', 'title', 'feedUrl', 'homeUrl'],
+                  returnTotalCount: false,
+                  search: `uuid:"${feedUuids.join(',')}"`,
+                })
+                .pipe(
+                  map(response => {
+                    if (response.objects !== undefined) {
+                      return response.objects as FeedImpl[];
+                    }
+                    throw new Error('malformed response');
+                  }),
+                );
+            } else {
+              feedsObservable = of([]);
+            }
+
+            return feedsObservable.pipe(
+              map(feeds => {
+                return [feedEntries, feeds] as [FeedEntryImpl[], FeedImpl[]];
               }),
             );
-        }),
-      )
+          }),
+        ),
+      this.feedService
+        .query({
+          fields: ['title', 'feedUrl', 'homeUrl'],
+          count: 12,
+          returnTotalCount: false,
+          search: `title:"${searchText}"`,
+        })
+        .pipe(
+          map(response => {
+            if (response.objects !== undefined) {
+              return response.objects as FeedImpl2[];
+            }
+            throw new Error('malformed response');
+          }),
+        ),
+    ])
+      .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: ([feedEntries, feeds]) => {
+        next: ([[feedEntries, feedEntryFeeds], feeds]) => {
           const feedEntryDescriptors = feedEntries.map<FeedEntryDescriptor>(
             fe => {
-              const feed = feeds.find(f => f.uuid === fe.feedUuid);
+              const feed = feedEntryFeeds.find(f => f.uuid === fe.feedUuid);
               if (feed === undefined) {
                 throw new Error('feed undefined');
               }
@@ -135,8 +168,15 @@ export class SearchComponent implements OnInit, OnDestroy {
             },
           );
 
+          const feedDescriptors = feeds.map<FeedDescriptor>(f => ({
+            title: f.title,
+            feedUrl: f.feedUrl,
+            homeUrl: f.homeUrl,
+          }));
+
           this.zone.run(() => {
             this.feedEntryDescriptors = feedEntryDescriptors;
+            this.feedDescriptors = feedDescriptors;
           });
         },
         error: error => {
@@ -145,7 +185,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       });
   }
 
-  goTo(feedEntryDescriptor: FeedEntryDescriptor) {
-    this.router.navigate(['/main/feed', feedEntryDescriptor.feedUrl]);
+  goTo(feedUrl: string) {
+    this.router.navigate(['/main/feed', feedUrl]);
   }
 }
