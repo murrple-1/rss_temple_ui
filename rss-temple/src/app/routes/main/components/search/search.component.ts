@@ -35,6 +35,8 @@ interface FeedDescriptor {
   styleUrls: ['./search.component.scss'],
 })
 export class SearchComponent implements OnInit, OnDestroy {
+  readonly maxEntries = 12;
+
   searchText = '';
 
   feedEntryDescriptors: FeedEntryDescriptor[] = [];
@@ -87,7 +89,7 @@ export class SearchComponent implements OnInit, OnDestroy {
             'title',
             'url',
           ],
-          count: 12,
+          count: this.maxEntries,
           returnTotalCount: false,
           search: `title:"${searchText}" or content:"${searchText}"`,
           sort: new Sort([['publishedAt', 'DESC']]),
@@ -134,7 +136,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.feedService
         .query({
           fields: ['title', 'feedUrl', 'homeUrl'],
-          count: 12,
+          count: this.maxEntries,
           returnTotalCount: false,
           search: `title:"${searchText}"`,
         })

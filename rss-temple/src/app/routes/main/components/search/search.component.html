@@ -32,15 +32,15 @@
       <h2>Entries</h2>
     </div>
   </div>
-  <div class="clr-row">
-    <ng-container
-      *ngIf="
-        feedEntryDescriptors.length > 0;
-        then feedEntries;
-        else noFeedEntries
-      "
-    ></ng-container>
-    <ng-template #feedEntries>
+  <ng-container
+    *ngIf="
+      feedEntryDescriptors.length > 0;
+      then feedEntries;
+      else noFeedEntries
+    "
+  ></ng-container>
+  <ng-template #feedEntries>
+    <div class="clr-row">
       <div
         *ngFor="let feedEntryDescriptor of feedEntryDescriptors"
         class="clr-col-4"
@@ -76,19 +76,29 @@
           </div>
         </div>
       </div>
-    </ng-template>
-    <ng-template #noFeedEntries> No Entries Found </ng-template>
-  </div>
+    </div>
+    <div *ngIf="feedEntryDescriptors.length >= maxEntries" class="clr-row">
+      <div class="clr-col-12">
+        <!-- TODO set this button up -->
+        <button class="btn btn-sm">See More...</button>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #noFeedEntries>
+    <div class="clr-row">
+      <div class="clr-col-12">No Entries Found</div>
+    </div>
+  </ng-template>
   <div class="clr-row">
     <div class="clr-col-12">
       <h2>Feeds</h2>
     </div>
   </div>
-  <div class="clr-row">
-    <ng-container
-      *ngIf="feedDescriptors.length > 0; then feeds; else noFeeds"
-    ></ng-container>
-    <ng-template #feeds>
+  <ng-container
+    *ngIf="feedDescriptors.length > 0; then feeds; else noFeeds"
+  ></ng-container>
+  <ng-template #feeds>
+    <div class="clr-row">
       <div *ngFor="let feedDescriptor of feedDescriptors" class="clr-col-4">
         <div class="card">
           <div class="card-header">
@@ -106,7 +116,17 @@
           </div>
         </div>
       </div>
-    </ng-template>
-    <ng-template #noFeeds> No feeds found </ng-template>
-  </div>
+    </div>
+    <div *ngIf="feedDescriptors.length >= maxEntries" class="clr-row">
+      <div class="clr-col-12">
+        <!-- TODO set this button up -->
+        <button class="btn btn-sm">See More...</button>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #noFeeds>
+    <div class="clr-row">
+      <div class="clr-col-12">No Feeds found</div>
+    </div>
+  </ng-template>
 </div>
