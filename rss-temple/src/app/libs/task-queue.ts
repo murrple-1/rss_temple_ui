@@ -55,15 +55,9 @@ export class AsyncTaskQueue {
     try {
       let task: QueueEntry | undefined;
       while ((task = this.taskQueue.pop()) !== undefined) {
-        // TODO remove
-        console.log(`${task.tag} - start`);
         try {
           await task.task();
-          // TODO remove
-          console.log(`${task.tag} - end`);
         } catch (reason: unknown) {
-          // TODO remove
-          console.log(`${task.tag} - error`);
           console.error(reason);
         }
       }
