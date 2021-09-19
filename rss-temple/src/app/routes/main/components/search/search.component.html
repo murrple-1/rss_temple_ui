@@ -68,6 +68,14 @@
     <div class="clr-row">
       <div class="clr-col-12">No Entries Found</div>
     </div>
+    <ng-container *ngIf="isSearching">
+      <div class="clr-row">
+        <div class="clr-col-12">
+          <clr-spinner [clrInline]="true"></clr-spinner>
+          <span class="app--loading-text">Loading...</span>
+        </div>
+      </div>
+    </ng-container>
   </ng-template>
   <div class="clr-row">
     <div class="clr-col-12">
@@ -108,5 +116,13 @@
     <div class="clr-row">
       <div class="clr-col-12">No Feeds found</div>
     </div>
+    <ng-container *ngIf="isSearching">
+      <div class="clr-row">
+        <div class="clr-col-12">
+          <clr-spinner [clrInline]="true"></clr-spinner>
+          <span class="app--loading-text">Loading...</span>
+        </div>
+      </div>
+    </ng-container>
   </ng-template>
 </div>

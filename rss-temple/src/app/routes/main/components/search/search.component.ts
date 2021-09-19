@@ -1,8 +1,8 @@
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
-import { forkJoin, Observable, of, Subject } from 'rxjs';
-import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { combineLatest, forkJoin, Observable, of, Subject } from 'rxjs';
+import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 import { Feed, FeedEntry } from '@app/models';
 import { FeedEntryService, FeedService } from '@app/services/data';
@@ -39,6 +39,8 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   searchText = '';
 
+  isSearching = false;
+
   feedEntryDescriptors: FeedEntryDescriptor[] = [];
   feedDescriptors: FeedDescriptor[] = [];
 
@@ -54,16 +56,27 @@ export class SearchComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.route.paramMap.subscribe({
-      next: paramMap => {
-        const searchText = paramMap.get('searchText') ?? '';
-        this.zone.run(() => {
-          this.searchText = searchText;
-        });
+    combineLatest([
+      this.route.paramMap.pipe(startWith(undefined)),
+      this.router.events.pipe(startWith(undefined)),
+    ])
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: ([paramMap, navigationEvent]) => {
+          if (
+            paramMap !== undefined &&
+            (navigationEvent === undefined ||
+              navigationEvent instanceof NavigationEnd)
+          ) {
+            const searchText = paramMap.get('searchText') ?? '';
+            this.zone.run(() => {
+              this.searchText = searchText;
+            });
 
-        this.reload();
-      },
-    });
+            this.reload();
+          }
+        },
+      });
   }
 
   ngOnDestroy() {
@@ -72,11 +85,15 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   private reload() {
+    this.feedEntryDescriptors = [];
+    this.feedDescriptors = [];
+
     const searchText = this.searchText;
     if (searchText.length < 1) {
-      this.feedEntryDescriptors = [];
       return;
     }
+
+    this.isSearching = true;
 
     forkJoin([
       this.feedEntryService
@@ -177,11 +194,15 @@ export class SearchComponent implements OnInit, OnDestroy {
           }));
 
           this.zone.run(() => {
+            this.isSearching = false;
             this.feedEntryDescriptors = feedEntryDescriptors;
             this.feedDescriptors = feedDescriptors;
           });
         },
         error: error => {
+          this.zone.run(() => {
+            this.isSearching = false;
+          });
           this.httpErrorService.handleError(error);
         },
       });
