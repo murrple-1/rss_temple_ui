@@ -25,7 +25,10 @@ import { FeedComponent } from '@app/routes/main/components/feed/feed.component';
 import { UserCategoriesModalComponent } from '@app/routes/main/components/feed/user-categories-modal/user-categories-modal.component';
 import { FeedsFooterComponent } from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
 import { ExploreComponent } from '@app/routes/main/components/explore/explore.component';
-import { SearchComponent } from '@app/routes/main/components/search/search.component';
+import { SearchAllComponent } from '@app/routes/main/components/search/search-all/search-all.component';
+import { SearchEntriesComponent } from '@app/routes/main/components/search/search-entries/search-entries.component';
+import { SearchFeedsComponent } from '@app/routes/main/components/search/search-feeds/search-feeds.component';
+import { AdvancedSearchComponent } from '@app/routes/main/components/search/advanced-search/advanced-search.component';
 import { ProfileComponent } from '@app/routes/main/components/profile/profile.component';
 import { SupportComponent } from '@app/routes/main/components/support/support.component';
 import { GlobalUserCategoriesModalComponent } from '@app/routes/main/components/profile/global-user-categories-modal/global-user-categories-modal.component';
@@ -61,7 +64,10 @@ import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/routes/main
     FeedsFooterComponent,
     UserCategoriesModalComponent,
     ExploreComponent,
-    SearchComponent,
+    SearchAllComponent,
+    SearchEntriesComponent,
+    SearchFeedsComponent,
+    AdvancedSearchComponent,
     ProfileComponent,
     SupportComponent,
     GlobalUserCategoriesModalComponent,

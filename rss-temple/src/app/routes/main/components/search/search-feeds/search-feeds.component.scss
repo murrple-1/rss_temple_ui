@@ -1,0 +1,23 @@
+.card-text {
+  p.app--creator {
+    margin-top: 0;
+    margin-bottom: 0.2rem;
+  }
+
+  p.app--date {
+    margin-top: 0;
+  }
+
+  &.app--content {
+    & ::ng-deep img {
+      display: block;
+      max-width: calc(100vw * (2 / 3));
+      max-height: calc(100vh * (2 / 3));
+    }
+
+    & ::ng-deep pre,
+    & ::ng-deep code {
+      white-space: pre-wrap;
+    }
+  }
+}

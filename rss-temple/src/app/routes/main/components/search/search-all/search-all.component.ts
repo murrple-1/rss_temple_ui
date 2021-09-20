@@ -31,10 +31,10 @@ interface FeedDescriptor {
 }
 
 @Component({
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss'],
+  templateUrl: './search-all.component.html',
+  styleUrls: ['./search-all.component.scss'],
 })
-export class SearchComponent implements OnInit, OnDestroy {
+export class SearchAllComponent implements OnInit, OnDestroy {
   readonly maxEntries = 12;
 
   searchText = '';
@@ -210,5 +210,19 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   goTo(feedUrl: string) {
     this.router.navigate(['/main/feed', feedUrl]);
+  }
+
+  searchMoreEntries() {
+    this.router.navigate([
+      '/main/search/entries',
+      { searchText: this.searchText },
+    ]);
+  }
+
+  searchMoreFeeds() {
+    this.router.navigate([
+      '/main/search/feeds',
+      { searchText: this.searchText },
+    ]);
   }
 }
