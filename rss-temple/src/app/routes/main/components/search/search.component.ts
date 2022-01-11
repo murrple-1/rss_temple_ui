@@ -218,13 +218,11 @@ export class SearchComponent implements OnInit, OnDestroy {
           }
 
           return feedsObservable.pipe(
-            map(feeds => {
-              return [feedEntries, feeds] as [FeedEntryImpl[], FeedImpl[]];
-            }),
+            map(feeds => [feedEntries, feeds] as [FeedEntryImpl[], FeedImpl[]]),
           );
         }),
-        map(([feedEntries, feedEntryFeeds]) => {
-          return feedEntries.map<EntryDescriptor>(fe => {
+        map(([feedEntries, feedEntryFeeds]) =>
+          feedEntries.map<EntryDescriptor>(fe => {
             const feed = feedEntryFeeds.find(f => f.uuid === fe.feedUuid);
             if (feed === undefined) {
               throw new Error('feed undefined');
@@ -238,8 +236,8 @@ export class SearchComponent implements OnInit, OnDestroy {
               feedUrl: feed.feedUrl,
               feedHomeUrl: feed.homeUrl,
             };
-          });
-        }),
+          }),
+        ),
       );
   }
 
@@ -273,13 +271,13 @@ export class SearchComponent implements OnInit, OnDestroy {
           }
           throw new Error('malformed response');
         }),
-        map(feeds => {
-          return feeds.map<FeedDescriptor>(f => ({
+        map(feeds =>
+          feeds.map<FeedDescriptor>(f => ({
             title: f.title,
             feedUrl: f.feedUrl,
             homeUrl: f.homeUrl,
-          }));
-        }),
+          })),
+        ),
       );
   }
 
