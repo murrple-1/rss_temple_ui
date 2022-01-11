@@ -16,7 +16,7 @@ type FeedEntryImpl = Required<
 >;
 type FeedImpl2 = Required<Pick<Feed, 'title' | 'feedUrl' | 'homeUrl'>>;
 
-interface FeedEntryDescriptor {
+interface EntryDescriptor {
   title: string;
   url: string;
   publishedAt: Date;
@@ -45,18 +45,17 @@ const Count = 10;
 })
 export class SearchComponent implements OnInit, OnDestroy {
   readonly LoadingState = LoadingState;
-  readonly ClrLoadingState = ClrLoadingState;
 
-  feedEntriesSearchTitle = '';
-  feedEntriesSearchContent = '';
-  feedEntriesSearchButtonState = ClrLoadingState.DEFAULT;
-  feedEntriesLoadingState = LoadingState.IsNotLoading;
+  entriesSearchTitle = '';
+  entriesSearchContent = '';
+  entriesSearchButtonState = ClrLoadingState.DEFAULT;
+  entriesLoadingState = LoadingState.IsNotLoading;
 
   feedsSearchTitle = '';
   feedsSearchButtonState = ClrLoadingState.DEFAULT;
   feedsLoadingState = LoadingState.IsNotLoading;
 
-  feedEntryDescriptors: FeedEntryDescriptor[] = [];
+  entryDescriptors: EntryDescriptor[] = [];
   feedDescriptors: FeedDescriptor[] = [];
 
   private readonly unsubscribe$ = new Subject<void>();
@@ -85,12 +84,13 @@ export class SearchComponent implements OnInit, OnDestroy {
           ) {
             const searchText = paramMap.get('searchText') ?? '';
             this.zone.run(() => {
-              this.feedEntriesSearchTitle = searchText;
-              this.feedEntriesSearchContent = searchText;
+              this.entriesSearchTitle = searchText;
+              this.entriesSearchContent = searchText;
               this.feedsSearchTitle = searchText;
             });
 
-            this.reload();
+            this.updateEntriesSearch();
+            this.updateFeedsSearch();
           }
         },
       });
@@ -101,52 +101,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  private reload() {
-    this.feedEntryDescriptors = [];
-    this.feedDescriptors = [];
-
-    this.feedEntriesLoadingState = LoadingState.IsLoading;
-    this.feedEntriesSearchButtonState = ClrLoadingState.LOADING;
-
-    this.feedsLoadingState = LoadingState.IsLoading;
-    this.feedsSearchButtonState = ClrLoadingState.LOADING;
-
-    forkJoin([
-      this.searchFeedEntries(
-        this.feedEntriesSearchTitle,
-        this.feedEntriesSearchContent,
-        Count,
-        0,
-      ),
-      this.searchFeeds(this.feedsSearchTitle, Count, 0),
-    ])
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe({
-        next: ([feedEntryDescriptors, feedDescriptors]) => {
-          this.zone.run(() => {
-            this.feedEntriesLoadingState = LoadingState.IsNotLoading;
-            this.feedEntriesSearchButtonState = ClrLoadingState.SUCCESS;
-            this.feedEntryDescriptors = feedEntryDescriptors;
-
-            this.feedsLoadingState = LoadingState.IsNotLoading;
-            this.feedsSearchButtonState = ClrLoadingState.SUCCESS;
-            this.feedDescriptors = feedDescriptors;
-          });
-        },
-        error: error => {
-          this.zone.run(() => {
-            this.feedEntriesLoadingState = LoadingState.IsNotLoading;
-            this.feedEntriesSearchButtonState = ClrLoadingState.ERROR;
-
-            this.feedsLoadingState = LoadingState.IsNotLoading;
-            this.feedsSearchButtonState = ClrLoadingState.ERROR;
-          });
-          this.httpErrorService.handleError(error);
-        },
-      });
-  }
-
-  private searchFeedEntries(
+  private searchEntries(
     title: string,
     content: string,
     count: number,
@@ -226,7 +181,7 @@ export class SearchComponent implements OnInit, OnDestroy {
           );
         }),
         map(([feedEntries, feedEntryFeeds]) => {
-          return feedEntries.map<FeedEntryDescriptor>(fe => {
+          return feedEntries.map<EntryDescriptor>(fe => {
             const feed = feedEntryFeeds.find(f => f.uuid === fe.feedUuid);
             if (feed === undefined) {
               throw new Error('feed undefined');
@@ -285,35 +240,31 @@ export class SearchComponent implements OnInit, OnDestroy {
       );
   }
 
-  goTo(feedUrl: string) {
-    this.router.navigate(['/main/feed', feedUrl]);
-  }
-
   updateEntriesSearch() {
-    this.feedEntryDescriptors = [];
+    this.entryDescriptors = [];
 
-    this.feedEntriesLoadingState = LoadingState.IsLoading;
-    this.feedEntriesSearchButtonState = ClrLoadingState.LOADING;
+    this.entriesLoadingState = LoadingState.IsLoading;
+    this.entriesSearchButtonState = ClrLoadingState.LOADING;
 
-    this.searchFeedEntries(
-      this.feedEntriesSearchTitle,
-      this.feedEntriesSearchContent,
+    this.searchEntries(
+      this.entriesSearchTitle,
+      this.entriesSearchContent,
       Count,
       0,
     )
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: feedEntryDescriptors => {
+        next: entryDescriptors => {
           this.zone.run(() => {
-            this.feedEntriesLoadingState = LoadingState.IsNotLoading;
-            this.feedEntriesSearchButtonState = ClrLoadingState.SUCCESS;
-            this.feedEntryDescriptors = feedEntryDescriptors;
+            this.entriesLoadingState = LoadingState.IsNotLoading;
+            this.entriesSearchButtonState = ClrLoadingState.SUCCESS;
+            this.entryDescriptors = entryDescriptors;
           });
         },
         error: error => {
           this.zone.run(() => {
-            this.feedEntriesLoadingState = LoadingState.IsNotLoading;
-            this.feedEntriesSearchButtonState = ClrLoadingState.ERROR;
+            this.entriesLoadingState = LoadingState.IsNotLoading;
+            this.entriesSearchButtonState = ClrLoadingState.ERROR;
           });
           this.httpErrorService.handleError(error);
         },
@@ -347,33 +298,33 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   loadMoreEntries() {
-    this.feedEntriesLoadingState = LoadingState.IsLoading;
-    this.feedEntriesSearchButtonState = ClrLoadingState.LOADING;
+    this.entriesLoadingState = LoadingState.IsLoading;
+    this.entriesSearchButtonState = ClrLoadingState.LOADING;
 
-    this.searchFeedEntries(
-      this.feedEntriesSearchTitle,
-      this.feedEntriesSearchContent,
+    this.searchEntries(
+      this.entriesSearchTitle,
+      this.entriesSearchContent,
       Count,
-      this.feedEntryDescriptors.length,
+      this.entryDescriptors.length,
     )
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: feedEntryDescriptors => {
-          const feedEntryDescriptors_ = [
-            ...this.feedEntryDescriptors,
-            ...feedEntryDescriptors,
+        next: entryDescriptors => {
+          const entryDescriptors_ = [
+            ...this.entryDescriptors,
+            ...entryDescriptors,
           ];
 
           this.zone.run(() => {
-            this.feedEntriesLoadingState = LoadingState.IsNotLoading;
-            this.feedEntriesSearchButtonState = ClrLoadingState.SUCCESS;
-            this.feedEntryDescriptors = feedEntryDescriptors_;
+            this.entriesLoadingState = LoadingState.IsNotLoading;
+            this.entriesSearchButtonState = ClrLoadingState.SUCCESS;
+            this.entryDescriptors = entryDescriptors_;
           });
         },
         error: error => {
           this.zone.run(() => {
-            this.feedEntriesLoadingState = LoadingState.IsNotLoading;
-            this.feedEntriesSearchButtonState = ClrLoadingState.ERROR;
+            this.entriesLoadingState = LoadingState.IsNotLoading;
+            this.entriesSearchButtonState = ClrLoadingState.ERROR;
           });
           this.httpErrorService.handleError(error);
         },

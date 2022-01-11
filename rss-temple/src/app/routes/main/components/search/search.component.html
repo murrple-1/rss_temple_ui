@@ -10,7 +10,7 @@
                 <div class="clr-row"><h3>Entries Search</h3></div>
                 <form
                   clrForm
-                  #searchForm="ngForm"
+                  #entriesSearchForm="ngForm"
                   (ngSubmit)="updateEntriesSearch()"
                 >
                   <clr-input-container>
@@ -19,7 +19,7 @@
                       clrInput
                       type="text"
                       name="title"
-                      [(ngModel)]="feedEntriesSearchTitle"
+                      [(ngModel)]="entriesSearchTitle"
                     />
                   </clr-input-container>
                   <clr-input-container>
@@ -28,13 +28,13 @@
                       clrInput
                       type="text"
                       name="content"
-                      [(ngModel)]="feedEntriesSearchContent"
+                      [(ngModel)]="entriesSearchContent"
                     />
                   </clr-input-container>
                   <button
                     type="submit"
                     class="btn btn-primary"
-                    [clrLoading]="feedEntriesSearchButtonState"
+                    [clrLoading]="entriesSearchButtonState"
                   >
                     Search
                   </button>
@@ -44,7 +44,7 @@
                 <div class="clr-row"><h3>Feeds Search</h3></div>
                 <form
                   clrForm
-                  #searchForm="ngForm"
+                  #feedsSearchForm="ngForm"
                   (ngSubmit)="updateFeedsSearch()"
                 >
                   <clr-input-container>
@@ -75,22 +75,18 @@
     <div class="clr-col-12 clr-col-md-6">
       <h2>Entries</h2>
       <ng-container
-        *ngIf="
-          feedEntryDescriptors.length > 0;
-          then feedEntries;
-          else noFeedEntries
-        "
+        *ngIf="entryDescriptors.length > 0; then entries; else noEntries"
       ></ng-container>
-      <ng-template #feedEntries>
+      <ng-template #entries>
         <div class="clr-row">
           <div
-            *ngFor="let feedEntryDescriptor of feedEntryDescriptors"
+            *ngFor="let entryDescriptor of entryDescriptors"
             class="clr-col-12"
           >
             <div class="card">
               <div class="card-header">
-                <a [attr.href]="feedEntryDescriptor.url" target="_blank">{{
-                  feedEntryDescriptor.title
+                <a [attr.href]="entryDescriptor.url" target="_blank">{{
+                  entryDescriptor.title
                 }}</a>
               </div>
               <div class="card-block">
@@ -98,29 +94,29 @@
                   <p class="p4 app--creator">
                     From
                     <a
-                      [attr.href]="feedEntryDescriptor.feedHomeUrl"
+                      [attr.href]="entryDescriptor.feedHomeUrl"
                       target="_blank"
-                      >{{ feedEntryDescriptor.feedTitle }}</a
+                      >{{ entryDescriptor.feedTitle }}</a
                     >
                   </p>
                   <p class="p7 app--date">
-                    {{ feedEntryDescriptor.publishedAt | dateFormat }}
+                    {{ entryDescriptor.publishedAt | dateFormat }}
                   </p>
                 </div>
               </div>
               <div class="card-footer">
-                <button
+                <a
                   class="btn btn-outline-success btn-sm"
-                  (click)="goTo(feedEntryDescriptor.feedUrl)"
+                  [routerLink]="['/main/feed', entryDescriptor.feedUrl]"
                 >
                   Go To Feed
-                </button>
+                </a>
               </div>
             </div>
           </div>
         </div>
         <div
-          *ngIf="feedEntriesLoadingState === LoadingState.IsNotLoading"
+          *ngIf="entriesLoadingState === LoadingState.IsNotLoading"
           class="clr-row"
         >
           <div class="clr-col-12">
@@ -130,13 +126,13 @@
           </div>
         </div>
       </ng-template>
-      <ng-template #noFeedEntries>
+      <ng-template #noEntries>
         <div class="clr-row">
           <div class="clr-col-12">No Entries Found</div>
         </div>
       </ng-template>
       <div
-        *ngIf="feedEntriesLoadingState === LoadingState.IsLoading"
+        *ngIf="entriesLoadingState === LoadingState.IsLoading"
         class="clr-row"
       >
         <div class="clr-col-12">
@@ -165,7 +161,7 @@
               <div class="card-footer">
                 <button
                   class="btn btn-outline-success btn-sm"
-                  (click)="goTo(feedDescriptor.feedUrl)"
+                  [routerLink]="['/main/feed', feedDescriptor.feedUrl]"
                 >
                   Go To Feed
                 </button>
