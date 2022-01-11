@@ -7,7 +7,7 @@ import { ClarityModule } from '@clr/angular';
 
 import { FeedService, FeedEntryService } from '@app/services/data';
 
-import { SearchEntriesComponent } from './search-entries.component';
+import { SearchComponent } from './search.component';
 
 async function setup() {
   const mockFeedService = jasmine.createSpyObj<FeedService>('FeedService', [
@@ -25,7 +25,7 @@ async function setup() {
       ClarityModule,
       RouterTestingModule.withRoutes([]),
     ],
-    declarations: [SearchEntriesComponent],
+    declarations: [SearchComponent],
     providers: [
       {
         provide: FeedService,
@@ -44,13 +44,13 @@ async function setup() {
   };
 }
 
-describe('SearchEntriesComponent', () => {
+describe('SearchComponent', () => {
   it(
     'should create the component',
     waitForAsync(async () => {
       await setup();
 
-      const componentFixture = TestBed.createComponent(SearchEntriesComponent);
+      const componentFixture = TestBed.createComponent(SearchComponent);
       const component = componentFixture.componentInstance;
       expect(component).toBeTruthy();
       componentFixture.detectChanges();

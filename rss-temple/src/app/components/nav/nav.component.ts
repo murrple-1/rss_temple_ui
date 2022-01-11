@@ -127,7 +127,7 @@ export class NavComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.router.navigate(['/main/search/all', { searchText }]);
+    this.router.navigate(['/main/search', { searchText }]);
   }
 
   private async logout() {
