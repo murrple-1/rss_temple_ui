@@ -1,14 +1,17 @@
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
-import { combineLatest, forkJoin, Observable, of, Subject } from 'rxjs';
+import { ClrLoadingState } from '@clr/angular';
+
+import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+
+import { format as formatDate } from 'date-fns';
 
 import { Feed, FeedEntry } from '@app/models';
 import { FeedEntryService, FeedService } from '@app/services/data';
 import { HttpErrorService } from '@app/services';
 import { Sort } from '@app/services/data/sort.interface';
-import { ClrLoadingState } from '@clr/angular';
 
 type FeedImpl = Required<Pick<Feed, 'uuid' | 'title' | 'feedUrl' | 'homeUrl'>>;
 type FeedEntryImpl = Required<
@@ -48,6 +51,9 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   entriesSearchTitle = '';
   entriesSearchContent = '';
+  entriesSearchAuthorName = '';
+  entriesSearchPublishedAtStartDate: Date | null = null;
+  entriesSearchPublishedAtEndDate: Date | null = null;
   entriesSearchButtonState = ClrLoadingState.DEFAULT;
   entriesLoadingState = LoadingState.IsNotLoading;
 
@@ -59,6 +65,22 @@ export class SearchComponent implements OnInit, OnDestroy {
   feedDescriptors: FeedDescriptor[] = [];
 
   private readonly unsubscribe$ = new Subject<void>();
+
+  get entriesSearchPublishedAtMinDate() {
+    if (this.entriesSearchPublishedAtStartDate === null) {
+      return undefined;
+    } else {
+      return formatDate(this.entriesSearchPublishedAtStartDate, 'yyyy-MM-dd');
+    }
+  }
+
+  get entriesSearchPublishedAtMaxDate() {
+    if (this.entriesSearchPublishedAtEndDate === null) {
+      return undefined;
+    } else {
+      return formatDate(this.entriesSearchPublishedAtEndDate, 'yyyy-MM-dd');
+    }
+  }
 
   constructor(
     private zone: NgZone,
@@ -86,6 +108,10 @@ export class SearchComponent implements OnInit, OnDestroy {
             this.zone.run(() => {
               this.entriesSearchTitle = searchText;
               this.entriesSearchContent = searchText;
+              this.entriesSearchAuthorName = '';
+              this.entriesSearchPublishedAtStartDate = null;
+              this.entriesSearchPublishedAtEndDate = null;
+
               this.feedsSearchTitle = searchText;
             });
 
@@ -104,11 +130,15 @@ export class SearchComponent implements OnInit, OnDestroy {
   private searchEntries(
     title: string,
     content: string,
+    authorName: string,
+    publishedAtStartDate: Date | null,
+    publishedAtEndDate: Date | null,
     count: number,
     skip: number,
   ) {
     title = title.trim();
     content = content.trim();
+    authorName = authorName.trim();
 
     const searchParts: string[] = [];
     if (title.length > 0) {
@@ -117,6 +147,19 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     if (content.length > 0) {
       searchParts.push(`content:"${content}"`);
+    }
+
+    if (authorName.length > 0) {
+      searchParts.push(`authorName:"${authorName}"`);
+    }
+
+    if (publishedAtStartDate !== null && publishedAtEndDate !== null) {
+      searchParts.push(
+        `publishedAt:"${formatDate(
+          publishedAtStartDate,
+          'yyyy-MM-dd 00:00:00',
+        )}|${formatDate(publishedAtEndDate, 'yyyy-MM-dd 23:59:59')}"`,
+      );
     }
 
     let search: string;
@@ -205,7 +248,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     const searchParts: string[] = [];
     if (title.length > 0) {
-      searchParts.push(`title:"${title}"`);
+      searchParts.push(`calculatedTitle:"${title}"`);
     }
 
     let search: string;
@@ -249,6 +292,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.searchEntries(
       this.entriesSearchTitle,
       this.entriesSearchContent,
+      this.entriesSearchAuthorName,
+      this.entriesSearchPublishedAtStartDate,
+      this.entriesSearchPublishedAtEndDate,
       Count,
       0,
     )
@@ -256,7 +302,10 @@ export class SearchComponent implements OnInit, OnDestroy {
       .subscribe({
         next: entryDescriptors => {
           this.zone.run(() => {
-            this.entriesLoadingState = LoadingState.IsNotLoading;
+            this.entriesLoadingState =
+              entryDescriptors.length < Count
+                ? LoadingState.NoMoreToLoad
+                : LoadingState.IsNotLoading;
             this.entriesSearchButtonState = ClrLoadingState.SUCCESS;
             this.entryDescriptors = entryDescriptors;
           });
@@ -282,7 +331,10 @@ export class SearchComponent implements OnInit, OnDestroy {
       .subscribe({
         next: feedDescriptors => {
           this.zone.run(() => {
-            this.feedsLoadingState = LoadingState.IsNotLoading;
+            this.feedsLoadingState =
+              feedDescriptors.length < Count
+                ? LoadingState.NoMoreToLoad
+                : LoadingState.IsNotLoading;
             this.feedsSearchButtonState = ClrLoadingState.SUCCESS;
             this.feedDescriptors = feedDescriptors;
           });
@@ -304,6 +356,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.searchEntries(
       this.entriesSearchTitle,
       this.entriesSearchContent,
+      this.entriesSearchAuthorName,
+      this.entriesSearchPublishedAtStartDate,
+      this.entriesSearchPublishedAtEndDate,
       Count,
       this.entryDescriptors.length,
     )
@@ -316,7 +371,10 @@ export class SearchComponent implements OnInit, OnDestroy {
           ];
 
           this.zone.run(() => {
-            this.entriesLoadingState = LoadingState.IsNotLoading;
+            this.entriesLoadingState =
+              entryDescriptors.length < Count
+                ? LoadingState.NoMoreToLoad
+                : LoadingState.IsNotLoading;
             this.entriesSearchButtonState = ClrLoadingState.SUCCESS;
             this.entryDescriptors = entryDescriptors_;
           });
@@ -345,7 +403,10 @@ export class SearchComponent implements OnInit, OnDestroy {
           ];
 
           this.zone.run(() => {
-            this.feedsLoadingState = LoadingState.IsNotLoading;
+            this.feedsLoadingState =
+              feedDescriptors.length < Count
+                ? LoadingState.NoMoreToLoad
+                : LoadingState.IsNotLoading;
             this.feedsSearchButtonState = ClrLoadingState.SUCCESS;
             this.feedDescriptors = feedDescriptors_;
           });

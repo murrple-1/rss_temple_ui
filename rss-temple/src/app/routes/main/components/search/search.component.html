@@ -31,6 +31,38 @@
                       [(ngModel)]="entriesSearchContent"
                     />
                   </clr-input-container>
+                  <clr-input-container>
+                    <label>Author Name</label>
+                    <input
+                      clrInput
+                      type="text"
+                      name="authorName"
+                      [(ngModel)]="entriesSearchAuthorName"
+                    />
+                  </clr-input-container>
+                  <clr-date-container>
+                    <label>Published between...</label>
+                    <input
+                      clrDate
+                      type="date"
+                      placeholder="Start Date"
+                      name="publishedAtStartDate"
+                      [max]="entriesSearchPublishedAtMaxDate"
+                      ngModel
+                      [(clrDate)]="entriesSearchPublishedAtStartDate"
+                    />
+                  </clr-date-container>
+                  <clr-date-container>
+                    <input
+                      clrDate
+                      type="date"
+                      placeholder="End Date"
+                      name="publishedAtEndDate"
+                      [min]="entriesSearchPublishedAtMinDate"
+                      ngModel
+                      [(clrDate)]="entriesSearchPublishedAtEndDate"
+                    />
+                  </clr-date-container>
                   <button
                     type="submit"
                     class="btn btn-primary"
