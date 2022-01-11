@@ -106,7 +106,10 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.feedDescriptors = [];
 
     this.feedEntriesLoadingState = LoadingState.IsLoading;
+    this.feedEntriesSearchButtonState = ClrLoadingState.LOADING;
+
     this.feedsLoadingState = LoadingState.IsLoading;
+    this.feedsSearchButtonState = ClrLoadingState.LOADING;
 
     forkJoin([
       this.searchFeedEntries(
@@ -122,15 +125,21 @@ export class SearchComponent implements OnInit, OnDestroy {
         next: ([feedEntryDescriptors, feedDescriptors]) => {
           this.zone.run(() => {
             this.feedEntriesLoadingState = LoadingState.IsNotLoading;
-            this.feedsLoadingState = LoadingState.IsNotLoading;
+            this.feedEntriesSearchButtonState = ClrLoadingState.SUCCESS;
             this.feedEntryDescriptors = feedEntryDescriptors;
+
+            this.feedsLoadingState = LoadingState.IsNotLoading;
+            this.feedsSearchButtonState = ClrLoadingState.SUCCESS;
             this.feedDescriptors = feedDescriptors;
           });
         },
         error: error => {
           this.zone.run(() => {
             this.feedEntriesLoadingState = LoadingState.IsNotLoading;
+            this.feedEntriesSearchButtonState = ClrLoadingState.ERROR;
+
             this.feedsLoadingState = LoadingState.IsNotLoading;
+            this.feedsSearchButtonState = ClrLoadingState.ERROR;
           });
           this.httpErrorService.handleError(error);
         },
@@ -281,21 +290,71 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   updateEntriesSearch() {
-    // TODO implement
-  }
+    this.feedEntryDescriptors = [];
 
-  updateFeedsSearch() {
-    // TODO implement
-  }
-
-  loadMoreEntries() {
     this.feedEntriesLoadingState = LoadingState.IsLoading;
+    this.feedEntriesSearchButtonState = ClrLoadingState.LOADING;
 
     this.searchFeedEntries(
       this.feedEntriesSearchTitle,
       this.feedEntriesSearchContent,
       Count,
       0,
+    )
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: feedEntryDescriptors => {
+          this.zone.run(() => {
+            this.feedEntriesLoadingState = LoadingState.IsNotLoading;
+            this.feedEntriesSearchButtonState = ClrLoadingState.SUCCESS;
+            this.feedEntryDescriptors = feedEntryDescriptors;
+          });
+        },
+        error: error => {
+          this.zone.run(() => {
+            this.feedEntriesLoadingState = LoadingState.IsNotLoading;
+            this.feedEntriesSearchButtonState = ClrLoadingState.ERROR;
+          });
+          this.httpErrorService.handleError(error);
+        },
+      });
+  }
+
+  updateFeedsSearch() {
+    this.feedDescriptors = [];
+
+    this.feedsLoadingState = LoadingState.IsLoading;
+    this.feedsSearchButtonState = ClrLoadingState.LOADING;
+
+    this.searchFeeds(this.feedsSearchTitle, Count, 0)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: feedDescriptors => {
+          this.zone.run(() => {
+            this.feedsLoadingState = LoadingState.IsNotLoading;
+            this.feedsSearchButtonState = ClrLoadingState.SUCCESS;
+            this.feedDescriptors = feedDescriptors;
+          });
+        },
+        error: error => {
+          this.zone.run(() => {
+            this.feedsLoadingState = LoadingState.IsNotLoading;
+            this.feedsSearchButtonState = ClrLoadingState.ERROR;
+          });
+          this.httpErrorService.handleError(error);
+        },
+      });
+  }
+
+  loadMoreEntries() {
+    this.feedEntriesLoadingState = LoadingState.IsLoading;
+    this.feedEntriesSearchButtonState = ClrLoadingState.LOADING;
+
+    this.searchFeedEntries(
+      this.feedEntriesSearchTitle,
+      this.feedEntriesSearchContent,
+      Count,
+      this.feedEntryDescriptors.length,
     )
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
@@ -307,12 +366,14 @@ export class SearchComponent implements OnInit, OnDestroy {
 
           this.zone.run(() => {
             this.feedEntriesLoadingState = LoadingState.IsNotLoading;
+            this.feedEntriesSearchButtonState = ClrLoadingState.SUCCESS;
             this.feedEntryDescriptors = feedEntryDescriptors_;
           });
         },
         error: error => {
           this.zone.run(() => {
             this.feedEntriesLoadingState = LoadingState.IsNotLoading;
+            this.feedEntriesSearchButtonState = ClrLoadingState.ERROR;
           });
           this.httpErrorService.handleError(error);
         },
@@ -321,8 +382,9 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   loadMoreFeeds() {
     this.feedsLoadingState = LoadingState.IsLoading;
+    this.feedsSearchButtonState = ClrLoadingState.LOADING;
 
-    this.searchFeeds(this.feedsSearchTitle, Count, 0)
+    this.searchFeeds(this.feedsSearchTitle, Count, this.feedDescriptors.length)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: feedDescriptors => {
@@ -333,12 +395,14 @@ export class SearchComponent implements OnInit, OnDestroy {
 
           this.zone.run(() => {
             this.feedsLoadingState = LoadingState.IsNotLoading;
+            this.feedsSearchButtonState = ClrLoadingState.SUCCESS;
             this.feedDescriptors = feedDescriptors_;
           });
         },
         error: error => {
           this.zone.run(() => {
             this.feedsLoadingState = LoadingState.IsNotLoading;
+            this.feedsSearchButtonState = ClrLoadingState.ERROR;
           });
           this.httpErrorService.handleError(error);
         },
