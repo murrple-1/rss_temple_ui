@@ -28,6 +28,9 @@ const licensesText = Object.entries(osLicenses)
   )
   .join('\n\n');
 
+const RSSIconSVG: string =
+  require('!!raw-loader!../../../../../assets/images/rss-icon.svg').default;
+
 @Component({
   templateUrl: './support.component.html',
   styleUrls: ['./support.component.scss'],
@@ -38,4 +41,5 @@ export class SupportComponent {
   readonly serverRepoUrl = environment.serverRepoUrl;
 
   readonly licensesText = licensesText;
+  readonly rssIconSvg = RSSIconSVG;
 }

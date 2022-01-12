@@ -1,8 +1,8 @@
 <div class="content-area">
   <div class="clr-row">
     <div class="clr-col-12">
-      <clr-accordion>
-        <clr-accordion-panel>
+      <clr-accordion clrAccordionMultiPanel="true">
+        <clr-accordion-panel clrAccordionPanelOpen="true">
           <clr-accordion-title>Provide Feedback/Contriute</clr-accordion-title>
           <clr-accordion-content *clrIfExpanded>
             <p>
@@ -63,10 +63,82 @@
         <clr-accordion-panel>
           <clr-accordion-title>What is RSS/Atom?</clr-accordion-title>
           <clr-accordion-content *clrIfExpanded>
+            <h2>RSS</h2>
+            <p>via <a href="https://en.wikipedia.org/wiki/RSS">Wikipedia</a></p>
             <p>
-              RSS (Really Simple Syndication) and Atom are standard "web feed"
-              technologies. They are a way for computers to notify each other
-              when new "articles" are posted.
+              RSS (RDF Site Summary or Really Simple Syndication) is a web feed
+              that allows users and applications to access updates to websites
+              in a standardized, computer-readable format. Subscribing to RSS
+              feeds can allow a user to keep track of many different websites in
+              a single news aggregator, which constantly monitor sites for new
+              content, removing the need for the user to manually check them.
+              News aggregators (or "RSS readers") can be built into a browser,
+              installed on a desktop computer, or installed on a mobile device.
+            </p>
+            <p>
+              Websites usually use RSS feeds to publish frequently updated
+              information, such as blog entries, news headlines, episodes of
+              audio and video series, or for distributing podcasts. An RSS
+              document (called "feed", "web feed", or "channel") includes full
+              or summarized text, and metadata, like publishing date and
+              author's name. RSS formats are specified using a generic XML file.
+            </p>
+            <p>
+              Although RSS formats have evolved from as early as March 1999, it
+              was between 2005 and 2006 when RSS gained widespread use, and the
+              (<span [innerHtml]="rssIconSvg | safeHtml"></span>) icon was
+              decided upon by several major web browsers. RSS feed data is
+              presented to users using software called a news aggregator and the
+              passing of content is called web syndication. Users subscribe to
+              feeds either by entering a feed's URI into the reader or by
+              clicking on the browser's feed icon. The RSS reader checks the
+              user's feeds regularly for new information and can automatically
+              download it, if that function is enabled.
+            </p>
+            <h2>Atom</h2>
+            <p>
+              via
+              <a href="https://en.wikipedia.org/wiki/Atom_(Web_standard)"
+                >Wikipedia</a
+              >
+            </p>
+            <p>
+              The name Atom applies to a pair of related Web standards. The Atom
+              Syndication Format is an XML language used for web feeds, while
+              the Atom Publishing Protocol (AtomPub or APP) is a simple
+              HTTP-based protocol for creating and updating web resources.
+            </p>
+            <p>
+              Web feeds allow software programs to check for updates published
+              on a website. To provide a web feed, the site owner may use
+              specialized software (such as a content management system) that
+              publishes a list (or "feed") of recent articles or content in a
+              standardized, machine-readable format. The feed can then be
+              downloaded by programs that use it, like websites that syndicate
+              content from the feed, or by feed reader programs that allow
+              internet users to subscribe to feeds and view their content.
+            </p>
+            <p>
+              A feed contains entries, which may be headlines, full-text
+              articles, excerpts, summaries or links to content on a website
+              along with various metadata.
+            </p>
+            <p>
+              The Atom format was developed as an alternative to RSS. Ben Trott,
+              an advocate of the new format that became Atom, believed that RSS
+              had limitations and flaws—such as lack of on-going innovation and
+              its necessity to remain backward compatible—and that there were
+              advantages to a fresh design.
+            </p>
+            <p>
+              Proponents of the new format formed the IETF Atom Publishing
+              Format and Protocol Workgroup. The Atom Syndication Format was
+              published as an IETF proposed standard in RFC
+              <a href="https://datatracker.ietf.org/doc/html/rfc4287">4287</a>
+              (December 2005), and the Atom Publishing Protocol was published as
+              RFC
+              <a href="https://datatracker.ietf.org/doc/html/rfc5023">5023</a>
+              (October 2007).
             </p>
           </clr-accordion-content>
         </clr-accordion-panel>
