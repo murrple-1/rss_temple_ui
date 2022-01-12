@@ -3,12 +3,20 @@
     <div class="clr-col-12">
       <clr-accordion>
         <clr-accordion-panel>
-          <clr-accordion-title>What is RSS/Atom?</clr-accordion-title>
+          <clr-accordion-title>Provide Feedback/Contriute</clr-accordion-title>
           <clr-accordion-content *clrIfExpanded>
             <p>
-              RSS (Really Simple Syndication) and Atom are standard "web feed"
-              technologies. They are a way for computers to notify each other
-              when new "articles" are posted.
+              RSS Temple is an open source RSS client. If you want to provide
+              feedback, or report a bug, please follow the links below.
+            </p>
+            <p>
+              <a [href]="issueTrackerUrl">Issue Tracker</a>
+            </p>
+            <p>
+              <a [href]="clientRepoUrl">Client Git Repo</a>
+            </p>
+            <p>
+              <a [href]="serverRepoUrl">Server Git Repo</a>
             </p>
           </clr-accordion-content>
         </clr-accordion-panel>
@@ -50,6 +58,22 @@
                 </tr>
               </tbody>
             </table>
+          </clr-accordion-content>
+        </clr-accordion-panel>
+        <clr-accordion-panel>
+          <clr-accordion-title>What is RSS/Atom?</clr-accordion-title>
+          <clr-accordion-content *clrIfExpanded>
+            <p>
+              RSS (Really Simple Syndication) and Atom are standard "web feed"
+              technologies. They are a way for computers to notify each other
+              when new "articles" are posted.
+            </p>
+          </clr-accordion-content>
+        </clr-accordion-panel>
+        <clr-accordion-panel>
+          <clr-accordion-title>Open Source Licenses</clr-accordion-title>
+          <clr-accordion-content *clrIfExpanded>
+            <pre>{{ licensesText }}</pre>
           </clr-accordion-content>
         </clr-accordion-panel>
       </clr-accordion>

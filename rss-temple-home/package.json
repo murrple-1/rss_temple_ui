@@ -2,7 +2,7 @@
   "name": "rss-temple-home",
   "version": "0.0.1",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "lint": "grunt",
     "build": "grunt build"

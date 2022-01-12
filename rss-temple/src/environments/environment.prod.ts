@@ -6,4 +6,7 @@ export const environment: IEnvironment = {
   googleApiClientId: '',
   facebookAppId: '',
   onboardingYoutubeEmbededUrl: '',
+  issueTrackerUrl: 'https://github.com/murrple-1/rss_temple_http/issues',
+  clientRepoUrl: 'https://github.com/murrple-1/rss_temple_http',
+  serverRepoUrl: 'https://github.com/murrple-1/rss_temple',
 };

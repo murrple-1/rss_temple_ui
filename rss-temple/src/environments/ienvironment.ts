@@ -4,4 +4,7 @@ export interface IEnvironment {
   googleApiClientId: string;
   facebookAppId: string;
   onboardingYoutubeEmbededUrl: string;
+  issueTrackerUrl: string;
+  clientRepoUrl: string;
+  serverRepoUrl: string;
 }

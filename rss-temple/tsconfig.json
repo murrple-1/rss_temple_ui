@@ -19,7 +19,9 @@
     "paths": {
       "@app/*": ["app/*"],
       "@environments/*": ["environments/*"]
-    }
+    },
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
