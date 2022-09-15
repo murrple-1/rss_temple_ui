@@ -110,7 +110,6 @@ module.exports = function (grunt) {
       dist: {
         options: {
           implementation: require("node-sass"),
-          fiber: require("fibers"),
           includePaths: [
             "node_modules/bootstrap/scss/",
             "node_modules/@fortawesome/fontawesome-free/scss/",
