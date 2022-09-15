@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  rss_temple_home:
+    image: rss_temple_home:latest
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+volumes:
+  caddy_data:
+  caddy_config:
