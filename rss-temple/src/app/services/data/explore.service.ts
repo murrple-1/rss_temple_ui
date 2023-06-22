@@ -41,7 +41,7 @@ export class ExploreService {
     );
 
     return this.http
-      .get<JsonValue>(`${environment.apiHost}/api/explore`, {
+      .get<JsonValue>(`${environment.envVar.apiHost}/api/explore`, {
         headers,
       })
       .pipe(

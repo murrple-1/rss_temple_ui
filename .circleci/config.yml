@@ -3,65 +3,102 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - build_app
+      - build_app_latest:
+          filters:
+            branches:
+              only: master
+            tags:
+              ignore: /.*/
+      - build_app_tag:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /.*/
+      - build_home_latest:
+          filters:
+            branches:
+              only: master
+            tags:
+              ignore: /.*/
+      - build_home_tag:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /.*/
       - test_app
-      - build_home
+
 jobs:
-  build_app:
-    working_directory: ~/rss_temple_http/
+  build_app_latest:
     docker:
-      - image: circleci/node:14
+      - image: docker:20
     steps:
       - checkout
-      - restore_cache:
-          key: dependency-cache-{{ checksum "~/rss_temple_http/rss-temple/yarn.lock" }}
+      - setup_remote_docker
       - run:
-          name: install-dependencies
-          command: yarn install --frozen-lockfile
+          name: Docker Build
           working_directory: ~/rss_temple_http/rss-temple/
-      - save_cache:
-          key: dependency-cache-{{ checksum "~/rss_temple_http/rss-temple/yarn.lock" }}
-          paths:
-            - ~/.cache/yarn
+          command: docker build -t rss_temple_app:latest .
       - run:
-          name: create-environment
+          name: Docker Upload
           command: |
-            cat \<< EOF > environment.ts
-            import { IEnvironment } from '@environments/ienvironment';
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            docker tag rss_temple_app:latest $DOCKER_USERNAME/rss_temple_app:latest
+            docker push $DOCKER_USERNAME/rss_temple_app:latest
 
-            export const environment: IEnvironment = {
-              production: true,
-              apiHost: 'http://localhost:8000',
-              googleApiClientId: '',
-              facebookAppId: '',
-              onboardingYoutubeEmbededUrl: '',
-              issueTrackerUrl: 'https://github.com/murrple-1/rss_temple_http/issues',
-              clientRepoUrl: 'https://github.com/murrple-1/rss_temple_http',
-              serverRepoUrl: 'https://github.com/murrple-1/rss_temple',
-            };
-            EOF
-          working_directory: ~/rss_temple_http/rss-temple/src/environments/
+  build_app_tag:
+    docker:
+      - image: docker:20
+    steps:
+      - checkout
+      - setup_remote_docker
       - run:
-          name: setup-prod-environment
+          name: Docker Build
+          working_directory: ~/rss_temple_http/rss-temple/
+          command: docker build -t rss_temple_app:latest .
+      - run:
+          name: Docker Upload
           command: |
-            yarn generate-licenses-file
-            cd src/environments/
-            sed -i "s/googleApiClientId: '',/googleApiClientId: '$GOOGLE_API_CLIENT_ID',/g" environment.prod.ts
-            sed -i "s/facebookAppId: '',/facebookAppId: '$FACEBOOK_APP_ID',/g" environment.prod.ts
-            sed -i "s@onboardingYoutubeEmbededUrl: '',@onboardingYoutubeEmbededUrl: '$ONBOARDING_YOUTUBE_EMBEDED_URL',@g" environment.prod.ts
-          working_directory: ~/rss_temple_http/rss-temple/
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            docker tag rss_temple_app:latest $DOCKER_USERNAME/rss_temple_app:$CIRCLE_TAG
+            docker push $DOCKER_USERNAME/rss_temple_app:$CIRCLE_TAG
+
+  build_home_latest:
+    docker:
+      - image: docker:20
+    steps:
+      - checkout
+      - setup_remote_docker
       - run:
-          name: angular-build
-          command: yarn run ng build --configuration=production --progress=false
-          working_directory: ~/rss_temple_http/rss-temple/
+          name: Docker Build
+          working_directory: ~/rss_temple_http/rss-temple-home/
+          command: docker build -t rss_temple_home:latest .
       - run:
-          name: tarball
-          command: tar -czf ../build_app.tar.gz *
-          working_directory: ~/rss_temple_http/rss-temple/dist/
-      - store_artifacts:
-          path: ~/rss_temple_http/rss-temple/build_app.tar.gz
+          name: Docker Upload
+          command: |
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            docker tag rss_temple_home:latest $DOCKER_USERNAME/rss_temple_home:latest
+            docker push $DOCKER_USERNAME/rss_temple_home:latest
+
+  build_home_tag:
+    docker:
+      - image: docker:20
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Docker Build
+          working_directory: ~/rss_temple_http/rss-temple-home/
+          command: docker build -t rss_temple_home:latest .
+      - run:
+          name: Docker Upload
+          command: |
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            docker tag rss_temple_home:latest $DOCKER_USERNAME/rss_temple_home:$CIRCLE_TAG
+            docker push $DOCKER_USERNAME/rss_temple_home:$CIRCLE_TAG
+
   test_app:
-    working_directory: ~/rss_temple_http/
     docker:
       - image: circleci/node:14-browsers
     steps:
@@ -76,24 +113,6 @@ jobs:
           key: dependency-cache-{{ checksum "~/rss_temple_http/rss-temple/yarn.lock" }}
           paths:
             - ~/.cache/yarn
-      - run:
-          name: create-environment
-          command: |
-            cat \<< EOF > environment.ts
-            import { IEnvironment } from '@environments/ienvironment';
-
-            export const environment: IEnvironment = {
-              production: true,
-              apiHost: 'http://localhost:8000',
-              googleApiClientId: '',
-              facebookAppId: '',
-              onboardingYoutubeEmbededUrl: '',
-              issueTrackerUrl: 'https://github.com/murrple-1/rss_temple_http/issues',
-              clientRepoUrl: 'https://github.com/murrple-1/rss_temple_http',
-              serverRepoUrl: 'https://github.com/murrple-1/rss_temple',
-            };
-            EOF
-          working_directory: ~/rss_temple_http/rss-temple/src/environments/
       - run:
           name: setup-test-environment
           command: |
@@ -111,29 +130,3 @@ jobs:
           name: codecov
           command: yarn run codecov --disable=gcov
           working_directory: ~/rss_temple_http/rss-temple/
-  build_home:
-    working_directory: ~/rss_temple_http/
-    docker:
-      - image: circleci/node:14
-    steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ checksum "~/rss_temple_http/rss-temple-home/yarn.lock" }}
-      - run:
-          name: install-dependencies
-          command: yarn install --frozen-lockfile
-          working_directory: ~/rss_temple_http/rss-temple-home/
-      - save_cache:
-          key: dependency-cache-{{ checksum "~/rss_temple_http/rss-temple-home/yarn.lock" }}
-          paths:
-            - ~/.cache/yarn
-      - run:
-          name: build
-          command: yarn run grunt build --app-url="$APP_URL" --twitter-url="$TWITTER_URL" --fb-url="$FACEBOOK_URL" --insta-url="$INSTAGRAM_URL"
-          working_directory: ~/rss_temple_http/rss-temple-home/
-      - run:
-          name: tarball
-          command: tar -czf ../build_home.tar.gz *
-          working_directory: ~/rss_temple_http/rss-temple-home/dist/
-      - store_artifacts:
-          path: ~/rss_temple_http/rss-temple-home/build_home.tar.gz

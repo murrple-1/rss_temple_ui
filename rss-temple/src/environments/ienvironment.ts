@@ -1,10 +1,12 @@
 export interface IEnvironment {
   production: boolean;
-  apiHost: string;
-  googleApiClientId: string;
-  facebookAppId: string;
-  onboardingYoutubeEmbededUrl: string;
-  issueTrackerUrl: string;
-  clientRepoUrl: string;
-  serverRepoUrl: string;
+  envVar: {
+    apiHost: string;
+    googleApiClientId: string;
+    facebookAppId: string;
+    onboardingYoutubeEmbededUrl: string;
+    issueTrackerUrl: string;
+    clientRepoUrl: string;
+    serverRepoUrl: string;
+  };
 }

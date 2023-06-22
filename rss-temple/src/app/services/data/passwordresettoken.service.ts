@@ -19,7 +19,7 @@ export class PasswordResetTokenService {
     formData.append('email', email);
 
     return this.http.post<void>(
-      `${environment.apiHost}/api/passwordresettoken/request`,
+      `${environment.envVar.apiHost}/api/passwordresettoken/request`,
       formData,
     );
   }
@@ -30,7 +30,7 @@ export class PasswordResetTokenService {
     formData.append('password', body.password);
 
     return this.http.post<void>(
-      `${environment.apiHost}/api/passwordresettoken/reset`,
+      `${environment.envVar.apiHost}/api/passwordresettoken/reset`,
       formData,
     );
   }

@@ -125,7 +125,7 @@ export class UserService {
     const params = getToParams<Field>(options, () => ['uuid']);
 
     return this.http
-      .get<JsonValue>(`${environment.apiHost}/api/user`, {
+      .get<JsonValue>(`${environment.envVar.apiHost}/api/user`, {
         headers,
         params,
       })
@@ -137,7 +137,7 @@ export class UserService {
       this.sessionService.sessionToken$.getValue(),
     );
 
-    return this.http.put<void>(`${environment.apiHost}/api/user`, body, {
+    return this.http.put<void>(`${environment.envVar.apiHost}/api/user`, body, {
       headers,
     });
   }
@@ -147,7 +147,7 @@ export class UserService {
     formData.append('token', token);
 
     return this.http.post<void>(
-      `${environment.apiHost}/api/user/verify`,
+      `${environment.envVar.apiHost}/api/user/verify`,
       formData,
     );
   }
@@ -158,7 +158,7 @@ export class UserService {
     );
 
     return this.http.put<void>(
-      `${environment.apiHost}/api/user/attributes`,
+      `${environment.envVar.apiHost}/api/user/attributes`,
       attributes,
       {
         headers,

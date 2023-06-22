@@ -1,4 +1,5 @@
 :3001 {
   root * /srv/dist
   file_server
+  try_files {path} /index.html
 }

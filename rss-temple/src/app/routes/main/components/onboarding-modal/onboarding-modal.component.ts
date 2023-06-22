@@ -20,7 +20,7 @@ export class OnboardingModalComponent implements OnDestroy {
 
   constructor(sanitizer: DomSanitizer) {
     this.iframeSrc = sanitizer.bypassSecurityTrustResourceUrl(
-      environment.onboardingYoutubeEmbededUrl,
+      environment.envVar.onboardingYoutubeEmbededUrl,
     );
   }
 

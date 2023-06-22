@@ -3,6 +3,7 @@
 set -eux
 
 yarn generate-licenses-file
+yarn collect-envvars
 yarn run ng build -c ${1:-production}
 
-caddy run --config ./Caddyfile --adapter "caddyfile"
+exec caddy run --config ./Caddyfile --adapter "caddyfile"

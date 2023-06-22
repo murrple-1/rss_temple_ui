@@ -188,7 +188,7 @@ export class FeedService {
     params.url = feedUrl;
 
     return this.http
-      .get<JsonValue>(`${environment.apiHost}/api/feed`, {
+      .get<JsonValue>(`${environment.envVar.apiHost}/api/feed`, {
         headers,
         params,
       })
@@ -203,7 +203,7 @@ export class FeedService {
     const body = queryToBody<Field, SortField>(options, () => ['uuid']);
 
     return this.http
-      .post<JsonValue>(`${environment.apiHost}/api/feeds/query`, body, {
+      .post<JsonValue>(`${environment.envVar.apiHost}/api/feeds/query`, body, {
         headers,
         params,
       })
@@ -227,7 +227,7 @@ export class FeedService {
     }
 
     return this.http.post<void>(
-      `${environment.apiHost}/api/feed/subscribe`,
+      `${environment.envVar.apiHost}/api/feed/subscribe`,
       null,
       {
         headers,
@@ -253,7 +253,7 @@ export class FeedService {
     }
 
     return this.http.put<void>(
-      `${environment.apiHost}/api/feed/subscribe`,
+      `${environment.envVar.apiHost}/api/feed/subscribe`,
       null,
       {
         headers,
@@ -270,9 +270,12 @@ export class FeedService {
       url,
     };
 
-    return this.http.delete<void>(`${environment.apiHost}/api/feed/subscribe`, {
-      headers,
-      params,
-    });
+    return this.http.delete<void>(
+      `${environment.envVar.apiHost}/api/feed/subscribe`,
+      {
+        headers,
+        params,
+      },
+    );
   }
 }

@@ -58,7 +58,7 @@ export class FBAuthService {
     return new Promise<void>((resolve, _reject) => {
       (window as any).fbAsyncInit = () => {
         FB.init({
-          appId: environment.facebookAppId,
+          appId: environment.envVar.facebookAppId,
           xfbml: true,
           version: 'v2.10',
         });

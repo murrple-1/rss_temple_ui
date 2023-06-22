@@ -23,7 +23,7 @@ export class OPMLService {
       this.sessionService.sessionToken$.getValue(),
     );
 
-    return this.http.get(`${environment.apiHost}/api/opml`, {
+    return this.http.get(`${environment.envVar.apiHost}/api/opml`, {
       headers,
       responseType: 'text',
     });
@@ -34,7 +34,7 @@ export class OPMLService {
       this.sessionService.sessionToken$.getValue(),
     );
 
-    return this.http.post(`${environment.apiHost}/api/opml`, opmlText, {
+    return this.http.post(`${environment.envVar.apiHost}/api/opml`, opmlText, {
       headers,
       observe: 'response',
     });

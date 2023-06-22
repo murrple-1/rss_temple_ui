@@ -2,6 +2,6 @@
 
 set -eux
 
-yarn run grunt build --app-url="$1" --twitter-url="$2" --fb-url="$3" --insta-url="$4"
+yarn run grunt build --app-url="$APP_URL" --twitter-url="$TWITTER_URL" --fb-url="$FB_URL" --insta-url="$INSTA_URL"
 
-caddy run --config ./Caddyfile --adapter "caddyfile"
+exec caddy run --config ./Caddyfile --adapter "caddyfile"

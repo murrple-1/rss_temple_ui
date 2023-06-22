@@ -21,32 +21,38 @@ export class LoginService {
   ) {}
 
   createMyLogin(email: string, password: string) {
-    return this.http.post<void>(`${environment.apiHost}/api/login/my`, {
+    return this.http.post<void>(`${environment.envVar.apiHost}/api/login/my`, {
       email,
       password,
     });
   }
 
   createGoogleLogin(email: string, password: string, token: string) {
-    return this.http.post<void>(`${environment.apiHost}/api/login/google`, {
-      email,
-      password,
-      token,
-    });
+    return this.http.post<void>(
+      `${environment.envVar.apiHost}/api/login/google`,
+      {
+        email,
+        password,
+        token,
+      },
+    );
   }
 
   createFacebookLogin(email: string, password: string, token: string) {
-    return this.http.post<void>(`${environment.apiHost}/api/login/facebook`, {
-      email,
-      password,
-      token,
-    });
+    return this.http.post<void>(
+      `${environment.envVar.apiHost}/api/login/facebook`,
+      {
+        email,
+        password,
+        token,
+      },
+    );
   }
 
   getMyLoginSession(email: string, password: string) {
     return this.http
       .post<string>(
-        `${environment.apiHost}/api/login/my/session`,
+        `${environment.envVar.apiHost}/api/login/my/session`,
         {
           email,
           password,
@@ -70,7 +76,7 @@ export class LoginService {
   getGoogleLoginSession(user: gapi.auth2.GoogleUser) {
     return this.http
       .post<string>(
-        `${environment.apiHost}/api/login/google/session`,
+        `${environment.envVar.apiHost}/api/login/google/session`,
         {
           token: user.getAuthResponse().id_token,
         },
@@ -93,7 +99,7 @@ export class LoginService {
   getFacebookLoginSession(user: facebook.AuthResponse) {
     return this.http
       .post<string>(
-        `${environment.apiHost}/api/login/facebook/session`,
+        `${environment.envVar.apiHost}/api/login/facebook/session`,
         {
           token: user.accessToken,
         },
@@ -121,7 +127,7 @@ export class LoginService {
       this.sessionService.sessionToken$.getValue(),
     );
 
-    return this.http.delete<void>(`${environment.apiHost}/api/session`, {
+    return this.http.delete<void>(`${environment.envVar.apiHost}/api/session`, {
       headers,
     });
   }

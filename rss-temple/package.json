@@ -8,7 +8,8 @@
     "build": "ng build",
     "test": "cross-env TEST_TYPE=standard ng test",
     "lint": "ng lint",
-    "generate-licenses-file": "license-checker --production --direct --json --out src/app/os-licenses.json"
+    "generate-licenses-file": "license-checker --production --direct --json --out src/app/os-licenses.json",
+    "collect-envvars": "ng run rss-temple:collect-vars"
   },
   "private": true,
   "prettier": {
@@ -78,6 +79,7 @@
     "karma-jasmine-html-reporter": "^1.5.0",
     "karma-junit-reporter": "^2.0.1",
     "license-checker": "^25.0.1",
+    "ng-process-env": "^16.0.6",
     "prettier": "^2.0.5",
     "pretty-quick": "^3.0.2",
     "raw-loader": "^4.0.2",

@@ -104,10 +104,13 @@ export class UserCategoryService {
     const params = getToParams<Field>(options, () => ['uuid']);
 
     return this.http
-      .get<JsonValue>(`${environment.apiHost}/api/usercategory/${uuid}`, {
-        headers,
-        params,
-      })
+      .get<JsonValue>(
+        `${environment.envVar.apiHost}/api/usercategory/${uuid}`,
+        {
+          headers,
+          params,
+        },
+      )
       .pipe(map(toUserCategory));
   }
 
@@ -120,7 +123,7 @@ export class UserCategoryService {
 
     return this.http
       .post<JsonValue>(
-        `${environment.apiHost}/api/usercategories/query`,
+        `${environment.envVar.apiHost}/api/usercategories/query`,
         body,
         {
           headers,
@@ -146,7 +149,7 @@ export class UserCategoryService {
 
     return this.http
       .post<JsonValue>(
-        `${environment.apiHost}/api/usercategory`,
+        `${environment.envVar.apiHost}/api/usercategory`,
         userCategoryJson,
         {
           headers,
@@ -163,7 +166,7 @@ export class UserCategoryService {
     );
 
     return this.http.delete<void>(
-      `${environment.apiHost}/api/usercategory/${uuid}`,
+      `${environment.envVar.apiHost}/api/usercategory/${uuid}`,
       {
         headers,
       },
@@ -182,7 +185,7 @@ export class UserCategoryService {
     }
 
     return this.http.put<void>(
-      `${environment.apiHost}/api/usercategories/apply`,
+      `${environment.envVar.apiHost}/api/usercategories/apply`,
       body,
       {
         headers,

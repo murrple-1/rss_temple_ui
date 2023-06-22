@@ -36,9 +36,9 @@ const RSSIconSVG: string =
   styleUrls: ['./support.component.scss'],
 })
 export class SupportComponent {
-  readonly issueTrackerUrl = environment.issueTrackerUrl;
-  readonly clientRepoUrl = environment.clientRepoUrl;
-  readonly serverRepoUrl = environment.serverRepoUrl;
+  readonly issueTrackerUrl = environment.envVar.issueTrackerUrl;
+  readonly clientRepoUrl = environment.envVar.clientRepoUrl;
+  readonly serverRepoUrl = environment.envVar.serverRepoUrl;
 
   readonly licensesText = licensesText;
   readonly rssIconSvg = RSSIconSVG;

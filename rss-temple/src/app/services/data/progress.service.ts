@@ -51,7 +51,7 @@ function toProgressInterface(value: JsonValue): ProgressInterface {
     throw new Error("'finishedCount' must be number");
   }
 
-  return (value as unknown) as ProgressInterface;
+  return value as unknown as ProgressInterface;
 }
 
 @Injectable({
@@ -70,7 +70,7 @@ export class ProgressService {
 
     return this.http
       .get<JsonValue>(
-        `${environment.apiHost}/api/feed/subscribe/progress/${uuid}`,
+        `${environment.envVar.apiHost}/api/feed/subscribe/progress/${uuid}`,
         { headers },
       )
       .pipe(map(toProgressInterface));
