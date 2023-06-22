@@ -2,7 +2,7 @@ import { IEnvironment } from '@environments/ienvironment';
 
 export const environment: IEnvironment = {
   production: false,
-  apiHost: 'https://api.rsstemple.com',
+  apiHost: 'http://localhost:8000',
   googleApiClientId: '',
   facebookAppId: '',
   onboardingYoutubeEmbededUrl: '',
