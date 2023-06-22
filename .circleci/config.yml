@@ -29,6 +29,9 @@ workflows:
               only: /.*/
       - test_app
 
+orbs:
+  browser-tools: circleci/browser-tools@1.4.1
+
 jobs:
   build_app_latest:
     docker:
@@ -102,6 +105,7 @@ jobs:
     docker:
       - image: cimg/node:16.20-browsers
     steps:
+      - browser-tools/install-browser-tools
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "rss-temple/yarn.lock" }}
