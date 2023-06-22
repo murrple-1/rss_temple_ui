@@ -108,7 +108,7 @@ jobs:
       - run:
           name: install-dependencies
           command: yarn install --frozen-lockfile
-          working_directory: ~/rss_temple_http/rss-temple/
+          working_directory: rss-temple/
       - save_cache:
           key: dependency-cache-{{ checksum "rss-temple/yarn.lock" }}
           paths:
