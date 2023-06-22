@@ -121,6 +121,7 @@ jobs:
           name: setup-test-environment
           command: |
             yarn generate-licenses-file
+            cp src/environments/environment.dev.ts src/environments/environment.ts
           working_directory: rss-temple/
       - run:
           name: angular-test
