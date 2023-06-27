@@ -36,12 +36,12 @@ import { RegisterComponent } from '@app/components/register/register.component';
 import { ResetPasswordComponent } from '@app/components/reset-password/reset-password.component';
 import { VerifyComponent } from '@app/components/verify/verify.component';
 
-const AppLogoSVG: string = require('!!raw-loader!../assets/images/icon.svg')
-  .default;
-const FacebookLogoSVG: string = require('!!raw-loader!../assets/images/facebook-f.svg')
-  .default;
-const GoogleLogoSVG: string = require('!!raw-loader!../assets/images/google.svg')
-  .default;
+const AppLogoSVG: string =
+  require('!!raw-loader!../assets/images/icon.svg').default;
+const FacebookLogoSVG: string =
+  require('!!raw-loader!../assets/images/facebook-f.svg').default;
+const GoogleLogoSVG: string =
+  require('!!raw-loader!../assets/images/google.svg').default;
 
 export function clarityIconsFactory() {
   return () => {

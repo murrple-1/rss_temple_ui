@@ -9,7 +9,7 @@ function fieldsFn(): Field[] {
   return ['prop1'];
 }
 
-function sessionTokenFn() {
+function apiSessionIdFn() {
   return 'session-token';
 }
 
@@ -122,9 +122,9 @@ describe('query.interface', () => {
   });
 
   it('should parse headers', () => {
-    const headers = toHeaders({}, sessionTokenFn);
+    const headers = toHeaders({}, apiSessionIdFn);
     expect(headers).toEqual({
-      'X-Session-Token': sessionTokenFn(),
+      'X-Session-ID': apiSessionIdFn(),
     });
   });
 

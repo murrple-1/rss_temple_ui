@@ -25,7 +25,7 @@ import {
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 import { JsonValue, isJsonObject, isJsonArray } from '@app/libs/json.lib';
-import { SessionService } from '@app/services/session.service';
+import { APISessionService } from '@app/services/api-session.service';
 
 import { environment } from '@environments/environment';
 
@@ -177,18 +177,18 @@ function toFeed(value: JsonValue) {
 export class FeedService {
   constructor(
     private http: HttpClient,
-    private sessionService: SessionService,
+    private apiSessionService: APISessionService,
   ) {}
 
   get(feedUrl: string, options: GetOptions<Field> = {}) {
     const headers = getToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
     const params = getToParams<Field>(options, () => ['uuid']);
     params.url = feedUrl;
 
     return this.http
-      .get<JsonValue>(`${environment.envVar.apiHost}/api/feed`, {
+      .get<JsonValue>(`${environment.envVar.API_HOST}/api/feed`, {
         headers,
         params,
       })
@@ -197,13 +197,13 @@ export class FeedService {
 
   query(options: QueryOptions<Field, SortField> = {}) {
     const headers = queryToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
     const params = queryToParams('feeds');
     const body = queryToBody<Field, SortField>(options, () => ['uuid']);
 
     return this.http
-      .post<JsonValue>(`${environment.envVar.apiHost}/api/feeds/query`, body, {
+      .post<JsonValue>(`${environment.envVar.API_HOST}/api/feeds/query`, body, {
         headers,
         params,
       })
@@ -216,7 +216,7 @@ export class FeedService {
 
   subscribe(url: string, customTitle?: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
     const params: Record<string, string | string[]> = {
       url,
@@ -227,7 +227,7 @@ export class FeedService {
     }
 
     return this.http.post<void>(
-      `${environment.envVar.apiHost}/api/feed/subscribe`,
+      `${environment.envVar.API_HOST}/api/feed/subscribe`,
       null,
       {
         headers,
@@ -242,7 +242,7 @@ export class FeedService {
     options: CommonOptions = {},
   ) {
     const headers = commonToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
     const params: Record<string, string | string[]> = {
       url,
@@ -253,7 +253,7 @@ export class FeedService {
     }
 
     return this.http.put<void>(
-      `${environment.envVar.apiHost}/api/feed/subscribe`,
+      `${environment.envVar.API_HOST}/api/feed/subscribe`,
       null,
       {
         headers,
@@ -264,14 +264,14 @@ export class FeedService {
 
   unsubscribe(url: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
     const params: Record<string, string | string[]> = {
       url,
     };
 
     return this.http.delete<void>(
-      `${environment.envVar.apiHost}/api/feed/subscribe`,
+      `${environment.envVar.API_HOST}/api/feed/subscribe`,
       {
         headers,
         params,

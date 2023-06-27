@@ -7,7 +7,7 @@ import {
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 import { JsonValue, isJsonObject } from '@app/libs/json.lib';
-import { SessionService } from '@app/services/session.service';
+import { APISessionService } from '@app/services/api-session.service';
 
 import { environment } from '@environments/environment';
 
@@ -60,17 +60,17 @@ function toProgressInterface(value: JsonValue): ProgressInterface {
 export class ProgressService {
   constructor(
     private http: HttpClient,
-    private sessionService: SessionService,
+    private apiSessionService: APISessionService,
   ) {}
 
   checkProgress(uuid: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
 
     return this.http
       .get<JsonValue>(
-        `${environment.envVar.apiHost}/api/feed/subscribe/progress/${uuid}`,
+        `${environment.envVar.API_HOST}/api/feed/subscribe/progress/${uuid}`,
         { headers },
       )
       .pipe(map(toProgressInterface));

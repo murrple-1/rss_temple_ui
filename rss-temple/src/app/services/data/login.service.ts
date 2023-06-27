@@ -7,7 +7,7 @@ import {
   CommonOptions,
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
-import { SessionService } from '@app/services/session.service';
+import { APISessionService } from '@app/services/api-session.service';
 
 import { environment } from '@environments/environment';
 
@@ -17,11 +17,11 @@ import { environment } from '@environments/environment';
 export class LoginService {
   constructor(
     private http: HttpClient,
-    private sessionService: SessionService,
+    private apiSessionService: APISessionService,
   ) {}
 
   createMyLogin(email: string, password: string) {
-    return this.http.post<void>(`${environment.envVar.apiHost}/api/login/my`, {
+    return this.http.post<void>(`${environment.envVar.API_HOST}/api/login/my`, {
       email,
       password,
     });
@@ -29,7 +29,7 @@ export class LoginService {
 
   createGoogleLogin(email: string, password: string, token: string) {
     return this.http.post<void>(
-      `${environment.envVar.apiHost}/api/login/google`,
+      `${environment.envVar.API_HOST}/api/login/google`,
       {
         email,
         password,
@@ -40,7 +40,7 @@ export class LoginService {
 
   createFacebookLogin(email: string, password: string, token: string) {
     return this.http.post<void>(
-      `${environment.envVar.apiHost}/api/login/facebook`,
+      `${environment.envVar.API_HOST}/api/login/facebook`,
       {
         email,
         password,
@@ -52,7 +52,7 @@ export class LoginService {
   getMyLoginSession(email: string, password: string) {
     return this.http
       .post<string>(
-        `${environment.envVar.apiHost}/api/login/my/session`,
+        `${environment.envVar.API_HOST}/api/login/my/session`,
         {
           email,
           password,
@@ -76,7 +76,7 @@ export class LoginService {
   getGoogleLoginSession(user: gapi.auth2.GoogleUser) {
     return this.http
       .post<string>(
-        `${environment.envVar.apiHost}/api/login/google/session`,
+        `${environment.envVar.API_HOST}/api/login/google/session`,
         {
           token: user.getAuthResponse().id_token,
         },
@@ -99,7 +99,7 @@ export class LoginService {
   getFacebookLoginSession(user: facebook.AuthResponse) {
     return this.http
       .post<string>(
-        `${environment.envVar.apiHost}/api/login/facebook/session`,
+        `${environment.envVar.API_HOST}/api/login/facebook/session`,
         {
           token: user.accessToken,
         },
@@ -120,15 +120,18 @@ export class LoginService {
   }
 
   deleteSessionToken(
-    options: Required<Pick<CommonOptions, 'sessionToken'>> &
-      Omit<CommonOptions, 'sessionToken'>,
+    options: Required<Pick<CommonOptions, 'apiSessionId'>> &
+      Omit<CommonOptions, 'apiSessionId'>,
   ) {
     const headers = commonToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
 
-    return this.http.delete<void>(`${environment.envVar.apiHost}/api/session`, {
-      headers,
-    });
+    return this.http.delete<void>(
+      `${environment.envVar.API_HOST}/api/session`,
+      {
+        headers,
+      },
+    );
   }
 }

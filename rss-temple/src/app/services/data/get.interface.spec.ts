@@ -6,35 +6,35 @@ function fieldsFn(): Field[] {
   return ['prop1'];
 }
 
-function sessionTokenFn() {
+function apiSessionIdFn() {
   return 'session-token';
 }
 
 describe('get.interface', () => {
   it('should generate headers', () => {
-    let headers = toHeaders<Field>({}, sessionTokenFn);
+    let headers = toHeaders<Field>({}, apiSessionIdFn);
     expect(headers).toEqual({
-      'X-Session-Token': sessionTokenFn(),
+      'X-Session-ID': apiSessionIdFn(),
     });
 
     headers = toHeaders<Field>(
       {
         fields: ['prop1'],
       },
-      sessionTokenFn,
+      apiSessionIdFn,
     );
     expect(headers).toEqual({
-      'X-Session-Token': sessionTokenFn(),
+      'X-Session-ID': apiSessionIdFn(),
     });
 
     headers = toHeaders<Field>(
       {
-        sessionToken: 'another-token',
+        apiSessionId: 'another-token',
       },
-      sessionTokenFn,
+      apiSessionIdFn,
     );
     expect(headers).toEqual({
-      'X-Session-Token': 'another-token',
+      'X-Session-ID': 'another-token',
     });
   });
 
@@ -56,7 +56,7 @@ describe('get.interface', () => {
 
     params = toParams<Field>(
       {
-        sessionToken: 'another-token',
+        apiSessionId: 'another-token',
       },
       fieldsFn,
     );

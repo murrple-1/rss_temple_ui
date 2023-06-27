@@ -6,7 +6,7 @@ import { of } from 'rxjs';
 import { parse as parseDate, format as formatDate } from 'date-fns';
 
 import { FeedEntry } from '@app/models';
-import { SessionService } from '@app/services/session.service';
+import { APISessionService } from '@app/services/api-session.service';
 
 import { FeedEntryService } from './feedentry.service';
 
@@ -17,13 +17,16 @@ function setup() {
     'delete',
     'request',
   ]);
-  const sessionService = new SessionService();
+  const apiSessionService = new APISessionService();
 
-  const feedEntryService = new FeedEntryService(httpClientSpy, sessionService);
+  const feedEntryService = new FeedEntryService(
+    httpClientSpy,
+    apiSessionService,
+  );
 
   return {
     httpClientSpy,
-    sessionService,
+    apiSessionService,
 
     feedEntryService,
   };
@@ -31,7 +34,7 @@ function setup() {
 
 describe('FeedEntryService', () => {
   beforeEach(() => {
-    localStorage.removeItem('session-service:sessionToken');
+    localStorage.removeItem('api-session-service:sessionId');
   });
 
   it('should get', fakeAsync(async () => {

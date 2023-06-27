@@ -68,9 +68,9 @@ export function toBody<Field extends string, SortField extends string>(
 
 export function toHeaders<Field extends string, SortField extends string>(
   options: QueryOptions<Field, SortField>,
-  sessionTokenFn: () => string | null,
+  apiSessionIdFn: () => string | null,
 ) {
-  const headers = commonToHeaders(options, sessionTokenFn);
+  const headers = commonToHeaders(options, apiSessionIdFn);
   return headers;
 }
 

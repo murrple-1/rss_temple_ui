@@ -19,7 +19,7 @@ import {
   isJsonArray,
   JsonObject,
 } from '@app/libs/json.lib';
-import { SessionService } from '@app/services/session.service';
+import { APISessionService } from '@app/services/api-session.service';
 
 import { environment } from '@environments/environment';
 
@@ -115,17 +115,17 @@ export interface UpdateUserBody {
 export class UserService {
   constructor(
     private http: HttpClient,
-    private sessionService: SessionService,
+    private apiSessionService: APISessionService,
   ) {}
 
   get(options: GetOptions<Field> = {}) {
     const headers = getToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
     const params = getToParams<Field>(options, () => ['uuid']);
 
     return this.http
-      .get<JsonValue>(`${environment.envVar.apiHost}/api/user`, {
+      .get<JsonValue>(`${environment.envVar.API_HOST}/api/user`, {
         headers,
         params,
       })
@@ -134,12 +134,16 @@ export class UserService {
 
   update(body: UpdateUserBody, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
 
-    return this.http.put<void>(`${environment.envVar.apiHost}/api/user`, body, {
-      headers,
-    });
+    return this.http.put<void>(
+      `${environment.envVar.API_HOST}/api/user`,
+      body,
+      {
+        headers,
+      },
+    );
   }
 
   verify(token: string) {
@@ -147,18 +151,18 @@ export class UserService {
     formData.append('token', token);
 
     return this.http.post<void>(
-      `${environment.envVar.apiHost}/api/user/verify`,
+      `${environment.envVar.API_HOST}/api/user/verify`,
       formData,
     );
   }
 
   updateAttributes(attributes: JsonObject, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
 
     return this.http.put<void>(
-      `${environment.envVar.apiHost}/api/user/attributes`,
+      `${environment.envVar.API_HOST}/api/user/attributes`,
       attributes,
       {
         headers,

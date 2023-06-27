@@ -8,7 +8,7 @@ import {
   ConfirmModalComponent,
   openModal as openConfirmModal,
 } from '@app/components/shared/confirm-modal/confirm-modal.component';
-import { ModalOpenService, SessionService } from '@app/services';
+import { ModalOpenService, APISessionService } from '@app/services';
 
 interface NavLink {
   name: string;
@@ -87,12 +87,12 @@ export class NavComponent implements OnInit, OnDestroy {
   constructor(
     private zone: NgZone,
     private router: Router,
-    private sessionService: SessionService,
+    private apiSessionService: APISessionService,
     private modalOpenService: ModalOpenService,
   ) {}
 
   ngOnInit() {
-    this.sessionService.isLoggedIn$
+    this.apiSessionService.isLoggedIn$
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: isLoggedIn => {
@@ -144,7 +144,7 @@ export class NavComponent implements OnInit, OnDestroy {
     this.modalOpenService.isModalOpen$.next(false);
 
     if (result) {
-      this.sessionService.sessionToken$.next(null);
+      this.apiSessionService.sessionId$.next(null);
 
       this.router.navigate(['/login']);
     }

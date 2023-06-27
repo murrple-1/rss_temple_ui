@@ -3,12 +3,12 @@ import { IEnvironment } from '@environments/ienvironment';
 export const environment: IEnvironment = {
   production: true,
   envVar: {
-    apiHost: 'http://localhost:8000',
-    googleApiClientId: '',
-    facebookAppId: '',
-    onboardingYoutubeEmbededUrl: '',
-    issueTrackerUrl: 'https://github.com/murrple-1/rss_temple_http/issues',
-    clientRepoUrl: 'https://github.com/murrple-1/rss_temple_http',
-    serverRepoUrl: 'https://github.com/murrple-1/rss_temple',
+    API_HOST: 'http://localhost:8000',
+    GOOGLE_API_CLIENT_ID: '',
+    FACEBOOK_APP_ID: '',
+    ONBOARDING_YOUTUBE_EMBEDED_URL: '',
+    ISSUE_TRACKER_URL: 'https://github.com/murrple-1/rss_temple_http/issues',
+    CLIENT_REPO_URL: 'https://github.com/murrple-1/rss_temple_http',
+    SERVER_REPO_URL: 'https://github.com/murrple-1/rss_temple',
   },
 };

@@ -3,7 +3,7 @@ import { fakeAsync } from '@angular/core/testing';
 
 import { of } from 'rxjs';
 
-import { SessionService } from '@app/services/session.service';
+import { APISessionService } from '@app/services/api-session.service';
 
 import { ExploreService } from './explore.service';
 
@@ -14,13 +14,13 @@ function setup() {
     'put',
     'delete',
   ]);
-  const sessionService = new SessionService();
+  const apiSessionService = new APISessionService();
 
-  const exploreService = new ExploreService(httpClientSpy, sessionService);
+  const exploreService = new ExploreService(httpClientSpy, apiSessionService);
 
   return {
     httpClientSpy,
-    sessionService,
+    apiSessionService,
 
     exploreService,
   };
@@ -28,7 +28,7 @@ function setup() {
 
 describe('ExploreService', () => {
   beforeEach(() => {
-    localStorage.removeItem('session-service:sessionToken');
+    localStorage.removeItem('api-session-service:sessionId');
   });
 
   it('should explore', fakeAsync(async () => {

@@ -6,8 +6,8 @@ import { skip, takeUntil } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root',
 })
-export class SessionService implements OnDestroy {
-  sessionToken$: BehaviorSubject<string | null>;
+export class APISessionService implements OnDestroy {
+  sessionId$: BehaviorSubject<string | null>;
 
   private _isLoggedIn$: BehaviorSubject<boolean>;
   isLoggedIn$: Observable<boolean>;
@@ -19,19 +19,19 @@ export class SessionService implements OnDestroy {
   private unsubscribe$ = new Subject<void>();
 
   constructor() {
-    const sessionToken = localStorage.getItem('session-service:sessionToken');
-    this.sessionToken$ = new BehaviorSubject(sessionToken);
+    const sessionId = localStorage.getItem('api-session-service:sessionId');
+    this.sessionId$ = new BehaviorSubject(sessionId);
 
-    this._isLoggedIn$ = new BehaviorSubject(sessionToken !== null);
+    this._isLoggedIn$ = new BehaviorSubject(sessionId !== null);
     this.isLoggedIn$ = this._isLoggedIn$;
 
-    this.sessionToken$.pipe(skip(1), takeUntil(this.unsubscribe$)).subscribe({
+    this.sessionId$.pipe(skip(1), takeUntil(this.unsubscribe$)).subscribe({
       next: st => {
         if (st !== null) {
-          localStorage.setItem('session-service:sessionToken', st);
+          localStorage.setItem('api-session-service:sessionId', st);
           this._isLoggedIn$.next(true);
         } else {
-          localStorage.removeItem('session-service:sessionToken');
+          localStorage.removeItem('api-session-service:sessionId');
           this._isLoggedIn$.next(false);
         }
       },

@@ -5,7 +5,7 @@ import {
   CommonOptions,
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
-import { SessionService } from '@app/services/session.service';
+import { APISessionService } from '@app/services/api-session.service';
 
 import { environment } from '@environments/environment';
 
@@ -15,15 +15,15 @@ import { environment } from '@environments/environment';
 export class OPMLService {
   constructor(
     private http: HttpClient,
-    private sessionService: SessionService,
+    private apiSessionService: APISessionService,
   ) {}
 
   download(options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
 
-    return this.http.get(`${environment.envVar.apiHost}/api/opml`, {
+    return this.http.get(`${environment.envVar.API_HOST}/api/opml`, {
       headers,
       responseType: 'text',
     });
@@ -31,10 +31,10 @@ export class OPMLService {
 
   upload(opmlText: string | ArrayBuffer, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
 
-    return this.http.post(`${environment.envVar.apiHost}/api/opml`, opmlText, {
+    return this.http.post(`${environment.envVar.API_HOST}/api/opml`, opmlText, {
       headers,
       observe: 'response',
     });

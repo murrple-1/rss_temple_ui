@@ -28,7 +28,7 @@ import {
   JsonObject,
   isJsonArray,
 } from '@app/libs/json.lib';
-import { SessionService } from '@app/services/session.service';
+import { APISessionService } from '@app/services/api-session.service';
 
 import { environment } from '@environments/environment';
 
@@ -94,18 +94,18 @@ export interface IApply {
 export class UserCategoryService {
   constructor(
     private http: HttpClient,
-    private sessionService: SessionService,
+    private apiSessionService: APISessionService,
   ) {}
 
   get(uuid: string, options: GetOptions<Field> = {}) {
     const headers = getToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
     const params = getToParams<Field>(options, () => ['uuid']);
 
     return this.http
       .get<JsonValue>(
-        `${environment.envVar.apiHost}/api/usercategory/${uuid}`,
+        `${environment.envVar.API_HOST}/api/usercategory/${uuid}`,
         {
           headers,
           params,
@@ -116,14 +116,14 @@ export class UserCategoryService {
 
   query(options: QueryOptions<Field, SortField> = {}) {
     const headers = queryToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
     const params = queryToParams('usercategories');
     const body = queryToBody<Field, SortField>(options, () => ['uuid']);
 
     return this.http
       .post<JsonValue>(
-        `${environment.envVar.apiHost}/api/usercategories/query`,
+        `${environment.envVar.API_HOST}/api/usercategories/query`,
         body,
         {
           headers,
@@ -142,14 +142,14 @@ export class UserCategoryService {
     options: GetOptions<Field> = {},
   ) {
     const headers = getToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
 
     const params = getToParams<Field>(options, () => ['uuid']);
 
     return this.http
       .post<JsonValue>(
-        `${environment.envVar.apiHost}/api/usercategory`,
+        `${environment.envVar.API_HOST}/api/usercategory`,
         userCategoryJson,
         {
           headers,
@@ -162,11 +162,11 @@ export class UserCategoryService {
 
   delete(uuid: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
 
     return this.http.delete<void>(
-      `${environment.envVar.apiHost}/api/usercategory/${uuid}`,
+      `${environment.envVar.API_HOST}/api/usercategory/${uuid}`,
       {
         headers,
       },
@@ -175,7 +175,7 @@ export class UserCategoryService {
 
   apply(apply: IApply, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
 
     const body: JsonObject = {};
@@ -185,7 +185,7 @@ export class UserCategoryService {
     }
 
     return this.http.put<void>(
-      `${environment.envVar.apiHost}/api/usercategories/apply`,
+      `${environment.envVar.API_HOST}/api/usercategories/apply`,
       body,
       {
         headers,

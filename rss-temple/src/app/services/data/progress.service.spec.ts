@@ -3,19 +3,19 @@ import { fakeAsync } from '@angular/core/testing';
 
 import { of } from 'rxjs';
 
-import { SessionService } from '@app/services/session.service';
+import { APISessionService } from '@app/services/api-session.service';
 
 import { ProgressService } from './progress.service';
 
 function setup() {
   const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', ['get']);
-  const sessionService = new SessionService();
+  const apiSessionService = new APISessionService();
 
-  const progressService = new ProgressService(httpClientSpy, sessionService);
+  const progressService = new ProgressService(httpClientSpy, apiSessionService);
 
   return {
     httpClientSpy,
-    sessionService,
+    apiSessionService,
 
     progressService,
   };
@@ -23,7 +23,7 @@ function setup() {
 
 describe('ProgressService', () => {
   beforeEach(() => {
-    localStorage.removeItem('session-service:sessionToken');
+    localStorage.removeItem('api-session-service:sessionId');
   });
 
   it('should check progress', fakeAsync(async () => {

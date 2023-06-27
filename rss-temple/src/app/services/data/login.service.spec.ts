@@ -3,7 +3,7 @@ import { fakeAsync } from '@angular/core/testing';
 
 import { of } from 'rxjs';
 
-import { SessionService } from '@app/services/session.service';
+import { APISessionService } from '@app/services/api-session.service';
 
 import { LoginService } from './login.service';
 
@@ -12,13 +12,13 @@ function setup() {
     'post',
     'delete',
   ]);
-  const sessionService = new SessionService();
+  const apiSessionService = new APISessionService();
 
-  const loginService = new LoginService(httpClientSpy, sessionService);
+  const loginService = new LoginService(httpClientSpy, apiSessionService);
 
   return {
     httpClientSpy,
-    sessionService,
+    apiSessionService,
 
     loginService,
   };
@@ -26,7 +26,7 @@ function setup() {
 
 describe('LoginService', () => {
   beforeEach(() => {
-    localStorage.removeItem('session-service:sessionToken');
+    localStorage.removeItem('api-session-service:sessionId');
   });
 
   it('should create a "my" login', fakeAsync(async () => {
@@ -148,7 +148,7 @@ describe('LoginService', () => {
 
     await loginService
       .deleteSessionToken({
-        sessionToken: 'sessionToken',
+        apiSessionId: 'sessionId',
       })
       .toPromise();
     expect(httpClientSpy.delete).toHaveBeenCalledTimes(1);
@@ -156,7 +156,7 @@ describe('LoginService', () => {
       jasmine.stringMatching(/\/api\/session$/),
       jasmine.objectContaining({
         headers: jasmine.objectContaining({
-          'X-Session-Token': jasmine.any(String),
+          'X-Session-ID': jasmine.any(String),
         }),
       }),
     );

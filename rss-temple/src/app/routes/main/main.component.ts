@@ -8,7 +8,7 @@ import {
   openModal as openOnboardingModal,
 } from '@app/routes/main/components/onboarding-modal/onboarding-modal.component';
 import { UserService } from '@app/services/data';
-import { ModalOpenService, SessionService } from '@app/services';
+import { ModalOpenService, APISessionService } from '@app/services';
 import { User } from '@app/models';
 
 type UserImpl = Required<Pick<User, 'attributes'>>;
@@ -26,12 +26,12 @@ export class MainComponent implements OnInit, OnDestroy {
   constructor(
     private zone: NgZone,
     private userService: UserService,
-    private sessionService: SessionService,
+    private apiSessionService: APISessionService,
     private modalOpenService: ModalOpenService,
   ) {}
 
   ngOnInit() {
-    this.sessionService.isLoggedIn$
+    this.apiSessionService.isLoggedIn$
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: isLoggedIn => {

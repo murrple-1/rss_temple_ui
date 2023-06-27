@@ -3,7 +3,7 @@ import { fakeAsync } from '@angular/core/testing';
 
 import { of } from 'rxjs';
 
-import { SessionService } from '@app/services/session.service';
+import { APISessionService } from '@app/services/api-session.service';
 
 import { OPMLService } from './opml.service';
 
@@ -12,13 +12,13 @@ function setup() {
     'get',
     'post',
   ]);
-  const sessionService = new SessionService();
+  const apiSessionService = new APISessionService();
 
-  const opmlService = new OPMLService(httpClientSpy, sessionService);
+  const opmlService = new OPMLService(httpClientSpy, apiSessionService);
 
   return {
     httpClientSpy,
-    sessionService,
+    apiSessionService,
 
     opmlService,
   };
@@ -26,7 +26,7 @@ function setup() {
 
 describe('OPMLService', () => {
   beforeEach(() => {
-    localStorage.removeItem('session-service:sessionToken');
+    localStorage.removeItem('api-session-service:sessionId');
   });
 
   it('should download', fakeAsync(async () => {

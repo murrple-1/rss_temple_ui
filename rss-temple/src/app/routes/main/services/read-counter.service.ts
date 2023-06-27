@@ -23,7 +23,7 @@ import {
 } from 'rxjs/operators';
 
 import { FeedEntryService, FeedService } from '@app/services/data';
-import { HttpErrorService, SessionService } from '@app/services';
+import { HttpErrorService, APISessionService } from '@app/services';
 import { Feed, FeedEntry } from '@app/models';
 import { AsyncTaskQueue } from '@app/libs/task-queue';
 
@@ -71,7 +71,7 @@ export class ReadCounterService implements OnDestroy {
   private unsubscribe$ = new Subject<void>();
 
   constructor(
-    private sessionService: SessionService,
+    private apiSessionService: APISessionService,
     private feedEntryService: FeedEntryService,
     private feedService: FeedService,
     private httpErrorService: HttpErrorService,
@@ -137,7 +137,7 @@ export class ReadCounterService implements OnDestroy {
         map(_event => undefined),
         startWith(undefined),
       ),
-      this.sessionService.isLoggedIn$,
+      this.apiSessionService.isLoggedIn$,
     ])
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({

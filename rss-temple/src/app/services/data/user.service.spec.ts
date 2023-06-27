@@ -4,7 +4,7 @@ import { fakeAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 import { User } from '@app/models';
-import { SessionService } from '@app/services/session.service';
+import { APISessionService } from '@app/services/api-session.service';
 
 import { UserService } from './user.service';
 
@@ -14,13 +14,13 @@ function setup() {
     'post',
     'put',
   ]);
-  const sessionService = new SessionService();
+  const apiSessionService = new APISessionService();
 
-  const userService = new UserService(httpClientSpy, sessionService);
+  const userService = new UserService(httpClientSpy, apiSessionService);
 
   return {
     httpClientSpy,
-    sessionService,
+    apiSessionService,
 
     userService,
   };
@@ -28,7 +28,7 @@ function setup() {
 
 describe('UserService', () => {
   beforeEach(() => {
-    localStorage.removeItem('session-service:sessionToken');
+    localStorage.removeItem('api-session-service:sessionId');
   });
 
   it('should get', fakeAsync(async () => {

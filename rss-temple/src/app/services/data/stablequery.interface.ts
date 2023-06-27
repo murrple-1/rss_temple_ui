@@ -89,17 +89,17 @@ export function toCreateStableQueryHeaders<
   SortField extends string,
 >(
   options: CreateStableQueryOptions<SortField>,
-  sessionTokenFn: () => string | null,
+  apiSessionIdFn: () => string | null,
 ) {
-  const headers = commonToHeaders(options, sessionTokenFn);
+  const headers = commonToHeaders(options, apiSessionIdFn);
   return headers;
 }
 
 export function toStableQueryHeaders<
   Field extends string,
   SortField extends string,
->(options: StableQueryOptions<Field>, sessionTokenFn: () => string | null) {
-  const headers = commonToHeaders(options, sessionTokenFn);
+>(options: StableQueryOptions<Field>, apiSessionIdFn: () => string | null) {
+  const headers = commonToHeaders(options, apiSessionIdFn);
   return headers;
 }
 

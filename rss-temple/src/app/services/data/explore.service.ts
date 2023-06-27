@@ -8,7 +8,7 @@ import {
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 import { JsonValue, isJsonObject, isJsonArray } from '@app/libs/json.lib';
-import { SessionService } from '@app/services/session.service';
+import { APISessionService } from '@app/services/api-session.service';
 
 import { environment } from '@environments/environment';
 
@@ -32,16 +32,16 @@ interface TagDescriptor {
 export class ExploreService {
   constructor(
     private http: HttpClient,
-    private sessionService: SessionService,
+    private apiSessionService: APISessionService,
   ) {}
 
   explore(options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
 
     return this.http
-      .get<JsonValue>(`${environment.envVar.apiHost}/api/explore`, {
+      .get<JsonValue>(`${environment.envVar.API_HOST}/api/explore`, {
         headers,
       })
       .pipe(

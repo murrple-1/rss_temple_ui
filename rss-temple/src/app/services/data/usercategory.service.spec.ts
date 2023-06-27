@@ -4,7 +4,7 @@ import { fakeAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 import { UserCategory } from '@app/models';
-import { SessionService } from '@app/services/session.service';
+import { APISessionService } from '@app/services/api-session.service';
 
 import { UserCategoryService } from './usercategory.service';
 
@@ -15,16 +15,16 @@ function setup() {
     'put',
     'delete',
   ]);
-  const sessionService = new SessionService();
+  const apiSessionService = new APISessionService();
 
   const userCategoryService = new UserCategoryService(
     httpClientSpy,
-    sessionService,
+    apiSessionService,
   );
 
   return {
     httpClientSpy,
-    sessionService,
+    apiSessionService,
 
     userCategoryService,
   };
@@ -32,7 +32,7 @@ function setup() {
 
 describe('UserCategoryService', () => {
   beforeEach(() => {
-    localStorage.removeItem('session-service:sessionToken');
+    localStorage.removeItem('api-session-service:sessionId');
   });
 
   it('should get', fakeAsync(async () => {

@@ -54,7 +54,7 @@ export class GAuthService {
       gapi.load('auth2', () => {
         gapi.auth2
           .init({
-            client_id: environment.envVar.googleApiClientId,
+            client_id: environment.envVar.GOOGLE_API_CLIENT_ID,
             fetch_basic_profile: true,
           })
           .then(auth => {

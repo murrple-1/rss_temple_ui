@@ -35,8 +35,8 @@ import {
   CommonOptions,
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
-import { JsonValue, isJsonObject, isJsonArray } from '@app/libs/json.lib';
-import { SessionService } from '@app/services/session.service';
+import { JsonValue, isJsonObject } from '@app/libs/json.lib';
+import { APISessionService } from '@app/services/api-session.service';
 
 import { environment } from '@environments/environment';
 
@@ -219,17 +219,17 @@ function toFeedEntry(value: JsonValue) {
 export class FeedEntryService {
   constructor(
     private http: HttpClient,
-    private sessionService: SessionService,
+    private apiSessionService: APISessionService,
   ) {}
 
   get(uuid: string, options: GetOptions<Field> = {}) {
     const headers = getToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
     const params = getToParams<Field>(options, () => ['uuid']);
 
     return this.http
-      .get<JsonValue>(`${environment.envVar.apiHost}/api/feedentry/${uuid}`, {
+      .get<JsonValue>(`${environment.envVar.API_HOST}/api/feedentry/${uuid}`, {
         headers,
         params,
       })
@@ -238,14 +238,14 @@ export class FeedEntryService {
 
   query(options: QueryOptions<Field, SortField> = {}) {
     const headers = queryToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
     const params = queryToParams('feedentries');
     const body = queryToBody<Field, SortField>(options, () => ['uuid']);
 
     return this.http
       .post<JsonValue>(
-        `${environment.envVar.apiHost}/api/feedentries/query`,
+        `${environment.envVar.API_HOST}/api/feedentries/query`,
         body,
         {
           headers,
@@ -261,14 +261,14 @@ export class FeedEntryService {
 
   createStableQuery(options: CreateStableQueryOptions<SortField> = {}) {
     const headers = toCreateStableQueryHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
     const params = toCreateStableQueryParams('feedentries');
     const body = toCreateStableQueryBody(options);
 
     return this.http
       .post<JsonValue>(
-        `${environment.envVar.apiHost}/api/feedentries/query/stable/create`,
+        `${environment.envVar.API_HOST}/api/feedentries/query/stable/create`,
         body,
         {
           headers,
@@ -288,14 +288,14 @@ export class FeedEntryService {
 
   stableQuery(options: StableQueryOptions<Field>) {
     const headers = toStableQueryHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
     const params = toStableQueryParams('feedentries');
     const body = toStableQueryBody<Field>(options, () => ['uuid']);
 
     return this.http
       .post<JsonValue>(
-        `${environment.envVar.apiHost}/api/feedentries/query/stable`,
+        `${environment.envVar.API_HOST}/api/feedentries/query/stable`,
         body,
         {
           headers,
@@ -316,12 +316,12 @@ export class FeedEntryService {
 
   read(feedEntryUuid: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
 
     return this.http
       .post<JsonValue>(
-        `${environment.envVar.apiHost}/api/feedentry/${feedEntryUuid}/read`,
+        `${environment.envVar.API_HOST}/api/feedentry/${feedEntryUuid}/read`,
         null,
         {
           headers,
@@ -345,11 +345,11 @@ export class FeedEntryService {
 
   unread(feedEntryUuid: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
 
     return this.http.delete<void>(
-      `${environment.envVar.apiHost}/api/feedentry/${feedEntryUuid}/read`,
+      `${environment.envVar.API_HOST}/api/feedentry/${feedEntryUuid}/read`,
       {
         headers,
       },
@@ -362,11 +362,11 @@ export class FeedEntryService {
     options: CommonOptions = {},
   ) {
     const headers = commonToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
 
     return this.http.post<void>(
-      `${environment.envVar.apiHost}/api/feedentries/read/`,
+      `${environment.envVar.API_HOST}/api/feedentries/read/`,
       {
         feedEntryUuids,
         feedUuids,
@@ -379,12 +379,12 @@ export class FeedEntryService {
 
   unreadSome(feedEntryUuids: string[], options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
 
     return this.http.request<void>(
       'DELETE',
-      `${environment.envVar.apiHost}/api/feedentries/read/`,
+      `${environment.envVar.API_HOST}/api/feedentries/read/`,
       {
         headers,
         body: feedEntryUuids,
@@ -394,11 +394,11 @@ export class FeedEntryService {
 
   favorite(feedEntryUuid: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
 
     return this.http.post<void>(
-      `${environment.envVar.apiHost}/api/feedentry/${feedEntryUuid}/favorite`,
+      `${environment.envVar.API_HOST}/api/feedentry/${feedEntryUuid}/favorite`,
       null,
       {
         headers,
@@ -408,11 +408,11 @@ export class FeedEntryService {
 
   unfavorite(feedEntryUuid: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
 
     return this.http.delete<void>(
-      `${environment.envVar.apiHost}/api/feedentry/${feedEntryUuid}/favorite`,
+      `${environment.envVar.API_HOST}/api/feedentry/${feedEntryUuid}/favorite`,
       {
         headers,
       },
@@ -421,11 +421,11 @@ export class FeedEntryService {
 
   favoriteSome(feedEntryUuids: string[], options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
 
     return this.http.post<void>(
-      `${environment.envVar.apiHost}/api/feedentries/favorite/`,
+      `${environment.envVar.API_HOST}/api/feedentries/favorite/`,
       feedEntryUuids,
       {
         headers,
@@ -435,12 +435,12 @@ export class FeedEntryService {
 
   unfavoriteSome(feedEntryUuids: string[], options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.sessionService.sessionToken$.getValue(),
+      this.apiSessionService.sessionId$.getValue(),
     );
 
     return this.http.request<void>(
       'DELETE',
-      `${environment.envVar.apiHost}/api/feedentries/favorite/`,
+      `${environment.envVar.API_HOST}/api/feedentries/favorite/`,
       {
         headers,
         body: feedEntryUuids,
