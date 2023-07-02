@@ -17,7 +17,7 @@ const ZFeedDescriptor = z.object({
   name: z.string(),
   feedUrl: z.string().url(),
   homeUrl: z.string().url().nullable(),
-  imageSrc: z.string().url().nullable(),
+  imageSrc: z.string().nullable(),
   entryTitles: z.array(z.string()),
   isSubscribed: z.boolean(),
 });

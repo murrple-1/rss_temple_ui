@@ -4,9 +4,9 @@ export const ZFeedEntry = z
   .object({
     uuid: z.string().uuid(),
     id: z.string().nullable(),
-    createdAt: z.date().nullable(),
-    publishedAt: z.date(),
-    updatedAt: z.date().nullable(),
+    createdAt: z.coerce.date().nullable(),
+    publishedAt: z.coerce.date(),
+    updatedAt: z.coerce.date().nullable(),
     title: z.string(),
     url: z.string().url(),
     content: z.string(),
