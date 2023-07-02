@@ -7,7 +7,7 @@ import {
   CommonOptions,
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
-import { APISessionService } from '@app/services/api-session.service';
+import { AuthTokenService } from '@app/services/auth-token.service';
 
 import { environment } from '@environments/environment';
 
@@ -17,7 +17,7 @@ import { environment } from '@environments/environment';
 export class LoginService {
   constructor(
     private http: HttpClient,
-    private apiSessionService: APISessionService,
+    private authTokenService: AuthTokenService,
   ) {}
 
   createMyLogin(email: string, password: string) {
@@ -120,11 +120,11 @@ export class LoginService {
   }
 
   deleteSessionToken(
-    options: Required<Pick<CommonOptions, 'apiSessionId'>> &
-      Omit<CommonOptions, 'apiSessionId'>,
+    options: Required<Pick<CommonOptions, 'authToken'>> &
+      Omit<CommonOptions, 'authToken'>,
   ) {
     const headers = commonToHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
 
     return this.http.delete<void>(

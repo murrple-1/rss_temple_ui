@@ -84,22 +84,19 @@ export function toStableQueryBody<Field extends string>(
   return body;
 }
 
-export function toCreateStableQueryHeaders<
-  Field extends string,
-  SortField extends string,
->(
+export function toCreateStableQueryHeaders<SortField extends string>(
   options: CreateStableQueryOptions<SortField>,
-  apiSessionIdFn: () => string | null,
+  authTokenFn: () => string | null,
 ) {
-  const headers = commonToHeaders(options, apiSessionIdFn);
+  const headers = commonToHeaders(options, authTokenFn);
   return headers;
 }
 
-export function toStableQueryHeaders<
-  Field extends string,
-  SortField extends string,
->(options: StableQueryOptions<Field>, apiSessionIdFn: () => string | null) {
-  const headers = commonToHeaders(options, apiSessionIdFn);
+export function toStableQueryHeaders<Field extends string>(
+  options: StableQueryOptions<Field>,
+  authTokenFn: () => string | null,
+) {
+  const headers = commonToHeaders(options, authTokenFn);
   return headers;
 }
 

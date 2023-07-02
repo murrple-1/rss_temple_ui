@@ -9,9 +9,9 @@ export interface GetOptions<Field extends string> extends CommonOptions {
 
 export function toHeaders<Field extends string>(
   options: GetOptions<Field>,
-  apiSessionIdFn: () => string | null,
+  authTokenFn: () => string | null,
 ) {
-  const headers = commonToHeaders(options, apiSessionIdFn);
+  const headers = commonToHeaders(options, authTokenFn);
   return headers;
 }
 

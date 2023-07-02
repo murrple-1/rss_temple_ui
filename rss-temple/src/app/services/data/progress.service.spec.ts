@@ -3,19 +3,19 @@ import { fakeAsync } from '@angular/core/testing';
 
 import { of } from 'rxjs';
 
-import { APISessionService } from '@app/services/api-session.service';
+import { AuthTokenService } from '@app/services/auth-token.service';
 
 import { ProgressService } from './progress.service';
 
 function setup() {
   const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', ['get']);
-  const apiSessionService = new APISessionService();
+  const authTokenService = new AuthTokenService();
 
-  const progressService = new ProgressService(httpClientSpy, apiSessionService);
+  const progressService = new ProgressService(httpClientSpy, authTokenService);
 
   return {
     httpClientSpy,
-    apiSessionService,
+    authTokenService,
 
     progressService,
   };
@@ -23,7 +23,7 @@ function setup() {
 
 describe('ProgressService', () => {
   beforeEach(() => {
-    localStorage.removeItem('api-session-service:sessionId');
+    localStorage.removeItem('auth-token-service:authToken');
   });
 
   it('should check progress', fakeAsync(async () => {

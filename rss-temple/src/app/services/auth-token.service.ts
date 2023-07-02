@@ -6,8 +6,8 @@ import { skip, takeUntil } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root',
 })
-export class APISessionService implements OnDestroy {
-  sessionId$: BehaviorSubject<string | null>;
+export class AuthTokenService implements OnDestroy {
+  authToken$: BehaviorSubject<string | null>;
 
   private _isLoggedIn$: BehaviorSubject<boolean>;
   isLoggedIn$: Observable<boolean>;
@@ -19,19 +19,19 @@ export class APISessionService implements OnDestroy {
   private unsubscribe$ = new Subject<void>();
 
   constructor() {
-    const sessionId = localStorage.getItem('api-session-service:sessionId');
-    this.sessionId$ = new BehaviorSubject(sessionId);
+    const authToken = localStorage.getItem('auth-token-service:authToken');
+    this.authToken$ = new BehaviorSubject(authToken);
 
-    this._isLoggedIn$ = new BehaviorSubject(sessionId !== null);
+    this._isLoggedIn$ = new BehaviorSubject(authToken !== null);
     this.isLoggedIn$ = this._isLoggedIn$;
 
-    this.sessionId$.pipe(skip(1), takeUntil(this.unsubscribe$)).subscribe({
+    this.authToken$.pipe(skip(1), takeUntil(this.unsubscribe$)).subscribe({
       next: st => {
         if (st !== null) {
-          localStorage.setItem('api-session-service:sessionId', st);
+          localStorage.setItem('auth-token-service:authToken', st);
           this._isLoggedIn$.next(true);
         } else {
-          localStorage.removeItem('api-session-service:sessionId');
+          localStorage.removeItem('auth-token-service:authToken');
           this._isLoggedIn$.next(false);
         }
       },

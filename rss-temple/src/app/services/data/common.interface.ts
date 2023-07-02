@@ -1,16 +1,16 @@
 export interface CommonOptions {
-  apiSessionId?: string;
+  authToken?: string;
 }
 
 export function toHeaders(
   options: CommonOptions,
-  apiSessionIdFn: () => string | null,
+  authTokenFn: () => string | null,
 ) {
   const headers: Record<string, string | string[]> = {};
 
-  const apiSessionId = options.apiSessionId ?? apiSessionIdFn();
-  if (apiSessionId !== null) {
-    headers['X-Session-ID'] = apiSessionId;
+  const authToken = options.authToken ?? authTokenFn();
+  if (authToken !== null) {
+    headers['Authorization'] = `Bearer ${authToken}`;
   }
 
   return headers;

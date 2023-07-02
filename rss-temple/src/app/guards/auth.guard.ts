@@ -7,7 +7,7 @@ import {
 } from '@angular/router';
 
 import { areOldAndNewRoutesTheSame } from '@app/guards/utils';
-import { APISessionService } from '@app/services';
+import { AuthTokenService } from '@app/services';
 
 @Injectable({
   providedIn: 'root',
@@ -15,11 +15,11 @@ import { APISessionService } from '@app/services';
 export class AuthGuard implements CanActivate {
   constructor(
     private router: Router,
-    private apiSessionService: APISessionService,
+    private authTokenService: AuthTokenService,
   ) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (this.apiSessionService.isLoggedIn) {
+    if (this.authTokenService.isLoggedIn) {
       return true;
     }
 
@@ -41,11 +41,11 @@ export class AuthGuard implements CanActivate {
 export class NoAuthGuard implements CanActivate {
   constructor(
     private router: Router,
-    private apiSessionService: APISessionService,
+    private authTokenService: AuthTokenService,
   ) {}
 
   canActivate(route: ActivatedRouteSnapshot, _state: RouterStateSnapshot) {
-    if (!this.apiSessionService.isLoggedIn) {
+    if (!this.authTokenService.isLoggedIn) {
       return true;
     }
 

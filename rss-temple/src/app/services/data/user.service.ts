@@ -19,7 +19,7 @@ import {
   isJsonArray,
   JsonObject,
 } from '@app/libs/json.lib';
-import { APISessionService } from '@app/services/api-session.service';
+import { AuthTokenService } from '@app/services/auth-token.service';
 
 import { environment } from '@environments/environment';
 
@@ -115,12 +115,12 @@ export interface UpdateUserBody {
 export class UserService {
   constructor(
     private http: HttpClient,
-    private apiSessionService: APISessionService,
+    private authTokenService: AuthTokenService,
   ) {}
 
   get(options: GetOptions<Field> = {}) {
     const headers = getToHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
     const params = getToParams<Field>(options, () => ['uuid']);
 
@@ -134,7 +134,7 @@ export class UserService {
 
   update(body: UpdateUserBody, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
 
     return this.http.put<void>(
@@ -158,7 +158,7 @@ export class UserService {
 
   updateAttributes(attributes: JsonObject, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
 
     return this.http.put<void>(

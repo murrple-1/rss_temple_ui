@@ -7,7 +7,7 @@ import {
   AppAlertDescriptor,
   AppAlertsService,
 } from '@app/services/app-alerts.service';
-import { APISessionService } from '@app/services/api-session.service';
+import { AuthTokenService } from '@app/services/auth-token.service';
 
 import { HttpErrorService } from './httperror.service';
 
@@ -16,18 +16,18 @@ function setup() {
 
   const routerSpy = jasmine.createSpyObj<Router>('Router', ['navigate']);
   const appAlertService = new AppAlertsService();
-  const apiSessionService = new APISessionService();
+  const authTokenService = new AuthTokenService();
 
   const httpErrorService = new HttpErrorService(
     routerSpy,
     appAlertService,
-    apiSessionService,
+    authTokenService,
   );
 
   return {
     routerSpy,
     appAlertService,
-    apiSessionService,
+    authTokenService,
 
     httpErrorService,
   };
@@ -35,7 +35,7 @@ function setup() {
 
 describe('HttpErrorService', () => {
   beforeEach(() => {
-    localStorage.removeItem('api-session-service:sessionId');
+    localStorage.removeItem('auth-token-service:authToken');
   });
 
   it('should handle HttpErrorResponses', async () => {

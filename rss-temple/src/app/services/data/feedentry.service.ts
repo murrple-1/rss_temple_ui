@@ -36,7 +36,7 @@ import {
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 import { JsonValue, isJsonObject } from '@app/libs/json.lib';
-import { APISessionService } from '@app/services/api-session.service';
+import { AuthTokenService } from '@app/services/auth-token.service';
 
 import { environment } from '@environments/environment';
 
@@ -219,12 +219,12 @@ function toFeedEntry(value: JsonValue) {
 export class FeedEntryService {
   constructor(
     private http: HttpClient,
-    private apiSessionService: APISessionService,
+    private authTokenService: AuthTokenService,
   ) {}
 
   get(uuid: string, options: GetOptions<Field> = {}) {
     const headers = getToHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
     const params = getToParams<Field>(options, () => ['uuid']);
 
@@ -238,7 +238,7 @@ export class FeedEntryService {
 
   query(options: QueryOptions<Field, SortField> = {}) {
     const headers = queryToHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
     const params = queryToParams('feedentries');
     const body = queryToBody<Field, SortField>(options, () => ['uuid']);
@@ -261,7 +261,7 @@ export class FeedEntryService {
 
   createStableQuery(options: CreateStableQueryOptions<SortField> = {}) {
     const headers = toCreateStableQueryHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
     const params = toCreateStableQueryParams('feedentries');
     const body = toCreateStableQueryBody(options);
@@ -288,7 +288,7 @@ export class FeedEntryService {
 
   stableQuery(options: StableQueryOptions<Field>) {
     const headers = toStableQueryHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
     const params = toStableQueryParams('feedentries');
     const body = toStableQueryBody<Field>(options, () => ['uuid']);
@@ -316,7 +316,7 @@ export class FeedEntryService {
 
   read(feedEntryUuid: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
 
     return this.http
@@ -345,7 +345,7 @@ export class FeedEntryService {
 
   unread(feedEntryUuid: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
 
     return this.http.delete<void>(
@@ -362,7 +362,7 @@ export class FeedEntryService {
     options: CommonOptions = {},
   ) {
     const headers = commonToHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
 
     return this.http.post<void>(
@@ -379,7 +379,7 @@ export class FeedEntryService {
 
   unreadSome(feedEntryUuids: string[], options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
 
     return this.http.request<void>(
@@ -394,7 +394,7 @@ export class FeedEntryService {
 
   favorite(feedEntryUuid: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
 
     return this.http.post<void>(
@@ -408,7 +408,7 @@ export class FeedEntryService {
 
   unfavorite(feedEntryUuid: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
 
     return this.http.delete<void>(
@@ -421,7 +421,7 @@ export class FeedEntryService {
 
   favoriteSome(feedEntryUuids: string[], options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
 
     return this.http.post<void>(
@@ -435,7 +435,7 @@ export class FeedEntryService {
 
   unfavoriteSome(feedEntryUuids: string[], options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
 
     return this.http.request<void>(

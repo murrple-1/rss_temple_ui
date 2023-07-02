@@ -23,7 +23,7 @@ import {
   FBAuthService,
   GAuthService,
   ModalOpenService,
-  APISessionService,
+  AuthTokenService,
 } from '@app/services';
 import {
   RequestPasswordResetModalComponent,
@@ -70,7 +70,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
     private fbAuthService: FBAuthService,
     private loginService: LoginService,
     private appAlertsService: AppAlertsService,
-    private apiSessionService: APISessionService,
+    private authTokenService: AuthTokenService,
     private modalOpenService: ModalOpenService,
   ) {}
 
@@ -169,14 +169,14 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
       .getMyLoginSession(email, this.password)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: apiSessionId => {
+        next: authToken => {
           if (this.rememberMe) {
             localStorage.setItem('login:cached_email', email);
           } else {
             localStorage.removeItem('login:cached_email');
           }
           this.zone.run(() => {
-            this.handleLoginSuccess(apiSessionId);
+            this.handleLoginSuccess(authToken);
           });
         },
         error: error => {
@@ -229,8 +229,8 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
-  private handleLoginSuccess(apiSessionId: string) {
-    this.apiSessionService.sessionId$.next(apiSessionId);
+  private handleLoginSuccess(authToken: string) {
+    this.authTokenService.authToken$.next(authToken);
 
     this.router.navigate([this._returnUrl]);
   }
@@ -250,9 +250,9 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
       .getGoogleLoginSession(user)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: apiSessionId => {
+        next: authToken => {
           this.zone.run(() => {
-            this.handleLoginSuccess(apiSessionId);
+            this.handleLoginSuccess(authToken);
           });
         },
         error: error => {
@@ -313,9 +313,9 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
       .getFacebookLoginSession(user)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: apiSessionId => {
+        next: authToken => {
           this.zone.run(() => {
-            this.handleLoginSuccess(apiSessionId);
+            this.handleLoginSuccess(authToken);
           });
         },
         error: error => {

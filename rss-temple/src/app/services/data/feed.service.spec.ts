@@ -6,7 +6,7 @@ import { of } from 'rxjs';
 import { parse as parseDate, format as formatDate } from 'date-fns';
 
 import { Feed } from '@app/models';
-import { APISessionService } from '@app/services/api-session.service';
+import { AuthTokenService } from '@app/services/auth-token.service';
 
 import { FeedService } from './feed.service';
 
@@ -16,13 +16,13 @@ function setup() {
     'post',
     'delete',
   ]);
-  const apiSessionService = new APISessionService();
+  const authTokenService = new AuthTokenService();
 
-  const feedService = new FeedService(httpClientSpy, apiSessionService);
+  const feedService = new FeedService(httpClientSpy, authTokenService);
 
   return {
     httpClientSpy,
-    apiSessionService,
+    authTokenService,
 
     feedService,
   };
@@ -30,7 +30,7 @@ function setup() {
 
 describe('FeedService', () => {
   beforeEach(() => {
-    localStorage.removeItem('api-session-service:sessionId');
+    localStorage.removeItem('auth-token-service:authToken');
   });
 
   it('should get', fakeAsync(async () => {

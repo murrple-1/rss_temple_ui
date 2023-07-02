@@ -25,7 +25,7 @@ import {
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 import { JsonValue, isJsonObject, isJsonArray } from '@app/libs/json.lib';
-import { APISessionService } from '@app/services/api-session.service';
+import { AuthTokenService } from '@app/services/auth-token.service';
 
 import { environment } from '@environments/environment';
 
@@ -177,12 +177,12 @@ function toFeed(value: JsonValue) {
 export class FeedService {
   constructor(
     private http: HttpClient,
-    private apiSessionService: APISessionService,
+    private authTokenService: AuthTokenService,
   ) {}
 
   get(feedUrl: string, options: GetOptions<Field> = {}) {
     const headers = getToHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
     const params = getToParams<Field>(options, () => ['uuid']);
     params.url = feedUrl;
@@ -197,7 +197,7 @@ export class FeedService {
 
   query(options: QueryOptions<Field, SortField> = {}) {
     const headers = queryToHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
     const params = queryToParams('feeds');
     const body = queryToBody<Field, SortField>(options, () => ['uuid']);
@@ -216,7 +216,7 @@ export class FeedService {
 
   subscribe(url: string, customTitle?: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
     const params: Record<string, string | string[]> = {
       url,
@@ -242,7 +242,7 @@ export class FeedService {
     options: CommonOptions = {},
   ) {
     const headers = commonToHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
     const params: Record<string, string | string[]> = {
       url,
@@ -264,7 +264,7 @@ export class FeedService {
 
   unsubscribe(url: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
     const params: Record<string, string | string[]> = {
       url,

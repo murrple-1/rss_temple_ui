@@ -9,8 +9,8 @@ function fieldsFn(): Field[] {
   return ['prop1'];
 }
 
-function apiSessionIdFn() {
-  return 'session-token';
+function authTokenFn() {
+  return 'auth-token';
 }
 
 describe('query.interface', () => {
@@ -122,9 +122,9 @@ describe('query.interface', () => {
   });
 
   it('should parse headers', () => {
-    const headers = toHeaders({}, apiSessionIdFn);
+    const headers = toHeaders({}, authTokenFn);
     expect(headers).toEqual({
-      'X-Session-ID': apiSessionIdFn(),
+      'Authorization': `Bearer ${authTokenFn()}`,
     });
   });
 

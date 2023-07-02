@@ -28,7 +28,7 @@ import {
   JsonObject,
   isJsonArray,
 } from '@app/libs/json.lib';
-import { APISessionService } from '@app/services/api-session.service';
+import { AuthTokenService } from '@app/services/auth-token.service';
 
 import { environment } from '@environments/environment';
 
@@ -94,12 +94,12 @@ export interface IApply {
 export class UserCategoryService {
   constructor(
     private http: HttpClient,
-    private apiSessionService: APISessionService,
+    private authTokenService: AuthTokenService,
   ) {}
 
   get(uuid: string, options: GetOptions<Field> = {}) {
     const headers = getToHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
     const params = getToParams<Field>(options, () => ['uuid']);
 
@@ -116,7 +116,7 @@ export class UserCategoryService {
 
   query(options: QueryOptions<Field, SortField> = {}) {
     const headers = queryToHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
     const params = queryToParams('usercategories');
     const body = queryToBody<Field, SortField>(options, () => ['uuid']);
@@ -142,7 +142,7 @@ export class UserCategoryService {
     options: GetOptions<Field> = {},
   ) {
     const headers = getToHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
 
     const params = getToParams<Field>(options, () => ['uuid']);
@@ -162,7 +162,7 @@ export class UserCategoryService {
 
   delete(uuid: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
 
     return this.http.delete<void>(
@@ -175,7 +175,7 @@ export class UserCategoryService {
 
   apply(apply: IApply, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.apiSessionService.sessionId$.getValue(),
+      this.authTokenService.authToken$.getValue(),
     );
 
     const body: JsonObject = {};
