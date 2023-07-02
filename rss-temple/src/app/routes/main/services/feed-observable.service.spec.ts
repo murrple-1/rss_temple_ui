@@ -21,7 +21,7 @@ describe('FeedObservableService', () => {
     });
 
     try {
-      feedObservableService.feedAdded.next(new Feed() as FeedImpl);
+      feedObservableService.feedAdded.next({} as FeedImpl);
 
       expect(fn).toHaveBeenCalledTimes(1);
     } finally {
@@ -39,7 +39,7 @@ describe('FeedObservableService', () => {
     });
 
     try {
-      feedObservableService.feedRemoved.next(new Feed() as FeedImpl);
+      feedObservableService.feedRemoved.next({} as FeedImpl);
 
       expect(fn).toHaveBeenCalledTimes(1);
     } finally {

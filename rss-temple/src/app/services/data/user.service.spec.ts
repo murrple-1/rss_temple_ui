@@ -3,10 +3,12 @@ import { fakeAsync } from '@angular/core/testing';
 
 import { of } from 'rxjs';
 
-import { User } from '@app/models';
+import { z } from 'zod';
+
 import { AuthTokenService } from '@app/services/auth-token.service';
 
 import { UserService } from './user.service';
+import { ZUser } from '@app/models/user';
 
 function setup() {
   const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', [
@@ -37,7 +39,7 @@ describe('UserService', () => {
     httpClientSpy.get.and.returnValue(of({}));
 
     const user = await userService.get().toPromise();
-    expect(user).toBeInstanceOf(User);
+    expect(ZUser.safeParse(user).success).toBeTrue();
   }));
 
   it('should update', fakeAsync(async () => {
@@ -62,8 +64,7 @@ describe('UserService', () => {
     httpClientSpy.get.and.returnValue(of([]));
 
     await expectAsync(userService.get().toPromise()).toBeRejectedWithError(
-      Error,
-      /must be object/,
+      z.ZodError,
     );
   }));
 
@@ -90,8 +91,7 @@ describe('UserService', () => {
     );
 
     await expectAsync(userService.get().toPromise()).toBeRejectedWithError(
-      Error,
-      /uuid.*?must be string/,
+      z.ZodError,
     );
   }));
 
@@ -118,8 +118,7 @@ describe('UserService', () => {
     );
 
     await expectAsync(userService.get().toPromise()).toBeRejectedWithError(
-      Error,
-      /email.*?must be string/,
+      z.ZodError,
     );
   }));
 
@@ -146,8 +145,7 @@ describe('UserService', () => {
     );
 
     await expectAsync(userService.get().toPromise()).toBeRejectedWithError(
-      Error,
-      /hasGoogleLogin.*?must be boolean/,
+      z.ZodError,
     );
   }));
 
@@ -174,8 +172,7 @@ describe('UserService', () => {
     );
 
     await expectAsync(userService.get().toPromise()).toBeRejectedWithError(
-      Error,
-      /hasFacebookLogin.*?must be boolean/,
+      z.ZodError,
     );
   }));
 
@@ -213,8 +210,7 @@ describe('UserService', () => {
     );
 
     await expectAsync(userService.get().toPromise()).toBeRejectedWithError(
-      Error,
-      /subscribedFeedUuids.*?must be array/,
+      z.ZodError,
     );
 
     httpClientSpy.get.and.returnValue(
@@ -224,8 +220,7 @@ describe('UserService', () => {
     );
 
     await expectAsync(userService.get().toPromise()).toBeRejectedWithError(
-      Error,
-      /subscribedFeedUuids.*?element.*?must be string/,
+      z.ZodError,
     );
   }));
 });

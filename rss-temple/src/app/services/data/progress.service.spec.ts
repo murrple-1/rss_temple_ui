@@ -3,6 +3,8 @@ import { fakeAsync } from '@angular/core/testing';
 
 import { of } from 'rxjs';
 
+import { z } from 'zod';
+
 import { AuthTokenService } from '@app/services/auth-token.service';
 
 import { ProgressService } from './progress.service';
@@ -99,7 +101,7 @@ describe('ProgressService', () => {
       progressService
         .checkProgress('123e4567-e89b-12d3-a456-426614174000')
         .toPromise(),
-    ).toBeRejectedWithError(Error, /must be object/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 
   it('should fail `state` missing', fakeAsync(async () => {
@@ -116,7 +118,7 @@ describe('ProgressService', () => {
       progressService
         .checkProgress('123e4567-e89b-12d3-a456-426614174000')
         .toPromise(),
-    ).toBeRejectedWithError(Error, /state.*?missing/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 
   it('should fail `state` type error', fakeAsync(async () => {
@@ -134,7 +136,7 @@ describe('ProgressService', () => {
       progressService
         .checkProgress('123e4567-e89b-12d3-a456-426614174000')
         .toPromise(),
-    ).toBeRejectedWithError(Error, /state.*?must be string/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 
   it('should fail `state` malformed', fakeAsync(async () => {
@@ -152,7 +154,7 @@ describe('ProgressService', () => {
       progressService
         .checkProgress('123e4567-e89b-12d3-a456-426614174000')
         .toPromise(),
-    ).toBeRejectedWithError(Error, /state.*?malformed/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 
   it('should fail `totalCount` missing', fakeAsync(async () => {
@@ -169,7 +171,7 @@ describe('ProgressService', () => {
       progressService
         .checkProgress('123e4567-e89b-12d3-a456-426614174000')
         .toPromise(),
-    ).toBeRejectedWithError(Error, /totalCount.*?missing/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 
   it('should fail `totalCount` type error', fakeAsync(async () => {
@@ -187,7 +189,7 @@ describe('ProgressService', () => {
       progressService
         .checkProgress('123e4567-e89b-12d3-a456-426614174000')
         .toPromise(),
-    ).toBeRejectedWithError(Error, /totalCount.*?must be number/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 
   it('should fail `finishedCount` missing', fakeAsync(async () => {
@@ -204,7 +206,7 @@ describe('ProgressService', () => {
       progressService
         .checkProgress('123e4567-e89b-12d3-a456-426614174000')
         .toPromise(),
-    ).toBeRejectedWithError(Error, /finishedCount.*?missing/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 
   it('should fail `finishedCount` type error', fakeAsync(async () => {
@@ -222,6 +224,6 @@ describe('ProgressService', () => {
       progressService
         .checkProgress('123e4567-e89b-12d3-a456-426614174000')
         .toPromise(),
-    ).toBeRejectedWithError(Error, /finishedCount.*?must be number/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 });

@@ -3,10 +3,12 @@ import { fakeAsync } from '@angular/core/testing';
 
 import { of } from 'rxjs';
 
-import { UserCategory } from '@app/models';
+import { z } from 'zod';
+
 import { AuthTokenService } from '@app/services/auth-token.service';
 
 import { UserCategoryService } from './usercategory.service';
+import { ZUserCategory } from '@app/models/usercategory';
 
 function setup() {
   const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', [
@@ -43,7 +45,7 @@ describe('UserCategoryService', () => {
     const userCategory = await userCategoryService
       .get('123e4567-e89b-12d3-a456-426614174000')
       .toPromise();
-    expect(userCategory).toBeInstanceOf(UserCategory);
+    expect(ZUserCategory.safeParse(userCategory).success).toBeTrue();
   }));
 
   it('should query', fakeAsync(async () => {
@@ -84,7 +86,7 @@ describe('UserCategoryService', () => {
         text: 'Category Name',
       })
       .toPromise();
-    expect(userCategory).toBeInstanceOf(UserCategory);
+    expect(ZUserCategory.safeParse(userCategory).success).toBeTrue();
   }));
 
   it('should delete', fakeAsync(async () => {
@@ -124,7 +126,7 @@ describe('UserCategoryService', () => {
       userCategoryService
         .get('123e4567-e89b-12d3-a456-426614174000')
         .toPromise(),
-    ).toBeRejectedWithError(Error, /must be object/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 
   it('should `uuid`', fakeAsync(async () => {
@@ -155,7 +157,7 @@ describe('UserCategoryService', () => {
       userCategoryService
         .get('123e4567-e89b-12d3-a456-426614174000')
         .toPromise(),
-    ).toBeRejectedWithError(Error, /uuid.*?must be string/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 
   it('should `text`', fakeAsync(async () => {
@@ -186,6 +188,6 @@ describe('UserCategoryService', () => {
       userCategoryService
         .get('123e4567-e89b-12d3-a456-426614174000')
         .toPromise(),
-    ).toBeRejectedWithError(Error, /text.*?must be string/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 });

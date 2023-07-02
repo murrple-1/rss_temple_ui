@@ -6,8 +6,13 @@ export const ZFeed = z
     title: z.string(),
     feedUrl: z.string(),
     homeUrl: z.string().nullable(),
-    publishedAt: z.coerce.date(),
-    updatedAt: z.coerce.date(),
+    publishedAt: z
+      .union([z.string().datetime({ offset: true }), z.date()])
+      .transform(arg => new Date(arg)),
+    updatedAt: z
+      .union([z.string().datetime({ offset: true }), z.date()])
+      .transform(arg => new Date(arg))
+      .nullable(),
     subscribed: z.boolean(),
     customTitle: z.string().nullable(),
     calculatedTitle: z.string(),

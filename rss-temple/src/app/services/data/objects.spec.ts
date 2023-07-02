@@ -1,34 +1,35 @@
-import { JsonValue } from '@app/libs/json.lib';
+import { z } from 'zod';
 
-import { toObjects, Objects } from './objects';
+import { toObjects } from './objects';
 
-type Type = Record<string, unknown>;
-
-function toType(_value: JsonValue): Type {
-  return {};
-}
+const ZType = z.string();
 
 describe('objects', () => {
   it('should parse correct JSON', () => {
     const objects = toObjects(
       {
         totalCount: 0,
-        objects: [],
+        objects: ['something', 'interesting'],
       },
-      toType,
+      ZType,
     );
 
-    expect(objects).toBeInstanceOf(Objects);
+    expect(
+      z
+        .object({ totalCount: z.number(), objects: z.array(z.string()) })
+        .strict()
+        .safeParse(objects).success,
+    ).toBeTrue();
   });
 
   it('should parse empty', () => {
-    const objects = toObjects({}, toType);
+    const objects = toObjects({}, ZType);
 
-    expect(objects).toBeInstanceOf(Objects);
+    expect(z.object({}).strict().safeParse(objects).success).toBeTrue();
   });
 
   it('should error malformed', () => {
-    expect(() => toObjects([], toType)).toThrowError(/must be object/);
+    expect(() => toObjects([], ZType)).toThrowError(z.ZodError);
   });
 
   it('should error `totalCount` type error', () => {
@@ -37,9 +38,9 @@ describe('objects', () => {
         {
           totalCount: 'totalCount',
         },
-        toType,
+        ZType,
       ),
-    ).toThrowError(/totalCount.*?must be number/);
+    ).toThrowError(z.ZodError);
   });
 
   it('should error `objects` type error', () => {
@@ -48,8 +49,8 @@ describe('objects', () => {
         {
           objects: 'objects',
         },
-        toType,
+        ZType,
       ),
-    ).toThrowError(/objects.*?must be array/);
+    ).toThrowError(z.ZodError);
   });
 });

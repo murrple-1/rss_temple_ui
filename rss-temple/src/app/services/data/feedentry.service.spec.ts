@@ -3,12 +3,14 @@ import { fakeAsync } from '@angular/core/testing';
 
 import { of } from 'rxjs';
 
+import { z } from 'zod';
+
 import { parse as parseDate, format as formatDate } from 'date-fns';
 
-import { FeedEntry } from '@app/models';
 import { AuthTokenService } from '@app/services/auth-token.service';
 
 import { FeedEntryService } from './feedentry.service';
+import { ZFeedEntry } from '@app/models/feedentry';
 
 function setup() {
   const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', [
@@ -46,7 +48,7 @@ describe('FeedEntryService', () => {
       .get('123e4567-e89b-12d3-a456-426614174000')
       .toPromise();
 
-    expect(feed).toBeInstanceOf(FeedEntry);
+    expect(ZFeedEntry.safeParse(feed).success).toBeTrue();
   }));
 
   it('should query', fakeAsync(async () => {
@@ -200,7 +202,7 @@ describe('FeedEntryService', () => {
 
     await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
-    ).toBeRejectedWithError(Error, 'JSON must be object');
+    ).toBeRejectedWithError(z.ZodError);
   }));
 
   it('should `uuid`', fakeAsync(async () => {
@@ -232,7 +234,7 @@ describe('FeedEntryService', () => {
 
     await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
-    ).toBeRejectedWithError(Error, /uuid.*?must be string/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 
   it('should `id`', fakeAsync(async () => {
@@ -276,7 +278,7 @@ describe('FeedEntryService', () => {
 
     await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
-    ).toBeRejectedWithError(Error, /id.*?must be string/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 
   it('should `createdAt`', fakeAsync(async () => {
@@ -290,7 +292,7 @@ describe('FeedEntryService', () => {
 
     httpClientSpy.get.and.returnValue(
       of({
-        createdAt: formatDate(createdAt, 'yyyy-MM-dd HH:mm:ss'),
+        createdAt: formatDate(createdAt, "yyyy-MM-dd'T'HH:mm:ssXXXX"),
       }),
     );
 
@@ -324,7 +326,7 @@ describe('FeedEntryService', () => {
 
     await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
-    ).toBeRejectedWithError(Error, /createdAt.*?must be datetime or null/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 
   it('should `createdAt` malformed', fakeAsync(async () => {
@@ -338,7 +340,7 @@ describe('FeedEntryService', () => {
 
     await expectAsync(
       feedEntryService.get('http://www.fake.com/rss.xml').toPromise(),
-    ).toBeRejectedWithError(Error, /createdAt.*?malformed/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 
   it('should `publishedAt`', fakeAsync(async () => {
@@ -352,7 +354,7 @@ describe('FeedEntryService', () => {
 
     httpClientSpy.get.and.returnValue(
       of({
-        publishedAt: formatDate(publishedAt, 'yyyy-MM-dd HH:mm:ss'),
+        publishedAt: formatDate(publishedAt, "yyyy-MM-dd'T'HH:mm:ssXXXX"),
       }),
     );
 
@@ -374,7 +376,7 @@ describe('FeedEntryService', () => {
 
     await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
-    ).toBeRejectedWithError(Error, /publishedAt.*?must be datetime/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 
   it('should `publishedAt` malformed', fakeAsync(async () => {
@@ -388,7 +390,7 @@ describe('FeedEntryService', () => {
 
     await expectAsync(
       feedEntryService.get('http://www.fake.com/rss.xml').toPromise(),
-    ).toBeRejectedWithError(Error, /publishedAt.*?malformed/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 
   it('should `updatedAt`', fakeAsync(async () => {
@@ -402,7 +404,7 @@ describe('FeedEntryService', () => {
 
     httpClientSpy.get.and.returnValue(
       of({
-        updatedAt: formatDate(updatedAt, 'yyyy-MM-dd HH:mm:ss'),
+        updatedAt: formatDate(updatedAt, "yyyy-MM-dd'T'HH:mm:ssXXXX"),
       }),
     );
 
@@ -436,7 +438,7 @@ describe('FeedEntryService', () => {
 
     await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
-    ).toBeRejectedWithError(Error, /updatedAt.*?must be datetime or null/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 
   it('should `updatedAt` malformed', fakeAsync(async () => {
@@ -450,7 +452,7 @@ describe('FeedEntryService', () => {
 
     await expectAsync(
       feedEntryService.get('http://www.fake.com/rss.xml').toPromise(),
-    ).toBeRejectedWithError(Error, /updatedAt.*?malformed/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 
   it('should `title`', fakeAsync(async () => {
@@ -482,7 +484,7 @@ describe('FeedEntryService', () => {
 
     await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
-    ).toBeRejectedWithError(Error, /title.*?must be string/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 
   it('should `url`', fakeAsync(async () => {
@@ -514,7 +516,7 @@ describe('FeedEntryService', () => {
 
     await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
-    ).toBeRejectedWithError(Error, /url.*?must be string/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 
   it('should `content`', fakeAsync(async () => {
@@ -546,7 +548,7 @@ describe('FeedEntryService', () => {
 
     await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
-    ).toBeRejectedWithError(Error, /content.*?must be string/);
+    ).toBeRejectedWithError(z.ZodError);
 
     httpClientSpy.get.and.returnValue(
       of({
@@ -556,7 +558,7 @@ describe('FeedEntryService', () => {
 
     await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
-    ).toBeRejectedWithError(Error, /content.*?must be string/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 
   it('should `authorName`', fakeAsync(async () => {
@@ -600,7 +602,7 @@ describe('FeedEntryService', () => {
 
     await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
-    ).toBeRejectedWithError(Error, /authorName.*?must be string or null/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 
   it('should `fromSubscription`', fakeAsync(async () => {
@@ -632,7 +634,7 @@ describe('FeedEntryService', () => {
 
     await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
-    ).toBeRejectedWithError(Error, /fromSubscription.*?must be boolean/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 
   it('should `isRead`', fakeAsync(async () => {
@@ -664,7 +666,7 @@ describe('FeedEntryService', () => {
 
     await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
-    ).toBeRejectedWithError(Error, /isRead.*?must be boolean/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 
   it('should `isFavorite`', fakeAsync(async () => {
@@ -696,7 +698,7 @@ describe('FeedEntryService', () => {
 
     await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
-    ).toBeRejectedWithError(Error, /isFavorite.*?must be boolean/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 
   it('should `feedUuid`', fakeAsync(async () => {
@@ -728,6 +730,6 @@ describe('FeedEntryService', () => {
 
     await expectAsync(
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
-    ).toBeRejectedWithError(Error, /feedUuid.*?must be string/);
+    ).toBeRejectedWithError(z.ZodError);
   }));
 });

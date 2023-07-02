@@ -5,16 +5,16 @@ export interface Objects<T> {
   objects?: T[];
 }
 
-export function toObjects<T>(
+export function toObjects<T, Def extends z.ZodTypeDef = z.ZodTypeDef>(
   value: unknown,
-  zObjectType: z.ZodType<T>,
+  zObjectType: z.ZodType<T, Def, unknown>,
 ): Objects<T> {
-  const ZObject: z.ZodType<Objects<T>> = z
+  const ZObjects = z
     .object({
       totalCount: z.number(),
       objects: z.array(zObjectType),
     })
     .partial();
 
-  return ZObject.parse(value);
+  return ZObjects.parse(value);
 }
