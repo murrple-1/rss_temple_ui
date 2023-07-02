@@ -1,37 +1,18 @@
-import { JsonValue, isJsonObject, isJsonArray } from '@app/libs/json.lib';
+import { z } from 'zod';
 
-export class Objects<T> {
+export interface Objects<T> {
   totalCount?: number;
   objects?: T[];
 }
 
 export function toObjects<T>(
-  value: JsonValue,
-  fn: (t: JsonValue) => T,
+  value: unknown,
+  zObjectType: z.ZodType<T>,
 ): Objects<T> {
-  if (!isJsonObject(value)) {
-    throw new Error('JSON must be object');
-  }
+  const ZObject: z.ZodType<Objects<T>> = z.object({
+    totalCount: z.number(),
+    objects: z.array(zObjectType),
+  });
 
-  const objs = new Objects<T>();
-
-  if (value.totalCount !== undefined) {
-    const totalCount = value.totalCount;
-    if (typeof totalCount === 'number') {
-      objs.totalCount = totalCount;
-    } else {
-      throw new Error("'totalCount' must be number");
-    }
-  }
-
-  if (value.objects !== undefined) {
-    const objects = value.objects;
-    if (isJsonArray(objects)) {
-      objs.objects = objects.map(fn);
-    } else {
-      throw new Error("'objects' must be array");
-    }
-  }
-
-  return objs;
+  return ZObject.parse(value);
 }

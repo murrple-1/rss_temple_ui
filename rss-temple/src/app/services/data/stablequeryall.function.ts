@@ -58,7 +58,7 @@ export function stableQueryAllFn<
 
           return forkJoin(allCalls).pipe(
             map(allRetObjs => {
-              const objs = new Objects<T>();
+              const objs: Objects<T> = {};
 
               objs.objects = allRetObjs.flatMap(_retObj => {
                 /* istanbul ignore if  */

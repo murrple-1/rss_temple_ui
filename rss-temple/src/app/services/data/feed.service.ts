@@ -3,8 +3,6 @@ import { HttpClient } from '@angular/common/http';
 
 import { map } from 'rxjs/operators';
 
-import { parse as parseDate } from 'date-fns';
-
 import { Feed } from '@app/models';
 import { toObjects } from '@app/services/data/objects';
 import {
@@ -24,152 +22,13 @@ import {
   CommonOptions,
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
-import { JsonValue, isJsonObject, isJsonArray } from '@app/libs/json.lib';
 import { AuthTokenService } from '@app/services/auth-token.service';
 
 import { environment } from '@environments/environment';
+import { ZFeed } from '@app/models/feed';
 
 export type Field = keyof Feed;
 export type SortField = keyof Feed;
-
-function toFeed(value: JsonValue) {
-  if (!isJsonObject(value)) {
-    throw new Error('JSON must be object');
-  }
-
-  const feed = new Feed();
-
-  if (value.uuid !== undefined) {
-    const uuid = value.uuid;
-    if (typeof uuid === 'string') {
-      feed.uuid = uuid;
-    } else {
-      throw new Error("'uuid' must be string");
-    }
-  }
-
-  if (value.title !== undefined) {
-    const title = value.title;
-    if (typeof title === 'string') {
-      feed.title = title;
-    } else {
-      throw new Error("'title' must be string");
-    }
-  }
-
-  if (value.feedUrl !== undefined) {
-    const feedUrl = value.feedUrl;
-    if (typeof feedUrl === 'string') {
-      feed.feedUrl = feedUrl;
-    } else {
-      throw new Error("'feedUrl' must be string");
-    }
-  }
-
-  if (value.homeUrl !== undefined) {
-    const homeUrl = value.homeUrl;
-    if (homeUrl === null || typeof homeUrl === 'string') {
-      feed.homeUrl = homeUrl;
-    } else {
-      throw new Error("'homeUrl' must be string or null");
-    }
-  }
-
-  if (value.publishedAt !== undefined) {
-    const publishedAt = value.publishedAt;
-    if (typeof publishedAt === 'string') {
-      feed.publishedAt = parseDate(
-        publishedAt,
-        'yyyy-MM-dd HH:mm:ss',
-        new Date(),
-      );
-      if (isNaN(feed.publishedAt.getTime())) {
-        throw new Error("'publishedAt' malformed");
-      }
-    } else {
-      throw new Error("'publishedAt' must be datetime");
-    }
-  }
-
-  if (value.updatedAt !== undefined) {
-    const updatedAt = value.updatedAt;
-    if (updatedAt === null) {
-      feed.updatedAt = null;
-    } else if (typeof updatedAt === 'string') {
-      feed.updatedAt = parseDate(updatedAt, 'yyyy-MM-dd HH:mm:ss', new Date());
-      if (isNaN(feed.updatedAt.getTime())) {
-        throw new Error("'updatedAt' malformed");
-      }
-    } else {
-      throw new Error("'updatedAt' must be datetime or null");
-    }
-  }
-
-  if (value.subscribed !== undefined) {
-    const subscribed = value.subscribed;
-    if (typeof subscribed === 'boolean') {
-      feed.subscribed = subscribed;
-    } else {
-      throw new Error("'subscribed' must be boolean");
-    }
-  }
-
-  if (value.customTitle !== undefined) {
-    const customTitle = value.customTitle;
-    if (customTitle === null) {
-      feed.customTitle = null;
-    } else if (typeof customTitle === 'string') {
-      feed.customTitle = customTitle;
-    } else {
-      throw new Error("'customTitle' must be string or null");
-    }
-  }
-
-  if (value.calculatedTitle !== undefined) {
-    const calculatedTitle = value.calculatedTitle;
-    if (typeof calculatedTitle === 'string') {
-      feed.calculatedTitle = calculatedTitle;
-    } else {
-      throw new Error("'calculatedTitle' must be string");
-    }
-  }
-
-  if (value.userCategoryUuids !== undefined) {
-    const userCategoryUuids = value.userCategoryUuids;
-
-    if (isJsonArray(userCategoryUuids)) {
-      for (const userCategoryUuid of userCategoryUuids) {
-        if (typeof userCategoryUuid !== 'string') {
-          throw new Error("'userCategoryUuids' element must be string");
-        }
-      }
-
-      feed.userCategoryUuids = userCategoryUuids as string[];
-    } else {
-      throw new Error("'userCategoryUuids' must be array");
-    }
-  }
-
-  if (value.unreadCount !== undefined) {
-    const unreadCount = value.unreadCount;
-    if (typeof unreadCount === 'number') {
-      feed.unreadCount = unreadCount;
-    } else {
-      throw new Error("'unreadCount' must be number");
-    }
-  }
-
-  if (value.readCount !== undefined) {
-    const readCount = value.readCount;
-    if (typeof readCount === 'number') {
-      feed.readCount = readCount;
-    } else {
-      throw new Error("'readCount' must be number");
-    }
-  }
-
-  return feed;
-}
 
 @Injectable({
   providedIn: 'root',
@@ -188,11 +47,11 @@ export class FeedService {
     params.url = feedUrl;
 
     return this.http
-      .get<JsonValue>(`${environment.envVar.API_HOST}/api/feed`, {
+      .get<unknown>(`${environment.envVar.API_HOST}/api/feed`, {
         headers,
         params,
       })
-      .pipe(map(toFeed));
+      .pipe(map(retObj => ZFeed.parse(retObj)));
   }
 
   query(options: QueryOptions<Field, SortField> = {}) {
@@ -203,11 +62,11 @@ export class FeedService {
     const body = queryToBody<Field, SortField>(options, () => ['uuid']);
 
     return this.http
-      .post<JsonValue>(`${environment.envVar.API_HOST}/api/feeds/query`, body, {
+      .post<unknown>(`${environment.envVar.API_HOST}/api/feeds/query`, body, {
         headers,
         params,
       })
-      .pipe(map(retObj => toObjects<Feed>(retObj, toFeed)));
+      .pipe(map(retObj => toObjects<Feed>(retObj, ZFeed)));
   }
 
   queryAll(options: AllOptions<Field, SortField> = {}, pageSize = 1000) {

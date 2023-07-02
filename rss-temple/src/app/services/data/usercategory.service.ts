@@ -22,61 +22,13 @@ import {
   CommonOptions,
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
-import {
-  JsonValue,
-  isJsonObject,
-  JsonObject,
-  isJsonArray,
-} from '@app/libs/json.lib';
 import { AuthTokenService } from '@app/services/auth-token.service';
 
 import { environment } from '@environments/environment';
+import { ZUserCategory } from '@app/models/usercategory';
 
 export type Field = keyof UserCategory;
 export type SortField = keyof UserCategory;
-
-function toUserCategory(value: JsonValue) {
-  if (!isJsonObject(value)) {
-    throw new Error('JSON must be object');
-  }
-
-  const userCategory = new UserCategory();
-
-  if (value.uuid !== undefined) {
-    const uuid = value.uuid;
-    if (typeof uuid === 'string') {
-      userCategory.uuid = uuid;
-    } else {
-      throw new Error("'uuid' must be string");
-    }
-  }
-
-  if (value.text !== undefined) {
-    const text = value.text;
-    if (typeof text === 'string') {
-      userCategory.text = text;
-    } else {
-      throw new Error("'text' must be string");
-    }
-  }
-
-  if (value.feedUuids !== undefined) {
-    const feedUuids = value.feedUuids;
-    if (isJsonArray(feedUuids)) {
-      for (const feedUuid of feedUuids) {
-        if (typeof feedUuid !== 'string') {
-          throw new Error("'feedUuids' element must be string");
-        }
-      }
-
-      userCategory.feedUuids = feedUuids as string[];
-    } else {
-      throw new Error("'feedUuids' must be array");
-    }
-  }
-
-  return userCategory;
-}
 
 export interface ICreateUserCategory {
   text: string;
@@ -104,14 +56,11 @@ export class UserCategoryService {
     const params = getToParams<Field>(options, () => ['uuid']);
 
     return this.http
-      .get<JsonValue>(
-        `${environment.envVar.API_HOST}/api/usercategory/${uuid}`,
-        {
-          headers,
-          params,
-        },
-      )
-      .pipe(map(toUserCategory));
+      .get<unknown>(`${environment.envVar.API_HOST}/api/usercategory/${uuid}`, {
+        headers,
+        params,
+      })
+      .pipe(map(retObj => ZUserCategory.parse(retObj)));
   }
 
   query(options: QueryOptions<Field, SortField> = {}) {
@@ -122,7 +71,7 @@ export class UserCategoryService {
     const body = queryToBody<Field, SortField>(options, () => ['uuid']);
 
     return this.http
-      .post<JsonValue>(
+      .post<unknown>(
         `${environment.envVar.API_HOST}/api/usercategories/query`,
         body,
         {
@@ -130,7 +79,7 @@ export class UserCategoryService {
           params,
         },
       )
-      .pipe(map(retObj => toObjects(retObj, toUserCategory)));
+      .pipe(map(retObj => toObjects(retObj, ZUserCategory)));
   }
 
   queryAll(options: AllOptions<Field, SortField> = {}, pageSize = 1000) {
@@ -148,7 +97,7 @@ export class UserCategoryService {
     const params = getToParams<Field>(options, () => ['uuid']);
 
     return this.http
-      .post<JsonValue>(
+      .post<unknown>(
         `${environment.envVar.API_HOST}/api/usercategory`,
         userCategoryJson,
         {
@@ -157,7 +106,7 @@ export class UserCategoryService {
           responseType: 'json',
         },
       )
-      .pipe(map(toUserCategory));
+      .pipe(map(retObj => ZUserCategory.parse(retObj)));
   }
 
   delete(uuid: string, options: CommonOptions = {}) {
@@ -178,7 +127,7 @@ export class UserCategoryService {
       this.authTokenService.authToken$.getValue(),
     );
 
-    const body: JsonObject = {};
+    const body: Record<string, string[]> = {};
 
     for (const [feedUuid, uuids] of Object.entries(apply)) {
       body[feedUuid] = Array.from(uuids);

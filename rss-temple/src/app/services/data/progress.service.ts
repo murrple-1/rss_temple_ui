@@ -2,57 +2,23 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { map } from 'rxjs/operators';
+import { z } from 'zod';
+
 import {
   CommonOptions,
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
-import { JsonValue, isJsonObject } from '@app/libs/json.lib';
 import { AuthTokenService } from '@app/services/auth-token.service';
 
 import { environment } from '@environments/environment';
 
-export interface ProgressInterface {
-  state: 'notstarted' | 'started' | 'finished';
-  totalCount: number;
-  finishedCount: number;
-}
+const ZProgressInterface = z.object({
+  state: z.enum(['notstarted', 'started', 'finished']),
+  totalCount: z.number(),
+  finishedCount: z.number(),
+});
 
-function toProgressInterface(value: JsonValue): ProgressInterface {
-  if (!isJsonObject(value)) {
-    throw new Error('JSON must be object');
-  }
-
-  if (value.state === undefined) {
-    throw new Error("'state' missing");
-  }
-
-  const state = value.state;
-  if (typeof state !== 'string') {
-    throw new Error("'state' must be string");
-  }
-
-  if (!['notstarted', 'started', 'finished'].includes(state)) {
-    throw new Error("'state' malformed");
-  }
-
-  if (value.totalCount === undefined) {
-    throw new Error("'totalCount' missing");
-  }
-
-  if (typeof value.totalCount !== 'number') {
-    throw new Error("'totalCount' must be number");
-  }
-
-  if (value.finishedCount === undefined) {
-    throw new Error("'finishedCount' missing");
-  }
-
-  if (typeof value.finishedCount !== 'number') {
-    throw new Error("'finishedCount' must be number");
-  }
-
-  return value as unknown as ProgressInterface;
-}
+export type ProgressInterface = z.infer<typeof ZProgressInterface>;
 
 @Injectable({
   providedIn: 'root',
@@ -69,10 +35,10 @@ export class ProgressService {
     );
 
     return this.http
-      .get<JsonValue>(
+      .get<unknown>(
         `${environment.envVar.API_HOST}/api/feed/subscribe/progress/${uuid}`,
         { headers },
       )
-      .pipe(map(toProgressInterface));
+      .pipe(map(retObj => ZProgressInterface.parse(retObj)));
   }
 }
