@@ -10,7 +10,7 @@ export function toHeaders(
 
   const authToken = options.authToken ?? authTokenFn();
   if (authToken !== null) {
-    headers['Authorization'] = `Bearer ${authToken}`;
+    headers['Authorization'] = `Token ${authToken}`;
   }
 
   return headers;

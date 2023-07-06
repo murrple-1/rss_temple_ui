@@ -87,7 +87,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
         });
     } else {
       this.loginService
-        .createMyLogin(this.email, this.password)
+        .register(this.email, this.password)
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: this.handleRegisterSuccess.bind(this),

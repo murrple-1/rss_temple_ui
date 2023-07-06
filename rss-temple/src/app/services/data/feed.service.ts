@@ -77,46 +77,36 @@ export class FeedService {
     const headers = commonToHeaders(options, () =>
       this.authTokenService.authToken$.getValue(),
     );
-    const params: Record<string, string | string[]> = {
-      url,
-    };
-
-    if (customTitle !== undefined) {
-      params.customtitle = customTitle;
-    }
 
     return this.http.post<void>(
       `${environment.envVar.API_HOST}/api/feed/subscribe`,
-      null,
+      {
+        url,
+        customTitle,
+      },
       {
         headers,
-        params,
       },
     );
   }
 
   updateSubscriptions(
     url: string,
-    customTitle: string | null,
+    customTitle: string | undefined,
     options: CommonOptions = {},
   ) {
     const headers = commonToHeaders(options, () =>
       this.authTokenService.authToken$.getValue(),
     );
-    const params: Record<string, string | string[]> = {
-      url,
-    };
-
-    if (customTitle !== null) {
-      params['customtitle'] = customTitle;
-    }
 
     return this.http.put<void>(
       `${environment.envVar.API_HOST}/api/feed/subscribe`,
-      null,
+      {
+        url,
+        customTitle,
+      },
       {
         headers,
-        params,
       },
     );
   }
@@ -125,15 +115,14 @@ export class FeedService {
     const headers = commonToHeaders(options, () =>
       this.authTokenService.authToken$.getValue(),
     );
-    const params: Record<string, string | string[]> = {
-      url,
-    };
 
     return this.http.delete<void>(
       `${environment.envVar.API_HOST}/api/feed/subscribe`,
       {
         headers,
-        params,
+        body: {
+          url,
+        },
       },
     );
   }

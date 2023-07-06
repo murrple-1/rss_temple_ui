@@ -15,23 +15,23 @@ export class PasswordResetTokenService {
   constructor(private http: HttpClient) {}
 
   request(email: string) {
-    const formData = new FormData();
-    formData.append('email', email);
-
     return this.http.post<void>(
-      `${environment.envVar.API_HOST}/api/passwordresettoken/request`,
-      formData,
+      `${environment.envVar.API_HOST}/api/auth/password/reset`,
+      {
+        email,
+      },
     );
   }
 
-  reset(body: ResetOptions) {
-    const formData = new FormData();
-    formData.append('token', body.token);
-    formData.append('password', body.password);
-
+  reset(token: string, userId: string, password: string) {
     return this.http.post<void>(
-      `${environment.envVar.API_HOST}/api/passwordresettoken/reset`,
-      formData,
+      `${environment.envVar.API_HOST}/api/auth/password/reset/confirm`,
+      {
+        uid: userId,
+        token,
+        new_password1: password,
+        new_password2: password,
+      },
     );
   }
 }

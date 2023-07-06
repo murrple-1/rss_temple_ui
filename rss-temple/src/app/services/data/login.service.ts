@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 
 import { map } from 'rxjs/operators';
 
+import { z } from 'zod';
+
 import {
   CommonOptions,
   toHeaders as commonToHeaders,
@@ -10,6 +12,11 @@ import {
 import { AuthTokenService } from '@app/services/auth-token.service';
 
 import { environment } from '@environments/environment';
+import { Observable } from 'rxjs';
+
+const ZLoginResponse = z.object({
+  key: z.string(),
+});
 
 @Injectable({
   providedIn: 'root',
@@ -20,39 +27,37 @@ export class LoginService {
     private authTokenService: AuthTokenService,
   ) {}
 
-  createMyLogin(email: string, password: string) {
-    return this.http.post<void>(`${environment.envVar.API_HOST}/api/login/my`, {
-      email,
-      password,
-    });
-  }
-
-  createGoogleLogin(email: string, password: string, token: string) {
+  register(email: string, password: string) {
     return this.http.post<void>(
-      `${environment.envVar.API_HOST}/api/login/google`,
+      `${environment.envVar.API_HOST}/api/registration`,
       {
         email,
-        password,
-        token,
+        password1: password,
+        password2: password,
       },
     );
   }
 
-  createFacebookLogin(email: string, password: string, token: string) {
-    return this.http.post<void>(
-      `${environment.envVar.API_HOST}/api/login/facebook`,
-      {
-        email,
-        password,
-        token,
-      },
-    );
+  createGoogleLogin(
+    email: string,
+    password: string,
+    token: string,
+  ): Observable<void> {
+    throw new Error('TODO reimplement');
   }
 
-  getMyLoginSession(email: string, password: string) {
+  createFacebookLogin(
+    email: string,
+    password: string,
+    token: string,
+  ): Observable<void> {
+    throw new Error('TODO reimplement');
+  }
+
+  login(email: string, password: string) {
     return this.http
-      .post<string>(
-        `${environment.envVar.API_HOST}/api/login/my/session`,
+      .post<unknown>(
+        `${environment.envVar.API_HOST}/api/auth/login`,
         {
           email,
           password,
@@ -61,65 +66,18 @@ export class LoginService {
           responseType: 'json',
         },
       )
-      .pipe(
-        map(response => {
-          /* istanbul ignore else */
-          if (typeof response === 'string') {
-            return response;
-          } else {
-            throw new Error('malformed response');
-          }
-        }),
-      );
+      .pipe(map(retObj => ZLoginResponse.parse(retObj)));
   }
 
-  getGoogleLoginSession(user: gapi.auth2.GoogleUser) {
-    return this.http
-      .post<string>(
-        `${environment.envVar.API_HOST}/api/login/google/session`,
-        {
-          token: user.getAuthResponse().id_token,
-        },
-        {
-          responseType: 'json',
-        },
-      )
-      .pipe(
-        map(response => {
-          /* istanbul ignore else */
-          if (typeof response === 'string') {
-            return response;
-          } else {
-            throw new Error('malformed response');
-          }
-        }),
-      );
+  getGoogleLoginSession(user: gapi.auth2.GoogleUser): Observable<string> {
+    throw new Error('TODO reimplement');
   }
 
-  getFacebookLoginSession(user: facebook.AuthResponse) {
-    return this.http
-      .post<string>(
-        `${environment.envVar.API_HOST}/api/login/facebook/session`,
-        {
-          token: user.accessToken,
-        },
-        {
-          responseType: 'json',
-        },
-      )
-      .pipe(
-        map(response => {
-          /* istanbul ignore else */
-          if (typeof response === 'string') {
-            return response;
-          } else {
-            throw new Error('malformed response');
-          }
-        }),
-      );
+  getFacebookLoginSession(user: facebook.AuthResponse): Observable<string> {
+    throw new Error('TODO reimplement');
   }
 
-  deleteSessionToken(
+  logout(
     options: Required<Pick<CommonOptions, 'authToken'>> &
       Omit<CommonOptions, 'authToken'>,
   ) {
@@ -127,8 +85,9 @@ export class LoginService {
       this.authTokenService.authToken$.getValue(),
     );
 
-    return this.http.delete<void>(
-      `${environment.envVar.API_HOST}/api/session`,
+    return this.http.post<void>(
+      `${environment.envVar.API_HOST}/api/auth/logout`,
+      undefined,
       {
         headers,
       },

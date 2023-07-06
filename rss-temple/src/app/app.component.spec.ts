@@ -3,6 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { APP_BASE_HREF } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 import { ClarityModule } from '@clr/angular';
 
@@ -18,6 +19,7 @@ async function setup() {
     imports: [
       FormsModule,
       BrowserAnimationsModule,
+      HttpClientModule,
       ClarityModule,
       RouterTestingModule.withRoutes([]),
     ],

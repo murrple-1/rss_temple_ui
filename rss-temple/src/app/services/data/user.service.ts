@@ -17,6 +17,7 @@ import { AuthTokenService } from '@app/services/auth-token.service';
 
 import { environment } from '@environments/environment';
 import { ZUser } from '@app/models/user';
+import { Observable } from 'rxjs';
 
 export type Field = keyof User;
 
@@ -59,27 +60,16 @@ export class UserService {
       .pipe(map(retObj => ZUser.parse(retObj)));
   }
 
-  update(body: UpdateUserBody, options: CommonOptions = {}) {
-    const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
-    );
-
-    return this.http.put<void>(
-      `${environment.envVar.API_HOST}/api/user`,
-      body,
-      {
-        headers,
-      },
-    );
+  update(body: UpdateUserBody, options: CommonOptions = {}): Observable<void> {
+    throw new Error('TODO reimplement');
   }
 
-  verify(token: string) {
-    const formData = new FormData();
-    formData.append('token', token);
-
+  verify(key: string) {
     return this.http.post<void>(
-      `${environment.envVar.API_HOST}/api/user/verify`,
-      formData,
+      `${environment.envVar.API_HOST}/api/registration/verify-email`,
+      {
+        key,
+      },
     );
   }
 

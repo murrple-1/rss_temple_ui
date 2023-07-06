@@ -352,7 +352,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
     this.isRenaming = true;
 
     this.feedService
-      .updateSubscriptions(feed.feedUrl, customTitle)
+      .updateSubscriptions(feed.feedUrl, customTitle ?? undefined)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => {

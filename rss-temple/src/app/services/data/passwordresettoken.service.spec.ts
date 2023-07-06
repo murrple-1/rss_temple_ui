@@ -40,10 +40,7 @@ describe('PasswordResetTokenService', () => {
 
     await expectAsync(
       passwordResetTokenService
-        .reset({
-          token: 'a-token',
-          password: 'newPassword1!',
-        })
+        .reset('a-token', 'a-user-id', 'newPassword1!')
         .toPromise(),
     ).toBeResolved();
   }));

@@ -29,7 +29,7 @@ async function setup() {
   const mockRoute = new MockActivatedRoute();
 
   const mockLoginService = jasmine.createSpyObj<LoginService>('LoginService', [
-    'createMyLogin',
+    'register',
     'createGoogleLogin',
     'createFacebookLogin',
   ]);
@@ -371,7 +371,7 @@ describe('RegisterComponent', () => {
     'should register: my',
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
-      mockLoginService.createMyLogin.and.returnValue(of(undefined));
+      mockLoginService.register.and.returnValue(of(undefined));
 
       const router = TestBed.inject(Router);
       spyOn(router, 'navigate');
@@ -523,7 +523,7 @@ describe('RegisterComponent', () => {
     'should handle registration errors: cannot connect',
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
-      mockLoginService.createMyLogin.and.returnValue(
+      mockLoginService.register.and.returnValue(
         throwError(
           new HttpErrorResponse({
             status: 0,
@@ -586,7 +586,7 @@ describe('RegisterComponent', () => {
     'should handle registration errors: email already in use',
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
-      mockLoginService.createMyLogin.and.returnValue(
+      mockLoginService.register.and.returnValue(
         throwError(
           new HttpErrorResponse({
             status: 409,

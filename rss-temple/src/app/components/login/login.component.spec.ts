@@ -30,7 +30,7 @@ async function setup() {
   const mockRoute = new MockActivatedRoute();
 
   const mockLoginService = jasmine.createSpyObj<LoginService>('LoginService', [
-    'getMyLoginSession',
+    'login',
     'getGoogleLoginSession',
     'getFacebookLoginSession',
   ]);
@@ -282,7 +282,11 @@ describe('LoginComponent', () => {
     'should be able to log in',
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
-      mockLoginService.getMyLoginSession.and.returnValue(of('atoken'));
+      mockLoginService.login.and.returnValue(
+        of({
+          key: 'b75a903f398823a74e5f8e7ec231705bac3c6161',
+        }),
+      );
       const router = TestBed.inject(Router);
       spyOn(router, 'navigate');
 
@@ -311,7 +315,7 @@ describe('LoginComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      expect(mockLoginService.getMyLoginSession).toHaveBeenCalledWith(
+      expect(mockLoginService.login).toHaveBeenCalledWith(
         'test@test.com',
         'password',
       );
@@ -429,7 +433,7 @@ describe('LoginComponent', () => {
     'should handle login errors: cannot connect',
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
-      mockLoginService.getMyLoginSession.and.returnValue(
+      mockLoginService.login.and.returnValue(
         throwError(
           new HttpErrorResponse({
             status: 0,
@@ -483,7 +487,7 @@ describe('LoginComponent', () => {
     'should handle login errors: bad credentials',
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
-      mockLoginService.getMyLoginSession.and.returnValue(
+      mockLoginService.login.and.returnValue(
         throwError(
           new HttpErrorResponse({
             status: 403,
@@ -531,7 +535,7 @@ describe('LoginComponent', () => {
     'should handle login errors: unknown error',
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
-      mockLoginService.getMyLoginSession.and.returnValue(
+      mockLoginService.login.and.returnValue(
         throwError(new Error('unknown error')),
       );
       spyOn(console, 'error');

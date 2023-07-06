@@ -41,6 +41,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   readonly passwordSpecialCharacters = PasswordSpecialCharacters.join('');
 
   private token: string | null = null;
+  private userId: string | null = null;
 
   @ViewChild('resetPasswordForm', { static: false })
   _resetPasswordForm?: NgForm;
@@ -59,8 +60,9 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.token = this.activatedRoute.snapshot.queryParamMap.get('token');
+    this.userId = this.activatedRoute.snapshot.queryParamMap.get('userId');
 
-    if (this.token === null) {
+    if (this.token === null || this.userId === null) {
       this.state = State.NoToken;
     }
   }
@@ -83,6 +85,10 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if (this.userId === null) {
+      return;
+    }
+
     if (this._resetPasswordForm.invalid) {
       return;
     }
@@ -90,10 +96,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     this.state = State.Sending;
 
     this.passwordResetTokenService
-      .reset({
-        token: this.token,
-        password: this.newPassword,
-      })
+      .reset(this.token, this.userId, this.newPassword)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => {
