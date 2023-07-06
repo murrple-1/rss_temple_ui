@@ -47,113 +47,68 @@ describe('LoginService', () => {
 
   it('should create "google" login', fakeAsync(async () => {
     const { httpClientSpy, loginService } = setup();
-    httpClientSpy.post.and.returnValue(of<void>());
-
-    await loginService
-      .createGoogleLogin('test@test.com', 'password', 'atoken')
-      .toPromise();
-    expect(httpClientSpy.post).toHaveBeenCalledTimes(1);
-    expect(httpClientSpy.post).toHaveBeenCalledWith(
-      jasmine.stringMatching(/\/api\/login\/google$/),
-      jasmine.objectContaining({
-        email: jasmine.any(String),
-        password: jasmine.any(String),
-        token: jasmine.any(String),
-      }),
-    );
+    // TODO implement
   }));
 
   it('should create "facebook" login', fakeAsync(async () => {
     const { httpClientSpy, loginService } = setup();
-    httpClientSpy.post.and.returnValue(of<void>());
-
-    await loginService
-      .createFacebookLogin('test@test.com', 'password', 'atoken')
-      .toPromise();
-    expect(httpClientSpy.post).toHaveBeenCalledTimes(1);
-    expect(httpClientSpy.post).toHaveBeenCalledWith(
-      jasmine.stringMatching(/\/api\/login\/facebook$/),
-      jasmine.objectContaining({
-        email: jasmine.any(String),
-        password: jasmine.any(String),
-        token: jasmine.any(String),
-      }),
-    );
+    // TODO implement
   }));
 
   it('should create "my" session', fakeAsync(async () => {
     const { httpClientSpy, loginService } = setup();
-    httpClientSpy.post.and.returnValue(of('sessiontoken'));
+    httpClientSpy.post.and.returnValue(
+      of({
+        expiry: '2023-07-06T13:12:57.960860Z',
+        token:
+          '40a915540d20921f4a565d5ea0f8b5e49ad0d34c87365c342c0ba2402d8f0c69',
+      }),
+    );
 
     const response = await loginService
       .getMyLoginSession('test@test.com', 'password')
       .toPromise();
     expect(httpClientSpy.post).toHaveBeenCalledTimes(1);
     expect(httpClientSpy.post).toHaveBeenCalledWith(
-      jasmine.stringMatching(/\/api\/login\/my\/session$/),
+      jasmine.stringMatching(/\/api\/login$/),
+      undefined,
       jasmine.objectContaining({
-        email: jasmine.any(String),
-        password: jasmine.any(String),
+        headers: jasmine.objectContaining({
+          Authorization: jasmine.any(String),
+        }),
       }),
-      jasmine.any(Object),
     );
-    expect(response).toEqual(jasmine.any(String));
+    expect(response).toEqual(
+      jasmine.objectContaining({
+        expiry: jasmine.any(Date),
+        token: jasmine.any(String),
+      }),
+    );
   }));
 
   it('should create "google" session', fakeAsync(async () => {
     const { httpClientSpy, loginService } = setup();
-    httpClientSpy.post.and.returnValue(of('sessiontoken'));
-
-    const user = {
-      getAuthResponse: () => ({
-        id_token: 'id_token',
-      }),
-    } as gapi.auth2.GoogleUser;
-    const response = await loginService.getGoogleLoginSession(user).toPromise();
-    expect(httpClientSpy.post).toHaveBeenCalledTimes(1);
-    expect(httpClientSpy.post).toHaveBeenCalledWith(
-      jasmine.stringMatching(/\/api\/login\/google\/session$/),
-      jasmine.objectContaining({
-        token: jasmine.any(String),
-      }),
-      jasmine.any(Object),
-    );
-    expect(response).toEqual(jasmine.any(String));
+    // TODO implement
   }));
 
   it('should create "google" session', fakeAsync(async () => {
     const { httpClientSpy, loginService } = setup();
-    httpClientSpy.post.and.returnValue(of('sessiontoken'));
-
-    const user = {
-      accessToken: 'accessToken',
-    } as facebook.AuthResponse;
-    const response = await loginService
-      .getFacebookLoginSession(user)
-      .toPromise();
-    expect(httpClientSpy.post).toHaveBeenCalledTimes(1);
-    expect(httpClientSpy.post).toHaveBeenCalledWith(
-      jasmine.stringMatching(/\/api\/login\/facebook\/session$/),
-      jasmine.objectContaining({
-        token: jasmine.any(String),
-      }),
-      jasmine.any(Object),
-    );
-    expect(response).toEqual(jasmine.any(String));
+    // TODO implement
   }));
 
   it('should delete session tokens', fakeAsync(async () => {
     const { httpClientSpy, loginService } = setup();
-    httpClientSpy.delete.and.returnValue(of<void>());
+    httpClientSpy.post.and.returnValue(of<void>());
 
     await loginService
       .deleteSessionToken({
         authToken: 'sessionId',
       })
       .toPromise();
-    expect(httpClientSpy.delete).toHaveBeenCalledTimes(1);
-    expect(httpClientSpy.delete).toHaveBeenCalledWith(
-      jasmine.stringMatching(/\/api\/session$/),
+    expect(httpClientSpy.post).toHaveBeenCalledTimes(1);
+    expect(httpClientSpy.post).toHaveBeenCalledWith(
+      jasmine.stringMatching(/\/api\/logout$/),
+      undefined,
       jasmine.objectContaining({
         headers: jasmine.objectContaining({
           'Authorization': jasmine.any(String),

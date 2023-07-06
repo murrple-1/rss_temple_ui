@@ -124,7 +124,7 @@ describe('query.interface', () => {
   it('should parse headers', () => {
     const headers = toHeaders({}, authTokenFn);
     expect(headers).toEqual({
-      'Authorization': `Bearer ${authTokenFn()}`,
+      'Authorization': `Token ${authTokenFn()}`,
     });
   });
 

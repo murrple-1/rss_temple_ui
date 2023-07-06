@@ -282,7 +282,13 @@ describe('LoginComponent', () => {
     'should be able to log in',
     waitForAsync(async () => {
       const { mockLoginService } = await setup();
-      mockLoginService.getMyLoginSession.and.returnValue(of('atoken'));
+      mockLoginService.getMyLoginSession.and.returnValue(
+        of({
+          expiry: new Date('2023-07-06T13:12:57.960860Z'),
+          token:
+            '40a915540d20921f4a565d5ea0f8b5e49ad0d34c87365c342c0ba2402d8f0c69',
+        }),
+      );
       const router = TestBed.inject(Router);
       spyOn(router, 'navigate');
 

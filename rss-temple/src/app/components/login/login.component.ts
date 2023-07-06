@@ -169,14 +169,14 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
       .getMyLoginSession(email, this.password)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: authToken => {
+        next: authResponse => {
           if (this.rememberMe) {
             localStorage.setItem('login:cached_email', email);
           } else {
             localStorage.removeItem('login:cached_email');
           }
           this.zone.run(() => {
-            this.handleLoginSuccess(authToken);
+            this.handleLoginSuccess(authResponse.token);
           });
         },
         error: error => {

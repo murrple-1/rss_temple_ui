@@ -14,7 +14,7 @@ describe('get.interface', () => {
   it('should generate headers', () => {
     let headers = toHeaders<Field>({}, authTokenFn);
     expect(headers).toEqual({
-      'Authorization': `Bearer ${authTokenFn()}`,
+      'Authorization': `Token ${authTokenFn()}`,
     });
 
     headers = toHeaders<Field>(
@@ -24,7 +24,7 @@ describe('get.interface', () => {
       authTokenFn,
     );
     expect(headers).toEqual({
-      'Authorization': `Bearer ${authTokenFn()}`,
+      'Authorization': `Token ${authTokenFn()}`,
     });
 
     headers = toHeaders<Field>(
@@ -34,7 +34,7 @@ describe('get.interface', () => {
       authTokenFn,
     );
     expect(headers).toEqual({
-      'Authorization': 'Bearer another-token',
+      'Authorization': 'Token another-token',
     });
   });
 
