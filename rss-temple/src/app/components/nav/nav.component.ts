@@ -9,7 +9,7 @@ import {
   openModal as openConfirmModal,
 } from '@app/components/shared/confirm-modal/confirm-modal.component';
 import { ModalOpenService, AuthTokenService } from '@app/services';
-import { LoginService } from '@app/services/data';
+import { AuthService } from '@app/services/data';
 
 interface NavLink {
   name: string;
@@ -90,7 +90,7 @@ export class NavComponent implements OnInit, OnDestroy {
     private router: Router,
     private authTokenService: AuthTokenService,
     private modalOpenService: ModalOpenService,
-    private loginService: LoginService,
+    private authService: AuthService,
   ) {}
 
   ngOnInit() {
@@ -148,7 +148,7 @@ export class NavComponent implements OnInit, OnDestroy {
     if (result) {
       const authToken = this.authTokenService.authToken$.getValue();
       if (authToken !== null) {
-        this.loginService
+        this.authService
           .logout({ authToken })
           .pipe(takeUntil(this.unsubscribe$))
           .subscribe({

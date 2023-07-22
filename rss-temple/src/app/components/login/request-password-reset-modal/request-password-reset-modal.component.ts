@@ -6,7 +6,7 @@ import { ClrLoadingState } from '@clr/angular';
 import { Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 
-import { PasswordResetTokenService } from '@app/services/data';
+import { AuthService } from '@app/services/data';
 import { HttpErrorService } from '@app/services';
 
 @Component({
@@ -31,7 +31,7 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
 
   constructor(
     private zone: NgZone,
-    private passwordResetTokenService: PasswordResetTokenService,
+    private authService: AuthService,
     private httpErrorService: HttpErrorService,
   ) {}
 
@@ -70,8 +70,8 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
 
     const email = this.email.trim();
 
-    this.passwordResetTokenService
-      .request(email)
+    this.authService
+      .requestPasswordReset(email)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => {

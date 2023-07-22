@@ -1,28 +1,29 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { UserService } from '@app/services/data';
+import { RegistrationService } from '@app/services/data';
 
 import { VerifyComponent } from './verify.component';
 
 async function setup() {
-  const mockUserService = jasmine.createSpyObj<UserService>('UserService', [
-    'verify',
-  ]);
+  const mockRegistrationService = jasmine.createSpyObj<RegistrationService>(
+    'RegistrationService',
+    ['verifyEmail'],
+  );
 
   await TestBed.configureTestingModule({
     imports: [RouterTestingModule.withRoutes([])],
     declarations: [VerifyComponent],
     providers: [
       {
-        provide: UserService,
-        useValue: mockUserService,
+        provide: RegistrationService,
+        useValue: mockRegistrationService,
       },
     ],
   }).compileComponents();
 
   return {
-    mockUserService,
+    mockRegistrationService,
   };
 }
 

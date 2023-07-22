@@ -30,7 +30,7 @@ import {
   openModal as openRequestPasswordResetModal,
 } from '@app/components/login/request-password-reset-modal/request-password-reset-modal.component';
 import { AlertEntry } from '@app/components/shared/local-alerts/local-alerts.component';
-import { LoginService } from '@app/services/data';
+import { AuthService, SocialService } from '@app/services/data';
 
 @Component({
   templateUrl: './login.component.html',
@@ -68,7 +68,8 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
     private renderer: Renderer2,
     private gAuthService: GAuthService,
     private fbAuthService: FBAuthService,
-    private loginService: LoginService,
+    private authService: AuthService,
+    private socialService: SocialService,
     private appAlertsService: AppAlertsService,
     private authTokenService: AuthTokenService,
     private modalOpenService: ModalOpenService,
@@ -107,7 +108,13 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe({
         next: user => {
           if (user) {
-            this.handleGoogleUser(user);
+            const idToken = user.getAuthResponse().id_token as
+              | string
+              | null
+              | undefined;
+            if (typeof idToken === 'string') {
+              this.handleGoogleUser(idToken);
+            }
           }
         },
       });
@@ -135,7 +142,10 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe({
         next: user => {
           if (user) {
-            this.handleFacebookUser(user);
+            const accessToken = user.accessToken;
+            if (typeof accessToken === 'string') {
+              this.handleFacebookUser(accessToken);
+            }
           }
         },
       });
@@ -165,7 +175,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const email = this.email;
 
-    this.loginService
+    this.authService
       .login(email, this.password)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
@@ -245,9 +255,9 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  private handleGoogleUser(user: gapi.auth2.GoogleUser) {
-    this.loginService
-      .getGoogleLoginSession(user)
+  private handleGoogleUser(idToken: string) {
+    this.socialService
+      .googleLogin(idToken)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: authToken => {
@@ -308,9 +318,9 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  private handleFacebookUser(user: fb.AuthResponse) {
-    this.loginService
-      .getFacebookLoginSession(user)
+  private handleFacebookUser(accessToken: string) {
+    this.socialService
+      .facebookLogin(accessToken)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: authToken => {

@@ -5,17 +5,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ClarityModule } from '@clr/angular';
 
-import { PasswordResetTokenService } from '@app/services/data';
+import { AuthService } from '@app/services/data';
 import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-match-validator.directive';
 
 import { ResetPasswordComponent } from './reset-password.component';
 
 async function setup() {
-  const mockPasswordResetTokenService =
-    jasmine.createSpyObj<PasswordResetTokenService>(
-      'PasswordResetTokenService',
-      ['reset'],
-    );
+  const mockAuthService = jasmine.createSpyObj<AuthService>('AuthService', [
+    'resetPassword',
+  ]);
 
   await TestBed.configureTestingModule({
     imports: [
@@ -27,14 +25,14 @@ async function setup() {
     declarations: [ResetPasswordComponent, PasswordsMatchValidatorDirective],
     providers: [
       {
-        provide: PasswordResetTokenService,
-        useValue: mockPasswordResetTokenService,
+        provide: AuthService,
+        useValue: mockAuthService,
       },
     ],
   }).compileComponents();
 
   return {
-    mockPasswordResetTokenService,
+    mockAuthService,
   };
 }
 

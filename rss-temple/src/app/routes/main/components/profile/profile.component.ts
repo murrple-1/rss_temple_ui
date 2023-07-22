@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgForm } from '@angular/forms';
 
-import { forkJoin, Subject } from 'rxjs';
+import { forkJoin, Observable, Subject } from 'rxjs';
 import { takeUntil, skip, map } from 'rxjs/operators';
 
 import { saveAs } from 'file-saver';
@@ -10,8 +10,9 @@ import { saveAs } from 'file-saver';
 import {
   FeedService,
   FeedEntryService,
-  UserService,
   OPMLService,
+  SocialService,
+  AuthService,
 } from '@app/services/data';
 import {
   HttpErrorService,
@@ -20,7 +21,6 @@ import {
   AppAlertsService,
   ModalOpenService,
 } from '@app/services';
-import { UpdateUserBody } from '@app/services/data/user.service';
 import {
   MinLength as PasswordMinLength,
   passwordRequirementsTextHtml,
@@ -32,10 +32,6 @@ import {
   GlobalUserCategoriesModalComponent,
   openModal as openGlobalUserCategoriesModal,
 } from '@app/routes/main/components/profile/global-user-categories-modal/global-user-categories-modal.component';
-
-type UserImpl = Required<
-  Pick<User, 'email' | 'hasGoogleLogin' | 'hasFacebookLogin'>
->;
 
 enum State {
   IsLoading,
@@ -104,8 +100,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private zone: NgZone,
     private feedService: FeedService,
     private feedEntryService: FeedEntryService,
-    private userService: UserService,
     private opmlService: OPMLService,
+    private authService: AuthService,
+    private socialService: SocialService,
     private readCounterService: ReadCounterService,
     private httpErrorService: HttpErrorService,
     private gAuthService: GAuthService,
@@ -118,11 +115,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     forkJoin([
-      this.userService
-        .get({
-          fields: ['email', 'hasGoogleLogin', 'hasFacebookLogin'],
-        })
-        .pipe(map(response => response as UserImpl)),
+      this.authService.getUser(),
+      this.socialService.socialList(),
       this.feedService
         .query({
           returnObjects: false,
@@ -154,12 +148,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
     ])
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: ([user, feedsCount, readFeedEntriesCount]) => {
+        next: ([user, socialList, feedsCount, readFeedEntriesCount]) => {
           this.zone.run(() => {
             this.email = user.email;
 
-            this.hasGoogleLogin = user.hasGoogleLogin;
-            this.hasFacebookLogin = user.hasFacebookLogin;
+            this.hasGoogleLogin = socialList.some(
+              si => si.provider === 'google',
+            );
+            this.hasFacebookLogin = socialList.some(
+              si => si.provider === 'facebook',
+            );
 
             this.numberOfFeeds = feedsCount;
             this.numberOfReadFeedEntries = readFeedEntriesCount;
@@ -199,7 +197,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
       .subscribe({
         next: user => {
           if (user !== null) {
-            this.handleGoogleUser(user);
+            const token = user.getAuthResponse().id_token as
+              | string
+              | null
+              | undefined;
+            if (typeof token === 'string') {
+              this.handleGoogleUser(token);
+            }
           }
         },
       });
@@ -226,8 +230,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
       .pipe(skip(1), takeUntil(this.unsubscribe$))
       .subscribe({
         next: user => {
-          if (user !== null) {
-            this.handleFacebookUser(user);
+          if (user) {
+            const accessToken = user.accessToken;
+            if (typeof accessToken === 'string') {
+              this.handleFacebookUser(accessToken);
+            }
           }
         },
       });
@@ -248,13 +255,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.gButtonInUse = false;
   }
 
-  private handleGoogleUser(user: gapi.auth2.GoogleUser) {
-    this.userService
-      .update({
-        google: {
-          token: user.getAuthResponse().id_token,
-        },
-      })
+  private handleGoogleUser(token: string) {
+    this.socialService
+      .googleConnect(token)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => {
@@ -278,13 +281,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.fbButtonInUse = false;
   }
 
-  private handleFacebookUser(user: fb.AuthResponse) {
-    this.userService
-      .update({
-        facebook: {
-          token: user.accessToken,
-        },
-      })
+  private handleFacebookUser(token: string) {
+    this.socialService
+      .facebookConnect(token)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => {
@@ -298,44 +297,82 @@ export class ProfileComponent implements OnInit, OnDestroy {
       });
   }
 
-  unlinkGoogle() {
-    this.gAuthService.signOut();
+  async unlinkGoogle() {
+    await this.gAuthService.signOut();
 
     this.hasGoogleLogin = false;
 
-    this.userService
-      .update({
-        google: null,
-      })
+    this.socialService
+      .googleDisconnect()
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         error: error => {
-          this.httpErrorService.handleError(error);
+          let errorHandled = false;
+          if (error instanceof HttpErrorResponse) {
+            switch (error.status) {
+              case 409: {
+                this.appAlertsService.appAlertDescriptor$.next({
+                  autoCloseInterval: 5000,
+                  canClose: true,
+                  text: 'Unlinking would make your account unaccessible. Link another account type, or setup a password first',
+                  type: 'danger',
+                });
+                this.zone.run(() => {
+                  this.hasGoogleLogin = true;
+                });
+                errorHandled = true;
+                break;
+              }
+            }
+          }
 
-          this.zone.run(() => {
-            this.hasGoogleLogin = true;
-          });
+          if (!errorHandled) {
+            this.httpErrorService.handleError(error);
+
+            this.zone.run(() => {
+              this.hasGoogleLogin = true;
+            });
+          }
         },
       });
   }
 
-  unlinkFacebook() {
-    this.fbAuthService.signOut();
+  async unlinkFacebook() {
+    await this.fbAuthService.signOut();
 
     this.hasFacebookLogin = false;
 
-    this.userService
-      .update({
-        facebook: null,
-      })
+    this.socialService
+      .facebookDisconnect()
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         error: error => {
-          this.httpErrorService.handleError(error);
+          let errorHandled = false;
+          if (error instanceof HttpErrorResponse) {
+            switch (error.status) {
+              case 409: {
+                this.appAlertsService.appAlertDescriptor$.next({
+                  autoCloseInterval: 5000,
+                  canClose: true,
+                  text: 'Unlinking would make your account unaccessible. Link another account type, or setup a password first',
+                  type: 'danger',
+                });
+                this.zone.run(() => {
+                  this.hasFacebookLogin = true;
+                });
+                errorHandled = true;
+                break;
+              }
+            }
+          }
 
-          this.zone.run(() => {
-            this.hasFacebookLogin = true;
-          });
+          if (!errorHandled) {
+            this.httpErrorService.handleError(error);
+
+            this.zone.run(() => {
+              this.hasGoogleLogin = true;
+            });
+          }
         },
       });
   }
@@ -361,29 +398,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const updateUserBody: UpdateUserBody = {};
-
-    if (this.profileDetailsForm.controls['email']?.dirty) {
-      updateUserBody.email = this.email;
-    }
+    const saveObservables: Observable<unknown>[] = [];
 
     if (
       this.profileDetailsForm.controls['oldPassword']?.dirty &&
       this.profileDetailsForm.controls['newPassword']?.dirty &&
       this.profileDetailsForm.controls['newPasswordCheck']?.dirty
     ) {
-      updateUserBody.my = {
-        password: {
-          old: this.oldPassword,
-          new: this.newPassword,
-        },
-      };
+      saveObservables.push(this.authService.changePassword(this.newPassword));
     }
 
     this.state = State.IsSaving;
 
-    this.userService
-      .update(updateUserBody)
+    forkJoin(saveObservables)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => {
@@ -468,8 +495,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   resetOnboarding() {
-    this.userService
-      .updateAttributes({
+    this.authService
+      .updateUserAttributes({
         onboarded: null,
       })
       .pipe(takeUntil(this.unsubscribe$))

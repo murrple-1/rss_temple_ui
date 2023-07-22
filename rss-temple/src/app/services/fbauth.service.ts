@@ -47,9 +47,16 @@ export class FBAuthService {
 
   signOut() {
     return new Promise<void>((resolve, reject) => {
-      FB.logout(() => {
-        this._user$.next(null);
-        resolve();
+      FB.getLoginStatus(response => {
+        if (response.status === 'connected') {
+          FB.logout(() => {
+            this._user$.next(null);
+            resolve();
+          });
+        } else {
+          this._user$.next(null);
+          resolve();
+        }
       });
     });
   }

@@ -12,9 +12,10 @@ import { MockFBAuthService } from '@app/test/fbauth.service.mock';
 import {
   FeedService,
   FeedEntryService,
-  UserService,
+  AuthService,
   OPMLService,
   UserCategoryService,
+  SocialService,
 } from '@app/services/data';
 import { GAuthService, FBAuthService } from '@app/services';
 import { ReadCounterService } from '@app/routes/main/services';
@@ -37,10 +38,20 @@ async function setup() {
     'FeedEntryService',
     ['query'],
   );
-  const mockUserService = jasmine.createSpyObj<UserService>('UserService', [
-    'get',
-    'update',
+  const mockAuthService = jasmine.createSpyObj<AuthService>('AuthService', [
+    'resetPassword',
+    'getUser',
   ]);
+  const mockSocialService = jasmine.createSpyObj<SocialService>(
+    'SocialService',
+    [
+      'socialList',
+      'googleConnect',
+      'googleDisconnect',
+      'facebookConnect',
+      'facebookDisconnect',
+    ],
+  );
   const mockOPMLService = jasmine.createSpyObj<OPMLService>('OPMLService', [
     'download',
   ]);
@@ -75,16 +86,20 @@ async function setup() {
         useClass: MockFBAuthService,
       },
       {
+        provide: AuthService,
+        useValue: mockAuthService,
+      },
+      {
+        provide: SocialService,
+        useValue: mockSocialService,
+      },
+      {
         provide: FeedService,
         useValue: mockFeedService,
       },
       {
         provide: FeedEntryService,
         useValue: mockFeedEntryService,
-      },
-      {
-        provide: UserService,
-        useValue: mockUserService,
       },
       {
         provide: OPMLService,
@@ -101,7 +116,8 @@ async function setup() {
     mockReadCounterService,
     mockFeedService,
     mockFeedEntryService,
-    mockUserService,
+    mockAuthService,
+    mockSocialService,
   };
 }
 
@@ -109,9 +125,21 @@ describe('ProfileComponent', () => {
   it(
     'should create the component',
     waitForAsync(async () => {
-      const { mockUserService, mockFeedService, mockFeedEntryService } =
-        await setup();
-      mockUserService.get.and.returnValue(of({}));
+      const {
+        mockAuthService,
+        mockSocialService,
+        mockFeedService,
+        mockFeedEntryService,
+      } = await setup();
+      mockAuthService.getUser.and.returnValue(
+        of({
+          uuid: '772893c2-c78f-42d8-82a7-5d56a1837a28',
+          email: 'test@test.com',
+          subscribedFeedUuids: [],
+          attributes: {},
+        }),
+      );
+      mockSocialService.socialList.and.returnValue(of([]));
       mockFeedService.query.and.returnValue(
         of({
           objects: [],

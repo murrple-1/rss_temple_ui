@@ -1,17 +1,14 @@
 import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
 import { Subject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 import {
   OnboardingModalComponent,
   openModal as openOnboardingModal,
 } from '@app/routes/main/components/onboarding-modal/onboarding-modal.component';
-import { UserService } from '@app/services/data';
+import { AuthService } from '@app/services/data';
 import { ModalOpenService, AuthTokenService } from '@app/services';
-import { User } from '@app/models';
-
-type UserImpl = Required<Pick<User, 'attributes'>>;
 
 @Component({
   templateUrl: './main.component.html',
@@ -25,7 +22,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
   constructor(
     private zone: NgZone,
-    private userService: UserService,
+    private authService: AuthService,
     private authTokenService: AuthTokenService,
     private modalOpenService: ModalOpenService,
   ) {}
@@ -36,14 +33,9 @@ export class MainComponent implements OnInit, OnDestroy {
       .subscribe({
         next: isLoggedIn => {
           if (isLoggedIn) {
-            this.userService
-              .get({
-                fields: ['attributes'],
-              })
-              .pipe(
-                takeUntil(this.unsubscribe$),
-                map(response => response as UserImpl),
-              )
+            this.authService
+              .getUser()
+              .pipe(takeUntil(this.unsubscribe$))
               .subscribe({
                 next: user => {
                   const attributes = user.attributes;
@@ -55,8 +47,8 @@ export class MainComponent implements OnInit, OnDestroy {
                         await openOnboardingModal(this.onboardingModal);
                         this.modalOpenService.isModalOpen$.next(false);
 
-                        this.userService
-                          .updateAttributes({
+                        this.authService
+                          .updateUserAttributes({
                             onboarded: true,
                           })
                           .pipe(takeUntil(this.unsubscribe$))

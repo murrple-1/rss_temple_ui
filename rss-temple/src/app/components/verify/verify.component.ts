@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { UserService } from '@app/services/data';
+import { RegistrationService } from '@app/services/data';
 import { HttpErrorService } from '@app/services';
 
 enum State {
@@ -78,7 +78,7 @@ export class VerifyComponent implements OnInit, OnDestroy {
   constructor(
     private zone: NgZone,
     private activatedRoute: ActivatedRoute,
-    private userService: UserService,
+    private registrationService: RegistrationService,
     private httpErrorService: HttpErrorService,
   ) {}
 
@@ -90,8 +90,8 @@ export class VerifyComponent implements OnInit, OnDestroy {
     } else {
       this.state = State.Sending;
 
-      this.userService
-        .verify(token)
+      this.registrationService
+        .verifyEmail(token)
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: () => {

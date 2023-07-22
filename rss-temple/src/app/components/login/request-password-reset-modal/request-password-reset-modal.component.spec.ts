@@ -9,17 +9,15 @@ import { ClarityModule, ClrLoadingState } from '@clr/angular';
 
 import { of, throwError } from 'rxjs';
 
-import { PasswordResetTokenService } from '@app/services/data';
+import { AuthService } from '@app/services/data';
 import { EmailValidatorDirective } from '@app/directives/email-validator.directive';
 
 import { RequestPasswordResetModalComponent } from './request-password-reset-modal.component';
 
 async function setup() {
-  const mockPasswordResetTokenService =
-    jasmine.createSpyObj<PasswordResetTokenService>(
-      'PasswordResetTokenService',
-      ['request'],
-    );
+  const mockAuthService = jasmine.createSpyObj<AuthService>('AuthService', [
+    'requestPasswordReset',
+  ]);
 
   await TestBed.configureTestingModule({
     imports: [
@@ -31,14 +29,14 @@ async function setup() {
     declarations: [RequestPasswordResetModalComponent, EmailValidatorDirective],
     providers: [
       {
-        provide: PasswordResetTokenService,
-        useValue: mockPasswordResetTokenService,
+        provide: AuthService,
+        useValue: mockAuthService,
       },
     ],
   }).compileComponents();
 
   return {
-    mockPasswordResetTokenService,
+    mockAuthService,
   };
 }
 
@@ -136,8 +134,8 @@ describe('RequestPasswordResetModalComponent', () => {
   it(
     'should request a password reset',
     waitForAsync(async () => {
-      const { mockPasswordResetTokenService } = await setup();
-      mockPasswordResetTokenService.request.and.returnValue(of(undefined));
+      const { mockAuthService } = await setup();
+      mockAuthService.requestPasswordReset.and.returnValue(of(undefined));
 
       const componentFixture = TestBed.createComponent(
         RequestPasswordResetModalComponent,
@@ -163,7 +161,7 @@ describe('RequestPasswordResetModalComponent', () => {
       await componentFixture.whenStable();
 
       expect(component.requestButtonState).not.toBe(ClrLoadingState.DEFAULT);
-      expect(mockPasswordResetTokenService.request).toHaveBeenCalledWith(
+      expect(mockAuthService.requestPasswordReset).toHaveBeenCalledWith(
         'test@test.com',
       );
     }),
@@ -172,8 +170,8 @@ describe('RequestPasswordResetModalComponent', () => {
   it(
     'should handle failed requests',
     waitForAsync(async () => {
-      const { mockPasswordResetTokenService } = await setup();
-      mockPasswordResetTokenService.request.and.returnValue(
+      const { mockAuthService } = await setup();
+      mockAuthService.requestPasswordReset.and.returnValue(
         throwError(
           new HttpErrorResponse({
             status: 0,
@@ -206,7 +204,7 @@ describe('RequestPasswordResetModalComponent', () => {
       await componentFixture.whenStable();
 
       expect(component.requestButtonState).toBe(ClrLoadingState.DEFAULT);
-      expect(mockPasswordResetTokenService.request).toHaveBeenCalledWith(
+      expect(mockAuthService.requestPasswordReset).toHaveBeenCalledWith(
         'test@test.com',
       );
     }),

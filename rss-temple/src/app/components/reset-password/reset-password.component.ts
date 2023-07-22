@@ -6,7 +6,7 @@ import { NgForm } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { PasswordResetTokenService } from '@app/services/data';
+import { AuthService } from '@app/services/data';
 import { HttpErrorService } from '@app/services';
 import {
   MinLength as PasswordMinLength,
@@ -54,7 +54,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private zone: NgZone,
-    private passwordResetTokenService: PasswordResetTokenService,
+    private authService: AuthService,
     private httpErrorService: HttpErrorService,
   ) {}
 
@@ -95,8 +95,8 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 
     this.state = State.Sending;
 
-    this.passwordResetTokenService
-      .reset(this.token, this.userId, this.newPassword)
+    this.authService
+      .resetPassword(this.token, this.userId, this.newPassword)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => {

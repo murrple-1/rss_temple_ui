@@ -16,7 +16,7 @@ import { MockActivatedRoute } from '@app/test/activatedroute.mock';
 import { MockGAuthService } from '@app/test/gauth.service.mock';
 import { MockFBAuthService } from '@app/test/fbauth.service.mock';
 import { GAuthService, FBAuthService, AppAlertsService } from '@app/services';
-import { LoginService, PasswordResetTokenService } from '@app/services/data';
+import { AuthService, SocialService } from '@app/services/data';
 import { RequestPasswordResetModalComponent } from '@app/components/login/request-password-reset-modal/request-password-reset-modal.component';
 import { AppAlertDescriptor } from '@app/services/app-alerts.service';
 import { LocalAlertsComponent } from '@app/components/shared/local-alerts/local-alerts.component';
@@ -29,16 +29,13 @@ class MockComponent {}
 async function setup() {
   const mockRoute = new MockActivatedRoute();
 
-  const mockLoginService = jasmine.createSpyObj<LoginService>('LoginService', [
+  const mockAuthService = jasmine.createSpyObj<AuthService>('AuthService', [
     'login',
-    'getGoogleLoginSession',
-    'getFacebookLoginSession',
   ]);
-  const mockPasswordResetTokenService =
-    jasmine.createSpyObj<PasswordResetTokenService>(
-      'PasswordResetTokenService',
-      ['request'],
-    );
+  const mockSocialService = jasmine.createSpyObj<SocialService>(
+    'SocialService',
+    ['googleLogin', 'facebookLogin'],
+  );
 
   await TestBed.configureTestingModule({
     imports: [
@@ -78,12 +75,12 @@ async function setup() {
         useClass: MockFBAuthService,
       },
       {
-        provide: LoginService,
-        useValue: mockLoginService,
+        provide: AuthService,
+        useValue: mockAuthService,
       },
       {
-        provide: PasswordResetTokenService,
-        useValue: mockPasswordResetTokenService,
+        provide: SocialService,
+        useValue: mockSocialService,
       },
     ],
   }).compileComponents();
@@ -91,8 +88,8 @@ async function setup() {
   return {
     mockRoute,
 
-    mockLoginService,
-    mockPasswordResetTokenService,
+    mockAuthService,
+    mockSocialService,
   };
 }
 
@@ -130,8 +127,8 @@ describe('LoginComponent', () => {
   it(
     'should handle Google login',
     waitForAsync(async () => {
-      const { mockLoginService } = await setup();
-      mockLoginService.getGoogleLoginSession.and.returnValue(of('atoken'));
+      const { mockSocialService } = await setup();
+      mockSocialService.googleLogin.and.returnValue(of('atoken'));
       const router = TestBed.inject(Router);
       spyOn(router, 'navigate');
 
@@ -148,8 +145,8 @@ describe('LoginComponent', () => {
   it(
     'should handle Facebook login',
     waitForAsync(async () => {
-      const { mockLoginService } = await setup();
-      mockLoginService.getFacebookLoginSession.and.returnValue(of('atoken'));
+      const { mockSocialService } = await setup();
+      mockSocialService.facebookLogin.and.returnValue(of('atoken'));
       const router = TestBed.inject(Router);
       spyOn(router, 'navigate');
 
@@ -281,8 +278,8 @@ describe('LoginComponent', () => {
   it(
     'should be able to log in',
     waitForAsync(async () => {
-      const { mockLoginService } = await setup();
-      mockLoginService.login.and.returnValue(
+      const { mockAuthService } = await setup();
+      mockAuthService.login.and.returnValue(
         of({
           key: 'b75a903f398823a74e5f8e7ec231705bac3c6161',
         }),
@@ -315,7 +312,7 @@ describe('LoginComponent', () => {
       componentFixture.detectChanges();
       await componentFixture.whenStable();
 
-      expect(mockLoginService.login).toHaveBeenCalledWith(
+      expect(mockAuthService.login).toHaveBeenCalledWith(
         'test@test.com',
         'password',
       );
@@ -325,8 +322,8 @@ describe('LoginComponent', () => {
   it(
     'should be able to login with Google',
     waitForAsync(async () => {
-      const { mockLoginService } = await setup();
-      mockLoginService.getGoogleLoginSession.and.returnValue(of('atoken'));
+      const { mockSocialService } = await setup();
+      mockSocialService.googleLogin.and.returnValue(of('atoken'));
       const router = TestBed.inject(Router);
       spyOn(router, 'navigate');
       const gAuthService = TestBed.inject(GAuthService) as MockGAuthService;
@@ -348,8 +345,8 @@ describe('LoginComponent', () => {
   it(
     'should be able to login with Facebook',
     waitForAsync(async () => {
-      const { mockLoginService } = await setup();
-      mockLoginService.getFacebookLoginSession.and.returnValue(of('atoken'));
+      const { mockSocialService } = await setup();
+      mockSocialService.facebookLogin.and.returnValue(of('atoken'));
       const router = TestBed.inject(Router);
       spyOn(router, 'navigate');
       const fbAuthService = TestBed.inject(FBAuthService) as MockFBAuthService;
@@ -394,7 +391,7 @@ describe('LoginComponent', () => {
   it(
     'should handle Google logout',
     waitForAsync(async () => {
-      const { mockLoginService } = await setup();
+      const { mockSocialService } = await setup();
       const router = TestBed.inject(Router);
       spyOn(router, 'navigate');
       const gAuthService = TestBed.inject(GAuthService) as MockGAuthService;
@@ -406,14 +403,14 @@ describe('LoginComponent', () => {
       gAuthService.user$.next(null);
       await componentFixture.whenStable();
 
-      expect(mockLoginService.getGoogleLoginSession).not.toHaveBeenCalled();
+      expect(mockSocialService.googleLogin).not.toHaveBeenCalled();
     }),
   );
 
   it(
     'should handle Facebook logout',
     waitForAsync(async () => {
-      const { mockLoginService } = await setup();
+      const { mockSocialService } = await setup();
       const router = TestBed.inject(Router);
       spyOn(router, 'navigate');
       const fbAuthService = TestBed.inject(FBAuthService) as MockFBAuthService;
@@ -425,15 +422,15 @@ describe('LoginComponent', () => {
       fbAuthService.user$.next(null);
       await componentFixture.whenStable();
 
-      expect(mockLoginService.getFacebookLoginSession).not.toHaveBeenCalled();
+      expect(mockSocialService.facebookLogin).not.toHaveBeenCalled();
     }),
   );
 
   it(
     'should handle login errors: cannot connect',
     waitForAsync(async () => {
-      const { mockLoginService } = await setup();
-      mockLoginService.login.and.returnValue(
+      const { mockAuthService } = await setup();
+      mockAuthService.login.and.returnValue(
         throwError(
           new HttpErrorResponse({
             status: 0,
@@ -486,8 +483,8 @@ describe('LoginComponent', () => {
   it(
     'should handle login errors: bad credentials',
     waitForAsync(async () => {
-      const { mockLoginService } = await setup();
-      mockLoginService.login.and.returnValue(
+      const { mockAuthService } = await setup();
+      mockAuthService.login.and.returnValue(
         throwError(
           new HttpErrorResponse({
             status: 403,
@@ -534,8 +531,8 @@ describe('LoginComponent', () => {
   it(
     'should handle login errors: unknown error',
     waitForAsync(async () => {
-      const { mockLoginService } = await setup();
-      mockLoginService.login.and.returnValue(
+      const { mockAuthService } = await setup();
+      mockAuthService.login.and.returnValue(
         throwError(new Error('unknown error')),
       );
       spyOn(console, 'error');
@@ -584,8 +581,8 @@ describe('LoginComponent', () => {
   it(
     'should handle Google login errors: cannot connect',
     waitForAsync(async () => {
-      const { mockLoginService } = await setup();
-      mockLoginService.getGoogleLoginSession.and.returnValue(
+      const { mockSocialService } = await setup();
+      mockSocialService.googleLogin.and.returnValue(
         throwError(
           new HttpErrorResponse({
             status: 0,
@@ -623,8 +620,8 @@ describe('LoginComponent', () => {
   it(
     'should handle Google login errors: new credentials',
     waitForAsync(async () => {
-      const { mockLoginService } = await setup();
-      mockLoginService.getGoogleLoginSession.and.returnValue(
+      const { mockSocialService } = await setup();
+      mockSocialService.googleLogin.and.returnValue(
         throwError(
           new HttpErrorResponse({
             status: 422,
@@ -661,8 +658,8 @@ describe('LoginComponent', () => {
   it(
     'should handle Google login errors: unknown error',
     waitForAsync(async () => {
-      const { mockLoginService } = await setup();
-      mockLoginService.getGoogleLoginSession.and.returnValue(
+      const { mockSocialService } = await setup();
+      mockSocialService.googleLogin.and.returnValue(
         throwError(new Error('unknown error')),
       );
       spyOn(console, 'error');
@@ -696,8 +693,8 @@ describe('LoginComponent', () => {
   it(
     'should handle Facebook login errors: cannot connect',
     waitForAsync(async () => {
-      const { mockLoginService } = await setup();
-      mockLoginService.getFacebookLoginSession.and.returnValue(
+      const { mockSocialService } = await setup();
+      mockSocialService.facebookLogin.and.returnValue(
         throwError(
           new HttpErrorResponse({
             status: 0,
@@ -735,8 +732,8 @@ describe('LoginComponent', () => {
   it(
     'should handle Facebook login errors: new credentials',
     waitForAsync(async () => {
-      const { mockLoginService } = await setup();
-      mockLoginService.getFacebookLoginSession.and.returnValue(
+      const { mockSocialService } = await setup();
+      mockSocialService.facebookLogin.and.returnValue(
         throwError(
           new HttpErrorResponse({
             status: 422,
@@ -773,8 +770,8 @@ describe('LoginComponent', () => {
   it(
     'should handle Facebook login errors: unknown error',
     waitForAsync(async () => {
-      const { mockLoginService } = await setup();
-      mockLoginService.getFacebookLoginSession.and.returnValue(
+      const { mockSocialService } = await setup();
+      mockSocialService.facebookLogin.and.returnValue(
         throwError(new Error('unknown error')),
       );
       spyOn(console, 'error');

@@ -18,7 +18,7 @@ import { AppAlertDescriptor } from '@app/services/app-alerts.service';
 import { EmailValidatorDirective } from '@app/directives/email-validator.directive';
 import { PasswordValidatorDirective } from '@app/directives/password-validator.directive';
 import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-match-validator.directive';
-import { LoginService } from '@app/services/data';
+import { RegistrationService, SocialService } from '@app/services/data';
 
 import { RegisterComponent } from './register.component';
 
@@ -28,11 +28,14 @@ class MockComponent {}
 async function setup() {
   const mockRoute = new MockActivatedRoute();
 
-  const mockLoginService = jasmine.createSpyObj<LoginService>('LoginService', [
-    'register',
-    'createGoogleLogin',
-    'createFacebookLogin',
-  ]);
+  const mockRegistrationService = jasmine.createSpyObj<RegistrationService>(
+    'RegistrationService',
+    ['register'],
+  );
+  const mockSocialService = jasmine.createSpyObj<SocialService>(
+    'SocialService',
+    ['facebookLogin', 'googleLogin'],
+  );
 
   await TestBed.configureTestingModule({
     imports: [
@@ -60,8 +63,12 @@ async function setup() {
         useValue: mockRoute,
       },
       {
-        provide: LoginService,
-        useValue: mockLoginService,
+        provide: RegistrationService,
+        useValue: mockRegistrationService,
+      },
+      {
+        provide: SocialService,
+        useValue: mockSocialService,
       },
     ],
   }).compileComponents();
@@ -69,7 +76,8 @@ async function setup() {
   return {
     mockRoute,
 
-    mockLoginService,
+    mockRegistrationService,
+    mockSocialService,
   };
 }
 
@@ -368,10 +376,10 @@ describe('RegisterComponent', () => {
   );
 
   it(
-    'should register: my',
+    'should register',
     waitForAsync(async () => {
-      const { mockLoginService } = await setup();
-      mockLoginService.register.and.returnValue(of(undefined));
+      const { mockRegistrationService } = await setup();
+      mockRegistrationService.register.and.returnValue(of(undefined));
 
       const router = TestBed.inject(Router);
       spyOn(router, 'navigate');
@@ -420,8 +428,8 @@ describe('RegisterComponent', () => {
   it(
     'should register: Google',
     waitForAsync(async () => {
-      const { mockLoginService } = await setup();
-      mockLoginService.createGoogleLogin.and.returnValue(of(undefined));
+      const { mockSocialService } = await setup();
+      mockSocialService.googleLogin.and.returnValue(of('google-token'));
       const router = TestBed.inject(Router);
       spyOn(router, 'navigate');
 
@@ -471,8 +479,8 @@ describe('RegisterComponent', () => {
   it(
     'should register: Facebook',
     waitForAsync(async () => {
-      const { mockLoginService } = await setup();
-      mockLoginService.createFacebookLogin.and.returnValue(of(undefined));
+      const { mockSocialService } = await setup();
+      mockSocialService.facebookLogin.and.returnValue(of('facebook-token'));
       const router = TestBed.inject(Router);
       spyOn(router, 'navigate');
 
@@ -522,8 +530,8 @@ describe('RegisterComponent', () => {
   it(
     'should handle registration errors: cannot connect',
     waitForAsync(async () => {
-      const { mockLoginService } = await setup();
-      mockLoginService.register.and.returnValue(
+      const { mockRegistrationService } = await setup();
+      mockRegistrationService.register.and.returnValue(
         throwError(
           new HttpErrorResponse({
             status: 0,
@@ -585,8 +593,8 @@ describe('RegisterComponent', () => {
   it(
     'should handle registration errors: email already in use',
     waitForAsync(async () => {
-      const { mockLoginService } = await setup();
-      mockLoginService.register.and.returnValue(
+      const { mockRegistrationService } = await setup();
+      mockRegistrationService.register.and.returnValue(
         throwError(
           new HttpErrorResponse({
             status: 409,

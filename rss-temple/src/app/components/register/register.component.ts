@@ -13,7 +13,7 @@ import {
   passwordRequirementsTextHtml,
   SpecialCharacters as PasswordSpecialCharacters,
 } from '@app/libs/password.lib';
-import { LoginService } from '@app/services/data';
+import { RegistrationService, SocialService } from '@app/services/data';
 
 @Component({
   templateUrl: './register.component.html',
@@ -43,7 +43,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private zone: NgZone,
-    private loginService: LoginService,
+    private registrationService: RegistrationService,
+    private socialService: SocialService,
     private appAlertsService: AppAlertsService,
   ) {}
 
@@ -70,23 +71,23 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.registerButtonState = ClrLoadingState.LOADING;
 
     if (this.googleToken !== null) {
-      this.loginService
-        .createGoogleLogin(this.email, this.password, this.googleToken)
+      this.socialService
+        .googleLogin(this.googleToken)
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: this.handleRegisterSuccess.bind(this),
           error: this.handleRegisterError.bind(this),
         });
     } else if (this.facebookToken !== null) {
-      this.loginService
-        .createFacebookLogin(this.email, this.password, this.facebookToken)
+      this.socialService
+        .facebookLogin(this.facebookToken)
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: this.handleRegisterSuccess.bind(this),
           error: this.handleRegisterError.bind(this),
         });
     } else {
-      this.loginService
+      this.registrationService
         .register(this.email, this.password)
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({

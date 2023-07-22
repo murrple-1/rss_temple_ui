@@ -132,6 +132,13 @@ describe('FBAuthService', () => {
     });
     try {
       (window as any).FB = {
+        getLoginStatus: jasmine
+          .createSpy('FB.getLoginStatus')
+          .and.callFake((callback: (response: { status: string }) => void) => {
+            callback({
+              status: 'connected',
+            });
+          }),
         logout: jasmine
           .createSpy('FB.logout')
           .and.callFake((callback: () => void) => {

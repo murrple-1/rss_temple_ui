@@ -6,14 +6,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClarityModule } from '@clr/angular';
 
 import { OnboardingModalComponent } from '@app/routes/main/components/onboarding-modal/onboarding-modal.component';
-import { UserService } from '@app/services/data';
+import { AuthService } from '@app/services/data';
 import { LocalAlertsComponent } from '@app/components/shared/local-alerts/local-alerts.component';
 
 import { MainComponent } from './main.component';
 
 async function setup() {
-  const mockUserService = jasmine.createSpyObj<UserService>('UserService', [
-    'get',
+  const mockAuthService = jasmine.createSpyObj<AuthService>('AuthService', [
+    'getUser',
   ]);
 
   await TestBed.configureTestingModule({
@@ -34,14 +34,14 @@ async function setup() {
       },
 
       {
-        provide: UserService,
-        useValue: mockUserService,
+        provide: AuthService,
+        useValue: mockAuthService,
       },
     ],
   }).compileComponents();
 
   return {
-    mockUserService,
+    mockAuthService,
   };
 }
 

@@ -7,12 +7,7 @@ import { ClarityModule } from '@clr/angular';
 
 import { of } from 'rxjs';
 
-import {
-  FeedService,
-  FeedEntryService,
-  UserService,
-  ExploreService,
-} from '@app/services/data';
+import { FeedService, AuthService, ExploreService } from '@app/services/data';
 import { ReadCounterService } from '@app/routes/main/services';
 
 import { ExploreComponent } from './explore.component';
@@ -31,9 +26,8 @@ async function setup() {
     'ExploreService',
     ['explore'],
   );
-  const mockUserService = jasmine.createSpyObj<UserService>('UserService', [
-    'get',
-    'update',
+  const mockAuthService = jasmine.createSpyObj<AuthService>('AuthService', [
+    'getUser',
   ]);
 
   await TestBed.configureTestingModule({
@@ -60,7 +54,7 @@ async function setup() {
     mockReadCounterService,
     mockFeedService,
     mockExploreService,
-    mockUserService,
+    mockAuthService,
   };
 }
 
@@ -68,9 +62,16 @@ describe('ExploreComponent', () => {
   it(
     'should create the component',
     waitForAsync(async () => {
-      const { mockUserService, mockFeedService, mockExploreService } =
+      const { mockAuthService, mockFeedService, mockExploreService } =
         await setup();
-      mockUserService.get.and.returnValue(of({}));
+      mockAuthService.getUser.and.returnValue(
+        of({
+          uuid: '772893c2-c78f-42d8-82a7-5d56a1837a28',
+          email: 'test@test.com',
+          subscribedFeedUuids: [],
+          attributes: {},
+        }),
+      );
       mockFeedService.query.and.returnValue(
         of({
           objects: [],
