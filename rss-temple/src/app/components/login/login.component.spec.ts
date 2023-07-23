@@ -487,7 +487,7 @@ describe('LoginComponent', () => {
       mockAuthService.login.and.returnValue(
         throwError(
           new HttpErrorResponse({
-            status: 403,
+            status: 401,
           }),
         ),
       );
