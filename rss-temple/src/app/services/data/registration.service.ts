@@ -14,8 +14,7 @@ export class RegistrationService {
       `${environment.envVar.API_HOST}/api/registration`,
       {
         email,
-        password1: password,
-        password2: password,
+        password,
       },
     );
   }

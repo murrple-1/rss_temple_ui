@@ -24,20 +24,10 @@
                 fbButtonInUse
               "
             >
-              <clr-input-container>
-                <label>Email</label>
-                <input
-                  clrInput
-                  type="email"
-                  name="email"
-                  placeholder="example@example.com"
-                  [(ngModel)]="email"
-                  appEmail
-                />
-                <clr-control-error *clrIfError="'invalidemail'"
-                  >Email malformed</clr-control-error
-                >
-              </clr-input-container>
+              <div class="clr-row">
+                <label class="clr-control-label">Email</label>
+                <div class="clr-col-12 clr-col-md-10 p4 app--email">{{ email }}</div>
+              </div>
               <clr-input-container>
                 <label>Old Password</label>
                 <input

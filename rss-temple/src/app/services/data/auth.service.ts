@@ -58,17 +58,26 @@ export class AuthService {
     );
   }
 
-  changePassword(password: string) {
-    // TODO finish
-    return this.http
-      .post<unknown>(
-        `${environment.envVar.API_HOST}/api/auth/password/change`,
-        {},
-        {
-          responseType: 'json',
-        },
-      )
-      .pipe(map(retObj => undefined));
+  changePassword(
+    oldPassword: string,
+    newPassword: string,
+    options: CommonOptions = {},
+  ) {
+    const headers = commonToHeaders(options, () =>
+      this.authTokenService.authToken$.getValue(),
+    );
+
+    return this.http.post<void>(
+      `${environment.envVar.API_HOST}/api/auth/password/change`,
+      {
+        oldPassword,
+        newPassword,
+      },
+      {
+        responseType: 'json',
+        headers,
+      },
+    );
   }
 
   requestPasswordReset(email: string) {
@@ -86,8 +95,7 @@ export class AuthService {
       {
         uid: userId,
         token,
-        new_password1: password,
-        new_password2: password,
+        newPassword: password,
       },
     );
   }

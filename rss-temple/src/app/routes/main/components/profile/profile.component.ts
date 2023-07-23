@@ -405,7 +405,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.profileDetailsForm.controls['newPassword']?.dirty &&
       this.profileDetailsForm.controls['newPasswordCheck']?.dirty
     ) {
-      saveObservables.push(this.authService.changePassword(this.newPassword));
+      saveObservables.push(
+        this.authService.changePassword(this.oldPassword, this.newPassword),
+      );
     }
 
     this.state = State.IsSaving;

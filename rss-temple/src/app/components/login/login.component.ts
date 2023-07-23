@@ -206,7 +206,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
                 errorHandled = true;
                 break;
               }
-              case 403: {
+              case 401: {
                 this.zone.run(() => {
                   this.loginAlertEntries = [
                     {

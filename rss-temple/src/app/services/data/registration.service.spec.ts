@@ -36,8 +36,7 @@ describe('RegistrationService', () => {
       jasmine.stringMatching(/\/api\/registration$/),
       jasmine.objectContaining({
         email: jasmine.any(String),
-        password1: jasmine.any(String),
-        password2: jasmine.any(String),
+        password: jasmine.any(String),
       }),
     );
   }));
