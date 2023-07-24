@@ -210,7 +210,9 @@ export class FeedEntryService {
       `${environment.envVar.API_HOST}/api/feedentries/read/`,
       {
         headers,
-        body: feedEntryUuids,
+        body: {
+          feedEntryUuids,
+        },
       },
     );
   }
@@ -266,7 +268,9 @@ export class FeedEntryService {
       `${environment.envVar.API_HOST}/api/feedentries/favorite/`,
       {
         headers,
-        body: feedEntryUuids,
+        body: {
+          feedEntryUuids,
+        },
       },
     );
   }
