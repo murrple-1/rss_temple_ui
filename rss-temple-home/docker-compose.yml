@@ -4,8 +4,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - caddy_data:/data
-      - caddy_config:/config
+      - caddy_data:/data/
+      - caddy_config:/config/
 volumes:
   caddy_data:
   caddy_config:
