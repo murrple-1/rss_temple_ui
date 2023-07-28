@@ -1,8 +1,17 @@
-FROM caddy:2
+FROM node:16-alpine AS builder
+
+ARG APP_ENVIRONMENT=production
+
+WORKDIR /build
 
 COPY . .
 
-RUN apk add --no-cache yarn \
-  && yarn install --frozen-lockfile
+RUN yarn install --frozen-lockfile \
+  && yarn generate-licenses-file \
+  && yarn collect-envvars \
+  && yarn run ng build -c ${APP_ENVIRONMENT}
 
-ENTRYPOINT ["./docker-run.sh"]
+FROM caddy:2 AS production
+
+COPY --from=builder /build/dist/ /srv/
+COPY ./Caddyfile /etc/caddy/Caddyfile

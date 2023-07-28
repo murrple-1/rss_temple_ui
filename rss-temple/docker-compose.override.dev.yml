@@ -2,6 +2,3 @@ services:
   rss_temple_app:
     image: rss_temple_app:latest
     build: .
-    entrypoint: yarn ng serve --host 0.0.0.0
-    volumes:
-      - ./:/srv/
