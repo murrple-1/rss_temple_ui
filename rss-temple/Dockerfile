@@ -6,7 +6,7 @@ WORKDIR /build/
 
 COPY . .
 
-RUN cp /build/src/environments/environment.production.ts /build/srv/environments/environment.ts \
+RUN cp /build/src/environments/environment.production.ts /build/src/environments/environment.ts \
   && yarn install --frozen-lockfile \
   && yarn generate-licenses-file \
   && yarn collect-envvars \
