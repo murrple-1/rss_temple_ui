@@ -1,5 +1,10 @@
 "use strict";
 module.exports = function (grunt) {
+  grunt.config("app-url", grunt.option("app-url") || "#");
+  grunt.config("fb-url", grunt.option("fb-url") || "#");
+  grunt.config("twitter-url", grunt.option("twitter-url") || "#");
+  grunt.config("insta-url", grunt.option("insta-url") || "#");
+
   require("time-grunt")(grunt);
 
   require("load-grunt-tasks")(grunt);
@@ -22,21 +27,61 @@ module.exports = function (grunt) {
         modules: ["<%= yeoman.app %>/modules/*.js"]
       },
       "dist index": {
+        options: {
+          context: [
+            {
+              app_url: grunt.config("app-url"),
+              fb_url: grunt.config("fb-url"),
+              twitter_url: grunt.config("twitter-url"),
+              insta_url: grunt.config("insta-url")
+            }
+          ]
+        },
         files: {
           ".tmp/index.html": "<%= yeoman.app %>/index.hbs"
         }
       },
       "dist contact": {
+        options: {
+          context: [
+            {
+              app_url: grunt.config("app-url"),
+              fb_url: grunt.config("fb-url"),
+              twitter_url: grunt.config("twitter-url"),
+              "insta-url": grunt.config("insta-url")
+            }
+          ]
+        },
         files: {
           ".tmp/contact.html": "<%= yeoman.app %>/contact.hbs"
         }
       },
       "dist tos": {
+        options: {
+          context: [
+            {
+              app_url: grunt.config("app-url"),
+              fb_url: grunt.config("fb-url"),
+              twitter_url: grunt.config("twitter-url"),
+              "insta-url": grunt.config("insta-url")
+            }
+          ]
+        },
         files: {
           ".tmp/tos.html": "<%= yeoman.app %>/tos.hbs"
         }
       },
       "dist privacy": {
+        options: {
+          context: [
+            {
+              app_url: grunt.config("app-url"),
+              fb_url: grunt.config("fb-url"),
+              twitter_url: grunt.config("twitter-url"),
+              "insta-url": grunt.config("insta-url")
+            }
+          ]
+        },
         files: {
           ".tmp/privacy.html": "<%= yeoman.app %>/privacy.hbs"
         }
@@ -132,7 +177,7 @@ module.exports = function (grunt) {
           {
             expand: true,
             cwd: "<%= yeoman.app %>/",
-            src: ["favicon.ico", "robots.txt", "config.json"],
+            src: ["favicon.ico", "robots.txt"],
             dest: "<%= yeoman.dist %>/"
           },
           {

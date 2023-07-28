@@ -1,14 +1,12 @@
-FROM node:16-alpine AS builder
+FROM node:16-alpine
 
-WORKDIR /build
+ENV APP_URL="" TWITTER_URL="" FB_URL="" INSTA_URL=""
+
+WORKDIR /build/
 
 COPY . .
 
 RUN apk add --no-cache autoconf automake make gcc musl-dev libtool pkgconfig nasm \
-  && yarn install --frozen-lockfile \
-  && yarn grunt build
+  && yarn install --frozen-lockfile
 
-FROM caddy:2 AS production
-
-COPY --from=builder /build/dist/ /srv/
-COPY ./Caddyfile /etc/caddy/Caddyfile
+ENTRYPOINT ["./docker-run.sh"]
