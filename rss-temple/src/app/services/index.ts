@@ -5,3 +5,4 @@ export { GAuthService } from './gauth.service';
 export { HttpErrorService } from './httperror.service';
 export { AuthTokenService } from './auth-token.service';
 export { ModalOpenService } from './modal-open.service';
+export { ConfigService } from './config.service';

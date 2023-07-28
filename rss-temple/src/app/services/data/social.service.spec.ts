@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { fakeAsync } from '@angular/core/testing';
 
 import { AuthTokenService } from '@app/services/auth-token.service';
+import { MockConfigService } from '@app/test/config.service.mock';
 
 import { SocialService } from './social.service';
 
@@ -12,11 +13,20 @@ function setup() {
   ]);
 
   const authTokenService = new AuthTokenService();
+  const mockConfigService = new MockConfigService({
+    apiHost: '',
+  });
 
-  const socialService = new SocialService(httpClientSpy, authTokenService);
+  const socialService = new SocialService(
+    httpClientSpy,
+    authTokenService,
+    mockConfigService,
+  );
 
   return {
     httpClientSpy,
+    authTokenService,
+    mockConfigService,
 
     socialService,
   };

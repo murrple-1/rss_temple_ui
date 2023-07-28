@@ -10,9 +10,8 @@ import {
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 import { AuthTokenService } from '@app/services/auth-token.service';
-
-import { environment } from '@environments/environment';
 import { ZUser } from '@app/models/user';
+import { ConfigService } from '@app/services/config.service';
 
 const ZLoginResponse = z.object({
   key: z.string(),
@@ -22,14 +21,25 @@ const ZLoginResponse = z.object({
   providedIn: 'root',
 })
 export class AuthService {
+  private readonly apiHost: string;
+
   constructor(
     private http: HttpClient,
     private authTokenService: AuthTokenService,
-  ) {}
+    configService: ConfigService,
+  ) {
+    const apiHost = configService.get<string>('apiHost');
+    if (typeof apiHost !== 'string') {
+      throw new Error('apiHost malformed');
+    }
+
+    this.apiHost = apiHost;
+  }
+
   login(email: string, password: string) {
     return this.http
       .post<unknown>(
-        `${environment.envVar.API_HOST}/api/auth/login`,
+        `${this.apiHost}/api/auth/login`,
         {
           email,
           password,
@@ -49,13 +59,9 @@ export class AuthService {
       this.authTokenService.authToken$.getValue(),
     );
 
-    return this.http.post<void>(
-      `${environment.envVar.API_HOST}/api/auth/logout`,
-      undefined,
-      {
-        headers,
-      },
-    );
+    return this.http.post<void>(`${this.apiHost}/api/auth/logout`, undefined, {
+      headers,
+    });
   }
 
   changePassword(
@@ -68,7 +74,7 @@ export class AuthService {
     );
 
     return this.http.post<void>(
-      `${environment.envVar.API_HOST}/api/auth/password/change`,
+      `${this.apiHost}/api/auth/password/change`,
       {
         oldPassword,
         newPassword,
@@ -81,17 +87,14 @@ export class AuthService {
   }
 
   requestPasswordReset(email: string) {
-    return this.http.post<void>(
-      `${environment.envVar.API_HOST}/api/auth/password/reset`,
-      {
-        email,
-      },
-    );
+    return this.http.post<void>(`${this.apiHost}/api/auth/password/reset`, {
+      email,
+    });
   }
 
   resetPassword(token: string, userId: string, password: string) {
     return this.http.post<void>(
-      `${environment.envVar.API_HOST}/api/auth/password/reset/confirm`,
+      `${this.apiHost}/api/auth/password/reset/confirm`,
       {
         uid: userId,
         token,
@@ -106,7 +109,7 @@ export class AuthService {
     );
 
     return this.http
-      .get<unknown>(`${environment.envVar.API_HOST}/api/auth/user`, {
+      .get<unknown>(`${this.apiHost}/api/auth/user`, {
         headers,
       })
       .pipe(map(retObj => ZUser.parse(retObj)));
@@ -121,7 +124,7 @@ export class AuthService {
     );
 
     return this.http.put<void>(
-      `${environment.envVar.API_HOST}/api/auth/user/attributes`,
+      `${this.apiHost}/api/auth/user/attributes`,
       attributes,
       {
         headers,

@@ -1,10 +1,18 @@
 import { fakeAsync } from '@angular/core/testing';
+
+import { MockConfigService } from '@app/test/config.service.mock';
+
 import { GAuthService } from './gauth.service';
 
 function setup() {
-  const gAuthService = new GAuthService();
+  const mockConfigService = new MockConfigService({
+    googleClientId: '',
+  });
+
+  const gAuthService = new GAuthService(mockConfigService);
 
   return {
+    mockConfigService,
     gAuthService,
   };
 }
@@ -26,9 +34,9 @@ describe('GAuthService', () => {
       auth2: {
         init: jasmine.createSpy('gapi.auth2.init').and.callFake(
           () =>
-            (({
+            ({
               then: (onInit: (googleAuth: gapi.auth2.GoogleAuth) => any) => {
-                onInit(({
+                onInit({
                   isSignedIn: {
                     listen: (_listener: (isSignedIn: boolean) => void) => {},
                   },
@@ -37,9 +45,9 @@ describe('GAuthService', () => {
                       _listener: (currentUser: gapi.auth2.GoogleUser) => void,
                     ) => {},
                   },
-                } as any) as gapi.auth2.GoogleAuth);
+                } as any as gapi.auth2.GoogleAuth);
               },
-            } as any) as gapi.auth2.GoogleAuth),
+            } as any as gapi.auth2.GoogleAuth),
         ),
       },
     };
@@ -65,9 +73,9 @@ describe('GAuthService', () => {
       auth2: {
         init: jasmine.createSpy('gapi.auth2.init').and.callFake(
           () =>
-            (({
+            ({
               then: (onInit: (googleAuth: gapi.auth2.GoogleAuth) => any) => {
-                onInit(({
+                onInit({
                   isSignedIn: {
                     listen: (listener: (isSignedIn: boolean) => void) => {
                       isSignedInListener = listener;
@@ -86,15 +94,15 @@ describe('GAuthService', () => {
                         isSignedInListener(true);
                       }
 
-                      const currentUser = ({} as any) as gapi.auth2.GoogleUser;
+                      const currentUser = {} as any as gapi.auth2.GoogleUser;
                       if (currentUserListener !== null) {
                         currentUserListener(currentUser);
                       }
                       resolve(currentUser);
                     }),
-                } as any) as gapi.auth2.GoogleAuth);
+                } as any as gapi.auth2.GoogleAuth);
               },
-            } as any) as gapi.auth2.GoogleAuth),
+            } as any as gapi.auth2.GoogleAuth),
         ),
       },
     };
@@ -118,9 +126,9 @@ describe('GAuthService', () => {
       auth2: {
         init: jasmine.createSpy('gapi.auth2.init').and.callFake(
           () =>
-            (({
+            ({
               then: (onInit: (googleAuth: gapi.auth2.GoogleAuth) => any) => {
-                onInit(({
+                onInit({
                   isSignedIn: {
                     listen: (listener: (isSignedIn: boolean) => void) => {
                       isSignedInListener = listener;
@@ -136,9 +144,9 @@ describe('GAuthService', () => {
                       isSignedInListener(false);
                     }
                   },
-                } as any) as gapi.auth2.GoogleAuth);
+                } as any as gapi.auth2.GoogleAuth);
               },
-            } as any) as gapi.auth2.GoogleAuth),
+            } as any as gapi.auth2.GoogleAuth),
         ),
       },
     };

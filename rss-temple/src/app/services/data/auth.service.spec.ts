@@ -5,6 +5,7 @@ import { of } from 'rxjs';
 
 import { AuthTokenService } from '@app/services/auth-token.service';
 import { ZUser } from '@app/models/user';
+import { MockConfigService } from '@app/test/config.service.mock';
 
 import { AuthService } from './auth.service';
 
@@ -15,12 +16,20 @@ function setup() {
     'put',
   ]);
   const authTokenService = new AuthTokenService();
+  const mockConfigService = new MockConfigService({
+    apiHost: '',
+  });
 
-  const authService = new AuthService(httpClientSpy, authTokenService);
+  const authService = new AuthService(
+    httpClientSpy,
+    authTokenService,
+    mockConfigService,
+  );
 
   return {
     httpClientSpy,
     authTokenService,
+    mockConfigService,
 
     authService,
   };

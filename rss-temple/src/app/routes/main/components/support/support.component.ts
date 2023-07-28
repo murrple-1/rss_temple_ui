@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { environment } from '@environments/environment';
 
 import osLicenses from '@app/os-licenses.json';
+import { ConfigService } from '@app/services';
 
 const licensesText = Object.entries(osLicenses)
   .filter(([projectName, _details]) => !projectName.includes('rss-temple'))
@@ -36,10 +37,32 @@ const RSSIconSVG: string =
   styleUrls: ['./support.component.scss'],
 })
 export class SupportComponent {
-  readonly issueTrackerUrl = environment.envVar.ISSUE_TRACKER_URL;
-  readonly clientRepoUrl = environment.envVar.CLIENT_REPO_URL;
-  readonly serverRepoUrl = environment.envVar.SERVER_REPO_URL;
+  readonly issueTrackerUrl: string;
+  readonly clientRepoUrl: string;
+  readonly serverRepoUrl: string;
 
   readonly licensesText = licensesText;
   readonly rssIconSvg = RSSIconSVG;
+
+  constructor(configService: ConfigService) {
+    const [issueTrackerUrl, clientRepoUrl, serverRepoUrl] =
+      configService.getMany<string>(
+        'issueTrackerUrl',
+        'clientRepoUrl',
+        'serverRepoUrl',
+      );
+    if (typeof issueTrackerUrl !== 'string') {
+      throw new Error('issueTrackerUrl malformed');
+    }
+    if (typeof clientRepoUrl !== 'string') {
+      throw new Error('clientRepoUrl malformed');
+    }
+    if (typeof serverRepoUrl !== 'string') {
+      throw new Error('serverRepoUrl malformed');
+    }
+
+    this.issueTrackerUrl = issueTrackerUrl;
+    this.clientRepoUrl = clientRepoUrl;
+    this.serverRepoUrl = serverRepoUrl;
+  }
 }

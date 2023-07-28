@@ -8,9 +8,10 @@ import { z } from 'zod';
 import { parse as parseDate, format as formatDate } from 'date-fns';
 
 import { AuthTokenService } from '@app/services/auth-token.service';
+import { ZFeed } from '@app/models/feed';
+import { MockConfigService } from '@app/test/config.service.mock';
 
 import { FeedService } from './feed.service';
-import { ZFeed } from '@app/models/feed';
 
 function setup() {
   const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', [
@@ -19,12 +20,20 @@ function setup() {
     'delete',
   ]);
   const authTokenService = new AuthTokenService();
+  const mockConfigService = new MockConfigService({
+    apiHost: '',
+  });
 
-  const feedService = new FeedService(httpClientSpy, authTokenService);
+  const feedService = new FeedService(
+    httpClientSpy,
+    authTokenService,
+    mockConfigService,
+  );
 
   return {
     httpClientSpy,
     authTokenService,
+    mockConfigService,
 
     feedService,
   };

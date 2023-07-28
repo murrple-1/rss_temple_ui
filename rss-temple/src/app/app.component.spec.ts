@@ -11,10 +11,16 @@ import { AppAlertsComponent } from '@app/components/app-alerts/app-alerts.compon
 import { NavComponent } from '@app/components/nav/nav.component';
 import { SubNavComponent } from '@app/components/subnav/subnav.component';
 import { ConfirmModalComponent } from '@app/components/shared/confirm-modal/confirm-modal.component';
+import { ConfigService } from '@app/services';
+import { MockConfigService } from '@app/test/config.service.mock';
 
 import { AppComponent } from './app.component';
 
 async function setup() {
+  const mockConfigService = new MockConfigService({
+    apiHost: '',
+  });
+
   await TestBed.configureTestingModule({
     imports: [
       FormsModule,
@@ -35,8 +41,16 @@ async function setup() {
         provide: APP_BASE_HREF,
         useValue: '/',
       },
+      {
+        provide: ConfigService,
+        useValue: mockConfigService,
+      },
     ],
   }).compileComponents();
+
+  return {
+    mockConfigService,
+  };
 }
 
 describe('AppComponent', () => {

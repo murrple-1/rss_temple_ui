@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { environment } from '@environments/environment';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +14,8 @@ export class FBAuthService {
   user$: Observable<facebook.AuthResponse | null>;
   isLoaded$: Observable<boolean>;
 
+  private readonly appId: string;
+
   get user() {
     return this._user$.getValue();
   }
@@ -22,9 +24,16 @@ export class FBAuthService {
     return this._isLoaded$.getValue();
   }
 
-  constructor() {
+  constructor(configService: ConfigService) {
     this.user$ = this._user$.asObservable();
     this.isLoaded$ = this._isLoaded$.asObservable();
+
+    const appId = configService.get<string>('facebookAppId');
+    if (typeof appId === 'string') {
+      this.appId = appId;
+    } else {
+      throw new Error('facebookAppId malformed');
+    }
   }
 
   signIn(
@@ -65,7 +74,7 @@ export class FBAuthService {
     return new Promise<void>((resolve, _reject) => {
       (window as any).fbAsyncInit = () => {
         FB.init({
-          appId: environment.envVar.FACEBOOK_APP_ID,
+          appId: this.appId,
           xfbml: true,
           version: 'v2.10',
         });

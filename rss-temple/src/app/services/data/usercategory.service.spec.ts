@@ -9,6 +9,7 @@ import { AuthTokenService } from '@app/services/auth-token.service';
 
 import { UserCategoryService } from './usercategory.service';
 import { ZUserCategory } from '@app/models/usercategory';
+import { MockConfigService } from '@app/test/config.service.mock';
 
 function setup() {
   const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', [
@@ -18,15 +19,20 @@ function setup() {
     'delete',
   ]);
   const authTokenService = new AuthTokenService();
+  const mockConfigService = new MockConfigService({
+    apiHost: '',
+  });
 
   const userCategoryService = new UserCategoryService(
     httpClientSpy,
     authTokenService,
+    mockConfigService,
   );
 
   return {
     httpClientSpy,
     authTokenService,
+    mockConfigService,
 
     userCategoryService,
   };

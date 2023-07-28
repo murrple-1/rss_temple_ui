@@ -11,8 +11,7 @@ import {
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 import { AuthTokenService } from '@app/services/auth-token.service';
-
-import { environment } from '@environments/environment';
+import { ConfigService } from '@app/services/config.service';
 
 const ZSocialToken = z.object({
   key: z.string(),
@@ -42,10 +41,20 @@ const ZSocialItem = z
   providedIn: 'root',
 })
 export class SocialService {
+  private readonly apiHost: string;
+
   constructor(
     private http: HttpClient,
     private authTokenService: AuthTokenService,
-  ) {}
+    configService: ConfigService,
+  ) {
+    const apiHost = configService.get<string>('apiHost');
+    if (typeof apiHost !== 'string') {
+      throw new Error('apiHost malformed');
+    }
+
+    this.apiHost = apiHost;
+  }
 
   socialList(options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
@@ -53,7 +62,7 @@ export class SocialService {
     );
 
     return this.http
-      .get<unknown>(`${environment.envVar.API_HOST}/api/social`, {
+      .get<unknown>(`${this.apiHost}/api/social`, {
         headers,
       })
       .pipe(map(retObj => z.array(ZSocialItem).parse(retObj)));
@@ -61,7 +70,7 @@ export class SocialService {
 
   googleLogin(token: string): Observable<string> {
     return this.http
-      .post<unknown>(`${environment.envVar.API_HOST}/api/social/google`, {
+      .post<unknown>(`${this.apiHost}/api/social/google`, {
         access_token: token,
       })
       .pipe(map(retObj => ZSocialToken.parse(retObj).key));
@@ -77,7 +86,7 @@ export class SocialService {
 
     return this.http
       .post<unknown>(
-        `${environment.envVar.API_HOST}/api/social/google/connect`,
+        `${this.apiHost}/api/social/google/connect`,
         {
           access_token: token,
         },
@@ -94,7 +103,7 @@ export class SocialService {
     );
 
     return this.http.post<void>(
-      `${environment.envVar.API_HOST}/api/social/google/disconnect`,
+      `${this.apiHost}/api/social/google/disconnect`,
       {},
       {
         headers,
@@ -104,7 +113,7 @@ export class SocialService {
 
   facebookLogin(token: string): Observable<string> {
     return this.http
-      .post<unknown>(`${environment.envVar.API_HOST}/api/social/facebook`, {
+      .post<unknown>(`${this.apiHost}/api/social/facebook`, {
         access_token: token,
       })
       .pipe(map(retObj => ZSocialToken.parse(retObj).key));
@@ -120,7 +129,7 @@ export class SocialService {
 
     return this.http
       .post<unknown>(
-        `${environment.envVar.API_HOST}/api/social/facebook/connect`,
+        `${this.apiHost}/api/social/facebook/connect`,
         {
           access_token: token,
         },
@@ -137,7 +146,7 @@ export class SocialService {
     );
 
     return this.http.post<void>(
-      `${environment.envVar.API_HOST}/api/social/facebook/disconnect`,
+      `${this.apiHost}/api/social/facebook/disconnect`,
       {},
       {
         headers,

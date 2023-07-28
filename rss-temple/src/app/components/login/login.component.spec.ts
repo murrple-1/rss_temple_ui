@@ -20,6 +20,8 @@ import { AuthService, SocialService } from '@app/services/data';
 import { RequestPasswordResetModalComponent } from '@app/components/login/request-password-reset-modal/request-password-reset-modal.component';
 import { AppAlertDescriptor } from '@app/services/app-alerts.service';
 import { LocalAlertsComponent } from '@app/components/shared/local-alerts/local-alerts.component';
+import { MockConfigService } from '@app/test/config.service.mock';
+import { ConfigService } from '@app/services';
 
 import { LoginComponent } from './login.component';
 
@@ -36,6 +38,11 @@ async function setup() {
     'SocialService',
     ['googleLogin', 'facebookLogin'],
   );
+  const mockConfigService = new MockConfigService({
+    apiHost: '',
+    googleClientId: '',
+    facebookAppId: '',
+  });
 
   await TestBed.configureTestingModule({
     imports: [
@@ -82,6 +89,10 @@ async function setup() {
         provide: SocialService,
         useValue: mockSocialService,
       },
+      {
+        provide: ConfigService,
+        useValue: mockConfigService,
+      },
     ],
   }).compileComponents();
 
@@ -90,6 +101,7 @@ async function setup() {
 
     mockAuthService,
     mockSocialService,
+    mockConfigService,
   };
 }
 

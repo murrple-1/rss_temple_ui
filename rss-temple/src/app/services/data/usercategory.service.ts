@@ -23,8 +23,7 @@ import {
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 import { AuthTokenService } from '@app/services/auth-token.service';
-
-import { environment } from '@environments/environment';
+import { ConfigService } from '@app/services/config.service';
 import { ZUserCategory } from '@app/models/usercategory';
 
 export type Field = keyof UserCategory;
@@ -44,10 +43,20 @@ export interface IApply {
   providedIn: 'root',
 })
 export class UserCategoryService {
+  private readonly apiHost: string;
+
   constructor(
     private http: HttpClient,
     private authTokenService: AuthTokenService,
-  ) {}
+    configService: ConfigService,
+  ) {
+    const apiHost = configService.get<string>('apiHost');
+    if (typeof apiHost !== 'string') {
+      throw new Error('apiHost malformed');
+    }
+
+    this.apiHost = apiHost;
+  }
 
   get(uuid: string, options: GetOptions<Field> = {}) {
     const headers = getToHeaders(options, () =>
@@ -56,7 +65,7 @@ export class UserCategoryService {
     const params = getToParams<Field>(options, () => ['uuid']);
 
     return this.http
-      .get<unknown>(`${environment.envVar.API_HOST}/api/usercategory/${uuid}`, {
+      .get<unknown>(`${this.apiHost}/api/usercategory/${uuid}`, {
         headers,
         params,
       })
@@ -71,14 +80,10 @@ export class UserCategoryService {
     const body = queryToBody<Field, SortField>(options, () => ['uuid']);
 
     return this.http
-      .post<unknown>(
-        `${environment.envVar.API_HOST}/api/usercategories/query`,
-        body,
-        {
-          headers,
-          params,
-        },
-      )
+      .post<unknown>(`${this.apiHost}/api/usercategories/query`, body, {
+        headers,
+        params,
+      })
       .pipe(map(retObj => toObjects(retObj, ZUserCategory)));
   }
 
@@ -97,15 +102,11 @@ export class UserCategoryService {
     const params = getToParams<Field>(options, () => ['uuid']);
 
     return this.http
-      .post<unknown>(
-        `${environment.envVar.API_HOST}/api/usercategory`,
-        userCategoryJson,
-        {
-          headers,
-          params,
-          responseType: 'json',
-        },
-      )
+      .post<unknown>(`${this.apiHost}/api/usercategory`, userCategoryJson, {
+        headers,
+        params,
+        responseType: 'json',
+      })
       .pipe(map(retObj => ZUserCategory.parse(retObj)));
   }
 
@@ -114,12 +115,9 @@ export class UserCategoryService {
       this.authTokenService.authToken$.getValue(),
     );
 
-    return this.http.delete<void>(
-      `${environment.envVar.API_HOST}/api/usercategory/${uuid}`,
-      {
-        headers,
-      },
-    );
+    return this.http.delete<void>(`${this.apiHost}/api/usercategory/${uuid}`, {
+      headers,
+    });
   }
 
   apply(apply: IApply, options: CommonOptions = {}) {
@@ -134,7 +132,7 @@ export class UserCategoryService {
     }
 
     return this.http.put<void>(
-      `${environment.envVar.API_HOST}/api/usercategories/apply`,
+      `${this.apiHost}/api/usercategories/apply`,
       body,
       {
         headers,

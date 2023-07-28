@@ -3,6 +3,8 @@ import { fakeAsync } from '@angular/core/testing';
 
 import { of } from 'rxjs';
 
+import { MockConfigService } from '@app/test/config.service.mock';
+
 import { RegistrationService } from './registration.service';
 
 function setup() {
@@ -11,10 +13,17 @@ function setup() {
     'delete',
   ]);
 
-  const registrationService = new RegistrationService(httpClientSpy);
+  const mockConfigService = new MockConfigService({
+    apiHost: '',
+  });
+  const registrationService = new RegistrationService(
+    httpClientSpy,
+    mockConfigService,
+  );
 
   return {
     httpClientSpy,
+    mockConfigService,
 
     registrationService,
   };

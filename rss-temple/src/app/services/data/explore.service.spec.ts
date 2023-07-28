@@ -4,6 +4,7 @@ import { fakeAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 import { AuthTokenService } from '@app/services/auth-token.service';
+import { MockConfigService } from '@app/test/config.service.mock';
 
 import { ExploreService } from './explore.service';
 
@@ -15,12 +16,20 @@ function setup() {
     'delete',
   ]);
   const authTokenService = new AuthTokenService();
+  const mockConfigService = new MockConfigService({
+    apiHost: '',
+  });
 
-  const exploreService = new ExploreService(httpClientSpy, authTokenService);
+  const exploreService = new ExploreService(
+    httpClientSpy,
+    authTokenService,
+    mockConfigService,
+  );
 
   return {
     httpClientSpy,
     authTokenService,
+    mockConfigService,
 
     exploreService,
   };

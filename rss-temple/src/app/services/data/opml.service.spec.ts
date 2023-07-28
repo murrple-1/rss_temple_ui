@@ -4,6 +4,7 @@ import { fakeAsync } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 import { AuthTokenService } from '@app/services/auth-token.service';
+import { MockConfigService } from '@app/test/config.service.mock';
 
 import { OPMLService } from './opml.service';
 
@@ -13,12 +14,20 @@ function setup() {
     'post',
   ]);
   const authTokenService = new AuthTokenService();
+  const mockConfigService = new MockConfigService({
+    apiHost: '',
+  });
 
-  const opmlService = new OPMLService(httpClientSpy, authTokenService);
+  const opmlService = new OPMLService(
+    httpClientSpy,
+    authTokenService,
+    mockConfigService,
+  );
 
   return {
     httpClientSpy,
     authTokenService,
+    mockConfigService,
 
     opmlService,
   };

@@ -3,8 +3,8 @@ import { Component, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { environment } from '@environments/environment';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { ConfigService } from '@app/services';
 
 @Component({
   selector: 'app-onboarding-modal',
@@ -18,10 +18,13 @@ export class OnboardingModalComponent implements OnDestroy {
 
   result = new Subject<void>();
 
-  constructor(sanitizer: DomSanitizer) {
-    this.iframeSrc = sanitizer.bypassSecurityTrustResourceUrl(
-      environment.envVar.ONBOARDING_YOUTUBE_EMBEDED_URL,
-    );
+  constructor(sanitizer: DomSanitizer, configService: ConfigService) {
+    const youtubeSrc = configService.get<string>('onboardingYoutubeEmbededUrl');
+    if (typeof youtubeSrc !== 'string') {
+      throw new Error('onboardingYoutubeEmbededUrl malformed');
+    }
+
+    this.iframeSrc = sanitizer.bypassSecurityTrustResourceUrl(youtubeSrc);
   }
 
   ngOnDestroy() {

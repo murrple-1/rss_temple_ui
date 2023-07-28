@@ -26,6 +26,8 @@ import { AppSharedModule } from '@app/app-shared.module';
 
 import { routes } from '@app/app.routing';
 
+import { ConfigService } from '@app/services';
+
 import { AppComponent } from '@app/app.component';
 import { NavComponent } from '@app/components/nav/nav.component';
 import { SubNavComponent } from '@app/components/subnav/subnav.component';
@@ -66,6 +68,12 @@ export function clarityIconsFactory() {
   };
 }
 
+export function configFactory(configService: ConfigService) {
+  return () => {
+    return configService.load();
+  };
+}
+
 @NgModule({
   imports: [
     BrowserModule,
@@ -96,6 +104,13 @@ export function clarityIconsFactory() {
       provide: APP_INITIALIZER,
       useFactory: clarityIconsFactory,
       multi: true,
+    },
+
+    {
+      provide: APP_INITIALIZER,
+      useFactory: configFactory,
+      multi: true,
+      deps: [ConfigService],
     },
   ],
 })

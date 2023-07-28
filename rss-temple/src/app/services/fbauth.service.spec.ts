@@ -1,12 +1,20 @@
 import { fakeAsync } from '@angular/core/testing';
+
 import { skip } from 'rxjs/operators';
+
+import { MockConfigService } from '@app/test/config.service.mock';
 
 import { FBAuthService } from './fbauth.service';
 
 function setup() {
-  const fbAuthService = new FBAuthService();
+  const mockConfigService = new MockConfigService({
+    facebookAppId: '',
+  });
+
+  const fbAuthService = new FBAuthService(mockConfigService);
 
   return {
+    mockConfigService,
     fbAuthService,
   };
 }

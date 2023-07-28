@@ -37,8 +37,7 @@ import {
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 import { AuthTokenService } from '@app/services/auth-token.service';
-
-import { environment } from '@environments/environment';
+import { ConfigService } from '@app/services/config.service';
 import { ZFeedEntry } from '@app/models/feedentry';
 
 export type Field = keyof FeedEntry;
@@ -48,10 +47,20 @@ export type SortField = keyof FeedEntry;
   providedIn: 'root',
 })
 export class FeedEntryService {
+  private readonly apiHost: string;
+
   constructor(
     private http: HttpClient,
     private authTokenService: AuthTokenService,
-  ) {}
+    configService: ConfigService,
+  ) {
+    const apiHost = configService.get<string>('apiHost');
+    if (typeof apiHost !== 'string') {
+      throw new Error('apiHost malformed');
+    }
+
+    this.apiHost = apiHost;
+  }
 
   get(uuid: string, options: GetOptions<Field> = {}) {
     const headers = getToHeaders(options, () =>
@@ -60,7 +69,7 @@ export class FeedEntryService {
     const params = getToParams<Field>(options, () => ['uuid']);
 
     return this.http
-      .get<unknown>(`${environment.envVar.API_HOST}/api/feedentry/${uuid}`, {
+      .get<unknown>(`${this.apiHost}/api/feedentry/${uuid}`, {
         headers,
         params,
       })
@@ -75,14 +84,10 @@ export class FeedEntryService {
     const body = queryToBody<Field, SortField>(options, () => ['uuid']);
 
     return this.http
-      .post<unknown>(
-        `${environment.envVar.API_HOST}/api/feedentries/query`,
-        body,
-        {
-          headers,
-          params,
-        },
-      )
+      .post<unknown>(`${this.apiHost}/api/feedentries/query`, body, {
+        headers,
+        params,
+      })
       .pipe(map(retObj => toObjects<FeedEntry>(retObj, ZFeedEntry)));
   }
 
@@ -99,7 +104,7 @@ export class FeedEntryService {
 
     return this.http
       .post<unknown>(
-        `${environment.envVar.API_HOST}/api/feedentries/query/stable/create`,
+        `${this.apiHost}/api/feedentries/query/stable/create`,
         body,
         {
           headers,
@@ -117,14 +122,10 @@ export class FeedEntryService {
     const body = toStableQueryBody<Field>(options, () => ['uuid']);
 
     return this.http
-      .post<unknown>(
-        `${environment.envVar.API_HOST}/api/feedentries/query/stable`,
-        body,
-        {
-          headers,
-          params,
-        },
-      )
+      .post<unknown>(`${this.apiHost}/api/feedentries/query/stable`, body, {
+        headers,
+        params,
+      })
       .pipe(map(retObj => toObjects<FeedEntry>(retObj, ZFeedEntry)));
   }
 
@@ -144,7 +145,7 @@ export class FeedEntryService {
 
     return this.http
       .post<unknown>(
-        `${environment.envVar.API_HOST}/api/feedentry/${feedEntryUuid}/read`,
+        `${this.apiHost}/api/feedentry/${feedEntryUuid}/read`,
         null,
         {
           headers,
@@ -172,7 +173,7 @@ export class FeedEntryService {
     );
 
     return this.http.delete<void>(
-      `${environment.envVar.API_HOST}/api/feedentry/${feedEntryUuid}/read`,
+      `${this.apiHost}/api/feedentry/${feedEntryUuid}/read`,
       {
         headers,
       },
@@ -189,7 +190,7 @@ export class FeedEntryService {
     );
 
     return this.http.post<void>(
-      `${environment.envVar.API_HOST}/api/feedentries/read/`,
+      `${this.apiHost}/api/feedentries/read/`,
       {
         feedEntryUuids,
         feedUuids,
@@ -207,7 +208,7 @@ export class FeedEntryService {
 
     return this.http.request<void>(
       'DELETE',
-      `${environment.envVar.API_HOST}/api/feedentries/read/`,
+      `${this.apiHost}/api/feedentries/read/`,
       {
         headers,
         body: {
@@ -223,7 +224,7 @@ export class FeedEntryService {
     );
 
     return this.http.post<void>(
-      `${environment.envVar.API_HOST}/api/feedentry/${feedEntryUuid}/favorite`,
+      `${this.apiHost}/api/feedentry/${feedEntryUuid}/favorite`,
       null,
       {
         headers,
@@ -237,7 +238,7 @@ export class FeedEntryService {
     );
 
     return this.http.delete<void>(
-      `${environment.envVar.API_HOST}/api/feedentry/${feedEntryUuid}/favorite`,
+      `${this.apiHost}/api/feedentry/${feedEntryUuid}/favorite`,
       {
         headers,
       },
@@ -250,7 +251,7 @@ export class FeedEntryService {
     );
 
     return this.http.post<void>(
-      `${environment.envVar.API_HOST}/api/feedentries/favorite/`,
+      `${this.apiHost}/api/feedentries/favorite/`,
       feedEntryUuids,
       {
         headers,
@@ -265,7 +266,7 @@ export class FeedEntryService {
 
     return this.http.request<void>(
       'DELETE',
-      `${environment.envVar.API_HOST}/api/feedentries/favorite/`,
+      `${this.apiHost}/api/feedentries/favorite/`,
       {
         headers,
         body: {

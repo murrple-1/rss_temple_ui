@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { environment } from '@environments/environment';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +16,8 @@ export class GAuthService {
   user$: Observable<gapi.auth2.GoogleUser | null>;
   isLoaded$: Observable<boolean>;
 
+  private readonly clientId: string;
+
   get user() {
     return this._user$.getValue();
   }
@@ -24,9 +26,16 @@ export class GAuthService {
     return this._isLoaded$.getValue();
   }
 
-  constructor() {
+  constructor(configService: ConfigService) {
     this.user$ = this._user$.asObservable();
     this.isLoaded$ = this._isLoaded$.asObservable();
+
+    const clientId = configService.get<string>('googleClientId');
+    if (typeof clientId === 'string') {
+      this.clientId = clientId;
+    } else {
+      throw new Error('googleClientId malformed');
+    }
   }
 
   signIn() {
@@ -54,7 +63,7 @@ export class GAuthService {
       gapi.load('auth2', () => {
         gapi.auth2
           .init({
-            client_id: environment.envVar.GOOGLE_API_CLIENT_ID,
+            client_id: this.clientId,
             fetch_basic_profile: true,
           })
           .then(auth => {

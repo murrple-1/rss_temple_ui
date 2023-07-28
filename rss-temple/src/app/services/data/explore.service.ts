@@ -10,8 +10,7 @@ import {
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 import { AuthTokenService } from '@app/services/auth-token.service';
-
-import { environment } from '@environments/environment';
+import { ConfigService } from '@app/services/config.service';
 
 const ZFeedDescriptor = z.object({
   name: z.string(),
@@ -31,10 +30,20 @@ const ZTagDescriptors = z.object({
   providedIn: 'root',
 })
 export class ExploreService {
+  private readonly apiHost: string;
+
   constructor(
     private http: HttpClient,
     private authTokenService: AuthTokenService,
-  ) {}
+    configService: ConfigService,
+  ) {
+    const apiHost = configService.get<string>('apiHost');
+    if (typeof apiHost !== 'string') {
+      throw new Error('apiHost malformed');
+    }
+
+    this.apiHost = apiHost;
+  }
 
   explore(options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
@@ -42,7 +51,7 @@ export class ExploreService {
     );
 
     return this.http
-      .get<unknown>(`${environment.envVar.API_HOST}/api/explore`, {
+      .get<unknown>(`${this.apiHost}/api/explore`, {
         headers,
       })
       .pipe(map(retObj => z.array(ZTagDescriptors).parse(retObj)));

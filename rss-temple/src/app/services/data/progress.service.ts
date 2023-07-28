@@ -9,8 +9,7 @@ import {
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 import { AuthTokenService } from '@app/services/auth-token.service';
-
-import { environment } from '@environments/environment';
+import { ConfigService } from '@app/services/config.service';
 
 const ZProgressInterface = z.object({
   state: z.enum(['notstarted', 'started', 'finished']),
@@ -24,10 +23,20 @@ export type ProgressInterface = z.infer<typeof ZProgressInterface>;
   providedIn: 'root',
 })
 export class ProgressService {
+  private readonly apiHost: string;
+
   constructor(
     private http: HttpClient,
     private authTokenService: AuthTokenService,
-  ) {}
+    configService: ConfigService,
+  ) {
+    const apiHost = configService.get<string>('apiHost');
+    if (typeof apiHost !== 'string') {
+      throw new Error('apiHost malformed');
+    }
+
+    this.apiHost = apiHost;
+  }
 
   checkProgress(uuid: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
@@ -35,10 +44,9 @@ export class ProgressService {
     );
 
     return this.http
-      .get<unknown>(
-        `${environment.envVar.API_HOST}/api/feed/subscribe/progress/${uuid}`,
-        { headers },
-      )
+      .get<unknown>(`${this.apiHost}/api/feed/subscribe/progress/${uuid}`, {
+        headers,
+      })
       .pipe(map(retObj => ZProgressInterface.parse(retObj)));
   }
 }

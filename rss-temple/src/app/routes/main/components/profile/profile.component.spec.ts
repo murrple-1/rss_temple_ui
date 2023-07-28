@@ -21,6 +21,8 @@ import { GAuthService, FBAuthService } from '@app/services';
 import { ReadCounterService } from '@app/routes/main/services';
 import { GlobalUserCategoriesModalComponent } from '@app/routes/main/components/profile/global-user-categories-modal/global-user-categories-modal.component';
 import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-match-validator.directive';
+import { MockConfigService } from '@app/test/config.service.mock';
+import { ConfigService } from '@app/services';
 
 import { ProfileComponent } from './profile.component';
 
@@ -59,6 +61,11 @@ async function setup() {
     'UserCategoryService',
     ['queryAll'],
   );
+  const mockConfigService = new MockConfigService({
+    apiHost: '',
+    googleClientId: '',
+    facebookAppId: '',
+  });
 
   await TestBed.configureTestingModule({
     imports: [
@@ -109,6 +116,10 @@ async function setup() {
         provide: UserCategoryService,
         useValue: mockUserCategoryService,
       },
+      {
+        provide: ConfigService,
+        useValue: mockConfigService,
+      },
     ],
   }).compileComponents();
 
@@ -118,6 +129,7 @@ async function setup() {
     mockFeedEntryService,
     mockAuthService,
     mockSocialService,
+    mockConfigService,
   };
 }
 

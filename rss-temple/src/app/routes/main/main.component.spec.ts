@@ -8,6 +8,8 @@ import { ClarityModule } from '@clr/angular';
 import { OnboardingModalComponent } from '@app/routes/main/components/onboarding-modal/onboarding-modal.component';
 import { AuthService } from '@app/services/data';
 import { LocalAlertsComponent } from '@app/components/shared/local-alerts/local-alerts.component';
+import { ConfigService } from '@app/services';
+import { MockConfigService } from '@app/test/config.service.mock';
 
 import { MainComponent } from './main.component';
 
@@ -15,6 +17,10 @@ async function setup() {
   const mockAuthService = jasmine.createSpyObj<AuthService>('AuthService', [
     'getUser',
   ]);
+  const mockConfigService = new MockConfigService({
+    apiHost: '',
+    onboardingYoutubeEmbededUrl: '',
+  });
 
   await TestBed.configureTestingModule({
     imports: [
@@ -37,11 +43,16 @@ async function setup() {
         provide: AuthService,
         useValue: mockAuthService,
       },
+      {
+        provide: ConfigService,
+        useValue: mockConfigService,
+      },
     ],
   }).compileComponents();
 
   return {
     mockAuthService,
+    mockConfigService,
   };
 }
 

@@ -4,16 +4,31 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClarityModule } from '@clr/angular';
 
 import { LocalAlertsComponent } from '@app/components/shared/local-alerts/local-alerts.component';
+import { MockConfigService } from '@app/test/config.service.mock';
+import { ConfigService } from '@app/services';
 
 import { OnboardingModalComponent } from './onboarding-modal.component';
 
 async function setup() {
+  const mockConfigService = new MockConfigService({
+    apiHost: '',
+    onboardingYoutubeEmbededUrl: '',
+  });
+
   await TestBed.configureTestingModule({
     imports: [BrowserAnimationsModule, ClarityModule],
     declarations: [OnboardingModalComponent, LocalAlertsComponent],
+    providers: [
+      {
+        provide: ConfigService,
+        useValue: mockConfigService,
+      },
+    ],
   }).compileComponents();
 
-  return {};
+  return {
+    mockConfigService,
+  };
 }
 
 describe('OnboardingModalComponent', () => {

@@ -6,18 +6,27 @@ import { of } from 'rxjs';
 import { z } from 'zod';
 
 import { AuthTokenService } from '@app/services/auth-token.service';
+import { MockConfigService } from '@app/test/config.service.mock';
 
 import { ProgressService } from './progress.service';
 
 function setup() {
   const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', ['get']);
   const authTokenService = new AuthTokenService();
+  const mockConfigService = new MockConfigService({
+    apiHost: '',
+  });
 
-  const progressService = new ProgressService(httpClientSpy, authTokenService);
+  const progressService = new ProgressService(
+    httpClientSpy,
+    authTokenService,
+    mockConfigService,
+  );
 
   return {
     httpClientSpy,
     authTokenService,
+    mockConfigService,
 
     progressService,
   };

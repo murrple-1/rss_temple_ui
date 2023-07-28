@@ -23,8 +23,7 @@ import {
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 import { AuthTokenService } from '@app/services/auth-token.service';
-
-import { environment } from '@environments/environment';
+import { ConfigService } from '@app/services/config.service';
 import { ZFeed } from '@app/models/feed';
 
 export type Field = keyof Feed;
@@ -34,10 +33,20 @@ export type SortField = keyof Feed;
   providedIn: 'root',
 })
 export class FeedService {
+  private readonly apiHost: string;
+
   constructor(
     private http: HttpClient,
     private authTokenService: AuthTokenService,
-  ) {}
+    configService: ConfigService,
+  ) {
+    const apiHost = configService.get<string>('apiHost');
+    if (typeof apiHost !== 'string') {
+      throw new Error('apiHost malformed');
+    }
+
+    this.apiHost = apiHost;
+  }
 
   get(feedUrl: string, options: GetOptions<Field> = {}) {
     const headers = getToHeaders(options, () =>
@@ -47,7 +56,7 @@ export class FeedService {
     params.url = feedUrl;
 
     return this.http
-      .get<unknown>(`${environment.envVar.API_HOST}/api/feed`, {
+      .get<unknown>(`${this.apiHost}/api/feed`, {
         headers,
         params,
       })
@@ -62,7 +71,7 @@ export class FeedService {
     const body = queryToBody<Field, SortField>(options, () => ['uuid']);
 
     return this.http
-      .post<unknown>(`${environment.envVar.API_HOST}/api/feeds/query`, body, {
+      .post<unknown>(`${this.apiHost}/api/feeds/query`, body, {
         headers,
         params,
       })
@@ -79,7 +88,7 @@ export class FeedService {
     );
 
     return this.http.post<void>(
-      `${environment.envVar.API_HOST}/api/feed/subscribe`,
+      `${this.apiHost}/api/feed/subscribe`,
       {
         url,
         customTitle,
@@ -100,7 +109,7 @@ export class FeedService {
     );
 
     return this.http.put<void>(
-      `${environment.envVar.API_HOST}/api/feed/subscribe`,
+      `${this.apiHost}/api/feed/subscribe`,
       {
         url,
         customTitle,
@@ -116,14 +125,11 @@ export class FeedService {
       this.authTokenService.authToken$.getValue(),
     );
 
-    return this.http.delete<void>(
-      `${environment.envVar.API_HOST}/api/feed/subscribe`,
-      {
-        headers,
-        body: {
-          url,
-        },
+    return this.http.delete<void>(`${this.apiHost}/api/feed/subscribe`, {
+      headers,
+      body: {
+        url,
       },
-    );
+    });
   }
 }
