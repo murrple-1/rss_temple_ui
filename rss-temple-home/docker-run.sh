@@ -8,6 +8,6 @@ yarn run grunt build --app-url="$APP_URL" --twitter-url="$TWITTER_URL" --fb-url=
 
 rm -rf /srv/* && cp -R /build/dist/* /srv/
 
-while :
+while :; do
   sleep 60
 done
