@@ -118,7 +118,6 @@
       }
     }
   },
-  "defaultProject": "rss-temple",
   "cli": {
     "packageManager": "yarn",
     "analytics": "8acea6b3-a679-4061-aa23-4202c11393df"
