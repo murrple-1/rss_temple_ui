@@ -154,15 +154,24 @@ export class FeedEntryService {
       .pipe(
         map(response => {
           if (typeof response !== 'string') {
-            throw new Error('JSON body must be string');
+            throw new Error('JSON body must be string or null');
           }
 
-          const readAt = parseDate(response, 'yyyy-MM-dd HH:mm:ss', new Date());
-          if (isNaN(readAt.getTime())) {
-            throw new Error('JSON body malformed');
-          }
+          if (response === '') {
+            // feed entry is archived (ie perma-read)
+            return null;
+          } else {
+            const readAt = parseDate(
+              response,
+              'yyyy-MM-dd HH:mm:ss',
+              new Date(),
+            );
+            if (isNaN(readAt.getTime())) {
+              throw new Error('JSON body malformed');
+            }
 
-          return readAt;
+            return readAt;
+          }
         }),
       );
   }
