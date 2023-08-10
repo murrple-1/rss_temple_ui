@@ -20,7 +20,7 @@ export function toParams<Field extends string>(
   fieldsFn: () => Field[],
 ) {
   const params: Record<string, string | string[]> = {
-    fields: (options.fields ?? fieldsFn()).join(','),
+    fields: options.fields ?? fieldsFn(),
   };
 
   return params;
