@@ -41,7 +41,7 @@ describe('get.interface', () => {
   it('should generate params', () => {
     let params = toParams<Field>({}, fieldsFn);
     expect(params).toEqual({
-      fields: 'prop1',
+      fields: ['prop1'],
     });
 
     params = toParams<Field>(
@@ -51,7 +51,7 @@ describe('get.interface', () => {
       fieldsFn,
     );
     expect(params).toEqual({
-      fields: 'prop1,prop2',
+      fields: ['prop1', 'prop2'],
     });
 
     params = toParams<Field>(
@@ -61,7 +61,7 @@ describe('get.interface', () => {
       fieldsFn,
     );
     expect(params).toEqual({
-      fields: 'prop1',
+      fields: ['prop1'],
     });
   });
 });
