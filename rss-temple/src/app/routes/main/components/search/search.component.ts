@@ -192,6 +192,16 @@ export class SearchComponent implements OnInit, OnDestroy {
           }
           throw new Error('malformed response');
         }),
+        map(feedEntries => {
+          for (const feedEntry of feedEntries) {
+            let title = feedEntry.title.trim();
+            if (title.length < 1) {
+              title = '[No Title]';
+            }
+            feedEntry.title = title;
+          }
+          return feedEntries;
+        }),
         switchMap(feedEntries => {
           let feedsObservable: Observable<FeedImpl[]>;
           if (feedEntries.length > 0) {
@@ -211,6 +221,16 @@ export class SearchComponent implements OnInit, OnDestroy {
                     return response.objects as FeedImpl[];
                   }
                   throw new Error('malformed response');
+                }),
+                map(feeds => {
+                  for (const feed of feeds) {
+                    let title = feed.title.trim();
+                    if (title.length < 1) {
+                      title = '[No Title]';
+                    }
+                    feed.title = title;
+                  }
+                  return feeds;
                 }),
               );
           } else {
@@ -270,6 +290,16 @@ export class SearchComponent implements OnInit, OnDestroy {
             return response.objects as FeedImpl2[];
           }
           throw new Error('malformed response');
+        }),
+        map(feeds => {
+          for (const feed of feeds) {
+            let title = feed.title.trim();
+            if (title.length < 1) {
+              title = '[No Title]';
+            }
+            feed.title = title;
+          }
+          return feeds;
         }),
         map(feeds =>
           feeds.map<FeedDescriptor>(f => ({

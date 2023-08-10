@@ -157,7 +157,7 @@ export class FeedEntryService {
             throw new Error('JSON body must be string or null');
           }
 
-          if (response === '') {
+          if (response.length < 1) {
             // feed entry is archived (ie perma-read)
             return null;
           } else {

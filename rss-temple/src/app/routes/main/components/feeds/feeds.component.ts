@@ -154,6 +154,16 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
           }
           throw new Error('malformed response');
         }),
+        map(feeds => {
+          for (const feed of feeds) {
+            let calculatedTitle = feed.calculatedTitle.trim();
+            if (calculatedTitle.length < 1) {
+              calculatedTitle = '[No Title]';
+            }
+            feed.calculatedTitle = calculatedTitle;
+          }
+          return feeds;
+        }),
         tap(feeds => {
           this.feeds = feeds;
         }),

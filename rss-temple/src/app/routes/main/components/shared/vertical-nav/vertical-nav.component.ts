@@ -223,6 +223,16 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
             }
             throw new Error('malformed response');
           }),
+          map(feeds => {
+            for (const feed of feeds) {
+              let calculatedTitle = feed.calculatedTitle.trim();
+              if (calculatedTitle.length < 1) {
+                calculatedTitle = '[No Title]';
+              }
+              feed.calculatedTitle = calculatedTitle;
+            }
+            return feeds;
+          }),
         ),
     ])
       .pipe(takeUntil(this.unsubscribe$))
@@ -263,6 +273,15 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.unsubscribe$),
         map(feed => feed as FeedImpl2),
+        map(feed => {
+          let title = feed.title.trim();
+          if (title.length < 1) {
+            title = '[No Title]';
+          }
+          feed.title = title;
+
+          return feed;
+        }),
         mergeMap(_feed => {
           let observables: [Observable<FeedImpl2>, Observable<void>];
           if (!_feed.subscribed) {
@@ -364,6 +383,16 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
               return response.objects as FeedImpl[];
             }
             throw new Error('malformed response');
+          }),
+          map(feeds => {
+            for (const feed of feeds) {
+              let calculatedTitle = feed.calculatedTitle.trim();
+              if (calculatedTitle.length < 1) {
+                calculatedTitle = '[No Title]';
+              }
+              feed.calculatedTitle = calculatedTitle;
+            }
+            return feeds;
           }),
         ),
     ])

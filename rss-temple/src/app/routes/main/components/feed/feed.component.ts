@@ -207,6 +207,28 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
           feed.feedUrl = url;
           return feed as FeedImpl;
         }),
+        map(feed => {
+          let title = feed.title.trim();
+          if (title.length < 1) {
+            title = '[No Title]';
+          }
+          feed.title = title;
+
+          let customTitle =
+            feed.customTitle !== null ? feed.customTitle.trim() : null;
+          if (customTitle !== null && customTitle.length < 1) {
+            customTitle = '[No Title]';
+          }
+          feed.customTitle = customTitle;
+
+          let calculatedTitle = feed.calculatedTitle.trim();
+          if (calculatedTitle.length < 1) {
+            calculatedTitle = '[No Title]';
+          }
+          feed.calculatedTitle = calculatedTitle;
+
+          return feed;
+        }),
         tap(feed => {
           this.zone.run(() => {
             this.feed = feed;
