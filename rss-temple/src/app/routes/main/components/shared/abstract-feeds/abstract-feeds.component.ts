@@ -200,6 +200,24 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
         }
         throw new Error('malformed response');
       }),
+      map(feedEntries => {
+        for (const feedEntry of feedEntries) {
+          let title = feedEntry.title.trim();
+          if (title.length < 1) {
+            title = '[No Title]';
+          }
+          feedEntry.title = title;
+
+          let authorName: string | null =
+            feedEntry.authorName !== null ? feedEntry.authorName.trim() : null;
+          if (authorName !== null && authorName.length < 1) {
+            authorName = null;
+          }
+          feedEntry.authorName = authorName;
+        }
+
+        return feedEntries;
+      }),
     );
   }
 
