@@ -8,7 +8,7 @@
     "build": "grunt build"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.3",
+    "@fortawesome/fontawesome-free": "^6.4.2",
     "bootstrap": "^5.0.0",
     "jquery": "^3.6.0"
   },
@@ -19,16 +19,16 @@
     "grunt-contrib-clean": "^2.0.0",
     "grunt-contrib-compress": "^2.0.0",
     "grunt-contrib-copy": "^1.0",
-    "grunt-contrib-cssmin": "^4.0.0",
+    "grunt-contrib-cssmin": "^5.0.0",
     "grunt-contrib-htmlmin": "^3.1.0",
     "grunt-contrib-imagemin": "^4.0.0",
-    "grunt-eslint": "^23.0.0",
+    "grunt-eslint": "^24.3.0",
     "grunt-handlebars-layouts": "^0.3.0",
     "grunt-sass": "^3.1.0",
-    "grunt-webpack": "^4.0.3",
+    "grunt-webpack": "^6.0.0",
     "imagemin-mozjpeg": "^9.0.0",
     "load-grunt-tasks": "^5.1.0",
-    "node-sass": "^7.0.0",
+    "node-sass": "^9.0.0",
     "time-grunt": "^2.0.0",
     "webpack": "^5.76.0"
   }

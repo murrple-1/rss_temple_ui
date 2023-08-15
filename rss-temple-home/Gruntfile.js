@@ -160,9 +160,11 @@ module.exports = function (grunt) {
     eslint: {
       target: ["<%= yeoman.app %>/scripts/main.js"],
       options: {
-        parser: "babel-eslint",
-        parserOptions: {
-          sourceType: "module"
+        overrideConfig: {
+          parser: "babel-eslint",
+          parserOptions: {
+            sourceType: "module"
+          }
         }
       }
     },
