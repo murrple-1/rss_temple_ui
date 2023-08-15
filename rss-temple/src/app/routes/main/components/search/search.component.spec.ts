@@ -5,6 +5,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ClarityModule } from '@clr/angular';
 
+import { of } from 'rxjs';
+
 import { FeedService, FeedEntryService } from '@app/services/data';
 
 import { SearchComponent } from './search.component';
@@ -48,7 +50,12 @@ describe('SearchComponent', () => {
   it(
     'should create the component',
     waitForAsync(async () => {
-      await setup();
+      const { mockFeedEntryService } = await setup();
+      mockFeedEntryService.query.and.returnValue(
+        of({
+          objects: [],
+        }),
+      );
 
       const componentFixture = TestBed.createComponent(SearchComponent);
       const component = componentFixture.componentInstance;
