@@ -26,7 +26,6 @@ import {
   passwordRequirementsTextHtml,
   SpecialCharacters as PasswordSpecialCharacters,
 } from '@app/libs/password.lib';
-import { User } from '@app/models';
 import { ReadCounterService } from '@app/routes/main/services';
 import {
   GlobalUserCategoriesModalComponent,

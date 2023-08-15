@@ -18,7 +18,7 @@ class MockParamMap implements ParamMap {
     return Array.from(this._map.keys());
   }
 
-  has(name: string): boolean {
+  has(_name: string): boolean {
     throw new Error('Method not implemented.');
   }
 
@@ -31,7 +31,7 @@ class MockParamMap implements ParamMap {
     }
   }
 
-  getAll(name: string): string[] {
+  getAll(_name: string): string[] {
     throw new Error('Method not implemented.');
   }
 }

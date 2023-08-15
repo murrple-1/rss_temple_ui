@@ -1,5 +1,3 @@
-import { Feed } from '@app/models';
-
 import { FeedObservableService, FeedImpl } from './feed-observable.service';
 
 function setup() {

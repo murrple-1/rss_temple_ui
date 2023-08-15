@@ -6,7 +6,7 @@ import { ConfigService } from '@app/services/config.service';
 @Injectable()
 export class MockConfigService extends ConfigService {
   constructor(private mockConfig: Record<string, unknown>) {
-    super(undefined as any as HttpClient);
+    super(undefined as unknown as HttpClient);
   }
 
   async load() {

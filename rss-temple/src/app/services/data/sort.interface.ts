@@ -49,7 +49,7 @@ export class Sort<K extends string> implements Map<K, Direction> {
 
   forEach(
     callbackfn: (value: Direction, key: K, map: Map<K, Direction>) => void,
-    thisArg?: any,
+    thisArg?: unknown,
   ) {
     this._orderedKeys.forEach(k =>
       callbackfn.call(thisArg, this.map.get(k) as Direction, k, this),

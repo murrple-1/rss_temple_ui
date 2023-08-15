@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 
-import { environment } from '@environments/environment';
-
 import osLicenses from '@app/os-licenses.json';
 import { ConfigService } from '@app/services';
+
+const RSSIconSVG: string =
+  require('!!raw-loader!../../../../../assets/images/rss-icon.svg').default;
 
 const licensesText = Object.entries(osLicenses)
   .filter(([projectName, _details]) => !projectName.includes('rss-temple'))
@@ -15,7 +16,7 @@ const licensesText = Object.entries(osLicenses)
         repository?: string;
       },
     ]) => {
-      projectName = projectName.replace(/@[\d\.\-A-Za-z]+$/, '');
+      projectName = projectName.replace(/@[\d.\-A-Za-z]+$/, '');
 
       const divider = '-'.repeat(projectName.length);
 
@@ -28,9 +29,6 @@ const licensesText = Object.entries(osLicenses)
     },
   )
   .join('\n\n');
-
-const RSSIconSVG: string =
-  require('!!raw-loader!../../../../../assets/images/rss-icon.svg').default;
 
 @Component({
   templateUrl: './support.component.html',

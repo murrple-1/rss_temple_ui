@@ -1,4 +1,4 @@
 export interface IEnvironment {
   production: boolean;
-  envVar: {};
+  envVar: Record<string, never>;
 }

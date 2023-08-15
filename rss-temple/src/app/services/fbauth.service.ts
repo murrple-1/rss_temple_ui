@@ -55,7 +55,7 @@ export class FBAuthService {
   }
 
   signOut() {
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<void>((resolve, _reject) => {
       FB.getLoginStatus(response => {
         if (response.status === 'connected') {
           FB.logout(() => {

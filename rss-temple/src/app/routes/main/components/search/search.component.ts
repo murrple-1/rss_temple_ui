@@ -196,11 +196,11 @@ export class SearchComponent implements OnInit, OnDestroy {
         }),
         map(feedEntries => {
           for (const feedEntry of feedEntries) {
-            let title = feedEntry.title.trim();
-            if (title.length < 1) {
-              title = '[No Title]';
+            let title_ = feedEntry.title.trim();
+            if (title_.length < 1) {
+              title_ = '[No Title]';
             }
-            feedEntry.title = title;
+            feedEntry.title = title_;
           }
           return feedEntries;
         }),
@@ -226,11 +226,11 @@ export class SearchComponent implements OnInit, OnDestroy {
                 }),
                 map(feeds => {
                   for (const feed of feeds) {
-                    let title = feed.title.trim();
-                    if (title.length < 1) {
-                      title = '[No Title]';
+                    let title_ = feed.title.trim();
+                    if (title_.length < 1) {
+                      title_ = '[No Title]';
                     }
-                    feed.title = title;
+                    feed.title = title_;
                   }
                   return feeds;
                 }),
@@ -296,11 +296,11 @@ export class SearchComponent implements OnInit, OnDestroy {
         }),
         map(feeds => {
           for (const feed of feeds) {
-            let title = feed.title.trim();
-            if (title.length < 1) {
-              title = '[No Title]';
+            let title_ = feed.title.trim();
+            if (title_.length < 1) {
+              title_ = '[No Title]';
             }
-            feed.title = title;
+            feed.title = title_;
           }
           return feeds;
         }),

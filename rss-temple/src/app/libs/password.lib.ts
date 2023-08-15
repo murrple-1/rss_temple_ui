@@ -1,4 +1,4 @@
-export type ValidationErrors = Record<string, any>;
+export type ValidationErrors = Record<string, unknown>;
 
 export const MinLength = 6;
 
@@ -25,7 +25,7 @@ export function validatePassword(password: string) {
     validationErrors.nodigit = true;
   }
 
-  if (!/[!@#\$%\^&]/.test(password)) {
+  if (!/[!@#$%^&]/.test(password)) {
     /* istanbul ignore next */
     validationErrors = validationErrors ?? {};
     validationErrors.nospecialcharacter = true;
