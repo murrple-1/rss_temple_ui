@@ -15,7 +15,7 @@ import { Sort } from '@app/services/data/sort.interface';
 
 type FeedImpl = Required<Pick<Feed, 'uuid' | 'title' | 'feedUrl' | 'homeUrl'>>;
 type FeedEntryImpl = Required<
-  Pick<FeedEntry, 'publishedAt' | 'feedUuid' | 'title' | 'url'>
+  Pick<FeedEntry, 'publishedAt' | 'feedUuid' | 'title' | 'url' | 'authorName'>
 >;
 type FeedImpl2 = Required<Pick<Feed, 'title' | 'feedUrl' | 'homeUrl'>>;
 
@@ -26,6 +26,7 @@ interface EntryDescriptor {
   feedTitle: string;
   feedUrl: string;
   feedHomeUrl: string | null;
+  authorName: string | null;
 }
 
 interface FeedDescriptor {
@@ -107,7 +108,7 @@ export class SearchComponent implements OnInit, OnDestroy {
             const searchText = paramMap.get('searchText') ?? '';
             this.zone.run(() => {
               this.entriesSearchTitle = searchText;
-              this.entriesSearchContent = searchText;
+              this.entriesSearchContent = '';
               this.entriesSearchAuthorName = '';
               this.entriesSearchPublishedAtStartDate = null;
               this.entriesSearchPublishedAtEndDate = null;
@@ -140,7 +141,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     content = content.trim();
     authorName = authorName.trim();
 
-    const searchParts: string[] = [];
+    const searchParts: string[] = ['isArchived:"false"'];
     if (title.length > 0) {
       searchParts.push(`title:"${title}"`);
     }
@@ -178,6 +179,7 @@ export class SearchComponent implements OnInit, OnDestroy {
           'feedUuid',
           'title',
           'url',
+          'authorName',
         ],
         count,
         skip,
@@ -255,6 +257,7 @@ export class SearchComponent implements OnInit, OnDestroy {
               feedTitle: feed.title,
               feedUrl: feed.feedUrl,
               feedHomeUrl: feed.homeUrl,
+              authorName: fe.authorName,
             };
           }),
         ),

@@ -129,7 +129,9 @@
                       [attr.href]="entryDescriptor.feedHomeUrl"
                       target="_blank"
                       >{{ entryDescriptor.feedTitle }}</a
-                    >
+                    ><ng-container *ngIf="entryDescriptor.authorName !== null"
+                    >&nbsp;by {{ entryDescriptor.authorName }}</ng-container
+                  >
                   </p>
                   <p class="p7 app--date">
                     {{ entryDescriptor.publishedAt | dateFormat }}
