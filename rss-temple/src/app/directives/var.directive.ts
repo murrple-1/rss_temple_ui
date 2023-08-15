@@ -19,7 +19,7 @@ export class VarDirective<T> {
 
   constructor(
     private vcRef: ViewContainerRef,
-    private templateRef: TemplateRef<T>,
+    private templateRef: TemplateRef<Context<T>>,
   ) {}
 
   private updateView() {

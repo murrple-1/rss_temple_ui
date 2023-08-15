@@ -92,6 +92,7 @@ describe('FBAuthService', () => {
                 expiresIn: 0,
                 signedRequest: '',
                 userID: '',
+                data_access_expiration_time: 0,
               },
             });
           },
@@ -119,6 +120,7 @@ describe('FBAuthService', () => {
                 expiresIn: 0,
                 signedRequest: '',
                 userID: '',
+                data_access_expiration_time: 0,
               },
             });
           },
