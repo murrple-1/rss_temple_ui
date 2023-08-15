@@ -1,0 +1,4 @@
+{
+  "rss-temple/**/*.{json,js,jsx,ts,tsx,html,md,yml,yaml,css,scss}": "prettier --config rss-temple/.prettierrc --write",
+  "rss-temple-home/**/*.{json,js,ts,html,md,yml,yaml,css,scss}": "prettier --config rss-temple-home/.prettierrc --write"
+}

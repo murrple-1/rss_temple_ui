@@ -8,7 +8,7 @@ import { ConfigService } from './config.service';
   providedIn: 'root',
 })
 export class GAuthService {
-  private auth2: gapi.auth2.GoogleAuth | null = null;
+  private auth2: gapi.auth2.GoogleAuthBase | null = null;
 
   private _user$ = new BehaviorSubject<gapi.auth2.GoogleUser | null>(null);
   private _isLoaded$ = new BehaviorSubject<boolean>(false);

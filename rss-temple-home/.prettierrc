@@ -1,0 +1,16 @@
+{
+  "singleQuote": false,
+  "trailingComma": "none",
+  "endOfLine": "lf",
+  "semi": true,
+  "useTabs": false,
+  "tabWidth": 2,
+  "overrides": [
+    {
+      "files": "*.hbs",
+      "options": {
+        "parser": "html"
+      }
+    }
+  ]
+}
