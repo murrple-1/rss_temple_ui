@@ -31,7 +31,7 @@ import { Feed } from '@app/models';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
 
 type FeedImpl = BaseFeedImpl &
-  Required<Pick<Feed, 'homeUrl' | 'calculatedTitle'>>;
+  Required<Pick<Feed, 'homeUrl' | 'calculatedTitle' | 'feedUrl'>>;
 type FeedEntryImpl = BaseFeedEntryImpl;
 
 @Component({
@@ -142,7 +142,7 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
     const count = this.count;
     this.feedService
       .queryAll({
-        fields: ['uuid', 'calculatedTitle', 'homeUrl'],
+        fields: ['uuid', 'calculatedTitle', 'homeUrl', 'feedUrl'],
         search: 'subscribed:"true"',
         returnTotalCount: false,
       })

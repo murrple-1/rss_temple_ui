@@ -67,7 +67,7 @@
               <li>And More...</li>
             </ul>
           </div>
-          <div class="card-footer">
+          <div class="card-footer app--footer">
             <ng-container
               *ngIf="
                 feed.isSubscribed;
@@ -85,6 +85,11 @@
                 Subscribe
               </button>
             </ng-template>
+            <a
+              class="btn btn-link btn-sm"
+              [routerLink]="['/main/feed/', feed.feedUrl]"
+              >Go to Feed</a
+            >
           </div>
         </div>
       </div>

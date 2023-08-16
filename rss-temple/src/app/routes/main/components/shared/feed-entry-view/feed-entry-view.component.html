@@ -53,5 +53,11 @@
         Favorite
       </button>
     </ng-template>
+    <a
+      *ngIf="isGoToVisible && feed !== undefined"
+      class="btn btn-link btn-sm"
+      [routerLink]="['/main/feed/', feed.feedUrl]"
+      >Go to Feed</a
+    >
   </div>
 </div>

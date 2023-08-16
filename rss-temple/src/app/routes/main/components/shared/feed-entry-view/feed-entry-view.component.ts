@@ -8,7 +8,7 @@ import { Feed } from '@app/models';
 import { FeedEntryImpl } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 import { ReadCounterService } from '@app/routes/main/services';
 
-type FeedImpl = Required<Pick<Feed, 'calculatedTitle' | 'homeUrl'>>;
+type FeedImpl = Required<Pick<Feed, 'calculatedTitle' | 'homeUrl' | 'feedUrl'>>;
 
 @Component({
   selector: 'app-feed-entry-view',
@@ -24,6 +24,9 @@ export class FeedEntryViewComponent implements OnDestroy {
 
   @Input()
   hasFocus = false;
+
+  @Input()
+  isGoToVisible = false;
 
   flashing = false;
 
