@@ -105,6 +105,64 @@
         ></clr-accordion-content>
       </clr-accordion-panel>
     </clr-accordion>
+    <div class="card">
+      <h3 class="card-header">Captcha</h3>
+      <div class="card-block">
+        <div class="card-text">
+          <fieldset
+            [disabled]="
+              registerButtonState !== ClrLoadingState.DEFAULT ||
+              captchaImageSrc === null ||
+              captchaAudio === null
+            "
+          >
+            <ng-container
+              *ngIf="captchaImageSrc !== null && captchaAudio !== null"
+            >
+              <img [src]="captchaImageSrc" />
+              <ng-container
+                *ngIf="captchaAudio.paused; then playButton; else stopButton"
+              ></ng-container>
+              <ng-template #playButton
+                ><button
+                  type="button"
+                  class="btn btn-icon"
+                  (click)="onCaptchaAudioPlay()"
+                >
+                  <cds-icon shape="play"></cds-icon></button
+              ></ng-template>
+              <ng-template #stopButton
+                ><button
+                  type="button"
+                  class="btn btn-icon"
+                  (click)="onCaptchaAudioStop()"
+                >
+                  <cds-icon shape="stop"></cds-icon></button
+              ></ng-template>
+              <button
+                type="button"
+                class="btn btn-icon"
+                (click)="refreshCaptcha()"
+              >
+                <cds-icon shape="refresh"></cds-icon>
+              </button>
+            </ng-container>
+            <clr-input-container>
+              <label>Secret Phrase</label>
+              <input
+                clrInput
+                name="captchaSecretPhrase"
+                [(ngModel)]="captchaSecretPhrase"
+                required
+              />
+              <clr-control-error *clrIfError="'required'"
+                >Secret Phrase required</clr-control-error
+              >
+            </clr-input-container>
+          </fieldset>
+        </div>
+      </div>
+    </div>
     <ng-container
       *ngIf="registerForm && (registerForm.touched || registerForm.dirty)"
     >

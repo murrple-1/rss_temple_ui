@@ -19,6 +19,9 @@ import {
   starIcon,
   minusIcon,
   libraryIcon,
+  playIcon,
+  stopIcon,
+  refreshIcon,
 } from '@cds/core/icon';
 import { IconShapeTuple } from '@cds/core/icon/interfaces/icon.interfaces';
 
@@ -63,6 +66,9 @@ export function clarityIconsFactory() {
       starIcon,
       minusIcon,
       libraryIcon,
+      playIcon,
+      stopIcon,
+      refreshIcon,
       ...myCollectionIcons,
     );
   };

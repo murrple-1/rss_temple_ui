@@ -7,3 +7,4 @@ export { AuthService } from './auth.service';
 export { ExploreService } from './explore.service';
 export { SocialService } from './social.service';
 export { RegistrationService } from './registration.service';
+export { CaptchaService } from './captcha.service';

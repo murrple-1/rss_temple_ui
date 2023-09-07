@@ -8,7 +8,10 @@ import { ConfigService } from '@app/services/config.service';
 export class RegistrationService {
   private readonly apiHost: string;
 
-  constructor(private http: HttpClient, configService: ConfigService) {
+  constructor(
+    private http: HttpClient,
+    configService: ConfigService,
+  ) {
     const apiHost = configService.get<string>('apiHost');
     if (typeof apiHost !== 'string') {
       throw new Error('apiHost malformed');
@@ -17,10 +20,17 @@ export class RegistrationService {
     this.apiHost = apiHost;
   }
 
-  register(email: string, password: string) {
+  register(
+    email: string,
+    password: string,
+    captchaKey: string,
+    captchaSecretPhrase: string,
+  ) {
     return this.http.post<void>(`${this.apiHost}/api/registration`, {
       email,
       password,
+      captchaKey,
+      captchaSecretPhrase,
     });
   }
 
