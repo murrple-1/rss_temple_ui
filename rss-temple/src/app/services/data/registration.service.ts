@@ -29,8 +29,7 @@ export class RegistrationService {
     return this.http.post<void>(`${this.apiHost}/api/registration`, {
       email,
       password,
-      captchaKey,
-      captchaSecretPhrase,
+      captcha: `${captchaKey}:${captchaSecretPhrase}`,
     });
   }
 
