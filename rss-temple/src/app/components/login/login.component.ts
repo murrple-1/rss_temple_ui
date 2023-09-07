@@ -182,9 +182,17 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
         next: authResponse => {
           if (this.rememberMe) {
             localStorage.setItem('login:cached_email', email);
+            localStorage.setItem(
+              'auth-token-service:authToken',
+              authResponse.key,
+            );
           } else {
             localStorage.removeItem('login:cached_email');
           }
+          sessionStorage.setItem(
+            'auth-token-service:authToken',
+            authResponse.key,
+          );
           this.zone.run(() => {
             this.handleLoginSuccess(authResponse.key);
           });

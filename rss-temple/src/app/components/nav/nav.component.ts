@@ -158,6 +158,8 @@ export class NavComponent implements OnInit, OnDestroy {
           });
       }
       this.authTokenService.authToken$.next(null);
+      localStorage.removeItem('auth-token-service:authToken');
+      sessionStorage.removeItem('auth-token-service:authToken');
 
       this.router.navigate(['/login']);
     }

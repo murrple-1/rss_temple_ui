@@ -25,6 +25,8 @@ export class HttpErrorService {
         case 401:
           errorMessage = 'Session expired';
           this.authTokenService.authToken$.next(null);
+          localStorage.removeItem('auth-token-service:authToken');
+          sessionStorage.removeItem('auth-token-service:authToken');
           this.router.navigate(['/login']);
           break;
       }

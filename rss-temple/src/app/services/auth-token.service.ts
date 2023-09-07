@@ -19,7 +19,10 @@ export class AuthTokenService implements OnDestroy {
   private unsubscribe$ = new Subject<void>();
 
   constructor() {
-    const authToken = localStorage.getItem('auth-token-service:authToken');
+    let authToken = localStorage.getItem('auth-token-service:authToken');
+    if (authToken === null) {
+      authToken = sessionStorage.getItem('auth-token-service:authToken');
+    }
     this.authToken$ = new BehaviorSubject(authToken);
 
     this._isLoggedIn$ = new BehaviorSubject(authToken !== null);
@@ -27,13 +30,7 @@ export class AuthTokenService implements OnDestroy {
 
     this.authToken$.pipe(skip(1), takeUntil(this.unsubscribe$)).subscribe({
       next: st => {
-        if (st !== null) {
-          localStorage.setItem('auth-token-service:authToken', st);
-          this._isLoggedIn$.next(true);
-        } else {
-          localStorage.removeItem('auth-token-service:authToken');
-          this._isLoggedIn$.next(false);
-        }
+        this._isLoggedIn$.next(st !== null);
       },
     });
   }
