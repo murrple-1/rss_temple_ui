@@ -39,7 +39,14 @@ describe('RegistrationService', () => {
 
     httpClientSpy.post.and.returnValue(of<void>());
 
-    await registrationService.register('test@test.com', 'password').toPromise();
+    await registrationService
+      .register(
+        'test@test.com',
+        'password',
+        'captchaKey',
+        'captchaSecretPhrase',
+      )
+      .toPromise();
     expect(httpClientSpy.post).toHaveBeenCalledTimes(1);
     expect(httpClientSpy.post).toHaveBeenCalledWith(
       jasmine.stringMatching(/\/api\/registration$/),

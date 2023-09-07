@@ -10,7 +10,6 @@ import { CaptchaService } from './captcha.service';
 function setup() {
   const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', [
     'post',
-    'delete',
   ]);
 
   const mockConfigService = new MockConfigService({
@@ -34,10 +33,10 @@ describe('CaptchaService', () => {
   it('should get new key', fakeAsync(async () => {
     const { httpClientSpy, captchaService } = setup();
 
-    httpClientSpy.get.and.returnValue(of('newkey'));
+    httpClientSpy.post.and.returnValue(of('newkey'));
 
     await captchaService.getKey().toPromise();
-    expect(httpClientSpy.get).toHaveBeenCalledTimes(1);
+    expect(httpClientSpy.post).toHaveBeenCalledTimes(1);
   }));
 
   // TODO more tests

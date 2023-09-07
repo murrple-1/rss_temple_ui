@@ -29,6 +29,7 @@ function setup_auth() {
 describe('AuthGuard', () => {
   beforeEach(() => {
     localStorage.removeItem('auth-token-service:authToken');
+    sessionStorage.removeItem('auth-token-service:authToken');
   });
 
   it('can activate', () => {
@@ -119,6 +120,7 @@ function setup_noauth() {
 describe('NoAuthGuard', () => {
   beforeEach(() => {
     localStorage.removeItem('auth-token-service:authToken');
+    sessionStorage.removeItem('auth-token-service:authToken');
   });
 
   it('can activate', () => {
