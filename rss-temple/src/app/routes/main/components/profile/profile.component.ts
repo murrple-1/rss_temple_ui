@@ -9,10 +9,10 @@ import { saveAs } from 'file-saver';
 
 import {
   FeedService,
-  FeedEntryService,
   OPMLService,
   SocialService,
   AuthService,
+  UserMetaService,
 } from '@app/services/data';
 import {
   HttpErrorService,
@@ -98,7 +98,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   constructor(
     private zone: NgZone,
     private feedService: FeedService,
-    private feedEntryService: FeedEntryService,
+    private userMetaService: UserMetaService,
     private opmlService: OPMLService,
     private authService: AuthService,
     private socialService: SocialService,
@@ -130,20 +130,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             throw new Error('malformed response');
           }),
         ),
-      this.feedEntryService
-        .query({
-          returnObjects: false,
-          returnTotalCount: true,
-          search: 'isRead:"true"',
-        })
-        .pipe(
-          map(response => {
-            if (response.totalCount !== undefined) {
-              return response.totalCount;
-            }
-            throw new Error('malformed response');
-          }),
-        ),
+      this.userMetaService.getReadCount(),
     ])
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
