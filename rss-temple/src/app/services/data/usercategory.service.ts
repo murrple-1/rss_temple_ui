@@ -125,15 +125,17 @@ export class UserCategoryService {
       this.authTokenService.authToken$.getValue(),
     );
 
-    const body: Record<string, string[]> = {};
+    const mappings: Record<string, string[]> = {};
 
     for (const [feedUuid, uuids] of Object.entries(apply)) {
-      body[feedUuid] = Array.from(uuids);
+      mappings[feedUuid] = Array.from(uuids);
     }
 
     return this.http.put<void>(
       `${this.apiHost}/api/usercategories/apply`,
-      body,
+      {
+        mappings,
+      },
       {
         headers,
       },
