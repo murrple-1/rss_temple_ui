@@ -19,16 +19,21 @@
     & ::ng-deep code {
       white-space: pre-wrap;
     }
+
+    & ::ng-deep a:not([href]) {
+      color: var(--clr-p1-color, hsl(198, 0%, 40%));
+    }
   }
 }
 
 .app--is-read .card-block {
   &,
-  & ::ng-deep *:not([class]):not(a) {
+  & ::ng-deep *:not(a),
+  & ::ng-deep a:not([href]) {
     color: #b3b3b3;
   }
 
-  & ::ng-deep a:not([class]) {
+  & ::ng-deep a[href] {
     color: #8fbed2;
   }
 }
