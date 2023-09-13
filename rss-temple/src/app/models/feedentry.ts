@@ -25,6 +25,7 @@ export const ZFeedEntry = z
     isRead: z.boolean(),
     isFavorite: z.boolean(),
     readAt: z.date().nullable(),
+    language: z.string().nullable(),
   })
   .partial();
 

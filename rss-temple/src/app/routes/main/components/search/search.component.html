@@ -63,6 +63,35 @@
                       [(clrDate)]="entriesSearchPublishedAtEndDate"
                     />
                   </clr-date-container>
+                  <clr-combobox-container>
+                    <label>Languages</label>
+                    <clr-combobox
+                      [(ngModel)]="entriesLanguages"
+                      name="languages"
+                      clrMulti="true"
+                    >
+                      <ng-container *clrOptionSelected="let selected">
+                        <span
+                          class="fi fi-{{ selected.flag }} fis app--flag"
+                        ></span
+                        ><span>{{ selected.name }}</span>
+                      </ng-container>
+                      <clr-options>
+                        <clr-option
+                          *clrOptionItems="
+                            let state of entriesAvailableLanguages;
+                            field: 'name'
+                          "
+                          [clrValue]="state"
+                        >
+                          <span
+                            class="fi fi-{{ state.flag }} fis app--flag"
+                          ></span
+                          ><span>{{ state.name }}</span>
+                        </clr-option>
+                      </clr-options>
+                    </clr-combobox>
+                  </clr-combobox-container>
                   <button
                     type="submit"
                     class="btn btn-primary"
@@ -130,8 +159,8 @@
                       target="_blank"
                       >{{ entryDescriptor.feedTitle }}</a
                     ><ng-container *ngIf="entryDescriptor.authorName !== null"
-                    >&nbsp;by {{ entryDescriptor.authorName }}</ng-container
-                  >
+                      >&nbsp;by {{ entryDescriptor.authorName }}</ng-container
+                    >
                   </p>
                   <p class="p7 app--date">
                     {{ entryDescriptor.publishedAt | dateFormat }}

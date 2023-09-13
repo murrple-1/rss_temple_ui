@@ -41,6 +41,12 @@ enum LoadingState {
   NoMoreToLoad,
 }
 
+interface LanguageSelect {
+  name: string;
+  value: string;
+  flag: string;
+}
+
 const Count = 10;
 
 @Component({
@@ -56,6 +62,77 @@ export class SearchComponent implements OnInit, OnDestroy {
   entriesSearchPublishedAtStartDate: Date | null = null;
   entriesSearchPublishedAtEndDate: Date | null = null;
   entriesSearchButtonState = ClrLoadingState.DEFAULT;
+  entriesAvailableLanguages: LanguageSelect[] = [
+    // based on https://www.isocfoundation.org/2023/05/what-are-the-most-used-languages-on-the-internet/
+    {
+      name: 'English',
+      value: 'ENG',
+      flag: 'gb',
+    },
+    {
+      name: 'Español/Spanish',
+      value: 'SPA',
+      flag: 'es',
+    },
+    {
+      name: 'Русский/Russian',
+      value: 'RUS',
+      flag: 'ru',
+    },
+    {
+      name: 'Deutsch/German',
+      value: 'DEU',
+      flag: 'de',
+    },
+    {
+      name: 'Français/French',
+      value: 'FRA',
+      flag: 'fr',
+    },
+    {
+      name: '日本語/Japanese',
+      value: 'JPN',
+      flag: 'jp',
+    },
+    {
+      name: 'Português/Portuguese',
+      value: 'POR',
+      flag: 'pt',
+    },
+    {
+      name: 'Türkçe/Turkish',
+      value: 'TUR',
+      flag: 'tr',
+    },
+    {
+      name: 'Italiano/Italian',
+      value: 'ITA',
+      flag: 'it',
+    },
+    {
+      name: 'فارسی/Persian',
+      value: 'FAS',
+      flag: 'ir',
+    },
+    {
+      name: 'Nederlands/Dutch',
+      value: 'NLD',
+      flag: 'nl',
+    },
+    {
+      name: '汉语/Chinese',
+      value: 'ZHO',
+      flag: 'cn',
+    },
+    // additional known
+    {
+      name: 'Română/Romanian',
+      value: 'RON',
+      flag: 'ro',
+    },
+    // TODO which languages to support? maybe all?
+  ];
+  entriesLanguages: LanguageSelect[] = [];
   entriesLoadingState = LoadingState.IsNotLoading;
 
   feedsSearchTitle = '';
@@ -134,6 +211,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     authorName: string,
     publishedAtStartDate: Date | null,
     publishedAtEndDate: Date | null,
+    languages: string[],
     count: number,
     skip: number,
   ) {
@@ -161,6 +239,10 @@ export class SearchComponent implements OnInit, OnDestroy {
           'yyyy-MM-dd 00:00:00',
         )}|${formatDate(publishedAtEndDate, 'yyyy-MM-dd 23:59:59')}"`,
       );
+    }
+
+    if (languages.length > 0) {
+      searchParts.push(`language:"${languages.join(',')}"`);
     }
 
     let search: string;
@@ -326,6 +408,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.entriesSearchAuthorName,
       this.entriesSearchPublishedAtStartDate,
       this.entriesSearchPublishedAtEndDate,
+      this.entriesLanguages.map(e => e.value),
       Count,
       0,
     )
@@ -390,6 +473,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.entriesSearchAuthorName,
       this.entriesSearchPublishedAtStartDate,
       this.entriesSearchPublishedAtEndDate,
+      this.entriesLanguages.map(e => e.value),
       Count,
       this.entryDescriptors.length,
     )
