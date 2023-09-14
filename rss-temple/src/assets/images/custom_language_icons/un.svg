@@ -1,0 +1,8 @@
+<svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="128" height="128" fill="#000000" />
+  <polygon fill="#aa0000" points="0,16 0,0 16,0 128,112 128,128 112,128" />
+  <polygon fill="#aa0000" points="0,112 0,128 16,128 128,16 128,0 112,0" />
+  <text fill="#FFFFFF" font-family="Arial" font-size="64">
+      <tspan x="21" y="85">UN</tspan>
+    </text>
+</svg>

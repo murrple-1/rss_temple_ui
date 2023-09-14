@@ -738,4 +738,64 @@ describe('FeedEntryService', () => {
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
     ).toBeRejectedWithError(z.ZodError);
   }));
+
+  it('should get languages', fakeAsync(async () => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        languages: ['ENG', 'JPN'],
+      }),
+    );
+
+    const languages = await feedEntryService.getLanguages().toPromise();
+
+    expect(languages).toEqual(['ENG', 'JPN']);
+  }));
+
+  it('should get languages of ISO636-3 kind', fakeAsync(async () => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        languages: ['ENG', 'JPN'],
+      }),
+    );
+
+    const languages = await feedEntryService
+      .getLanguages('iso639_3')
+      .toPromise();
+
+    expect(languages).toEqual(['ENG', 'JPN']);
+  }));
+
+  it('should get languages of ISO636-1 kind', fakeAsync(async () => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        languages: ['EN', 'JA'],
+      }),
+    );
+
+    const languages = await feedEntryService
+      .getLanguages('iso639_1')
+      .toPromise();
+
+    expect(languages).toEqual(['EN', 'JA']);
+  }));
+
+  it('should get languages of name kind', fakeAsync(async () => {
+    const { httpClientSpy, feedEntryService } = setup();
+
+    httpClientSpy.get.and.returnValue(
+      of({
+        languages: ['ENGLISH', 'JAPANESE'],
+      }),
+    );
+
+    const languages = await feedEntryService.getLanguages('name').toPromise();
+
+    expect(languages).toEqual(['ENGLISH', 'JAPANESE']);
+  }));
 });

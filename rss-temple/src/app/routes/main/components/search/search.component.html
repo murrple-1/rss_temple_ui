@@ -63,7 +63,9 @@
                       [(clrDate)]="entriesSearchPublishedAtEndDate"
                     />
                   </clr-date-container>
-                  <clr-combobox-container>
+                  <clr-combobox-container
+                    *ngIf="entriesAvailableLanguages !== null"
+                  >
                     <label>Languages</label>
                     <clr-combobox
                       [(ngModel)]="entriesLanguages"
@@ -71,10 +73,9 @@
                       clrMulti="true"
                     >
                       <ng-container *clrOptionSelected="let selected">
-                        <span
-                          class="fi fi-{{ selected.flag }} fis app--flag"
-                        ></span
-                        ><span>{{ selected.name }}</span>
+                        <img class="app--flag" [src]="selected.imgSrc" />{{
+                          selected.name
+                        }}
                       </ng-container>
                       <clr-options>
                         <clr-option
@@ -84,10 +85,9 @@
                           "
                           [clrValue]="state"
                         >
-                          <span
-                            class="fi fi-{{ state.flag }} fis app--flag"
-                          ></span
-                          ><span>{{ state.name }}</span>
+                          <img class="app--flag" [src]="state.imgSrc" />{{
+                            state.name
+                          }}
                         </clr-option>
                       </clr-options>
                     </clr-combobox>

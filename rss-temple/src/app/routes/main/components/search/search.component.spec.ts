@@ -17,7 +17,7 @@ async function setup() {
   ]);
   const mockFeedEntryService = jasmine.createSpyObj<FeedEntryService>(
     'FeedEntryService',
-    ['query'],
+    ['query', 'getLanguages'],
   );
 
   await TestBed.configureTestingModule({
@@ -47,23 +47,23 @@ async function setup() {
 }
 
 describe('SearchComponent', () => {
-  it(
-    'should create the component',
-    waitForAsync(async () => {
-      const { mockFeedEntryService } = await setup();
-      mockFeedEntryService.query.and.returnValue(
-        of({
-          objects: [],
-        }),
-      );
+  it('should create the component', waitForAsync(async () => {
+    const { mockFeedEntryService } = await setup();
+    mockFeedEntryService.query.and.returnValue(
+      of({
+        objects: [],
+      }),
+    );
+    mockFeedEntryService.getLanguages.and.returnValue(
+      of(['ENG', 'UND', 'JPN']),
+    );
 
-      const componentFixture = TestBed.createComponent(SearchComponent);
-      const component = componentFixture.componentInstance;
-      expect(component).toBeTruthy();
-      componentFixture.detectChanges();
-      await componentFixture.whenStable();
-    }),
-  );
+    const componentFixture = TestBed.createComponent(SearchComponent);
+    const component = componentFixture.componentInstance;
+    expect(component).toBeTruthy();
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+  }));
 
   // TODO more tests
 });

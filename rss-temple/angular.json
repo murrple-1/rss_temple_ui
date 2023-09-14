@@ -22,10 +22,17 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
-            "assets": ["src/favicon.ico", "src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              {
+                "input": "node_modules/language-icons/icons/",
+                "output": "/assets/language_icons/",
+                "glob": "*.svg"
+              }
+            ],
             "styles": [
               "node_modules/@clr/ui/clr-ui.min.css",
-              "node_modules/flag-icons/css/flag-icons.min.css",
               "src/styles.scss"
             ],
             "scripts": [

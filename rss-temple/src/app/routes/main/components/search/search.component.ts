@@ -8,6 +8,8 @@ import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 import { format as formatDate } from 'date-fns';
 
+import { where as langsWhere } from 'langs';
+
 import { Feed, FeedEntry } from '@app/models';
 import { FeedEntryService, FeedService } from '@app/services/data';
 import { HttpErrorService } from '@app/services';
@@ -44,7 +46,7 @@ enum LoadingState {
 interface LanguageSelect {
   name: string;
   value: string;
-  flag: string;
+  imgSrc: string;
 }
 
 const Count = 10;
@@ -62,76 +64,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   entriesSearchPublishedAtStartDate: Date | null = null;
   entriesSearchPublishedAtEndDate: Date | null = null;
   entriesSearchButtonState = ClrLoadingState.DEFAULT;
-  entriesAvailableLanguages: LanguageSelect[] = [
-    // based on https://www.isocfoundation.org/2023/05/what-are-the-most-used-languages-on-the-internet/
-    {
-      name: 'English',
-      value: 'ENG',
-      flag: 'gb',
-    },
-    {
-      name: 'Español/Spanish',
-      value: 'SPA',
-      flag: 'es',
-    },
-    {
-      name: 'Русский/Russian',
-      value: 'RUS',
-      flag: 'ru',
-    },
-    {
-      name: 'Deutsch/German',
-      value: 'DEU',
-      flag: 'de',
-    },
-    {
-      name: 'Français/French',
-      value: 'FRA',
-      flag: 'fr',
-    },
-    {
-      name: '日本語/Japanese',
-      value: 'JPN',
-      flag: 'jp',
-    },
-    {
-      name: 'Português/Portuguese',
-      value: 'POR',
-      flag: 'pt',
-    },
-    {
-      name: 'Türkçe/Turkish',
-      value: 'TUR',
-      flag: 'tr',
-    },
-    {
-      name: 'Italiano/Italian',
-      value: 'ITA',
-      flag: 'it',
-    },
-    {
-      name: 'فارسی/Persian',
-      value: 'FAS',
-      flag: 'ir',
-    },
-    {
-      name: 'Nederlands/Dutch',
-      value: 'NLD',
-      flag: 'nl',
-    },
-    {
-      name: '汉语/Chinese',
-      value: 'ZHO',
-      flag: 'cn',
-    },
-    // additional known
-    {
-      name: 'Română/Romanian',
-      value: 'RON',
-      flag: 'ro',
-    },
-    // TODO which languages to support? maybe all?
-  ];
+  entriesAvailableLanguages: LanguageSelect[] | null = null;
   entriesLanguages: LanguageSelect[] = [];
   entriesLoadingState = LoadingState.IsNotLoading;
 
@@ -198,6 +131,70 @@ export class SearchComponent implements OnInit, OnDestroy {
           }
         },
       });
+
+    this.feedEntryService
+      .getLanguages('iso639_1')
+      .pipe(takeUntil(this.unsubscribe$))
+      .toPromise()
+      .then(languages_Iso639_1 => {
+        return Promise.all(
+          Array.from(new Set(languages_Iso639_1)).map<
+            Promise<LanguageSelect | null>
+          >(async l => {
+            switch (l) {
+              case 'EN': {
+                return {
+                  name: 'English',
+                  value: l,
+                  imgSrc: '/assets/language_icons/en.svg',
+                };
+              }
+              case 'UN': {
+                return {
+                  name: 'Unknown',
+                  value: l,
+                  imgSrc: '/assets/images/custom_language_icons/un.svg',
+                };
+              }
+              default: {
+                const langData = langsWhere('1', l.toLowerCase());
+                if (langData === undefined) {
+                  return null;
+                }
+                return {
+                  name: `${langData.local}/${langData.name}`,
+                  value: l,
+                  imgSrc: `/assets/language_icons/${l.toLowerCase()}.svg`,
+                };
+              }
+            }
+          }),
+        );
+      })
+      .then(languageSelects => {
+        const languageSelects_ = languageSelects.filter(
+          ls => ls !== null,
+        ) as LanguageSelect[];
+        languageSelects_.sort((a, b) => {
+          if (a.value === 'EN') {
+            return -1;
+          } else if (b.value === 'EN') {
+            return 1;
+          } else if (a.value === 'UN') {
+            return 1;
+          } else if (b.value === 'UN') {
+            return -1;
+          }
+          return a.name.localeCompare(b.name);
+        });
+        return languageSelects_;
+      })
+      .then(entriesAvailableLanguages => {
+        this.entriesAvailableLanguages = entriesAvailableLanguages;
+      })
+      .catch(reason => {
+        this.httpErrorService.handleError(reason);
+      });
   }
 
   ngOnDestroy() {
@@ -242,7 +239,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     }
 
     if (languages.length > 0) {
-      searchParts.push(`language:"${languages.join(',')}"`);
+      searchParts.push(`languageIso639_1:"${languages.join(',')}"`);
     }
 
     let search: string;

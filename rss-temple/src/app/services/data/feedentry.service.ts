@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { map } from 'rxjs/operators';
+
 import { z } from 'zod';
 
 import { parse as parseDate } from 'date-fns';
@@ -42,6 +43,10 @@ import { ZFeedEntry } from '@app/models/feedentry';
 
 export type Field = keyof FeedEntry;
 export type SortField = keyof FeedEntry;
+
+const ZLanguages = z.object({
+  languages: z.array(z.string()),
+});
 
 @Injectable({
   providedIn: 'root',
@@ -260,7 +265,7 @@ export class FeedEntryService {
     );
 
     return this.http.post<void>(
-      `${this.apiHost}/api/feedentries/favorite/`,
+      `${this.apiHost}/api/feedentries/favorite`,
       feedEntryUuids,
       {
         headers,
@@ -275,7 +280,7 @@ export class FeedEntryService {
 
     return this.http.request<void>(
       'DELETE',
-      `${this.apiHost}/api/feedentries/favorite/`,
+      `${this.apiHost}/api/feedentries/favorite`,
       {
         headers,
         body: {
@@ -283,5 +288,26 @@ export class FeedEntryService {
         },
       },
     );
+  }
+
+  getLanguages(
+    kind?: 'iso639_3' | 'iso639_1' | 'name',
+    options: CommonOptions = {},
+  ) {
+    const headers = commonToHeaders(options, () =>
+      this.authTokenService.authToken$.getValue(),
+    );
+
+    const params: Record<string, string | string[]> = {};
+    if (kind !== undefined) {
+      params['kind'] = kind;
+    }
+
+    return this.http
+      .get<void>(`${this.apiHost}/api/feedentry/languages`, {
+        headers,
+        params,
+      })
+      .pipe(map(retObj => ZLanguages.parse(retObj).languages));
   }
 }
