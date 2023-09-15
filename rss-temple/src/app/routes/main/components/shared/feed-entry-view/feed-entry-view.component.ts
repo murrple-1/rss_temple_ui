@@ -137,7 +137,6 @@ export class FeedEntryViewComponent implements OnDestroy {
       await navigator.share({
         url: this.feedEntry.url,
         title: this.feedEntry.title,
-        text: this.feedEntry.content,
       });
     } catch (err: unknown) {
       console.error(err);
