@@ -29,6 +29,11 @@
                 "input": "node_modules/language-icons/icons/",
                 "output": "/assets/language_icons/",
                 "glob": "*.svg"
+              },
+              {
+                "input": "src/custom_language_icons",
+                "output": "/assets/language_icons/",
+                "glob": "*.svg"
               }
             ],
             "styles": [

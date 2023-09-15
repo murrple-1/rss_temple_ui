@@ -6,6 +6,7 @@ import { where as langsWhere } from 'langs';
 import { Observable, Subject, combineLatest, of } from 'rxjs';
 import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
+import { compare } from '@app/libs/compare.lib';
 import { Feed, FeedEntry } from '@app/models';
 import { HttpErrorService } from '@app/services';
 import { FeedEntryService, FeedService } from '@app/services/data';
@@ -41,11 +42,33 @@ enum LoadingState {
 
 interface LanguageSelect {
   name: string;
+  sortKey: string;
   value: string;
   imgSrc: string;
 }
 
 const Count = 10;
+
+function languageSelectCompare(a: LanguageSelect, b: LanguageSelect): number {
+  // english first
+  if (a.sortKey === '__english__') {
+    return -1;
+  }
+  if (b.sortKey === '__english__') {
+    return 1;
+  }
+
+  // unknown last
+  if (a.sortKey === '__unknown__') {
+    return 1;
+  }
+  if (b.sortKey === '__unknown__') {
+    return -1;
+  }
+
+  // everything else sorted alphabetically
+  return compare(a.sortKey, b.sortKey);
+}
 
 @Component({
   templateUrl: './search.component.html',
@@ -142,6 +165,7 @@ export class SearchComponent implements OnInit, OnDestroy {
                 return {
                   name: 'English',
                   value: l,
+                  sortKey: '__english__',
                   imgSrc: '/assets/language_icons/en.svg',
                 };
               }
@@ -149,7 +173,8 @@ export class SearchComponent implements OnInit, OnDestroy {
                 return {
                   name: 'Unknown',
                   value: l,
-                  imgSrc: '/assets/images/custom_language_icons/un.svg',
+                  sortKey: '__unknown__',
+                  imgSrc: '/assets/language_icons/un.svg',
                 };
               }
               default: {
@@ -160,6 +185,7 @@ export class SearchComponent implements OnInit, OnDestroy {
                 return {
                   name: `${langData.local}/${langData.name}`,
                   value: l,
+                  sortKey: langData.name,
                   imgSrc: `/assets/language_icons/${l.toLowerCase()}.svg`,
                 };
               }
@@ -171,18 +197,7 @@ export class SearchComponent implements OnInit, OnDestroy {
         const languageSelects_ = languageSelects.filter(
           ls => ls !== null,
         ) as LanguageSelect[];
-        languageSelects_.sort((a, b) => {
-          if (a.value === 'EN') {
-            return -1;
-          } else if (b.value === 'EN') {
-            return 1;
-          } else if (a.value === 'UN') {
-            return 1;
-          } else if (b.value === 'UN') {
-            return -1;
-          }
-          return a.name.localeCompare(b.name);
-        });
+        languageSelects_.sort(languageSelectCompare);
         return languageSelects_;
       })
       .then(entriesAvailableLanguages => {

@@ -4,6 +4,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Observable, Subject, forkJoin, of } from 'rxjs';
 import { filter, map, mergeMap, startWith, takeUntil } from 'rxjs/operators';
 
+import { compare } from '@app/libs/compare.lib';
 import { Feed, UserCategory } from '@app/models';
 import {
   OPMLModalComponent,
@@ -140,7 +141,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
   }
 
   private static sortFeeds(a: FeedImpl, b: FeedImpl) {
-    return a.calculatedTitle.localeCompare(b.calculatedTitle);
+    return compare(a.calculatedTitle, b.calculatedTitle);
   }
 
   ngOnInit() {
