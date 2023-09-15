@@ -1,15 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { fakeAsync } from '@angular/core/testing';
-
 import { of } from 'rxjs';
-
 import { z } from 'zod';
 
+import { ZUserCategory } from '@app/models/usercategory';
 import { AuthTokenService } from '@app/services/auth-token.service';
+import { MockConfigService } from '@app/test/config.service.mock';
 
 import { UserCategoryService } from './usercategory.service';
-import { ZUserCategory } from '@app/models/usercategory';
-import { MockConfigService } from '@app/test/config.service.mock';
 
 function setup() {
   const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', [

@@ -1,5 +1,4 @@
 import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
-
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -7,8 +6,8 @@ import {
   OnboardingModalComponent,
   openModal as openOnboardingModal,
 } from '@app/routes/main/components/onboarding-modal/onboarding-modal.component';
+import { AuthTokenService, ModalOpenService } from '@app/services';
 import { AuthService } from '@app/services/data';
-import { ModalOpenService, AuthTokenService } from '@app/services';
 
 @Component({
   templateUrl: './main.component.html',

@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-
 import { Observable } from 'rxjs';
 
 import { SubNavLinksService } from '@app/services';

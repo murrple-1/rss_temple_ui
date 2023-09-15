@@ -1,30 +1,29 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
+import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 
 import { UserCategory } from '@app/models';
-import { toObjects } from '@app/services/data/objects';
+import { ZUserCategory } from '@app/models/usercategory';
+import { AuthTokenService } from '@app/services/auth-token.service';
+import { ConfigService } from '@app/services/config.service';
+import { AllOptions } from '@app/services/data/all.interface';
+import {
+  CommonOptions,
+  toHeaders as commonToHeaders,
+} from '@app/services/data/common.interface';
 import {
   GetOptions,
   toHeaders as getToHeaders,
   toParams as getToParams,
 } from '@app/services/data/get.interface';
+import { toObjects } from '@app/services/data/objects';
 import {
   QueryOptions,
-  toHeaders as queryToHeaders,
   toBody as queryToBody,
+  toHeaders as queryToHeaders,
   toParams as queryToParams,
 } from '@app/services/data/query.interface';
-import { AllOptions } from '@app/services/data/all.interface';
 import { queryAllFn } from '@app/services/data/queryall.function';
-import {
-  CommonOptions,
-  toHeaders as commonToHeaders,
-} from '@app/services/data/common.interface';
-import { AuthTokenService } from '@app/services/auth-token.service';
-import { ConfigService } from '@app/services/config.service';
-import { ZUserCategory } from '@app/models/usercategory';
 
 export type Field = keyof UserCategory;
 export type SortField = keyof UserCategory;

@@ -1,12 +1,11 @@
-import { Component, Input, NgZone, OnDestroy, ElementRef } from '@angular/core';
-
+import { Component, ElementRef, Input, NgZone, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { FeedEntryService } from '@app/services/data';
 import { Feed } from '@app/models';
 import { FeedEntryImpl } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 import { ReadCounterService } from '@app/routes/main/services';
+import { FeedEntryService } from '@app/services/data';
 
 type FeedImpl = Required<Pick<Feed, 'calculatedTitle' | 'homeUrl' | 'feedUrl'>>;
 

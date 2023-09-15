@@ -1,14 +1,13 @@
+import { Type } from '@angular/core';
 import {
-  ParamMap,
   ActivatedRoute,
-  UrlSegment,
+  ActivatedRouteSnapshot,
+  Data,
+  ParamMap,
   Params,
   Route,
-  Data,
-  ActivatedRouteSnapshot,
+  UrlSegment,
 } from '@angular/router';
-import { Type } from '@angular/core';
-
 import { Observable } from 'rxjs';
 
 class MockParamMap implements ParamMap {

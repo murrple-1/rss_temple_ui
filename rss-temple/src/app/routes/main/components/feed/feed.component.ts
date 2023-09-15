@@ -1,42 +1,41 @@
 import {
-  Component,
-  NgZone,
   ChangeDetectorRef,
+  Component,
+  ElementRef,
+  NgZone,
   OnInit,
+  QueryList,
   ViewChild,
   ViewChildren,
-  QueryList,
-  ElementRef,
 } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { Observable, combineLatest, forkJoin, of } from 'rxjs';
+import { map, mergeMap, startWith, takeUntil, tap } from 'rxjs/operators';
 
-import { Observable, forkJoin, combineLatest, of } from 'rxjs';
-import { takeUntil, map, startWith, mergeMap, tap } from 'rxjs/operators';
-
+import { Feed, UserCategory } from '@app/models';
 import {
-  FeedService,
-  FeedEntryService,
-  UserCategoryService,
-} from '@app/services/data';
-import { UserCategory, Feed } from '@app/models';
-import {
-  openModal as openUserCategoriesModal,
   UserCategoriesModalComponent,
+  openModal as openUserCategoriesModal,
 } from '@app/routes/main/components/feed/user-categories-modal/user-categories-modal.component';
-import { Sort } from '@app/services/data/sort.interface';
 import {
   AbstractFeedsComponent,
-  DEFAULT_COUNT,
   FeedImpl as BaseFeedImpl,
+  DEFAULT_COUNT,
   LoadingState,
   NoLoadError,
 } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
-import { HttpErrorService, ModalOpenService } from '@app/services';
+import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
 import {
   ReadCounterService,
   UserCategoryObservableService,
 } from '@app/routes/main/services';
-import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
+import { HttpErrorService, ModalOpenService } from '@app/services';
+import {
+  FeedEntryService,
+  FeedService,
+  UserCategoryService,
+} from '@app/services/data';
+import { Sort } from '@app/services/data/sort.interface';
 
 type FeedImpl = BaseFeedImpl &
   Required<

@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
 
-import { NoAuthGuard, AuthGuard } from '@app/guards/auth.guard';
 import { LoginComponent } from '@app/components/login/login.component';
 import { RegisterComponent } from '@app/components/register/register.component';
 import { ResetPasswordComponent } from '@app/components/reset-password/reset-password.component';
 import { VerifyComponent } from '@app/components/verify/verify.component';
+import { AuthGuard, NoAuthGuard } from '@app/guards/auth.guard';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [NoAuthGuard] },

@@ -1,35 +1,33 @@
-﻿import {
+﻿import { HttpErrorResponse } from '@angular/common/http';
+import {
+  AfterViewInit,
   Component,
-  OnInit,
   ElementRef,
-  Renderer2,
   NgZone,
   OnDestroy,
+  OnInit,
+  Renderer2,
   ViewChild,
-  AfterViewInit,
 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
 import { NgForm } from '@angular/forms';
-
+import { ActivatedRoute, Router } from '@angular/router';
 import { ClrLoadingState } from '@clr/angular';
-
 import { Subject } from 'rxjs';
 import { skip, takeUntil } from 'rxjs/operators';
 
-import { passwordContainerOverride } from '@app/libs/password-container-override';
-import {
-  AppAlertsService,
-  FBAuthService,
-  GAuthService,
-  ModalOpenService,
-  AuthTokenService,
-} from '@app/services';
 import {
   RequestPasswordResetModalComponent,
   openModal as openRequestPasswordResetModal,
 } from '@app/components/login/request-password-reset-modal/request-password-reset-modal.component';
 import { AlertEntry } from '@app/components/shared/local-alerts/local-alerts.component';
+import { passwordContainerOverride } from '@app/libs/password-container-override';
+import {
+  AppAlertsService,
+  AuthTokenService,
+  FBAuthService,
+  GAuthService,
+  ModalOpenService,
+} from '@app/services';
 import { AuthService, SocialService } from '@app/services/data';
 
 @Component({

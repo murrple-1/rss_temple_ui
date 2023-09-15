@@ -1,18 +1,17 @@
-﻿import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
+﻿import { HttpErrorResponse } from '@angular/common/http';
+import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { AuthService } from '@app/services/data';
-import { HttpErrorService } from '@app/services';
 import {
   MinLength as PasswordMinLength,
-  passwordRequirementsText,
   SpecialCharacters as PasswordSpecialCharacters,
+  passwordRequirementsText,
 } from '@app/libs/password.lib';
+import { HttpErrorService } from '@app/services';
+import { AuthService } from '@app/services/data';
 
 enum State {
   NotStarted,

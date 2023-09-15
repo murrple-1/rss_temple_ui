@@ -1,6 +1,5 @@
 import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-
 import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 

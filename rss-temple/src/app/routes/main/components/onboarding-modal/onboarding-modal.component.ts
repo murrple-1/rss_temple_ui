@@ -1,9 +1,8 @@
 import { Component, OnDestroy } from '@angular/core';
-
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ConfigService } from '@app/services';
 
 @Component({

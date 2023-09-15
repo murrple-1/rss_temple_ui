@@ -1,13 +1,11 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+import { RouterTestingModule } from '@angular/router/testing';
 import { ClarityModule } from '@clr/angular';
-
 import { of } from 'rxjs';
 
-import { FeedService, FeedEntryService } from '@app/services/data';
+import { FeedEntryService, FeedService } from '@app/services/data';
 
 import { SearchComponent } from './search.component';
 

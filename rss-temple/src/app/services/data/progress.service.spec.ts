@@ -1,8 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { fakeAsync } from '@angular/core/testing';
-
 import { of } from 'rxjs';
-
 import { z } from 'zod';
 
 import { AuthTokenService } from '@app/services/auth-token.service';

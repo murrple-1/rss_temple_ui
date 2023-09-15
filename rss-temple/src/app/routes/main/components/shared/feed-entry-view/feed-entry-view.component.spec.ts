@@ -1,9 +1,9 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
-import { FeedEntryService } from '@app/services/data';
 import { DateFormatPipe } from '@app/pipes/dayjs-format.pipe';
 import { ReadCounterService } from '@app/routes/main/services';
+import { FeedEntryService } from '@app/services/data';
 
 import { FeedEntryViewComponent } from './feed-entry-view.component';
 
@@ -42,18 +42,15 @@ async function setup() {
 }
 
 describe('FeedEntryViewComponent', () => {
-  it(
-    'should create the component',
-    waitForAsync(async () => {
-      await setup();
+  it('should create the component', waitForAsync(async () => {
+    await setup();
 
-      const componentFixture = TestBed.createComponent(FeedEntryViewComponent);
-      const component = componentFixture.componentInstance;
-      expect(component).toBeTruthy();
-      componentFixture.detectChanges();
-      await componentFixture.whenStable();
-    }),
-  );
+    const componentFixture = TestBed.createComponent(FeedEntryViewComponent);
+    const component = componentFixture.componentInstance;
+    expect(component).toBeTruthy();
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+  }));
 
   // TODO more tests
 });

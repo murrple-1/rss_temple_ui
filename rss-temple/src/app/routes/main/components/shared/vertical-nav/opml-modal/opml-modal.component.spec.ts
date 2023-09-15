@@ -1,11 +1,11 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+import { RouterTestingModule } from '@angular/router/testing';
 import { ClarityModule } from '@clr/angular';
 
-import { OPMLModalComponent } from './opml-modal.component';
 import { OPMLService, ProgressService } from '@app/services/data';
+
+import { OPMLModalComponent } from './opml-modal.component';
 
 async function setup() {
   const mockOPMLService = jasmine.createSpyObj<OPMLService>('OPMLService', [
@@ -42,18 +42,15 @@ async function setup() {
 }
 
 describe('OPMLModalComponent', () => {
-  it(
-    'should create the component',
-    waitForAsync(async () => {
-      await setup();
+  it('should create the component', waitForAsync(async () => {
+    await setup();
 
-      const componentFixture = TestBed.createComponent(OPMLModalComponent);
-      const component = componentFixture.componentInstance;
-      expect(component).toBeTruthy();
-      componentFixture.detectChanges();
-      await componentFixture.whenStable();
-    }),
-  );
+    const componentFixture = TestBed.createComponent(OPMLModalComponent);
+    const component = componentFixture.componentInstance;
+    expect(component).toBeTruthy();
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+  }));
 
   // TODO more tests
 });

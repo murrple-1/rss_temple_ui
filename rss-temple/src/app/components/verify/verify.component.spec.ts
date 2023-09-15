@@ -28,18 +28,15 @@ async function setup() {
 }
 
 describe('VerifyComponent', () => {
-  it(
-    'should create the component',
-    waitForAsync(async () => {
-      await setup();
+  it('should create the component', waitForAsync(async () => {
+    await setup();
 
-      const componentFixture = TestBed.createComponent(VerifyComponent);
-      const component = componentFixture.componentInstance;
-      expect(component).toBeTruthy();
-      componentFixture.detectChanges();
-      await componentFixture.whenStable();
-    }),
-  );
+    const componentFixture = TestBed.createComponent(VerifyComponent);
+    const component = componentFixture.componentInstance;
+    expect(component).toBeTruthy();
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+  }));
 
   // TODO more tests
 });

@@ -1,34 +1,33 @@
 import {
-  Component,
-  NgZone,
   ChangeDetectorRef,
+  Component,
+  ElementRef,
+  NgZone,
   OnInit,
-  ViewChildren,
   QueryList,
   ViewChild,
-  ElementRef,
+  ViewChildren,
 } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-
 import { combineLatest } from 'rxjs';
-import { takeUntil, map, startWith, mergeMap, tap } from 'rxjs/operators';
+import { map, mergeMap, startWith, takeUntil, tap } from 'rxjs/operators';
 
-import { FeedService, FeedEntryService } from '@app/services/data';
+import { Feed } from '@app/models';
+import {
+  AbstractFeedsComponent,
+  FeedEntryImpl as BaseFeedEntryImpl,
+  FeedImpl as BaseFeedImpl,
+  DEFAULT_COUNT,
+  LoadingState,
+  NoLoadError,
+} from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
+import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
 import {
   FeedObservableService,
   ReadCounterService,
 } from '@app/routes/main/services';
-import {
-  AbstractFeedsComponent,
-  DEFAULT_COUNT,
-  FeedImpl as BaseFeedImpl,
-  FeedEntryImpl as BaseFeedEntryImpl,
-  LoadingState,
-  NoLoadError,
-} from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 import { HttpErrorService, ModalOpenService } from '@app/services';
-import { Feed } from '@app/models';
-import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
+import { FeedEntryService, FeedService } from '@app/services/data';
 
 type FeedImpl = BaseFeedImpl &
   Required<Pick<Feed, 'homeUrl' | 'calculatedTitle' | 'feedUrl'>>;

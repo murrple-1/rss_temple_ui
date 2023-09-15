@@ -1,5 +1,4 @@
 import { ElementRef } from '@angular/core';
-
 import { take } from 'rxjs/operators';
 
 import { InViewportDirective, InViewportEvent } from './inviewport.directive';

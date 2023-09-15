@@ -1,10 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { fakeAsync } from '@angular/core/testing';
-
 import { of } from 'rxjs';
 
-import { AuthTokenService } from '@app/services/auth-token.service';
 import { ZUser } from '@app/models/user';
+import { AuthTokenService } from '@app/services/auth-token.service';
 import { MockConfigService } from '@app/test/config.service.mock';
 
 import { AuthService } from './auth.service';

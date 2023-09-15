@@ -1,12 +1,11 @@
-import { Component, OnDestroy, NgZone, Input } from '@angular/core';
+import { Component, Input, NgZone, OnDestroy } from '@angular/core';
+import { Observable, Subject, forkJoin, of } from 'rxjs';
+import { map, mergeMap, take, takeUntil, tap } from 'rxjs/operators';
 
-import { forkJoin, Observable, of, Subject } from 'rxjs';
-import { takeUntil, map, take, tap, mergeMap } from 'rxjs/operators';
-
-import { UserCategoryService } from '@app/services/data';
-import { HttpErrorService } from '@app/services';
-import { Sort } from '@app/services/data/sort.interface';
 import { UserCategory } from '@app/models';
+import { HttpErrorService } from '@app/services';
+import { UserCategoryService } from '@app/services/data';
+import { Sort } from '@app/services/data/sort.interface';
 import { IApply } from '@app/services/data/usercategory.service';
 
 type UserCategoryImpl1 = Required<Pick<UserCategory, 'uuid' | 'text'>>;
@@ -63,12 +62,15 @@ export class UserCategoriesModalComponent implements OnDestroy {
     this.feedUuid = '';
     this.newUserCategoryText = '';
     this.initialAssignedUserCategoryTexts = undefined;
-    this.initialCategoryDescriptors = this.categoryDescriptors = this.assignedCategoryDescriptors = [];
+    this.initialCategoryDescriptors =
+      this.categoryDescriptors =
+      this.assignedCategoryDescriptors =
+        [];
   }
 
   load() {
-    const initialAssignedUserCategoryTexts = this
-      .initialAssignedUserCategoryTexts;
+    const initialAssignedUserCategoryTexts =
+      this.initialAssignedUserCategoryTexts;
     if (initialAssignedUserCategoryTexts === undefined) {
       throw new Error();
     }
@@ -104,7 +106,8 @@ export class UserCategoriesModalComponent implements OnDestroy {
           );
 
           this.zone.run(() => {
-            this.categoryDescriptors = this.initialCategoryDescriptors = categoryDescriptors;
+            this.categoryDescriptors = this.initialCategoryDescriptors =
+              categoryDescriptors;
             this.assignedCategoryDescriptors = assignedCategoryDescriptors;
             this.isLoading = false;
           });

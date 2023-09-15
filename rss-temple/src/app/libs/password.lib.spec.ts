@@ -1,7 +1,7 @@
 import {
+  passwordRequirementsText,
   validatePassword,
   validatePasswordsMatch,
-  passwordRequirementsText,
 } from './password.lib';
 
 describe('password.lib', () => {

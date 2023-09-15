@@ -1,6 +1,5 @@
 import { Directive } from '@angular/core';
 import { AbstractControl, NG_VALIDATORS, Validator } from '@angular/forms';
-
 import { validate as validateEmail } from 'email-validator';
 
 @Directive({

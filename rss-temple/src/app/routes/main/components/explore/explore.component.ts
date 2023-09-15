@@ -1,10 +1,9 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { FeedService, ExploreService } from '@app/services/data';
-import { HttpErrorService, AppAlertsService } from '@app/services';
+import { AppAlertsService, HttpErrorService } from '@app/services';
+import { ExploreService, FeedService } from '@app/services/data';
 
 interface FeedDescriptor {
   name: string;

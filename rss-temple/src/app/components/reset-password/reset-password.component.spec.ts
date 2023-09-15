@@ -1,12 +1,11 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+import { RouterTestingModule } from '@angular/router/testing';
 import { ClarityModule } from '@clr/angular';
 
-import { AuthService } from '@app/services/data';
 import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-match-validator.directive';
+import { AuthService } from '@app/services/data';
 
 import { ResetPasswordComponent } from './reset-password.component';
 
@@ -37,18 +36,15 @@ async function setup() {
 }
 
 describe('ResetPasswordComponent', () => {
-  it(
-    'should create the component',
-    waitForAsync(async () => {
-      await setup();
+  it('should create the component', waitForAsync(async () => {
+    await setup();
 
-      const componentFixture = TestBed.createComponent(ResetPasswordComponent);
-      const component = componentFixture.componentInstance;
-      expect(component).toBeTruthy();
-      componentFixture.detectChanges();
-      await componentFixture.whenStable();
-    }),
-  );
+    const componentFixture = TestBed.createComponent(ResetPasswordComponent);
+    const component = componentFixture.componentInstance;
+    expect(component).toBeTruthy();
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+  }));
 
   // TODO more tests
 });

@@ -1,4 +1,4 @@
-import { FeedObservableService, FeedImpl } from './feed-observable.service';
+import { FeedImpl, FeedObservableService } from './feed-observable.service';
 
 function setup() {
   const feedObservableService = new FeedObservableService();

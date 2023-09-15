@@ -1,31 +1,30 @@
-import { Component, OnInit, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { Observable, Subject, forkJoin, of } from 'rxjs';
+import { filter, map, mergeMap, startWith, takeUntil } from 'rxjs/operators';
 
-import { forkJoin, Observable, of, Subject } from 'rxjs';
-import { takeUntil, map, mergeMap, startWith, filter } from 'rxjs/operators';
-
+import { Feed, UserCategory } from '@app/models';
 import {
-  openModal as openSubscribeModal,
-  SubscribeModalComponent,
-} from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
-import {
-  openModal as openOPMLModal,
   OPMLModalComponent,
+  openModal as openOPMLModal,
 } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
-import { FeedService, UserCategoryService } from '@app/services/data';
 import {
-  AppAlertsService,
-  HttpErrorService,
-  ModalOpenService,
-} from '@app/services';
+  SubscribeModalComponent,
+  openModal as openSubscribeModal,
+} from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
 import {
   FeedObservableService,
   ReadCounterService,
   UserCategoryObservableService,
 } from '@app/routes/main/services';
-import { UserCategory, Feed } from '@app/models';
+import {
+  AppAlertsService,
+  HttpErrorService,
+  ModalOpenService,
+} from '@app/services';
+import { FeedService, UserCategoryService } from '@app/services/data';
 import { Sort } from '@app/services/data/sort.interface';
-import { NavigationEnd, Router } from '@angular/router';
 
 type UserCategoryImpl = Required<Pick<UserCategory, 'text' | 'feedUuids'>>;
 type FeedImpl = Required<

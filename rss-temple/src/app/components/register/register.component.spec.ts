@@ -1,28 +1,26 @@
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Component } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+import { ActivatedRoute, Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { ClarityModule } from '@clr/angular';
-
 import { of, throwError } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { AppAlertsService } from '@app/services';
-import { MockActivatedRoute } from '@app/test/activatedroute.mock';
-import { AppAlertDescriptor } from '@app/services/app-alerts.service';
 import { EmailValidatorDirective } from '@app/directives/email-validator.directive';
 import { PasswordValidatorDirective } from '@app/directives/password-validator.directive';
 import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-match-validator.directive';
+import { AppAlertsService } from '@app/services';
+import { AppAlertDescriptor } from '@app/services/app-alerts.service';
 import {
   CaptchaService,
   RegistrationService,
   SocialService,
 } from '@app/services/data';
+import { MockActivatedRoute } from '@app/test/activatedroute.mock';
 
 import { RegisterComponent } from './register.component';
 

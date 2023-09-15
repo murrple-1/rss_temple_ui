@@ -1,14 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { fakeAsync } from '@angular/core/testing';
-
+import { format as formatDate, parse as parseDate } from 'date-fns';
 import { of } from 'rxjs';
-
 import { z } from 'zod';
 
-import { parse as parseDate, format as formatDate } from 'date-fns';
-
-import { AuthTokenService } from '@app/services/auth-token.service';
 import { ZFeedEntry } from '@app/models/feedentry';
+import { AuthTokenService } from '@app/services/auth-token.service';
 import { MockConfigService } from '@app/test/config.service.mock';
 
 import { FeedEntryService } from './feedentry.service';

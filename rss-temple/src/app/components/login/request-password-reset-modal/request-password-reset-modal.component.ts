@@ -1,13 +1,11 @@
-import { Component, OnDestroy, NgZone, ViewChild } from '@angular/core';
+import { Component, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-
 import { ClrLoadingState } from '@clr/angular';
-
 import { Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 
-import { AuthService } from '@app/services/data';
 import { HttpErrorService } from '@app/services';
+import { AuthService } from '@app/services/data';
 
 @Component({
   selector: 'app-request-password-reset-modal',

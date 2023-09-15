@@ -1,31 +1,29 @@
-﻿import {
+﻿import { HttpErrorResponse } from '@angular/common/http';
+import {
+  ChangeDetectorRef,
   Component,
-  OnInit,
   NgZone,
   OnDestroy,
+  OnInit,
   ViewChild,
-  ChangeDetectorRef,
 } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
-
+import { ActivatedRoute, Router } from '@angular/router';
 import { ClrLoadingState } from '@clr/angular';
-
-import { forkJoin, Subject } from 'rxjs';
+import { Subject, forkJoin } from 'rxjs';
 import { mergeMap, takeUntil, tap } from 'rxjs/operators';
 
-import { AppAlertsService } from '@app/services';
 import {
   MinLength as PasswordMinLength,
-  passwordRequirementsTextHtml,
   SpecialCharacters as PasswordSpecialCharacters,
+  passwordRequirementsTextHtml,
 } from '@app/libs/password.lib';
+import { AppAlertsService } from '@app/services';
 import {
   CaptchaService,
   RegistrationService,
   SocialService,
 } from '@app/services/data';
-import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   templateUrl: './register.component.html',

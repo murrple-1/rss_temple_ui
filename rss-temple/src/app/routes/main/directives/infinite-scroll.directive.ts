@@ -1,14 +1,13 @@
 import {
   Directive,
   ElementRef,
-  Input,
-  Output,
   EventEmitter,
-  OnInit,
+  Input,
   OnDestroy,
+  OnInit,
+  Output,
 } from '@angular/core';
-
-import { fromEvent, interval, Subscription } from 'rxjs';
+import { Subscription, fromEvent, interval } from 'rxjs';
 import { debounce } from 'rxjs/operators';
 
 const debouncer = interval(100);

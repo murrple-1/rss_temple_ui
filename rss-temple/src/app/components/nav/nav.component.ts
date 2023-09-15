@@ -1,6 +1,5 @@
 import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-
 import { Observable, Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
@@ -8,7 +7,7 @@ import {
   ConfirmModalComponent,
   openModal as openConfirmModal,
 } from '@app/components/shared/confirm-modal/confirm-modal.component';
-import { ModalOpenService, AuthTokenService } from '@app/services';
+import { AuthTokenService, ModalOpenService } from '@app/services';
 import { AuthService } from '@app/services/data';
 
 interface NavLink {

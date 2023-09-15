@@ -1,11 +1,10 @@
 import { Router } from '@angular/router';
-
 import { of } from 'rxjs';
 
 import {
   AppAlertsService,
-  HttpErrorService,
   AuthTokenService,
+  HttpErrorService,
 } from '@app/services';
 import { FeedEntryService, FeedService } from '@app/services/data';
 

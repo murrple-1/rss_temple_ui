@@ -1,15 +1,14 @@
 import { Injectable, OnDestroy } from '@angular/core';
-
 import {
   BehaviorSubject,
+  Observable,
+  Subject,
   combineLatest,
   concat,
   forkJoin,
   fromEvent,
-  Observable,
   of,
   race,
-  Subject,
 } from 'rxjs';
 import {
   buffer,
@@ -22,10 +21,10 @@ import {
   takeUntil,
 } from 'rxjs/operators';
 
-import { FeedEntryService, FeedService } from '@app/services/data';
-import { HttpErrorService, AuthTokenService } from '@app/services';
-import { Feed, FeedEntry } from '@app/models';
 import { AsyncTaskQueue } from '@app/libs/task-queue';
+import { Feed, FeedEntry } from '@app/models';
+import { AuthTokenService, HttpErrorService } from '@app/services';
+import { FeedEntryService, FeedService } from '@app/services/data';
 
 type FeedImpl = Required<Pick<Feed, 'uuid' | 'unreadCount'>>;
 type FeedEntryImpl = Required<Pick<FeedEntry, 'uuid' | 'feedUuid'>>;

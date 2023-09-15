@@ -1,31 +1,30 @@
 /* eslint-disable @angular-eslint/directive-class-suffix */
 import {
-  OnDestroy,
   ChangeDetectorRef,
-  NgZone,
   Directive,
-  HostListener,
-  QueryList,
   ElementRef,
+  HostListener,
+  NgZone,
+  OnDestroy,
+  QueryList,
 } from '@angular/core';
+import { Observable, Subject, of } from 'rxjs';
+import { map, mergeMap, takeUntil, tap } from 'rxjs/operators';
 
-import { Observable, of, Subject } from 'rxjs';
-import { takeUntil, map, mergeMap, tap } from 'rxjs/operators';
-
-import { HttpErrorService, ModalOpenService } from '@app/services';
+import { Feed, FeedEntry } from '@app/models';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
+import { State as FeedsFooterState } from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
 import { InViewportEvent } from '@app/routes/main/directives/inviewport.directive';
-import { FeedEntry, Feed } from '@app/models';
-import { Sort } from '@app/services/data/sort.interface';
+import { ReadCounterService } from '@app/routes/main/services';
+import { HttpErrorService, ModalOpenService } from '@app/services';
 import { FeedEntryService } from '@app/services/data';
 import { Field, SortField } from '@app/services/data/feedentry.service';
+import { Objects } from '@app/services/data/objects';
+import { Sort } from '@app/services/data/sort.interface';
 import {
   CreateStableQueryOptions,
   StableQueryOptions,
 } from '@app/services/data/stablequery.interface';
-import { Objects } from '@app/services/data/objects';
-import { State as FeedsFooterState } from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
-import { ReadCounterService } from '@app/routes/main/services';
 
 export const DEFAULT_COUNT = 10;
 

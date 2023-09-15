@@ -1,11 +1,11 @@
 import {
-  Router,
   ActivatedRouteSnapshot,
-  RouterStateSnapshot,
-  UrlTree,
-  UrlSegmentGroup,
   PRIMARY_OUTLET,
+  Router,
+  RouterStateSnapshot,
   UrlSegment,
+  UrlSegmentGroup,
+  UrlTree,
 } from '@angular/router';
 
 import { AuthTokenService } from '@app/services';

@@ -1,15 +1,14 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
+import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { z } from 'zod';
 
+import { AuthTokenService } from '@app/services/auth-token.service';
+import { ConfigService } from '@app/services/config.service';
 import {
   CommonOptions,
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
-import { AuthTokenService } from '@app/services/auth-token.service';
-import { ConfigService } from '@app/services/config.service';
 
 const ZProgressInterface = z.object({
   state: z.enum(['notstarted', 'started', 'finished']),

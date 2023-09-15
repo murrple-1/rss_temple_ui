@@ -1,12 +1,11 @@
-import { Component, OnDestroy, NgZone } from '@angular/core';
+import { Component, NgZone, OnDestroy } from '@angular/core';
+import { Observable, Subject, forkJoin } from 'rxjs';
+import { map, take, takeUntil } from 'rxjs/operators';
 
-import { forkJoin, Observable, Subject } from 'rxjs';
-import { takeUntil, map, take } from 'rxjs/operators';
-
-import { UserCategoryService } from '@app/services/data';
-import { HttpErrorService } from '@app/services';
-import { Sort } from '@app/services/data/sort.interface';
 import { UserCategory } from '@app/models';
+import { HttpErrorService } from '@app/services';
+import { UserCategoryService } from '@app/services/data';
+import { Sort } from '@app/services/data/sort.interface';
 
 type UserCategoryImpl1 = Required<Pick<UserCategory, 'uuid' | 'text'>>;
 type UserCategoryImpl2 = Required<Pick<UserCategory, 'uuid'>>;

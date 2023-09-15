@@ -1,5 +1,4 @@
-import { Component, OnDestroy, NgZone } from '@angular/core';
-
+import { Component, NgZone, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 

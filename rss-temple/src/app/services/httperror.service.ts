@@ -1,6 +1,6 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
 
 import { AppAlertsService } from '@app/services/app-alerts.service';
 import { AuthTokenService } from '@app/services/auth-token.service';

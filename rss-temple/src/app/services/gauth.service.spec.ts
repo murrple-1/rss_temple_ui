@@ -47,7 +47,7 @@ describe('GAuthService', () => {
                   },
                 } as any as gapi.auth2.GoogleAuth);
               },
-            } as any as gapi.auth2.GoogleAuth),
+            }) as any as gapi.auth2.GoogleAuth,
         ),
       },
     };
@@ -102,7 +102,7 @@ describe('GAuthService', () => {
                     }),
                 } as any as gapi.auth2.GoogleAuth);
               },
-            } as any as gapi.auth2.GoogleAuth),
+            }) as any as gapi.auth2.GoogleAuth,
         ),
       },
     };
@@ -146,7 +146,7 @@ describe('GAuthService', () => {
                   },
                 } as any as gapi.auth2.GoogleAuth);
               },
-            } as any as gapi.auth2.GoogleAuth),
+            }) as any as gapi.auth2.GoogleAuth,
         ),
       },
     };

@@ -1,8 +1,8 @@
 import { Observable, forkJoin, of } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 
-import { Objects } from '@app/services/data/objects';
 import { AllOptions } from '@app/services/data/all.interface';
+import { Objects } from '@app/services/data/objects';
 import { QueryOptions } from '@app/services/data/query.interface';
 
 export function queryAllFn<Field extends string, SortField extends string, T>(

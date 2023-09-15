@@ -1,14 +1,12 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+import { RouterTestingModule } from '@angular/router/testing';
 import { ClarityModule } from '@clr/angular';
-
 import { of } from 'rxjs';
 
-import { FeedService, AuthService, ExploreService } from '@app/services/data';
 import { ReadCounterService } from '@app/routes/main/services';
+import { AuthService, ExploreService, FeedService } from '@app/services/data';
 
 import { ExploreComponent } from './explore.component';
 
@@ -59,34 +57,31 @@ async function setup() {
 }
 
 describe('ExploreComponent', () => {
-  it(
-    'should create the component',
-    waitForAsync(async () => {
-      const { mockAuthService, mockFeedService, mockExploreService } =
-        await setup();
-      mockAuthService.getUser.and.returnValue(
-        of({
-          uuid: '772893c2-c78f-42d8-82a7-5d56a1837a28',
-          email: 'test@test.com',
-          subscribedFeedUuids: [],
-          attributes: {},
-        }),
-      );
-      mockFeedService.query.and.returnValue(
-        of({
-          objects: [],
-          totalCount: 0,
-        }),
-      );
-      mockExploreService.explore.and.returnValue(of([]));
+  it('should create the component', waitForAsync(async () => {
+    const { mockAuthService, mockFeedService, mockExploreService } =
+      await setup();
+    mockAuthService.getUser.and.returnValue(
+      of({
+        uuid: '772893c2-c78f-42d8-82a7-5d56a1837a28',
+        email: 'test@test.com',
+        subscribedFeedUuids: [],
+        attributes: {},
+      }),
+    );
+    mockFeedService.query.and.returnValue(
+      of({
+        objects: [],
+        totalCount: 0,
+      }),
+    );
+    mockExploreService.explore.and.returnValue(of([]));
 
-      const componentFixture = TestBed.createComponent(ExploreComponent);
-      const component = componentFixture.componentInstance;
-      expect(component).toBeTruthy();
-      componentFixture.detectChanges();
-      await componentFixture.whenStable();
-    }),
-  );
+    const componentFixture = TestBed.createComponent(ExploreComponent);
+    const component = componentFixture.componentInstance;
+    expect(component).toBeTruthy();
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+  }));
 
   // TODO more tests
 });

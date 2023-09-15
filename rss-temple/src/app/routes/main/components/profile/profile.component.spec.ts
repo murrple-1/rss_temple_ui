@@ -1,28 +1,26 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+import { RouterTestingModule } from '@angular/router/testing';
 import { ClarityModule } from '@clr/angular';
-
 import { of } from 'rxjs';
 
-import { MockGAuthService } from '@app/test/gauth.service.mock';
-import { MockFBAuthService } from '@app/test/fbauth.service.mock';
+import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-match-validator.directive';
+import { GlobalUserCategoriesModalComponent } from '@app/routes/main/components/profile/global-user-categories-modal/global-user-categories-modal.component';
+import { ReadCounterService } from '@app/routes/main/services';
+import { FBAuthService, GAuthService } from '@app/services';
+import { ConfigService } from '@app/services';
 import {
-  FeedService,
   AuthService,
+  FeedService,
   OPMLService,
-  UserCategoryService,
   SocialService,
+  UserCategoryService,
   UserMetaService,
 } from '@app/services/data';
-import { GAuthService, FBAuthService } from '@app/services';
-import { ReadCounterService } from '@app/routes/main/services';
-import { GlobalUserCategoriesModalComponent } from '@app/routes/main/components/profile/global-user-categories-modal/global-user-categories-modal.component';
-import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-match-validator.directive';
 import { MockConfigService } from '@app/test/config.service.mock';
-import { ConfigService } from '@app/services';
+import { MockFBAuthService } from '@app/test/fbauth.service.mock';
+import { MockGAuthService } from '@app/test/gauth.service.mock';
 
 import { ProfileComponent } from './profile.component';
 

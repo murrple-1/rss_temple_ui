@@ -1,9 +1,8 @@
 import { fakeAsync } from '@angular/core/testing';
-
 import { of } from 'rxjs';
 
-import { QueryOptions } from '@app/services/data/query.interface';
 import { Objects } from '@app/services/data/objects';
+import { QueryOptions } from '@app/services/data/query.interface';
 
 import { queryAllFn } from './queryall.function';
 

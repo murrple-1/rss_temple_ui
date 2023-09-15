@@ -1,18 +1,14 @@
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-
 import { ClrLoadingState } from '@clr/angular';
-
-import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { format as formatDate } from 'date-fns';
+import { where as langsWhere } from 'langs';
+import { Observable, Subject, combineLatest, of } from 'rxjs';
 import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
-import { format as formatDate } from 'date-fns';
-
-import { where as langsWhere } from 'langs';
-
 import { Feed, FeedEntry } from '@app/models';
-import { FeedEntryService, FeedService } from '@app/services/data';
 import { HttpErrorService } from '@app/services';
+import { FeedEntryService, FeedService } from '@app/services/data';
 import { Sort } from '@app/services/data/sort.interface';
 
 type FeedImpl = Required<Pick<Feed, 'uuid' | 'title' | 'feedUrl' | 'homeUrl'>>;

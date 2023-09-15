@@ -1,36 +1,34 @@
-import { Component, OnInit, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-
-import { forkJoin, Observable, Subject } from 'rxjs';
-import { takeUntil, skip, map } from 'rxjs/operators';
-
 import { saveAs } from 'file-saver';
+import { Observable, Subject, forkJoin } from 'rxjs';
+import { map, skip, takeUntil } from 'rxjs/operators';
 
-import {
-  FeedService,
-  OPMLService,
-  SocialService,
-  AuthService,
-  UserMetaService,
-} from '@app/services/data';
-import {
-  HttpErrorService,
-  GAuthService,
-  FBAuthService,
-  AppAlertsService,
-  ModalOpenService,
-} from '@app/services';
 import {
   MinLength as PasswordMinLength,
-  passwordRequirementsTextHtml,
   SpecialCharacters as PasswordSpecialCharacters,
+  passwordRequirementsTextHtml,
 } from '@app/libs/password.lib';
-import { ReadCounterService } from '@app/routes/main/services';
 import {
   GlobalUserCategoriesModalComponent,
   openModal as openGlobalUserCategoriesModal,
 } from '@app/routes/main/components/profile/global-user-categories-modal/global-user-categories-modal.component';
+import { ReadCounterService } from '@app/routes/main/services';
+import {
+  AppAlertsService,
+  FBAuthService,
+  GAuthService,
+  HttpErrorService,
+  ModalOpenService,
+} from '@app/services';
+import {
+  AuthService,
+  FeedService,
+  OPMLService,
+  SocialService,
+  UserMetaService,
+} from '@app/services/data';
 
 enum State {
   IsLoading,

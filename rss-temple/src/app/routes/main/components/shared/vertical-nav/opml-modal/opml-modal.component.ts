@@ -1,16 +1,15 @@
 import {
   Component,
-  ViewChild,
   ElementRef,
   NgZone,
   OnDestroy,
+  ViewChild,
 } from '@angular/core';
-
 import { Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 
-import { OPMLService, ProgressService } from '@app/services/data';
 import { HttpErrorService } from '@app/services';
+import { OPMLService, ProgressService } from '@app/services/data';
 
 interface ProgressStatus {
   totalCount: number;

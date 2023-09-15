@@ -1,11 +1,10 @@
-﻿import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+﻿import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { RegistrationService } from '@app/services/data';
 import { HttpErrorService } from '@app/services';
+import { RegistrationService } from '@app/services/data';
 
 enum State {
   NotStarted,

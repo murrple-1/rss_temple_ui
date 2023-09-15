@@ -1,5 +1,4 @@
 import { fakeAsync } from '@angular/core/testing';
-
 import { skip } from 'rxjs/operators';
 
 import { MockConfigService } from '@app/test/config.service.mock';
