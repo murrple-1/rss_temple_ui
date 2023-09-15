@@ -29,6 +29,8 @@ export class FeedEntryViewComponent implements OnDestroy {
 
   flashing = false;
 
+  readonly isShareAvailable = Boolean(navigator.share);
+
   private hasAutoRead = false;
 
   private readonly unsubscribe$ = new Subject<void>();
@@ -120,6 +122,26 @@ export class FeedEntryViewComponent implements OnDestroy {
           console.log(error);
         },
       });
+  }
+
+  async share() {
+    if (this.feedEntry === undefined) {
+      return;
+    }
+
+    if (!navigator.share) {
+      return;
+    }
+
+    try {
+      await navigator.share({
+        url: this.feedEntry.url,
+        title: this.feedEntry.title,
+        text: this.feedEntry.content,
+      });
+    } catch (err: unknown) {
+      console.error(err);
+    }
   }
 
   onClick(event: MouseEvent) {

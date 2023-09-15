@@ -26,7 +26,7 @@
       [innerHtml]="feedEntry.content | safeHtml"
     ></div>
   </div>
-  <div class="card-footer">
+  <div class="card-footer app--footer">
     <ng-container
       *ngIf="feedEntry.isRead; then unreadButton; else readButton"
     ></ng-container>
@@ -53,6 +53,13 @@
         Favorite
       </button>
     </ng-template>
+    <button
+      *ngIf="isShareAvailable"
+      class="btn btn-icon btn-sm"
+      (click)="share()"
+    >
+      <cds-icon shape="share"></cds-icon>
+    </button>
     <a
       *ngIf="isGoToVisible && feed !== undefined"
       class="btn btn-link btn-sm"

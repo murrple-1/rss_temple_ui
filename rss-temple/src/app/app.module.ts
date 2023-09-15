@@ -15,6 +15,7 @@ import {
   playIcon,
   plusIcon,
   refreshIcon,
+  shareIcon,
   starIcon,
   stopIcon,
   uploadIcon,
@@ -65,6 +66,7 @@ export function clarityIconsFactory() {
       playIcon,
       stopIcon,
       refreshIcon,
+      shareIcon,
       ...myCollectionIcons,
     );
   };

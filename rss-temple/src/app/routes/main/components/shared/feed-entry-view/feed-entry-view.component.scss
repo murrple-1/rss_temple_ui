@@ -26,6 +26,10 @@
   }
 }
 
+.card-footer.app--footer {
+  align-items: center;
+}
+
 .app--is-read .card-block {
   &,
   & ::ng-deep *:not(a),
