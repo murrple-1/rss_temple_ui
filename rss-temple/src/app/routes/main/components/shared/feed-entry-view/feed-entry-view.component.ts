@@ -29,7 +29,7 @@ export class FeedEntryViewComponent implements OnDestroy {
 
   flashing = false;
 
-  readonly isShareAvailable = Boolean(navigator.share);
+  readonly isWebShareAPIAvailable = Boolean(navigator.share);
 
   private hasAutoRead = false;
 
