@@ -168,6 +168,7 @@
       [appInViewport]="feedEntry.isRead"
       [appInViewportScrollParent]="scrollContainer"
       [appInViewportOffset]="{ 'bottom': -64 }"
+      [shareModalComponent]="shareModalComponent"
       (appInViewportWatch)="onEntryEnteredViewport($event, feedEntryView)"
       (click)="onEntryClicked($event, feedEntryView)"
     ></app-feed-entry-view>
@@ -184,3 +185,4 @@
 </div>
 
 <app-user-categories-modal></app-user-categories-modal>
+<app-share-modal #shareModalComponent></app-share-modal>

@@ -6,6 +6,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import {
   ClarityIcons,
+  clipboardIcon,
+  envelopeIcon,
   exclamationCircleIcon,
   exclamationTriangleIcon,
   folderIcon,
@@ -18,6 +20,7 @@ import {
   shareIcon,
   starIcon,
   stopIcon,
+  talkBubblesIcon,
   uploadIcon,
   windowCloseIcon,
 } from '@cds/core/icon';
@@ -41,9 +44,25 @@ import { ConfigService } from '@app/services';
 const AppLogoSVG: string =
   require('!!raw-loader!../assets/images/icon.svg').default;
 const FacebookLogoSVG: string =
-  require('!!raw-loader!../assets/images/facebook-f.svg').default;
+  require('!!raw-loader!../custom_cds_icon_svgs/facebook-f.svg').default;
 const GoogleLogoSVG: string =
-  require('!!raw-loader!../assets/images/google.svg').default;
+  require('!!raw-loader!../custom_cds_icon_svgs/google.svg').default;
+const TwitterLogoSVG: string =
+  require('!!raw-loader!../custom_cds_icon_svgs/twitter.svg').default;
+const LinkedInLogoSVG: string =
+  require('!!raw-loader!../custom_cds_icon_svgs/linkedin.svg').default;
+const PinterestLogoSVG: string =
+  require('!!raw-loader!../custom_cds_icon_svgs/pinterest.svg').default;
+const RedditLogoSVG: string =
+  require('!!raw-loader!../custom_cds_icon_svgs/reddit.svg').default;
+const TumblrLogoSVG: string =
+  require('!!raw-loader!../custom_cds_icon_svgs/tumblr.svg').default;
+const TelegramLogoSVG: string =
+  require('!!raw-loader!../custom_cds_icon_svgs/telegram.svg').default;
+const FacebookMessengerLogoSVG: string =
+  require('!!raw-loader!../custom_cds_icon_svgs/facebook-messenger.svg').default;
+const WhatsAppLogoSVG: string =
+  require('!!raw-loader!../custom_cds_icon_svgs/whatsapp.svg').default;
 
 export function clarityIconsFactory() {
   return () => {
@@ -51,6 +70,14 @@ export function clarityIconsFactory() {
       ['app-logo', AppLogoSVG],
       ['brand-facebook', FacebookLogoSVG],
       ['brand-google', GoogleLogoSVG],
+      ['brand-twitter', TwitterLogoSVG],
+      ['brand-linkedin', LinkedInLogoSVG],
+      ['brand-pinterest', PinterestLogoSVG],
+      ['brand-reddit', RedditLogoSVG],
+      ['brand-tumblr', TumblrLogoSVG],
+      ['brand-telegram', TelegramLogoSVG],
+      ['brand-facebook-messenger', FacebookMessengerLogoSVG],
+      ['brand-whatsapp', WhatsAppLogoSVG],
     ];
     ClarityIcons.addIcons(
       exclamationCircleIcon,
@@ -67,6 +94,9 @@ export function clarityIconsFactory() {
       stopIcon,
       refreshIcon,
       shareIcon,
+      clipboardIcon,
+      envelopeIcon,
+      talkBubblesIcon,
       ...myCollectionIcons,
     );
   };

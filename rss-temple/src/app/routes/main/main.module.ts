@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
+import { ShareModule } from 'ngx-sharebuttons';
 
 import { AppSharedModule } from '@app/app-shared.module';
 import { ExploreComponent } from '@app/routes/main/components/explore/explore.component';
@@ -15,6 +16,7 @@ import { ProfileComponent } from '@app/routes/main/components/profile/profile.co
 import { SearchComponent } from '@app/routes/main/components/search/search.component';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
 import { FeedsFooterComponent } from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
+import { ShareModalComponent } from '@app/routes/main/components/shared/share-modal/share-modal.component';
 import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
 import { SubscribeModalComponent as HeaderSubscribeModalComponent } from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
 import { VerticalNavComponent } from '@app/routes/main/components/shared/vertical-nav/vertical-nav.component';
@@ -35,6 +37,8 @@ import {
     FormsModule,
 
     ClarityModule,
+
+    ShareModule,
 
     AppSharedModule,
 
@@ -62,6 +66,7 @@ import {
     GlobalUserCategoriesModalComponent,
     VerticalNavComponent,
     FeedEntryViewComponent,
+    ShareModalComponent,
     HeaderSubscribeModalComponent,
     HeaderOPMLModalComponent,
   ],

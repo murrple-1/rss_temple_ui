@@ -3,10 +3,12 @@ import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ClarityModule } from '@clr/angular';
+import { ShareModule } from 'ngx-sharebuttons';
 import { of } from 'rxjs';
 
 import { UserCategoriesModalComponent } from '@app/routes/main/components/feed/user-categories-modal/user-categories-modal.component';
 import { FeedsFooterComponent } from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
+import { ShareModalComponent } from '@app/routes/main/components/shared/share-modal/share-modal.component';
 import { OPMLModalComponent } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
 import { SubscribeModalComponent } from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
 import { VerticalNavComponent } from '@app/routes/main/components/shared/vertical-nav/vertical-nav.component';
@@ -56,6 +58,7 @@ async function setup() {
       FormsModule,
       BrowserAnimationsModule,
       ClarityModule,
+      ShareModule,
       RouterTestingModule.withRoutes([]),
     ],
     declarations: [
@@ -66,6 +69,7 @@ async function setup() {
       UserCategoriesModalComponent,
       FeedsFooterComponent,
       InfiniteScrollDirective,
+      ShareModalComponent,
     ],
     providers: [
       FeedObservableService,

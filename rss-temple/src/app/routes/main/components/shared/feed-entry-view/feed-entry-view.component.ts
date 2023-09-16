@@ -4,6 +4,10 @@ import { takeUntil } from 'rxjs/operators';
 
 import { Feed } from '@app/models';
 import { FeedEntryImpl } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
+import {
+  ShareModalComponent,
+  openModal as openShareModal,
+} from '@app/routes/main/components/shared/share-modal/share-modal.component';
 import { ReadCounterService } from '@app/routes/main/services';
 import { FeedEntryService } from '@app/services/data';
 
@@ -27,9 +31,10 @@ export class FeedEntryViewComponent implements OnDestroy {
   @Input()
   isGoToVisible = false;
 
-  flashing = false;
+  @Input()
+  shareModalComponent?: ShareModalComponent;
 
-  readonly isWebShareAPIAvailable = Boolean(navigator.share);
+  flashing = false;
 
   private hasAutoRead = false;
 
@@ -125,22 +130,19 @@ export class FeedEntryViewComponent implements OnDestroy {
   }
 
   async share() {
+    if (this.shareModalComponent === undefined) {
+      throw new Error('shareModalComponent undefined');
+    }
+
     if (this.feedEntry === undefined) {
       return;
     }
 
-    if (!navigator.share) {
-      return;
-    }
-
-    try {
-      await navigator.share({
-        url: this.feedEntry.url,
-        title: this.feedEntry.title,
-      });
-    } catch (err: unknown) {
-      console.error(err);
-    }
+    await openShareModal(
+      this.feedEntry.url,
+      this.feedEntry.title,
+      this.shareModalComponent,
+    );
   }
 
   onClick(event: MouseEvent) {

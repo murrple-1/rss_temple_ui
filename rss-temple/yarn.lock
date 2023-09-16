@@ -6245,6 +6245,13 @@ ng-process-env@^16.0.6:
     ts-morph "18.0.0"
     typescript "5.0.4"
 
+ngx-sharebuttons@^13.0.0:
+  version "13.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-sharebuttons/-/ngx-sharebuttons-13.0.0.tgz#b42b86e4288e487c2f328c5f51d9269ef46d6e22"
+  integrity sha512-WRDhuHcNEqZxvUyE+8rXpkZTrB2Q3bYCSXomHTO/Y/rJD+F2eX187Y7sETLU8xDzQwtSUs8B9Aa9CE37M4FMeA==
+  dependencies:
+    tslib "^2.0.0"
+
 nice-napi@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/nice-napi/-/nice-napi-1.0.2.tgz#dc0ab5a1eac20ce548802fc5686eaa6bc654927b"

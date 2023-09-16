@@ -1,0 +1,28 @@
+<clr-modal [clrModalOpen]="open" (clrModalOpenChange)="openChanged($event)">
+  <h4 class="modal-title">Share</h4>
+  <div class="modal-body">
+    <button
+      *ngIf="isWebShareAPIAvailable"
+      class="btn btn-success-outline app--share-button"
+      (click)="webShare()"
+    >
+      <cds-icon shape="share"></cds-icon>
+      <span class="app--share-title">Share via Browser...</span>
+    </button>
+    <button
+      *ngFor="let shareButtonDescriptor of shareButtonDescriptors"
+      class="btn btn-outline app--share-button"
+      [shareButton]="shareButtonDescriptor.shareButtonName"
+      [url]="url"
+      [title]="title"
+    >
+      <cds-icon [attr.shape]="shareButtonDescriptor.iconName"></cds-icon>
+      <span class="app--share-title">{{ shareButtonDescriptor.title }}</span>
+    </button>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" type="button" (click)="close()">
+      Close
+    </button>
+  </div>
+</clr-modal>

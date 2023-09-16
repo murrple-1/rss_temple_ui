@@ -1,0 +1,14 @@
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 0.4rem;
+
+  .app--share-button {
+    width: 100%;
+
+    .app--share-title {
+      margin-left: 4px;
+    }
+  }
+}

@@ -53,11 +53,7 @@
         Favorite
       </button>
     </ng-template>
-    <button
-      *ngIf="isWebShareAPIAvailable"
-      class="btn btn-icon btn-sm"
-      (click)="share()"
-    >
+    <button class="btn btn-icon btn-sm" (click)="share()">
       <cds-icon shape="share"></cds-icon>
     </button>
     <a

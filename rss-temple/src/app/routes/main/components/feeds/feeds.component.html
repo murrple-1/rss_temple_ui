@@ -46,6 +46,7 @@
       [appInViewportScrollParent]="scrollContainer"
       [appInViewportOffset]="{ 'bottom': -64 }"
       (appInViewportWatch)="onEntryEnteredViewport($event, feedEntryView)"
+      [shareModalComponent]="shareModalComponent"
       (click)="onEntryClicked($event, feedEntryView)"
     ></app-feed-entry-view>
   </div>
@@ -59,3 +60,5 @@
     </div>
   </div>
 </div>
+
+<app-share-modal #shareModalComponent></app-share-modal>
