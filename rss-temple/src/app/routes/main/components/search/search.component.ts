@@ -84,7 +84,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   entriesSearchPublishedAtEndDate: Date | null = null;
   entriesSearchButtonState = ClrLoadingState.DEFAULT;
   entriesAvailableLanguages: LanguageSelect[] | null = null;
-  entriesLanguages: LanguageSelect[] = [];
+  entriesSearchLanguages: LanguageSelect[] = [];
   entriesLoadingState = LoadingState.IsNotLoading;
 
   feedsSearchTitle = '';
@@ -141,6 +141,7 @@ export class SearchComponent implements OnInit, OnDestroy {
               this.entriesSearchAuthorName = '';
               this.entriesSearchPublishedAtStartDate = null;
               this.entriesSearchPublishedAtEndDate = null;
+              this.entriesSearchLanguages = [];
 
               this.feedsSearchTitle = searchText;
             });
@@ -416,7 +417,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.entriesSearchAuthorName,
       this.entriesSearchPublishedAtStartDate,
       this.entriesSearchPublishedAtEndDate,
-      this.entriesLanguages.map(e => e.value),
+      this.entriesSearchLanguages.map(e => e.value),
       Count,
       0,
     )
@@ -481,7 +482,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.entriesSearchAuthorName,
       this.entriesSearchPublishedAtStartDate,
       this.entriesSearchPublishedAtEndDate,
-      this.entriesLanguages.map(e => e.value),
+      this.entriesSearchLanguages.map(e => e.value),
       Count,
       this.entryDescriptors.length,
     )

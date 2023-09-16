@@ -17,6 +17,7 @@ import {
   playIcon,
   plusIcon,
   refreshIcon,
+  searchIcon,
   shareIcon,
   starIcon,
   stopIcon,
@@ -97,6 +98,7 @@ export function clarityIconsFactory() {
       clipboardIcon,
       envelopeIcon,
       talkBubblesIcon,
+      searchIcon,
       ...myCollectionIcons,
     );
   };
