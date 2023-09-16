@@ -4,6 +4,10 @@ import { Observable, Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import {
+  SearchModalComponent,
+  openModal as openSearchModal,
+} from '@app/components/nav/search-modal/search-modal.component';
+import {
   ConfirmModalComponent,
   openModal as openConfirmModal,
 } from '@app/components/shared/confirm-modal/confirm-modal.component';
@@ -19,6 +23,7 @@ interface NavLink {
 interface NavAction {
   clrIconShape: string;
   onClick: () => void;
+  classes: string | string[] | Set<string> | { [klass: string]: unknown };
 }
 
 @Component({
@@ -68,9 +73,15 @@ export class NavComponent implements OnInit, OnDestroy {
       map(navEnd => /^\/main\/support/.test(navEnd.urlAfterRedirects)),
     ),
   };
+  private readonly searchAction: NavAction = {
+    clrIconShape: 'search',
+    onClick: () => this.showSearchModal(),
+    classes: { 'app--search-action': true },
+  };
   private readonly logoutAction: NavAction = {
     clrIconShape: 'logout',
     onClick: () => this.logout(),
+    classes: {},
   };
 
   navLinks: NavLink[] = [];
@@ -81,6 +92,9 @@ export class NavComponent implements OnInit, OnDestroy {
 
   @ViewChild('logoutConfirmModal', { static: true })
   private logoutConfirmModal?: ConfirmModalComponent;
+
+  @ViewChild('searchModal', { static: true })
+  private searchModal?: SearchModalComponent;
 
   private unsubscribe$ = new Subject<void>();
 
@@ -105,7 +119,7 @@ export class NavComponent implements OnInit, OnDestroy {
                 this.profileLink,
                 this.supportLink,
               ];
-              this.navActions = [this.logoutAction];
+              this.navActions = [this.searchAction, this.logoutAction];
               this.isSearchVisible = true;
             } else {
               this.navLinks = [this.loginLink];
@@ -122,13 +136,27 @@ export class NavComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  onSearch() {
+  async onSearch() {
     const searchText = this.searchText.trim();
     if (searchText.length < 1) {
       return;
     }
 
-    this.router.navigate(['/main/search', { searchText }]);
+    await this.router.navigate(['/main/search', { searchText }]);
+  }
+
+  private async showSearchModal() {
+    if (this.searchModal === undefined) {
+      throw new Error('searchModal undefined');
+    }
+
+    let searchText = await openSearchModal(this.searchModal);
+    if (searchText !== null) {
+      searchText = searchText.trim();
+      if (searchText.length > 0) {
+        this.router.navigate(['/main/search', { searchText }]);
+      }
+    }
   }
 
   private async logout() {

@@ -1,0 +1,19 @@
+<clr-modal [clrModalOpen]="open" (clrModalOpenChange)="openChanged($event)">
+  <h4 class="modal-title">Search</h4>
+  <div class="modal-body">
+    <form clrForm (ngSubmit)="onSearch()">
+      <clr-input-container>
+        <label>Search Text</label>
+        <input
+          clrInput
+          type="text"
+          name="searchText"
+          [(ngModel)]="searchText"
+        />
+      </clr-input-container>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" (click)="onSearch()">Search</button>
+  </div>
+</clr-modal>

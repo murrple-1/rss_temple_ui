@@ -36,6 +36,7 @@ import { AppAlertsComponent } from '@app/components/app-alerts/app-alerts.compon
 import { LoginComponent } from '@app/components/login/login.component';
 import { RequestPasswordResetModalComponent as LoginRequestPasswordResetModalComponent } from '@app/components/login/request-password-reset-modal/request-password-reset-modal.component';
 import { NavComponent } from '@app/components/nav/nav.component';
+import { SearchModalComponent } from '@app/components/nav/search-modal/search-modal.component';
 import { RegisterComponent } from '@app/components/register/register.component';
 import { ResetPasswordComponent } from '@app/components/reset-password/reset-password.component';
 import { SubNavComponent } from '@app/components/subnav/subnav.component';
@@ -126,6 +127,7 @@ export function configFactory(configService: ConfigService) {
   declarations: [
     AppComponent,
     NavComponent,
+    SearchModalComponent,
     SubNavComponent,
     AppAlertsComponent,
     LoginComponent,

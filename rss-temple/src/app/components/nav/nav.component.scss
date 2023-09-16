@@ -6,3 +6,15 @@
 input#search-input {
   margin-left: 8px;
 }
+
+.search {
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.header-actions .app--search-action {
+  @media (min-width: 769px) {
+    display: none;
+  }
+}

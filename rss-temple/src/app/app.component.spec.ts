@@ -8,6 +8,7 @@ import { ClarityModule } from '@clr/angular';
 
 import { AppAlertsComponent } from '@app/components/app-alerts/app-alerts.component';
 import { NavComponent } from '@app/components/nav/nav.component';
+import { SearchModalComponent } from '@app/components/nav/search-modal/search-modal.component';
 import { ConfirmModalComponent } from '@app/components/shared/confirm-modal/confirm-modal.component';
 import { SubNavComponent } from '@app/components/subnav/subnav.component';
 import { ConfigService } from '@app/services';
@@ -34,6 +35,7 @@ async function setup() {
       NavComponent,
       SubNavComponent,
       ConfirmModalComponent,
+      SearchModalComponent,
     ],
     providers: [
       {

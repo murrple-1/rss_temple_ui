@@ -24,6 +24,7 @@
   <a
     *ngFor="let navAction of navActions"
     href="javascript:;"
+    [ngClass]="navAction.classes"
     class="nav-link nav-icon"
     (click)="navAction.onClick()"
   >
@@ -32,3 +33,4 @@
 </div>
 
 <app-confirm-modal #logoutConfirmModal></app-confirm-modal>
+<app-search-modal #searchModal></app-search-modal>
