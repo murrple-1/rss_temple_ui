@@ -30,6 +30,7 @@ module.exports = function (grunt) {
         options: {
           context: [
             {
+              page_name: "Home",
               app_url: grunt.config("app-url"),
               fb_url: grunt.config("fb-url"),
               twitter_url: grunt.config("twitter-url"),
@@ -45,6 +46,7 @@ module.exports = function (grunt) {
         options: {
           context: [
             {
+              page_name: "Contact",
               app_url: grunt.config("app-url"),
               fb_url: grunt.config("fb-url"),
               twitter_url: grunt.config("twitter-url"),
@@ -60,6 +62,7 @@ module.exports = function (grunt) {
         options: {
           context: [
             {
+              page_name: "Terms of Service",
               app_url: grunt.config("app-url"),
               fb_url: grunt.config("fb-url"),
               twitter_url: grunt.config("twitter-url"),
@@ -75,6 +78,7 @@ module.exports = function (grunt) {
         options: {
           context: [
             {
+              page_name: "Privacy Policy",
               app_url: grunt.config("app-url"),
               fb_url: grunt.config("fb-url"),
               twitter_url: grunt.config("twitter-url"),
