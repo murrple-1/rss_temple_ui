@@ -17,6 +17,17 @@ h6 {
   font-weight: 700;
 }
 
+.navbar .navbar-brand {
+  svg {
+    width: 36px;
+    height: 36px;
+  }
+
+  span {
+    margin-left: 4px;
+  }
+}
+
 header.app--masthead {
   position: relative;
   background-color: #343a40;
