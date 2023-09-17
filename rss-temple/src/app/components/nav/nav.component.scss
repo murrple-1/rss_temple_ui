@@ -1,20 +1,33 @@
 :host {
   display: flex;
-  flex: 1 0 auto;
-}
-
-input#search-input {
-  margin-left: 8px;
+  flex: 1;
 }
 
 .search {
+  flex: 1;
+  max-width: unset;
+
+  label[for='search-input'] {
+    display: flex;
+    flex: 1;
+    max-width: unset;
+
+    input#search-input {
+      flex: 1;
+      margin-left: 8px;
+    }
+  }
+
   @media (max-width: 768px) {
     display: none;
   }
 }
 
-.header-actions .app--search-action {
-  @media (min-width: 769px) {
-    display: none;
+.header-actions {
+  flex: 0;
+  .app--search-action {
+    @media (min-width: 769px) {
+      display: none;
+    }
   }
 }
