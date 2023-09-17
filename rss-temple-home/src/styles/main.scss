@@ -5,7 +5,28 @@ $fa-font-path: "/media/fonts";
 @import "brands.scss";
 
 body {
+  --bs-primary-rgb: 222, 136, 0;
+  --bs-link-color-rgb: 222, 136, 0;
+  --bs-link-hover-color-rgb: 233, 144, 0;
+
   font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  .btn-primary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #de8800;
+    --bs-btn-border-color: #de8800;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #e99000;
+    --bs-btn-hover-border-color: #c77b00;
+    --bs-btn-focus-shadow-rgb: 49, 132, 253;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #c77b00;
+    --bs-btn-active-border-color: #d6880a;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #de8800;
+    --bs-btn-disabled-border-color: #de8800;
+  }
 }
 
 h1,
@@ -17,14 +38,16 @@ h6 {
   font-weight: 700;
 }
 
-.navbar .navbar-brand {
-  svg {
-    width: 36px;
-    height: 36px;
-  }
+.navbar {
+  .navbar-brand {
+    svg {
+      width: 36px;
+      height: 36px;
+    }
 
-  span {
-    margin-left: 4px;
+    span {
+      margin-left: 4px;
+    }
   }
 }
 
@@ -38,6 +61,12 @@ header.app--masthead {
 
   h1 {
     font-size: 2rem;
+    text-shadow:
+      -1px -1px 0 #000000,
+      1px -1px 0 #000000,
+      -1px 1px 0 #000000,
+      1px 1px 0 #000000;
+    filter: drop-shadow(10px 15px 7px #555555);
   }
 
   @media (min-width: 768px) {
@@ -96,6 +125,14 @@ header.app--masthead {
   background-size: cover;
   padding-top: 7rem;
   padding-bottom: 7rem;
+
+  h2 {
+    text-shadow:
+      -1px -1px 0 #000000,
+      1px -1px 0 #000000,
+      -1px 1px 0 #000000,
+      1px 1px 0 #000000;
+  }
 }
 
 footer.app--footer {
