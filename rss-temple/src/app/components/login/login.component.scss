@@ -6,6 +6,9 @@ button#facebook-login {
 }
 
 .login-wrapper {
+  background: url(/assets/images/login_bg.svg);
+  background-size: 100%;
+
   .login {
     min-height: unset;
 
