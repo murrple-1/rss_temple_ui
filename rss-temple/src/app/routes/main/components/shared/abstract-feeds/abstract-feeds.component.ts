@@ -41,6 +41,8 @@ export type FeedEntryImpl = Required<
     | 'authorName'
     | 'publishedAt'
     | 'feedUuid'
+    | 'hasTopImageBeenProcessed'
+    | 'topImageSrc'
   >
 >;
 
@@ -140,6 +142,8 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
         'authorName',
         'publishedAt',
         'feedUuid',
+        'hasTopImageBeenProcessed',
+        'topImageSrc',
       ],
       returnTotalCount: false,
     };

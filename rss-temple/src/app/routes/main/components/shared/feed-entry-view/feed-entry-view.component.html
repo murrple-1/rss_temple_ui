@@ -22,6 +22,12 @@
       <p class="p7 app--date">{{ feedEntry.publishedAt | dateFormat }}</p>
     </div>
     <div
+      *ngIf="feedEntry.hasTopImageBeenProcessed && feedEntry.topImageSrc !== ''"
+      class="card-text app--content app--top-image"
+    >
+      <img [src]="feedEntry.topImageSrc" />
+    </div>
+    <div
       class="card-text app--content"
       [innerHtml]="feedEntry.content | safeHtml"
     ></div>

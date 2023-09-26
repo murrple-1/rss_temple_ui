@@ -12,7 +12,7 @@
     & ::ng-deep img {
       display: block;
       max-width: calc(100vw * (2 / 3));
-      max-height: calc(100vh * (2 / 3));
+      max-height: calc(100vh * (1 / 4));
     }
 
     & ::ng-deep pre,

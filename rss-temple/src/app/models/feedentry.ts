@@ -28,6 +28,8 @@ export const ZFeedEntry = z
     languageIso639_3: z.string(),
     languageIso639_1: z.string(),
     languageName: z.string(),
+    hasTopImageBeenProcessed: z.boolean(),
+    topImageSrc: z.string(),
   })
   .partial();
 
