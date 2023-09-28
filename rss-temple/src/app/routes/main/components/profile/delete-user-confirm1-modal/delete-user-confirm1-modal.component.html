@@ -1,0 +1,16 @@
+<clr-modal [clrModalOpen]="open" (clrModalOpenChange)="openChanged($event)">
+  <h3 class="modal-title">Are you sure?</h3>
+  <div class="modal-body">
+    <cds-icon
+      shape="exclamation-triangle"
+      size="xxl"
+      status="danger"
+    ></cds-icon>
+    <p>Are you sure you want to delete your data?</p>
+    <p>This action cannot be undone.</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-outline" (click)="onCancel()">No</button>
+    <button class="btn btn-danger" (click)="onContinue()">Yes</button>
+  </div>
+</clr-modal>

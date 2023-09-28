@@ -6,6 +6,8 @@ import { ClarityModule } from '@clr/angular';
 import { of } from 'rxjs';
 
 import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-match-validator.directive';
+import { DeleteUserConfirm1ModalComponent } from '@app/routes/main/components/profile/delete-user-confirm1-modal/delete-user-confirm1-modal.component';
+import { DeleteUserConfirm2ModalComponent } from '@app/routes/main/components/profile/delete-user-confirm2-modal/delete-user-confirm2-modal.component';
 import { GlobalUserCategoriesModalComponent } from '@app/routes/main/components/profile/global-user-categories-modal/global-user-categories-modal.component';
 import { ReadCounterService } from '@app/routes/main/services';
 import { FBAuthService, GAuthService } from '@app/services';
@@ -75,6 +77,8 @@ async function setup() {
     declarations: [
       ProfileComponent,
       GlobalUserCategoriesModalComponent,
+      DeleteUserConfirm1ModalComponent,
+      DeleteUserConfirm2ModalComponent,
       PasswordsMatchValidatorDirective,
     ],
     providers: [

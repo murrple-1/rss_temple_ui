@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 import { saveAs } from 'file-saver';
 import { Observable, Subject, forkJoin } from 'rxjs';
 import { map, skip, takeUntil } from 'rxjs/operators';
@@ -11,12 +12,21 @@ import {
   passwordRequirementsTextHtml,
 } from '@app/libs/password.lib';
 import {
+  DeleteUserConfirm1ModalComponent,
+  openModal as openDeleteUserConfirm1Modal,
+} from '@app/routes/main/components/profile/delete-user-confirm1-modal/delete-user-confirm1-modal.component';
+import {
+  DeleteUserConfirm2ModalComponent,
+  openModal as openDeleteUserConfirm2Modal,
+} from '@app/routes/main/components/profile/delete-user-confirm2-modal/delete-user-confirm2-modal.component';
+import {
   GlobalUserCategoriesModalComponent,
   openModal as openGlobalUserCategoriesModal,
 } from '@app/routes/main/components/profile/global-user-categories-modal/global-user-categories-modal.component';
 import { ReadCounterService } from '@app/routes/main/services';
 import {
   AppAlertsService,
+  AuthTokenService,
   FBAuthService,
   GAuthService,
   HttpErrorService,
@@ -79,6 +89,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
   @ViewChild(GlobalUserCategoriesModalComponent, { static: true })
   private globalUserCategoriesModal?: GlobalUserCategoriesModalComponent;
 
+  @ViewChild(DeleteUserConfirm1ModalComponent, { static: true })
+  private deleteUserConfirm1Modal?: DeleteUserConfirm1ModalComponent;
+
+  @ViewChild(DeleteUserConfirm2ModalComponent, { static: true })
+  private deleteUserConfirm2Modal?: DeleteUserConfirm2ModalComponent;
+
   readonly passwordHelperTextHtml = passwordRequirementsTextHtml('en');
   readonly passwordMinLength = PasswordMinLength;
   readonly passwordSpecialCharacters = PasswordSpecialCharacters.join('');
@@ -95,6 +111,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   constructor(
     private zone: NgZone,
+    private router: Router,
+    private authTokenService: AuthTokenService,
     private feedService: FeedService,
     private userMetaService: UserMetaService,
     private opmlService: OPMLService,
@@ -487,5 +505,31 @@ export class ProfileComponent implements OnInit, OnDestroy {
       })
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe();
+  }
+
+  async deleteUser() {
+    if (this.deleteUserConfirm1Modal === undefined) {
+      throw new Error('deleteUserConfirm1Modal undefined');
+    }
+
+    if (this.deleteUserConfirm2Modal === undefined) {
+      throw new Error('deleteUserConfirm2Modal undefined');
+    }
+
+    const agreed = await openDeleteUserConfirm1Modal(
+      this.deleteUserConfirm1Modal,
+    );
+    if (agreed) {
+      const done = await openDeleteUserConfirm2Modal(
+        this.deleteUserConfirm2Modal,
+      );
+      if (done) {
+        this.authTokenService.authToken$.next(null);
+        localStorage.removeItem('auth-token-service:authToken');
+        sessionStorage.removeItem('auth-token-service:authToken');
+
+        this.router.navigate(['/login']);
+      }
+    }
   }
 }

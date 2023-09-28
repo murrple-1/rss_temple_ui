@@ -129,4 +129,20 @@ export class AuthService {
       },
     );
   }
+
+  deleteUser(password: string, options: CommonOptions = {}) {
+    const headers = commonToHeaders(options, () =>
+      this.authTokenService.authToken$.getValue(),
+    );
+
+    return this.http.post<void>(
+      `${this.apiHost}/api/auth/user/delete`,
+      {
+        password,
+      },
+      {
+        headers,
+      },
+    );
+  }
 }

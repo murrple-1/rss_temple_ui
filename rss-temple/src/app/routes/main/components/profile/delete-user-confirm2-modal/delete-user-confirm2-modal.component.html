@@ -1,0 +1,49 @@
+<form clrForm #deleteUserForm="ngForm" (ngSubmit)="startDelete()">
+  <clr-modal
+    [clrModalOpen]="open"
+    (clrModalOpenChange)="openChanged($event)"
+    [clrModalClosable]="requestButtonState === ClrLoadingState.DEFAULT"
+  >
+    <h3 class="modal-title">Data Deletion: LAST CHANCE</h3>
+    <div class="modal-body">
+      <cds-icon
+        shape="exclamation-triangle"
+        size="xxl"
+        status="danger"
+      ></cds-icon>
+      <p>This is your last chance to go back.</p>
+      <p>Again, this action cannot be undone.</p>
+      <p>To confirm your data deletion request, please enter your password.</p>
+      <clr-password-container>
+        <label>Password</label>
+        <input
+          clrPassword
+          type="password"
+          name="password"
+          [(ngModel)]="password"
+          required
+          [disabled]="requestButtonState !== ClrLoadingState.DEFAULT"
+        />
+        <clr-control-error *clrIfError="'required'"
+          >Password required</clr-control-error
+        >
+      </clr-password-container>
+      <app-local-alerts
+        *ngIf="alertEntries !== null"
+        [alertEntries]="alertEntries"
+      ></app-local-alerts>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" (click)="onCancel()" type="button">
+        Never Mind
+      </button>
+      <button
+        class="btn btn-danger"
+        type="submit"
+        [clrLoading]="requestButtonState"
+      >
+        Delete Your Data
+      </button>
+    </div>
+  </clr-modal>
+</form>
