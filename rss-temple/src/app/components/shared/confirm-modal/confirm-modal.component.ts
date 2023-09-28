@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 
@@ -7,13 +7,25 @@ import { take } from 'rxjs/operators';
   templateUrl: './confirm-modal.component.html',
   styleUrls: ['./confirm-modal.component.scss'],
 })
-export class ConfirmModalComponent {
+export class ConfirmModalComponent implements OnDestroy {
   open = false;
 
   title = '';
   text = '';
 
   result = new Subject<boolean>();
+
+  ngOnDestroy() {
+    this.result.complete();
+  }
+
+  openChanged(open: boolean) {
+    if (!open) {
+      this.result.next(false);
+    }
+
+    this.open = open;
+  }
 
   onCancel() {
     this.result.next(false);

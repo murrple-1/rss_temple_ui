@@ -1,4 +1,4 @@
-<clr-modal [(clrModalOpen)]="open">
+<clr-modal [clrModalOpen]="open" (clrModalOpenChange)="openChanged($event)">
   <h3 class="modal-title">{{ title }}</h3>
   <div class="modal-body">
     <p>{{ text }}</p>
