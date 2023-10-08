@@ -132,4 +132,4 @@ jobs:
           path: rss-temple/test-results/
       - store_artifacts:
           path: rss-temple/test-results/
-      - codecov/uploads
+      - codecov/upload
