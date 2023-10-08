@@ -31,6 +31,7 @@ workflows:
 
 orbs:
   browser-tools: circleci/browser-tools@1.4.5
+  codecov: codecov/codecov@3.3.0
 
 jobs:
   build_app_latest:
@@ -131,7 +132,4 @@ jobs:
           path: rss-temple/test-results/
       - store_artifacts:
           path: rss-temple/test-results/
-      - run:
-          name: codecov
-          command: yarn run codecov --disable=gcov
-          working_directory: rss-temple/
+      - codecov/upload
