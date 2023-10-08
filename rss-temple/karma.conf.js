@@ -7,7 +7,7 @@ var browsers;
 if (process.env.CI !== undefined) {
   browsers = ['ChromeHeadlessCI', 'FirefoxHeadlessCI'];
 } else {
-  browsers = ['ChromeHeadless'];
+  browsers = ['FirefoxUbuntu'];
 }
 
 var reporters = ['progress', 'kjhtml'];
@@ -56,6 +56,11 @@ module.exports = function (config) {
       },
       FirefoxHeadlessCI: {
         base: 'FirefoxHeadless',
+      },
+      FirefoxUbuntu: {
+        base: 'Firefox',
+        flags: ['-headless'],
+        profile: require('path').join(__dirname, '.firefox_profile'),
       },
     },
   });

@@ -10,6 +10,7 @@ import { ClarityModule } from '@clr/angular';
 import { of, throwError } from 'rxjs';
 import { take } from 'rxjs/operators';
 
+import { InfoModalComponent } from '@app/components/shared/info-modal/info-modal.component';
 import { EmailValidatorDirective } from '@app/directives/email-validator.directive';
 import { PasswordValidatorDirective } from '@app/directives/password-validator.directive';
 import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-match-validator.directive';
@@ -78,6 +79,7 @@ async function setup() {
       EmailValidatorDirective,
       PasswordValidatorDirective,
       PasswordsMatchValidatorDirective,
+      InfoModalComponent,
     ],
     providers: [
       {
@@ -383,9 +385,6 @@ describe('RegisterComponent', () => {
     const { mockRegistrationService } = await setup();
     mockRegistrationService.register.and.returnValue(of(undefined));
 
-    const router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
-
     const componentFixture = TestBed.createComponent(RegisterComponent);
     const component = componentFixture.componentInstance;
     const debugElement = componentFixture.debugElement;
@@ -429,16 +428,14 @@ describe('RegisterComponent', () => {
     componentFixture.detectChanges();
     await componentFixture.whenStable();
 
-    expect(router.navigate).toHaveBeenCalledWith(
-      jasmine.objectContaining([jasmine.stringMatching(/login/)]),
-    );
+    expect(
+      componentFixture.componentInstance.infoModalComponent?.open,
+    ).toBeTrue();
   }));
 
   it('should register: Google', waitForAsync(async () => {
     const { mockSocialService } = await setup();
     mockSocialService.googleLogin.and.returnValue(of('google-token'));
-    const router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
 
     const componentFixture = TestBed.createComponent(RegisterComponent);
     const component = componentFixture.componentInstance;
@@ -485,16 +482,14 @@ describe('RegisterComponent', () => {
     componentFixture.detectChanges();
     await componentFixture.whenStable();
 
-    expect(router.navigate).toHaveBeenCalledWith(
-      jasmine.objectContaining([jasmine.stringMatching(/login/)]),
-    );
+    expect(
+      componentFixture.componentInstance.infoModalComponent?.open,
+    ).toBeTrue();
   }));
 
   it('should register: Facebook', waitForAsync(async () => {
     const { mockSocialService } = await setup();
     mockSocialService.facebookLogin.and.returnValue(of('facebook-token'));
-    const router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
 
     const componentFixture = TestBed.createComponent(RegisterComponent);
     const component = componentFixture.componentInstance;
@@ -541,9 +536,9 @@ describe('RegisterComponent', () => {
     componentFixture.detectChanges();
     await componentFixture.whenStable();
 
-    expect(router.navigate).toHaveBeenCalledWith(
-      jasmine.objectContaining([jasmine.stringMatching(/login/)]),
-    );
+    expect(
+      componentFixture.componentInstance.infoModalComponent?.open,
+    ).toBeTrue();
   }));
 
   it('should handle registration errors: cannot connect', waitForAsync(async () => {
