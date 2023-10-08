@@ -2,7 +2,7 @@ export type ValidationErrors = Record<string, unknown>;
 
 export const MinLength = 6;
 
-export const SpecialCharacters = ['!', '@', '#', '$', '%', '^', '&'];
+export const SpecialCharacters = ['!', '@', '#', '$', '%', '^', '&', '?'];
 
 export function validatePassword(password: string) {
   let validationErrors: ValidationErrors | null = null;
@@ -25,7 +25,7 @@ export function validatePassword(password: string) {
     validationErrors.nodigit = true;
   }
 
-  if (!/[!@#$%^&]/.test(password)) {
+  if (!/[!@#$%^&?]/.test(password)) {
     /* istanbul ignore next */
     validationErrors = validationErrors ?? {};
     validationErrors.nospecialcharacter = true;
