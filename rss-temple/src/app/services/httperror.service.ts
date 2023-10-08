@@ -31,7 +31,7 @@ export class HttpErrorService {
           this.router.navigate(['/login']);
           break;
         }
-        case 420: {
+        case 429: {
           errorMessage = 'Request throttled: Please try again in a few minutes';
           break;
         }

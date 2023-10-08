@@ -226,7 +226,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
                 errorHandled = true;
                 break;
               }
-              case 420: {
+              case 429: {
                 this.appAlertsService.appAlertDescriptor$.next({
                   autoCloseInterval: 5000,
                   canClose: true,
