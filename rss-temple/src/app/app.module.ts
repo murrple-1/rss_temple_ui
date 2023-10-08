@@ -85,6 +85,7 @@ export function clarityIconsFactory() {
       exclamationCircleIcon,
       windowCloseIcon,
       exclamationTriangleIcon,
+      exclamationCircleIcon,
       folderIcon,
       plusIcon,
       uploadIcon,

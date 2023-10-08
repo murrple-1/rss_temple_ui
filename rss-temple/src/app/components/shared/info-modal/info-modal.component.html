@@ -1,0 +1,15 @@
+<clr-modal [clrModalOpen]="open" (clrModalOpenChange)="openChanged($event)">
+  <h3 class="modal-title">{{ title }}</h3>
+  <div class="modal-body">
+    <cds-icon
+      *ngIf="isIconVisible"
+      [attr.shape]="iconShape"
+      size="xxl"
+      [attr.status]="iconStatus"
+    ></cds-icon>
+    <p>{{ text }}</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" (click)="onOk()">Ok</button>
+  </div>
+</clr-modal>

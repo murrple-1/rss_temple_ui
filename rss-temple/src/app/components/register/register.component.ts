@@ -14,6 +14,10 @@ import { Subject, forkJoin } from 'rxjs';
 import { mergeMap, takeUntil, tap } from 'rxjs/operators';
 
 import {
+  InfoModalComponent,
+  openModal as openInfoModal,
+} from '@app/components/shared/info-modal/info-modal.component';
+import {
   MinLength as PasswordMinLength,
   SpecialCharacters as PasswordSpecialCharacters,
   passwordRequirementsTextHtml,
@@ -51,6 +55,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   @ViewChild('registerForm', { static: true })
   registerForm?: NgForm;
+
+  @ViewChild(InfoModalComponent, { static: true })
+  infoModalComponent?: InfoModalComponent;
 
   private readonly unsubscribe$ = new Subject<void>();
 
@@ -113,6 +120,16 @@ export class RegisterComponent implements OnInit, OnDestroy {
                   canClose: true,
                   text: 'Unable to connect to server',
                   type: 'danger',
+                });
+                errorHandled = true;
+                break;
+              }
+              case 420: {
+                this.appAlertsService.appAlertDescriptor$.next({
+                  autoCloseInterval: 5000,
+                  canClose: true,
+                  text: 'Request throttled: Please try again in a few minutes',
+                  type: 'warning',
                 });
                 errorHandled = true;
                 break;
@@ -180,10 +197,19 @@ export class RegisterComponent implements OnInit, OnDestroy {
     }
   }
 
-  private handleRegisterSuccess() {
-    this.zone.run(() => {
-      this.router.navigate(['/login']);
-    });
+  private async handleRegisterSuccess() {
+    const infoModalComponent = this.infoModalComponent;
+    if (infoModalComponent === undefined) {
+      throw new Error('infoModalComponent undefined');
+    }
+
+    await openInfoModal(
+      'Registration Started',
+      'You will receive an email at the address you specified with a confirmation link. You will be unable to login until the link has been followed.',
+      'info',
+      infoModalComponent,
+    );
+    this.router.navigate(['/login']);
   }
 
   private handleRegisterError(error: any) {

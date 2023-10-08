@@ -226,6 +226,19 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
                 errorHandled = true;
                 break;
               }
+              case 420: {
+                this.appAlertsService.appAlertDescriptor$.next({
+                  autoCloseInterval: 5000,
+                  canClose: true,
+                  text: 'Request throttled: Please try again in a few minutes',
+                  type: 'warning',
+                });
+                this.zone.run(() => {
+                  this.loginButtonState = ClrLoadingState.DEFAULT;
+                });
+                errorHandled = true;
+                break;
+              }
             }
           }
 

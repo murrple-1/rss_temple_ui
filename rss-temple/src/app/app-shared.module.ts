@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { ClarityModule } from '@clr/angular';
 
 import { ConfirmModalComponent } from '@app/components/shared/confirm-modal/confirm-modal.component';
+import { InfoModalComponent } from '@app/components/shared/info-modal/info-modal.component';
 import { LocalAlertsComponent } from '@app/components/shared/local-alerts/local-alerts.component';
 import { EmailValidatorDirective } from '@app/directives/email-validator.directive';
 import { PasswordValidatorDirective } from '@app/directives/password-validator.directive';
@@ -23,6 +24,7 @@ import { SafeHtmlPipe } from '@app/pipes/safe-html.pipe';
     SafeHtmlPipe,
 
     ConfirmModalComponent,
+    InfoModalComponent,
     LocalAlertsComponent,
   ],
   exports: [
@@ -35,6 +37,7 @@ import { SafeHtmlPipe } from '@app/pipes/safe-html.pipe';
     SafeHtmlPipe,
 
     ConfirmModalComponent,
+    InfoModalComponent,
     LocalAlertsComponent,
   ],
 })

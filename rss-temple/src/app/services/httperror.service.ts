@@ -19,16 +19,22 @@ export class HttpErrorService {
     let errorMessage = 'Unknown Error';
     if (error instanceof HttpErrorResponse) {
       switch (error.status) {
-        case 0:
+        case 0: {
           errorMessage = 'Unable to connect to server';
           break;
-        case 401:
+        }
+        case 401: {
           errorMessage = 'Session expired';
           this.authTokenService.authToken$.next(null);
           localStorage.removeItem('auth-token-service:authToken');
           sessionStorage.removeItem('auth-token-service:authToken');
           this.router.navigate(['/login']);
           break;
+        }
+        case 420: {
+          errorMessage = 'Request throttled: Please try again in a few minutes';
+          break;
+        }
       }
     }
 
