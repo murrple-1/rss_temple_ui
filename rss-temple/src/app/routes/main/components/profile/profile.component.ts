@@ -460,6 +460,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
                 errorHandled = true;
                 break;
               }
+              case 422: {
+                this.appAlertsService.appAlertDescriptor$.next({
+                  autoCloseInterval: 5000,
+                  canClose: true,
+                  text: 'Password was determined to be too easy to guess based on internal analysis. Please try a different password',
+                  type: 'danger',
+                });
+                errorHandled = true;
+                break;
+              }
             }
           }
 

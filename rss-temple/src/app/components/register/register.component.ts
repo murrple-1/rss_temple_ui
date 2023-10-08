@@ -12,6 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ClrLoadingState } from '@clr/angular';
 import { Subject, forkJoin } from 'rxjs';
 import { mergeMap, takeUntil, tap } from 'rxjs/operators';
+import { z } from 'zod';
 
 import {
   InfoModalComponent,
@@ -28,6 +29,8 @@ import {
   RegistrationService,
   SocialService,
 } from '@app/services/data';
+
+const Z422Error = z.record(z.unknown());
 
 @Component({
   templateUrl: './register.component.html',
@@ -212,23 +215,43 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.router.navigate(['/login']);
   }
 
-  private handleRegisterError(error: any) {
+  private handleRegisterError(error: unknown) {
     let errorMessage = 'Unknown Error';
-    switch (error.status) {
-      case 0:
-        errorMessage = 'Unable to connect to server';
-        break;
-      case 409:
-        errorMessage = 'Email already in use';
-        break;
-      case 404:
-      case 422:
-        errorMessage = 'Captcha failed';
-        this.refreshCaptcha();
-        this.zone.run(() => {
-          this.captchaSecretPhrase = '';
-        });
-        break;
+    if (error instanceof HttpErrorResponse) {
+      switch (error.status) {
+        case 0: {
+          errorMessage = 'Unable to connect to server';
+          break;
+        }
+        case 409: {
+          errorMessage = 'Email already in use';
+          break;
+        }
+        case 404: {
+          errorMessage = 'Captcha failed';
+          this.refreshCaptcha();
+          this.zone.run(() => {
+            this.captchaSecretPhrase = '';
+          });
+          break;
+        }
+        case 422: {
+          const errorRecord = Z422Error.parse(error.error);
+          const keys = Object.keys(errorRecord);
+          if (keys.includes('captchaSecretPhrase')) {
+            errorMessage = 'Captcha failed';
+            this.refreshCaptcha();
+            this.zone.run(() => {
+              this.captchaSecretPhrase = '';
+            });
+          } else if (keys.includes('password')) {
+            errorMessage =
+              'Password was determined to be too easy to guess based on internal analysis. Please try a different password';
+          }
+
+          break;
+        }
+      }
     }
 
     this.appAlertsService.appAlertDescriptor$.next({

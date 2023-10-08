@@ -10,7 +10,7 @@ import {
   SpecialCharacters as PasswordSpecialCharacters,
   passwordRequirementsText,
 } from '@app/libs/password.lib';
-import { HttpErrorService } from '@app/services';
+import { AppAlertsService, HttpErrorService } from '@app/services';
 import { AuthService } from '@app/services/data';
 
 enum State {
@@ -54,6 +54,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private zone: NgZone,
     private authService: AuthService,
+    private appAlertsService: AppAlertsService,
     private httpErrorService: HttpErrorService,
   ) {}
 
@@ -108,11 +109,33 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
           }, ResetPasswordComponent.redirectTimeoutInterval);
         },
         error: error => {
-          if (error instanceof HttpErrorResponse && error.status === 404) {
-            this.zone.run(() => {
-              this.state = State.BadToken;
-            });
-          } else {
+          let errorHandled = false;
+          if (error instanceof HttpErrorResponse) {
+            switch (error.status) {
+              case 404: {
+                this.zone.run(() => {
+                  this.state = State.BadToken;
+                });
+                errorHandled = true;
+                break;
+              }
+              case 422: {
+                this.appAlertsService.appAlertDescriptor$.next({
+                  autoCloseInterval: 5000,
+                  canClose: true,
+                  text: 'Password was determined to be too easy to guess based on internal analysis. Please try a different password',
+                  type: 'danger',
+                });
+                this.zone.run(() => {
+                  this.state = State.Error;
+                });
+                errorHandled = true;
+                break;
+              }
+            }
+          }
+
+          if (!errorHandled) {
             this.httpErrorService.handleError(error);
 
             this.zone.run(() => {
