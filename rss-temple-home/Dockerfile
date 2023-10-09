@@ -8,5 +8,3 @@ COPY . .
 
 RUN apk add --no-cache autoconf automake make gcc musl-dev libtool pkgconfig nasm \
   && yarn install --frozen-lockfile
-
-ENTRYPOINT ["./docker-run.sh"]
