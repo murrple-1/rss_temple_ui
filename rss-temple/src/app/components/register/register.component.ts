@@ -8,7 +8,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ClrLoadingState } from '@clr/angular';
 import { Subject, forkJoin } from 'rxjs';
 import { mergeMap, takeUntil, tap } from 'rxjs/operators';
@@ -24,11 +24,7 @@ import {
   passwordRequirementsTextHtml,
 } from '@app/libs/password.lib';
 import { AppAlertsService } from '@app/services';
-import {
-  CaptchaService,
-  RegistrationService,
-  SocialService,
-} from '@app/services/data';
+import { CaptchaService, RegistrationService } from '@app/services/data';
 
 const Z422Error = z.record(z.unknown());
 
@@ -48,9 +44,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
   captchaAudio: HTMLAudioElement | null = null;
   captchaSecretPhrase = '';
 
-  private googleToken: string | null = null;
-  private facebookToken: string | null = null;
-
   private captchaKey: string | null = null;
 
   readonly ClrLoadingState = ClrLoadingState;
@@ -66,20 +59,14 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
     private zone: NgZone,
     private changeDetectorRef: ChangeDetectorRef,
     private registrationService: RegistrationService,
     private captchaService: CaptchaService,
-    private socialService: SocialService,
     private appAlertsService: AppAlertsService,
   ) {}
 
   ngOnInit() {
-    this.googleToken = this.route.snapshot.paramMap.get('g_token');
-    this.facebookToken = this.route.snapshot.paramMap.get('fb_token');
-    this.email = this.route.snapshot.paramMap.get('email') ?? '';
-
     this.loadCaptcha();
   }
 
@@ -164,40 +151,22 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
     this.registerButtonState = ClrLoadingState.LOADING;
 
-    if (this.googleToken !== null) {
-      this.socialService
-        .googleLogin(this.googleToken)
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe({
-          next: this.handleRegisterSuccess.bind(this),
-          error: this.handleRegisterError.bind(this),
-        });
-    } else if (this.facebookToken !== null) {
-      this.socialService
-        .facebookLogin(this.facebookToken)
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe({
-          next: this.handleRegisterSuccess.bind(this),
-          error: this.handleRegisterError.bind(this),
-        });
-    } else {
-      if (this.captchaKey === null) {
-        throw new Error('captchaKey null');
-      }
-
-      this.registrationService
-        .register(
-          this.email,
-          this.password,
-          this.captchaKey,
-          this.captchaSecretPhrase,
-        )
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe({
-          next: this.handleRegisterSuccess.bind(this),
-          error: this.handleRegisterError.bind(this),
-        });
+    if (this.captchaKey === null) {
+      throw new Error('captchaKey null');
     }
+
+    this.registrationService
+      .register(
+        this.email,
+        this.password,
+        this.captchaKey,
+        this.captchaSecretPhrase,
+      )
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: this.handleRegisterSuccess.bind(this),
+        error: this.handleRegisterError.bind(this),
+      });
   }
 
   private async handleRegisterSuccess() {

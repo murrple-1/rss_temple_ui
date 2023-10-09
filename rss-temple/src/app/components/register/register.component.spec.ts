@@ -4,7 +4,7 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ClarityModule } from '@clr/angular';
 import { of, throwError } from 'rxjs';
@@ -16,11 +16,7 @@ import { PasswordValidatorDirective } from '@app/directives/password-validator.d
 import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-match-validator.directive';
 import { AppAlertsService } from '@app/services';
 import { AppAlertDescriptor } from '@app/services/app-alerts.service';
-import {
-  CaptchaService,
-  RegistrationService,
-  SocialService,
-} from '@app/services/data';
+import { CaptchaService, RegistrationService } from '@app/services/data';
 import { MockActivatedRoute } from '@app/test/activatedroute.mock';
 
 import { RegisterComponent } from './register.component';
@@ -54,10 +50,6 @@ async function setup() {
   const mockRegistrationService = jasmine.createSpyObj<RegistrationService>(
     'RegistrationService',
     ['register'],
-  );
-  const mockSocialService = jasmine.createSpyObj<SocialService>(
-    'SocialService',
-    ['facebookLogin', 'googleLogin'],
   );
 
   await TestBed.configureTestingModule({
@@ -94,10 +86,6 @@ async function setup() {
         provide: RegistrationService,
         useValue: mockRegistrationService,
       },
-      {
-        provide: SocialService,
-        useValue: mockSocialService,
-      },
     ],
   }).compileComponents();
 
@@ -106,7 +94,6 @@ async function setup() {
 
     mockCaptchService,
     mockRegistrationService,
-    mockSocialService,
   };
 }
 
@@ -119,20 +106,6 @@ describe('RegisterComponent', () => {
     expect(component).toBeTruthy();
     componentFixture.detectChanges();
     await componentFixture.whenStable();
-  }));
-
-  it('should create component with email', waitForAsync(async () => {
-    const { mockRoute } = await setup();
-
-    const email = 'test@test.com';
-    mockRoute.snapshot._paramMap._map.set('email', email);
-
-    const componentFixture = TestBed.createComponent(RegisterComponent);
-    const component = componentFixture.componentInstance;
-    componentFixture.detectChanges();
-    await componentFixture.whenStable();
-
-    expect(component.email).toBe(email);
   }));
 
   it('should handle missing email', waitForAsync(async () => {
@@ -390,114 +363,6 @@ describe('RegisterComponent', () => {
     const debugElement = componentFixture.debugElement;
     componentFixture.detectChanges();
     await componentFixture.whenStable();
-
-    const emailInput = debugElement.query(By.css('input[type="email"]'))
-      .nativeElement as HTMLInputElement;
-    emailInput.value = 'test@test.com';
-    emailInput.dispatchEvent(new Event('input'));
-    componentFixture.detectChanges();
-    await componentFixture.whenStable();
-
-    const passwordInput = debugElement.query(
-      By.css('input[type="password"][name="password"]'),
-    ).nativeElement as HTMLInputElement;
-    passwordInput.value = 'Password1!';
-    passwordInput.dispatchEvent(new Event('input'));
-    componentFixture.detectChanges();
-    await componentFixture.whenStable();
-
-    const passwordCheckInput = debugElement.query(
-      By.css('input[type="password"][name="passwordCheck"]'),
-    ).nativeElement as HTMLInputElement;
-    passwordCheckInput.value = 'Password1!';
-    passwordCheckInput.dispatchEvent(new Event('input'));
-    componentFixture.detectChanges();
-    await componentFixture.whenStable();
-
-    const captchaSecretPhraseInput = debugElement.query(
-      By.css('input[name="captchaSecretPhrase"]'),
-    ).nativeElement as HTMLInputElement;
-    captchaSecretPhraseInput.value = '123456';
-    captchaSecretPhraseInput.dispatchEvent(new Event('input'));
-    componentFixture.detectChanges();
-    await componentFixture.whenStable();
-
-    const loginButton = debugElement.query(By.css('button[type="submit"]'))
-      .nativeElement as HTMLButtonElement;
-    loginButton.click();
-    componentFixture.detectChanges();
-    await componentFixture.whenStable();
-
-    expect(
-      componentFixture.componentInstance.infoModalComponent?.open,
-    ).toBeTrue();
-  }));
-
-  it('should register: Google', waitForAsync(async () => {
-    const { mockSocialService } = await setup();
-    mockSocialService.googleLogin.and.returnValue(of('google-token'));
-
-    const componentFixture = TestBed.createComponent(RegisterComponent);
-    const component = componentFixture.componentInstance;
-    const debugElement = componentFixture.debugElement;
-    componentFixture.detectChanges();
-    await componentFixture.whenStable();
-
-    (component as any).googleToken = 'google-token';
-
-    const emailInput = debugElement.query(By.css('input[type="email"]'))
-      .nativeElement as HTMLInputElement;
-    emailInput.value = 'test@test.com';
-    emailInput.dispatchEvent(new Event('input'));
-    componentFixture.detectChanges();
-    await componentFixture.whenStable();
-
-    const passwordInput = debugElement.query(
-      By.css('input[type="password"][name="password"]'),
-    ).nativeElement as HTMLInputElement;
-    passwordInput.value = 'Password1!';
-    passwordInput.dispatchEvent(new Event('input'));
-    componentFixture.detectChanges();
-    await componentFixture.whenStable();
-
-    const passwordCheckInput = debugElement.query(
-      By.css('input[type="password"][name="passwordCheck"]'),
-    ).nativeElement as HTMLInputElement;
-    passwordCheckInput.value = 'Password1!';
-    passwordCheckInput.dispatchEvent(new Event('input'));
-    componentFixture.detectChanges();
-    await componentFixture.whenStable();
-
-    const captchaSecretPhraseInput = debugElement.query(
-      By.css('input[name="captchaSecretPhrase"]'),
-    ).nativeElement as HTMLInputElement;
-    captchaSecretPhraseInput.value = '123456';
-    captchaSecretPhraseInput.dispatchEvent(new Event('input'));
-    componentFixture.detectChanges();
-    await componentFixture.whenStable();
-
-    const loginButton = debugElement.query(By.css('button[type="submit"]'))
-      .nativeElement as HTMLButtonElement;
-    loginButton.click();
-    componentFixture.detectChanges();
-    await componentFixture.whenStable();
-
-    expect(
-      componentFixture.componentInstance.infoModalComponent?.open,
-    ).toBeTrue();
-  }));
-
-  it('should register: Facebook', waitForAsync(async () => {
-    const { mockSocialService } = await setup();
-    mockSocialService.facebookLogin.and.returnValue(of('facebook-token'));
-
-    const componentFixture = TestBed.createComponent(RegisterComponent);
-    const component = componentFixture.componentInstance;
-    const debugElement = componentFixture.debugElement;
-    componentFixture.detectChanges();
-    await componentFixture.whenStable();
-
-    (component as any).facebookToken = 'facebook-token';
 
     const emailInput = debugElement.query(By.css('input[type="email"]'))
       .nativeElement as HTMLInputElement;
