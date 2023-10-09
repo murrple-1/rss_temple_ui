@@ -171,7 +171,8 @@ module.exports = function (grunt) {
           use: [
             require("imagemin-mozjpeg")(),
             require("imagemin-gifsicle")(),
-            require("imagemin-optipng")(),
+            // TODO optipng doesn't work in docker container
+            //require("imagemin-optipng")(),
             require("imagemin-svgo")()
           ]
         },
@@ -179,7 +180,9 @@ module.exports = function (grunt) {
           {
             expand: true,
             cwd: "<%= yeoman.app %>/media/",
-            src: "**/*.{png,jpg,jpeg,gif,pdf}",
+            // TODO optipng doesn't work in docker container
+            //src: "**/*.{png,jpg,jpeg,gif,pdf}",
+            src: "**/*.{jpg,jpeg,gif,pdf}",
             dest: "<%= yeoman.dist %>/media/"
           }
         ]
