@@ -1,9 +1,18 @@
 "use strict";
+function headCustomFilepath(dir, file) {
+  if (!dir) {
+    return "";
+  } else {
+    return dir + "/" + file;
+  }
+}
+
 module.exports = function (grunt) {
   grunt.config("app-url", grunt.option("app-url") || "#");
   grunt.config("fb-url", grunt.option("fb-url") || "#");
   grunt.config("twitter-url", grunt.option("twitter-url") || "#");
   grunt.config("insta-url", grunt.option("insta-url") || "#");
+  grunt.config("head-custom-dir", grunt.option("head-custom-dir") || "");
 
   require("time-grunt")(grunt);
 
@@ -34,7 +43,11 @@ module.exports = function (grunt) {
               app_url: grunt.config("app-url"),
               fb_url: grunt.config("fb-url"),
               twitter_url: grunt.config("twitter-url"),
-              insta_url: grunt.config("insta-url")
+              insta_url: grunt.config("insta-url"),
+              head_custom_filepath: headCustomFilepath(
+                grunt.config("head-custom-dir"),
+                "index.head.html"
+              )
             }
           ]
         },
@@ -50,7 +63,11 @@ module.exports = function (grunt) {
               app_url: grunt.config("app-url"),
               fb_url: grunt.config("fb-url"),
               twitter_url: grunt.config("twitter-url"),
-              "insta-url": grunt.config("insta-url")
+              insta_url: grunt.config("insta-url"),
+              head_custom_filepath: headCustomFilepath(
+                grunt.config("head-custom-dir"),
+                "contact.head.html"
+              )
             }
           ]
         },
@@ -66,7 +83,11 @@ module.exports = function (grunt) {
               app_url: grunt.config("app-url"),
               fb_url: grunt.config("fb-url"),
               twitter_url: grunt.config("twitter-url"),
-              "insta-url": grunt.config("insta-url")
+              insta_url: grunt.config("insta-url"),
+              head_custom_filepath: headCustomFilepath(
+                grunt.config("head-custom-dir"),
+                "tos.head.html"
+              )
             }
           ]
         },
@@ -82,7 +103,11 @@ module.exports = function (grunt) {
               app_url: grunt.config("app-url"),
               fb_url: grunt.config("fb-url"),
               twitter_url: grunt.config("twitter-url"),
-              "insta-url": grunt.config("insta-url")
+              insta_url: grunt.config("insta-url"),
+              head_custom_filepath: headCustomFilepath(
+                grunt.config("head-custom-dir"),
+                "privacy.head.html"
+              )
             }
           ]
         },
