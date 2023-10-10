@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+import { hexToUuid } from '@app/libs/hex-to-uuid.lib';
 import {
   MinLength as PasswordMinLength,
   SpecialCharacters as PasswordSpecialCharacters,
@@ -40,7 +41,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   readonly passwordSpecialCharacters = PasswordSpecialCharacters.join('');
 
   private token: string | null = null;
-  private userId: string | null = null;
+  private userUuidHex: string | null = null;
 
   @ViewChild('resetPasswordForm', { static: false })
   _resetPasswordForm?: NgForm;
@@ -60,9 +61,9 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.token = this.activatedRoute.snapshot.queryParamMap.get('token');
-    this.userId = this.activatedRoute.snapshot.queryParamMap.get('userId');
+    this.userUuidHex = this.activatedRoute.snapshot.queryParamMap.get('userId');
 
-    if (this.token === null || this.userId === null) {
+    if (this.token === null || this.userUuidHex === null) {
       this.state = State.NoToken;
     }
   }
@@ -85,7 +86,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.userId === null) {
+    if (this.userUuidHex === null) {
       return;
     }
 
@@ -93,10 +94,19 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
       return;
     }
 
+    let userUuid: string;
+    try {
+      userUuid = hexToUuid(this.userUuidHex);
+    } catch (e: unknown) {
+      console.error('userId is not correcctly formatted', e);
+      this.state = State.BadToken;
+      return;
+    }
+
     this.state = State.Sending;
 
     this.authService
-      .resetPassword(this.token, this.userId, this.newPassword)
+      .resetPassword(this.token, userUuid, this.newPassword)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => {

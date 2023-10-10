@@ -90,11 +90,11 @@ export class AuthService {
     });
   }
 
-  resetPassword(token: string, userId: string, password: string) {
+  resetPassword(token: string, userUuid: string, password: string) {
     return this.http.post<void>(
       `${this.apiHost}/api/auth/password/reset/confirm`,
       {
-        uid: userId,
+        userUuid,
         token,
         newPassword: password,
       },
