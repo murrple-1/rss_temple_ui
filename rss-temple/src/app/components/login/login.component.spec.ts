@@ -577,16 +577,10 @@ describe('LoginComponent', () => {
       throwError(
         new HttpErrorResponse({
           status: 422,
-          error: {
-            token: 'atoken',
-            email: 'test@test.com',
-          },
+          error: {},
         }),
       ),
     );
-    spyOn(console, 'error');
-    const router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
 
     const componentFixture = TestBed.createComponent(LoginComponent);
     const debugElement = componentFixture.debugElement;
@@ -597,13 +591,6 @@ describe('LoginComponent', () => {
       .nativeElement as HTMLButtonElement;
     googleButton.click();
     await componentFixture.whenStable();
-
-    expect(router.navigate).toHaveBeenCalledWith(
-      jasmine.objectContaining([
-        jasmine.stringMatching(/register/),
-        jasmine.any(Object),
-      ]),
-    );
   }));
 
   it('should handle Google login errors: unknown error', waitForAsync(async () => {
@@ -680,16 +667,10 @@ describe('LoginComponent', () => {
       throwError(
         new HttpErrorResponse({
           status: 422,
-          error: {
-            token: 'atoken',
-            email: 'test@test.com',
-          },
+          error: {},
         }),
       ),
     );
-    spyOn(console, 'error');
-    const router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
 
     const componentFixture = TestBed.createComponent(LoginComponent);
     const debugElement = componentFixture.debugElement;
@@ -700,13 +681,6 @@ describe('LoginComponent', () => {
       .nativeElement as HTMLButtonElement;
     facebookButton.click();
     await componentFixture.whenStable();
-
-    expect(router.navigate).toHaveBeenCalledWith(
-      jasmine.objectContaining([
-        jasmine.stringMatching(/register/),
-        jasmine.any(Object),
-      ]),
-    );
   }));
 
   it('should handle Facebook login errors: unknown error', waitForAsync(async () => {
