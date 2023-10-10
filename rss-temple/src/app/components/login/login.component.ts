@@ -289,37 +289,47 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
             this.gButtonInUse = false;
           });
 
+          let errorHandled = false;
           if (error instanceof HttpErrorResponse) {
-            if (error.status === 422) {
-              this.router.navigate([
-                '/register',
-                { g_token: error.error.token, email: error.error.email },
-              ]);
-            } else {
-              let errorMessage = 'Unknown Error';
-              switch (error.status) {
-                case 0:
-                  errorMessage = 'Unable to connect to server';
-                  break;
+            switch (error.status) {
+              case 0: {
+                this.appAlertsService.appAlertDescriptor$.next({
+                  autoCloseInterval: 5000,
+                  canClose: true,
+                  text: 'Unable to connect to server',
+                  type: 'danger',
+                });
+                errorHandled = true;
+                break;
               }
-
-              console.error(errorMessage, error);
-              this.appAlertsService.appAlertDescriptor$.next({
-                autoCloseInterval: 5000,
-                canClose: true,
-                text: errorMessage,
-                type: 'danger',
-              });
+              case 422: {
+                this.appAlertsService.appAlertDescriptor$.next({
+                  autoCloseInterval: 5000,
+                  canClose: true,
+                  text: "Account already exists with that email, but Google account isn't linked. To login with Google, login via another method, then link your Google account",
+                  type: 'danger',
+                });
+                errorHandled = true;
+                break;
+              }
+              case 429: {
+                this.appAlertsService.appAlertDescriptor$.next({
+                  autoCloseInterval: 5000,
+                  canClose: true,
+                  text: 'Request throttled: Please try again in a few minutes',
+                  type: 'warning',
+                });
+                errorHandled = true;
+                break;
+              }
             }
-          } else {
-            const errorMessage = 'Unknown Error';
+          }
 
-            console.error(errorMessage, error);
-
+          if (!errorHandled) {
             this.appAlertsService.appAlertDescriptor$.next({
               autoCloseInterval: 5000,
               canClose: true,
-              text: errorMessage,
+              text: 'Unknown Error',
               type: 'danger',
             });
           }
@@ -352,35 +362,47 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
             this.fbButtonInUse = false;
           });
 
+          let errorHandled = false;
           if (error instanceof HttpErrorResponse) {
-            if (error.status === 422) {
-              this.router.navigate([
-                '/register',
-                { fb_token: error.error.token, email: error.error.email },
-              ]);
-            } else {
-              let errorMessage = 'Unknown Error';
-              switch (error.status) {
-                case 0:
-                  errorMessage = 'Unable to connect to server';
-                  break;
+            switch (error.status) {
+              case 0: {
+                this.appAlertsService.appAlertDescriptor$.next({
+                  autoCloseInterval: 5000,
+                  canClose: true,
+                  text: 'Unable to connect to server',
+                  type: 'danger',
+                });
+                errorHandled = true;
+                break;
               }
-
-              this.appAlertsService.appAlertDescriptor$.next({
-                autoCloseInterval: 5000,
-                canClose: true,
-                text: errorMessage,
-                type: 'danger',
-              });
+              case 422: {
+                this.appAlertsService.appAlertDescriptor$.next({
+                  autoCloseInterval: 5000,
+                  canClose: true,
+                  text: "Account already exists with that email, but Facebook account isn't linked. To login with Facebook, login via another method, then link your Facebook account",
+                  type: 'danger',
+                });
+                errorHandled = true;
+                break;
+              }
+              case 429: {
+                this.appAlertsService.appAlertDescriptor$.next({
+                  autoCloseInterval: 5000,
+                  canClose: true,
+                  text: 'Request throttled: Please try again in a few minutes',
+                  type: 'warning',
+                });
+                errorHandled = true;
+                break;
+              }
             }
-          } else {
-            const errorMessage = 'Unknown Error';
+          }
 
-            console.error(errorMessage, error);
+          if (!errorHandled) {
             this.appAlertsService.appAlertDescriptor$.next({
               autoCloseInterval: 5000,
               canClose: true,
-              text: errorMessage,
+              text: 'Unknown Error',
               type: 'danger',
             });
           }

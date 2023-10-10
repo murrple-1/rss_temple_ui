@@ -205,19 +205,24 @@ export class RegisterComponent implements OnInit, OnDestroy {
           break;
         }
         case 422: {
-          const errorRecord = Z422Error.parse(error.error);
-          const keys = Object.keys(errorRecord);
-          if (keys.includes('captchaSecretPhrase')) {
-            errorMessage = 'Captcha failed';
-            this.refreshCaptcha();
-            this.zone.run(() => {
-              this.captchaSecretPhrase = '';
-            });
-          } else if (keys.includes('password')) {
-            errorMessage =
-              'Password was determined to be too easy to guess based on internal analysis. Please try a different password';
+          const errorRecord = Z422Error.safeParse(error.error);
+          if (errorRecord.success) {
+            const keys = Object.keys(errorRecord.data);
+            if (keys.includes('captchaSecretPhrase')) {
+              errorMessage = 'Captcha failed';
+              this.refreshCaptcha();
+              this.zone.run(() => {
+                this.captchaSecretPhrase = '';
+              });
+            } else if (keys.includes('password')) {
+              errorMessage =
+                'Password was determined to be too easy to guess based on internal analysis. Please try a different password';
+            }
           }
-
+          break;
+        }
+        case 429: {
+          errorMessage = 'Request throttled: Please try again in a few minutes';
           break;
         }
       }
