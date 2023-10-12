@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 @Component({
@@ -41,5 +41,5 @@ export function openModal(modal: SearchModalComponent) {
   modal.reset();
   modal.open = true;
 
-  return modal.result.pipe(take(1)).toPromise();
+  return firstValueFrom(modal.result.pipe(take(1)));
 }

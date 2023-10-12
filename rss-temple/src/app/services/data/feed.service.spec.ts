@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { fakeAsync } from '@angular/core/testing';
 import { format as formatDate, parse as parseDate } from 'date-fns';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { z } from 'zod';
 
 import { ZFeed } from '@app/models/feed';
@@ -46,9 +46,9 @@ describe('FeedService', () => {
 
     httpClientSpy.get.and.returnValue(of({}));
 
-    const feed = await feedService
-      .get('http://www.fake.com/rss.xml')
-      .toPromise();
+    const feed = await firstValueFrom(
+      feedService.get('http://www.fake.com/rss.xml'),
+    );
 
     expect(ZFeed.safeParse(feed).success).toBeTrue();
   }));
@@ -63,7 +63,7 @@ describe('FeedService', () => {
       }),
     );
 
-    const feeds = await feedService.query().toPromise();
+    const feeds = await firstValueFrom(feedService.query());
 
     expect(feeds.objects).toBeDefined();
   }));
@@ -78,7 +78,7 @@ describe('FeedService', () => {
       }),
     );
 
-    const feeds = await feedService.queryAll().toPromise();
+    const feeds = await firstValueFrom(feedService.queryAll());
 
     expect(feeds.objects).toBeDefined();
   }));
@@ -88,7 +88,9 @@ describe('FeedService', () => {
 
     httpClientSpy.post.and.returnValue(of());
 
-    await feedService.subscribe('http://www.fake.com/rss.xml').toPromise();
+    await firstValueFrom(feedService.subscribe('http://www.fake.com/rss.xml'), {
+      defaultValue: undefined,
+    });
 
     expect().nothing();
   }));
@@ -98,9 +100,10 @@ describe('FeedService', () => {
 
     httpClientSpy.post.and.returnValue(of());
 
-    await feedService
-      .subscribe('http://www.fake.com/rss.xml', 'Custom Title')
-      .toPromise();
+    await firstValueFrom(
+      feedService.subscribe('http://www.fake.com/rss.xml', 'Custom Title'),
+      { defaultValue: undefined },
+    );
 
     expect().nothing();
   }));
@@ -110,7 +113,10 @@ describe('FeedService', () => {
 
     httpClientSpy.delete.and.returnValue(of());
 
-    await feedService.unsubscribe('http://www.fake.com/rss.xml').toPromise();
+    await firstValueFrom(
+      feedService.unsubscribe('http://www.fake.com/rss.xml'),
+      { defaultValue: undefined },
+    );
 
     expect().nothing();
   }));
@@ -121,7 +127,7 @@ describe('FeedService', () => {
     httpClientSpy.get.and.returnValue(of(4));
 
     await expectAsync(
-      feedService.get('http://www.fake.com/rss.xml').toPromise(),
+      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -136,9 +142,9 @@ describe('FeedService', () => {
       }),
     );
 
-    const feed = await feedService
-      .get('http://www.fake.com/rss.xml')
-      .toPromise();
+    const feed = await firstValueFrom(
+      feedService.get('http://www.fake.com/rss.xml'),
+    );
 
     expect(feed.uuid).toBe(uuid);
   }));
@@ -153,7 +159,7 @@ describe('FeedService', () => {
     );
 
     await expectAsync(
-      feedService.get('http://www.fake.com/rss.xml').toPromise(),
+      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -168,9 +174,9 @@ describe('FeedService', () => {
       }),
     );
 
-    const feed = await feedService
-      .get('http://www.fake.com/rss.xml')
-      .toPromise();
+    const feed = await firstValueFrom(
+      feedService.get('http://www.fake.com/rss.xml'),
+    );
 
     expect(feed.title).toBe(title);
   }));
@@ -185,7 +191,7 @@ describe('FeedService', () => {
     );
 
     await expectAsync(
-      feedService.get('http://www.fake.com/rss.xml').toPromise(),
+      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -200,9 +206,9 @@ describe('FeedService', () => {
       }),
     );
 
-    const feed = await feedService
-      .get('http://www.fake.com/rss.xml')
-      .toPromise();
+    const feed = await firstValueFrom(
+      feedService.get('http://www.fake.com/rss.xml'),
+    );
 
     expect(feed.feedUrl).toBe(feedUrl);
   }));
@@ -217,7 +223,7 @@ describe('FeedService', () => {
     );
 
     await expectAsync(
-      feedService.get('http://www.fake.com/rss.xml').toPromise(),
+      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -232,9 +238,9 @@ describe('FeedService', () => {
       }),
     );
 
-    const feed = await feedService
-      .get('http://www.fake.com/rss.xml')
-      .toPromise();
+    const feed = await firstValueFrom(
+      feedService.get('http://www.fake.com/rss.xml'),
+    );
 
     expect(feed.homeUrl).toBe(homeUrl);
   }));
@@ -249,7 +255,7 @@ describe('FeedService', () => {
     );
 
     await expectAsync(
-      feedService.get('http://www.fake.com/rss.xml').toPromise(),
+      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -268,9 +274,9 @@ describe('FeedService', () => {
       }),
     );
 
-    const feed = await feedService
-      .get('http://www.fake.com/rss.xml')
-      .toPromise();
+    const feed = await firstValueFrom(
+      feedService.get('http://www.fake.com/rss.xml'),
+    );
 
     expect(feed.publishedAt).toEqual(publishedAt);
   }));
@@ -285,7 +291,7 @@ describe('FeedService', () => {
     );
 
     await expectAsync(
-      feedService.get('http://www.fake.com/rss.xml').toPromise(),
+      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -299,7 +305,7 @@ describe('FeedService', () => {
     );
 
     await expectAsync(
-      feedService.get('http://www.fake.com/rss.xml').toPromise(),
+      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -318,7 +324,9 @@ describe('FeedService', () => {
       }),
     );
 
-    let feed = await feedService.get('http://www.fake.com/rss.xml').toPromise();
+    let feed = await firstValueFrom(
+      feedService.get('http://www.fake.com/rss.xml'),
+    );
 
     expect(feed.updatedAt).toEqual(updatedAt);
 
@@ -328,7 +336,7 @@ describe('FeedService', () => {
       }),
     );
 
-    feed = await feedService.get('http://www.fake.com/rss.xml').toPromise();
+    feed = await firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
 
     expect(feed.updatedAt).toBeNull();
   }));
@@ -343,7 +351,7 @@ describe('FeedService', () => {
     );
 
     await expectAsync(
-      feedService.get('http://www.fake.com/rss.xml').toPromise(),
+      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -357,7 +365,7 @@ describe('FeedService', () => {
     );
 
     await expectAsync(
-      feedService.get('http://www.fake.com/rss.xml').toPromise(),
+      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -372,9 +380,9 @@ describe('FeedService', () => {
       }),
     );
 
-    const feed = await feedService
-      .get('http://www.fake.com/rss.xml')
-      .toPromise();
+    const feed = await firstValueFrom(
+      feedService.get('http://www.fake.com/rss.xml'),
+    );
 
     expect(feed.subscribed).toBe(subscribed);
   }));
@@ -389,7 +397,7 @@ describe('FeedService', () => {
     );
 
     await expectAsync(
-      feedService.get('http://www.fake.com/rss.xml').toPromise(),
+      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -404,7 +412,9 @@ describe('FeedService', () => {
       }),
     );
 
-    let feed = await feedService.get('http://www.fake.com/rss.xml').toPromise();
+    let feed = await firstValueFrom(
+      feedService.get('http://www.fake.com/rss.xml'),
+    );
 
     expect(feed.customTitle).toBe(customTitle);
 
@@ -414,7 +424,7 @@ describe('FeedService', () => {
       }),
     );
 
-    feed = await feedService.get('http://www.fake.com/rss.xml').toPromise();
+    feed = await firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
 
     expect(feed.customTitle).toBeNull();
   }));
@@ -429,7 +439,7 @@ describe('FeedService', () => {
     );
 
     await expectAsync(
-      feedService.get('http://www.fake.com/rss.xml').toPromise(),
+      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -444,9 +454,9 @@ describe('FeedService', () => {
       }),
     );
 
-    const feed = await feedService
-      .get('http://www.fake.com/rss.xml')
-      .toPromise();
+    const feed = await firstValueFrom(
+      feedService.get('http://www.fake.com/rss.xml'),
+    );
 
     expect(feed.calculatedTitle).toBe(calculatedTitle);
   }));
@@ -461,7 +471,7 @@ describe('FeedService', () => {
     );
 
     await expectAsync(
-      feedService.get('http://www.fake.com/rss.xml').toPromise(),
+      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -476,9 +486,9 @@ describe('FeedService', () => {
       }),
     );
 
-    const feed = await feedService
-      .get('http://www.fake.com/rss.xml')
-      .toPromise();
+    const feed = await firstValueFrom(
+      feedService.get('http://www.fake.com/rss.xml'),
+    );
 
     expect(feed.userCategoryUuids).toEqual(userCategoryUuids);
   }));
@@ -493,7 +503,7 @@ describe('FeedService', () => {
     );
 
     await expectAsync(
-      feedService.get('http://www.fake.com/rss.xml').toPromise(),
+      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
     ).toBeRejectedWithError(z.ZodError);
 
     httpClientSpy.get.and.returnValue(
@@ -503,7 +513,7 @@ describe('FeedService', () => {
     );
 
     await expectAsync(
-      feedService.get('http://www.fake.com/rss.xml').toPromise(),
+      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
     ).toBeRejectedWithError(z.ZodError);
   }));
 });

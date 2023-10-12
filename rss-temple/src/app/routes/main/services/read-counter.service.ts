@@ -5,6 +5,7 @@ import {
   Subject,
   combineLatest,
   concat,
+  firstValueFrom,
   forkJoin,
   fromEvent,
   of,
@@ -102,9 +103,11 @@ export class ReadCounterService implements OnDestroy {
                     : of(undefined);
 
                 try {
-                  await forkJoin([readSomeObservable, unreadSomeObservable])
-                    .pipe(takeUntil(this.unsubscribe$))
-                    .toPromise();
+                  await firstValueFrom(
+                    forkJoin([readSomeObservable, unreadSomeObservable]).pipe(
+                      takeUntil(this.unsubscribe$),
+                    ),
+                  );
                 } catch (reason: unknown) {
                   this.httpErrorService.handleError(reason);
                   throw reason;
@@ -247,10 +250,11 @@ export class ReadCounterService implements OnDestroy {
       this.taskQueue.pushPriority(
         async () => {
           try {
-            await this.feedEntryService
-              .readSome(undefined, feedUuids)
-              .pipe(takeUntil(this.unsubscribe$))
-              .toPromise();
+            await firstValueFrom(
+              this.feedEntryService
+                .readSome(undefined, feedUuids)
+                .pipe(takeUntil(this.unsubscribe$)),
+            );
 
             resolve();
           } catch (reason: unknown) {
@@ -277,22 +281,23 @@ export class ReadCounterService implements OnDestroy {
           try {
             let feeds: FeedImpl[];
             try {
-              feeds = await this.feedService
-                .queryAll({
-                  fields: ['uuid', 'unreadCount'],
-                  returnTotalCount: false,
-                  search: 'subscribed:"true"',
-                })
-                .pipe(
-                  takeUntil(this.unsubscribe$),
-                  map(response => {
-                    if (response.objects !== undefined) {
-                      return response.objects as FeedImpl[];
-                    }
-                    throw new Error('malformed response');
-                  }),
-                )
-                .toPromise();
+              feeds = await firstValueFrom(
+                this.feedService
+                  .queryAll({
+                    fields: ['uuid', 'unreadCount'],
+                    returnTotalCount: false,
+                    search: 'subscribed:"true"',
+                  })
+                  .pipe(
+                    takeUntil(this.unsubscribe$),
+                    map(response => {
+                      if (response.objects !== undefined) {
+                        return response.objects as FeedImpl[];
+                      }
+                      throw new Error('malformed response');
+                    }),
+                  ),
+              );
             } catch (reason: unknown) {
               this.httpErrorService.handleError(reason);
               throw reason;

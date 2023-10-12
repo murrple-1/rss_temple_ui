@@ -1,5 +1,5 @@
 import { fakeAsync } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 
 import { Objects } from '@app/services/data/objects';
 import { QueryOptions } from '@app/services/data/query.interface';
@@ -41,18 +41,20 @@ function queryFn(options: QueryOptions<Field, SortField>) {
 
 describe('queryall.function', () => {
   it('should queryAll', fakeAsync(async () => {
-    const objects = await queryAllFn({}, queryFn, 1).toPromise();
+    const objects = await firstValueFrom(queryAllFn({}, queryFn, 1));
     expect(objects.objects).toBeTruthy();
   }));
 
   it('should queryAll with totalCount', fakeAsync(async () => {
-    const objects = await queryAllFn(
-      {
-        returnTotalCount: true,
-      },
-      queryFn,
-      1,
-    ).toPromise();
+    const objects = await firstValueFrom(
+      queryAllFn(
+        {
+          returnTotalCount: true,
+        },
+        queryFn,
+        1,
+      ),
+    );
     expect(objects.objects).toBeTruthy();
   }));
 });

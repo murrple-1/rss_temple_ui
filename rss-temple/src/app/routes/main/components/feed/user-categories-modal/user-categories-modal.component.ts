@@ -1,5 +1,5 @@
 import { Component, Input, NgZone, OnDestroy } from '@angular/core';
-import { Observable, Subject, forkJoin, of } from 'rxjs';
+import { Observable, Subject, firstValueFrom, forkJoin, of } from 'rxjs';
 import { map, mergeMap, take, takeUntil, tap } from 'rxjs/operators';
 
 import { UserCategory } from '@app/models';
@@ -124,7 +124,7 @@ export class UserCategoriesModalComponent implements OnDestroy {
 
   openChanged(open: boolean) {
     if (!open) {
-      this.result.next();
+      this.result.next(undefined);
     }
 
     this.open = open;
@@ -271,5 +271,5 @@ export function openModal(
   modal.open = true;
   modal.load();
 
-  return modal.result.pipe(take(1)).toPromise();
+  return firstValueFrom(modal.result.pipe(take(1)));
 }

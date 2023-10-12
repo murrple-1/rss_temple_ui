@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { fakeAsync } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { z } from 'zod';
 
 import { ZUserCategory } from '@app/models/usercategory';
@@ -46,9 +46,9 @@ describe('UserCategoryService', () => {
 
     httpClientSpy.get.and.returnValue(of({}));
 
-    const userCategory = await userCategoryService
-      .get('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    const userCategory = await firstValueFrom(
+      userCategoryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    );
     expect(ZUserCategory.safeParse(userCategory).success).toBeTrue();
   }));
 
@@ -62,7 +62,7 @@ describe('UserCategoryService', () => {
       }),
     );
 
-    const objects = await userCategoryService.query().toPromise();
+    const objects = await firstValueFrom(userCategoryService.query());
     expect(objects.objects).toEqual(jasmine.any(Array));
   }));
 
@@ -76,7 +76,7 @@ describe('UserCategoryService', () => {
       }),
     );
 
-    const objects = await userCategoryService.queryAll().toPromise();
+    const objects = await firstValueFrom(userCategoryService.queryAll());
     expect(objects.objects).toEqual(jasmine.any(Array));
   }));
 
@@ -85,11 +85,11 @@ describe('UserCategoryService', () => {
 
     httpClientSpy.post.and.returnValue(of({}));
 
-    const userCategory = await userCategoryService
-      .create({
+    const userCategory = await firstValueFrom(
+      userCategoryService.create({
         text: 'Category Name',
-      })
-      .toPromise();
+      }),
+    );
     expect(ZUserCategory.safeParse(userCategory).success).toBeTrue();
   }));
 
@@ -99,9 +99,10 @@ describe('UserCategoryService', () => {
     httpClientSpy.delete.and.returnValue(of());
 
     await expectAsync(
-      userCategoryService
-        .delete('123e4567-e89b-12d3-a456-426614174000')
-        .toPromise(),
+      firstValueFrom(
+        userCategoryService.delete('123e4567-e89b-12d3-a456-426614174000'),
+        { defaultValue: undefined },
+      ),
     ).toBeResolved();
   }));
 
@@ -111,13 +112,14 @@ describe('UserCategoryService', () => {
     httpClientSpy.put.and.returnValue(of());
 
     await expectAsync(
-      userCategoryService
-        .apply({
+      firstValueFrom(
+        userCategoryService.apply({
           '123e4567-e89b-12d3-a456-426614174000': new Set([
             '123e4567-e89b-12d3-a456-426614174001',
           ]),
-        })
-        .toPromise(),
+        }),
+        { defaultValue: undefined },
+      ),
     ).toBeResolved();
   }));
 
@@ -127,9 +129,9 @@ describe('UserCategoryService', () => {
     httpClientSpy.get.and.returnValue(of([]));
 
     await expectAsync(
-      userCategoryService
-        .get('123e4567-e89b-12d3-a456-426614174000')
-        .toPromise(),
+      firstValueFrom(
+        userCategoryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -142,9 +144,9 @@ describe('UserCategoryService', () => {
       }),
     );
 
-    const user = await userCategoryService
-      .get('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    const user = await firstValueFrom(
+      userCategoryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    );
     expect(user.uuid).toEqual(jasmine.any(String));
   }));
 
@@ -158,9 +160,9 @@ describe('UserCategoryService', () => {
     );
 
     await expectAsync(
-      userCategoryService
-        .get('123e4567-e89b-12d3-a456-426614174000')
-        .toPromise(),
+      firstValueFrom(
+        userCategoryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -173,9 +175,9 @@ describe('UserCategoryService', () => {
       }),
     );
 
-    const user = await userCategoryService
-      .get('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    const user = await firstValueFrom(
+      userCategoryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    );
     expect(user.text).toEqual(jasmine.any(String));
   }));
 
@@ -189,9 +191,9 @@ describe('UserCategoryService', () => {
     );
 
     await expectAsync(
-      userCategoryService
-        .get('123e4567-e89b-12d3-a456-426614174000')
-        .toPromise(),
+      firstValueFrom(
+        userCategoryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
   }));
 });

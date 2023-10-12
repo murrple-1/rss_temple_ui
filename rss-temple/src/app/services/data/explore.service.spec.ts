@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { fakeAsync } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 
 import { AuthTokenService } from '@app/services/auth-token.service';
 import { MockConfigService } from '@app/test/config.service.mock';
@@ -44,7 +44,7 @@ describe('ExploreService', () => {
 
     httpClientSpy.get.and.returnValue(of([]));
 
-    const tagDescriptors = await exploreService.explore().toPromise();
+    const tagDescriptors = await firstValueFrom(exploreService.explore());
     expect(tagDescriptors.length).toBeGreaterThanOrEqual(0);
   }));
 });

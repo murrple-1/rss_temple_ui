@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { fakeAsync } from '@angular/core/testing';
 import { format as formatDate, parse as parseDate } from 'date-fns';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { z } from 'zod';
 
 import { ZFeedEntry } from '@app/models/feedentry';
@@ -47,9 +47,9 @@ describe('FeedEntryService', () => {
 
     httpClientSpy.get.and.returnValue(of({}));
 
-    const feed = await feedEntryService
-      .get('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    const feed = await firstValueFrom(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    );
 
     expect(ZFeedEntry.safeParse(feed).success).toBeTrue();
   }));
@@ -64,7 +64,7 @@ describe('FeedEntryService', () => {
       }),
     );
 
-    const feeds = await feedEntryService.query().toPromise();
+    const feeds = await firstValueFrom(feedEntryService.query());
 
     expect(feeds.objects).toBeDefined();
   }));
@@ -79,7 +79,7 @@ describe('FeedEntryService', () => {
       }),
     );
 
-    const feeds = await feedEntryService.queryAll().toPromise();
+    const feeds = await firstValueFrom(feedEntryService.queryAll());
 
     expect(feeds.objects).toBeDefined();
   }));
@@ -89,9 +89,10 @@ describe('FeedEntryService', () => {
 
     httpClientSpy.post.and.returnValue(of());
 
-    await feedEntryService
-      .read('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    await firstValueFrom(
+      feedEntryService.read('123e4567-e89b-12d3-a456-426614174000'),
+      { defaultValue: undefined },
+    );
 
     expect().nothing();
   }));
@@ -101,9 +102,10 @@ describe('FeedEntryService', () => {
 
     httpClientSpy.delete.and.returnValue(of());
 
-    await feedEntryService
-      .unread('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    await firstValueFrom(
+      feedEntryService.unread('123e4567-e89b-12d3-a456-426614174000'),
+      { defaultValue: undefined },
+    );
 
     expect().nothing();
   }));
@@ -113,8 +115,8 @@ describe('FeedEntryService', () => {
 
     httpClientSpy.post.and.returnValue(of());
 
-    await feedEntryService
-      .readSome(
+    await firstValueFrom(
+      feedEntryService.readSome(
         [
           '123e4567-e89b-12d3-a456-426614174000',
           '123e4567-e89b-12d3-a456-426614174001',
@@ -123,8 +125,9 @@ describe('FeedEntryService', () => {
           '123e4567-e89b-12d3-a456-426614174002',
           '123e4567-e89b-12d3-a456-426614174003',
         ],
-      )
-      .toPromise();
+      ),
+      { defaultValue: undefined },
+    );
 
     expect().nothing();
   }));
@@ -134,12 +137,13 @@ describe('FeedEntryService', () => {
 
     httpClientSpy.request.and.returnValue(of());
 
-    await feedEntryService
-      .unreadSome([
+    await firstValueFrom(
+      feedEntryService.unreadSome([
         '123e4567-e89b-12d3-a456-426614174000',
         '123e4567-e89b-12d3-a456-426614174001',
-      ])
-      .toPromise();
+      ]),
+      { defaultValue: undefined },
+    );
 
     expect().nothing();
   }));
@@ -149,9 +153,10 @@ describe('FeedEntryService', () => {
 
     httpClientSpy.post.and.returnValue(of());
 
-    await feedEntryService
-      .favorite('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    await firstValueFrom(
+      feedEntryService.favorite('123e4567-e89b-12d3-a456-426614174000'),
+      { defaultValue: undefined },
+    );
 
     expect().nothing();
   }));
@@ -161,9 +166,10 @@ describe('FeedEntryService', () => {
 
     httpClientSpy.delete.and.returnValue(of());
 
-    await feedEntryService
-      .unfavorite('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    await firstValueFrom(
+      feedEntryService.unfavorite('123e4567-e89b-12d3-a456-426614174000'),
+      { defaultValue: undefined },
+    );
 
     expect().nothing();
   }));
@@ -173,12 +179,13 @@ describe('FeedEntryService', () => {
 
     httpClientSpy.post.and.returnValue(of());
 
-    await feedEntryService
-      .favoriteSome([
+    await firstValueFrom(
+      feedEntryService.favoriteSome([
         '123e4567-e89b-12d3-a456-426614174000',
         '123e4567-e89b-12d3-a456-426614174001',
-      ])
-      .toPromise();
+      ]),
+      { defaultValue: undefined },
+    );
 
     expect().nothing();
   }));
@@ -188,12 +195,13 @@ describe('FeedEntryService', () => {
 
     httpClientSpy.request.and.returnValue(of());
 
-    await feedEntryService
-      .unfavoriteSome([
+    await firstValueFrom(
+      feedEntryService.unfavoriteSome([
         '123e4567-e89b-12d3-a456-426614174000',
         '123e4567-e89b-12d3-a456-426614174001',
-      ])
-      .toPromise();
+      ]),
+      { defaultValue: undefined },
+    );
 
     expect().nothing();
   }));
@@ -204,7 +212,9 @@ describe('FeedEntryService', () => {
     httpClientSpy.get.and.returnValue(of(4));
 
     await expectAsync(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+      firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -219,9 +229,9 @@ describe('FeedEntryService', () => {
       }),
     );
 
-    const feedEntry = await feedEntryService
-      .get('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    const feedEntry = await firstValueFrom(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    );
 
     expect(feedEntry.uuid).toBe(uuid);
   }));
@@ -236,7 +246,9 @@ describe('FeedEntryService', () => {
     );
 
     await expectAsync(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+      firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -251,9 +263,9 @@ describe('FeedEntryService', () => {
       }),
     );
 
-    let feedEntry = await feedEntryService
-      .get('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    let feedEntry = await firstValueFrom(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    );
 
     expect(feedEntry.id).toBe(id);
 
@@ -263,9 +275,9 @@ describe('FeedEntryService', () => {
       }),
     );
 
-    feedEntry = await feedEntryService
-      .get('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    feedEntry = await firstValueFrom(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    );
 
     expect(feedEntry.id).toBeNull();
   }));
@@ -280,7 +292,9 @@ describe('FeedEntryService', () => {
     );
 
     await expectAsync(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+      firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -299,9 +313,9 @@ describe('FeedEntryService', () => {
       }),
     );
 
-    let feedEntry = await feedEntryService
-      .get('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    let feedEntry = await firstValueFrom(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    );
 
     expect(feedEntry.createdAt).toEqual(createdAt);
 
@@ -311,9 +325,9 @@ describe('FeedEntryService', () => {
       }),
     );
 
-    feedEntry = await feedEntryService
-      .get('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    feedEntry = await firstValueFrom(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    );
 
     expect(feedEntry.createdAt).toBeNull();
   }));
@@ -328,7 +342,9 @@ describe('FeedEntryService', () => {
     );
 
     await expectAsync(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+      firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -342,7 +358,7 @@ describe('FeedEntryService', () => {
     );
 
     await expectAsync(
-      feedEntryService.get('http://www.fake.com/rss.xml').toPromise(),
+      firstValueFrom(feedEntryService.get('http://www.fake.com/rss.xml')),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -361,9 +377,9 @@ describe('FeedEntryService', () => {
       }),
     );
 
-    const feedEntry = await feedEntryService
-      .get('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    const feedEntry = await firstValueFrom(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    );
 
     expect(feedEntry.publishedAt).toEqual(publishedAt);
   }));
@@ -378,7 +394,9 @@ describe('FeedEntryService', () => {
     );
 
     await expectAsync(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+      firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -392,7 +410,7 @@ describe('FeedEntryService', () => {
     );
 
     await expectAsync(
-      feedEntryService.get('http://www.fake.com/rss.xml').toPromise(),
+      firstValueFrom(feedEntryService.get('http://www.fake.com/rss.xml')),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -411,9 +429,9 @@ describe('FeedEntryService', () => {
       }),
     );
 
-    let feedEntry = await feedEntryService
-      .get('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    let feedEntry = await firstValueFrom(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    );
 
     expect(feedEntry.updatedAt).toEqual(updatedAt);
 
@@ -423,9 +441,9 @@ describe('FeedEntryService', () => {
       }),
     );
 
-    feedEntry = await feedEntryService
-      .get('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    feedEntry = await firstValueFrom(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    );
 
     expect(feedEntry.updatedAt).toBeNull();
   }));
@@ -440,7 +458,9 @@ describe('FeedEntryService', () => {
     );
 
     await expectAsync(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+      firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -454,7 +474,7 @@ describe('FeedEntryService', () => {
     );
 
     await expectAsync(
-      feedEntryService.get('http://www.fake.com/rss.xml').toPromise(),
+      firstValueFrom(feedEntryService.get('http://www.fake.com/rss.xml')),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -469,9 +489,9 @@ describe('FeedEntryService', () => {
       }),
     );
 
-    const feedEntry = await feedEntryService
-      .get('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    const feedEntry = await firstValueFrom(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    );
 
     expect(feedEntry.title).toBe(title);
   }));
@@ -486,7 +506,9 @@ describe('FeedEntryService', () => {
     );
 
     await expectAsync(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+      firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -501,9 +523,9 @@ describe('FeedEntryService', () => {
       }),
     );
 
-    const feedEntry = await feedEntryService
-      .get('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    const feedEntry = await firstValueFrom(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    );
 
     expect(feedEntry.url).toBe(url);
   }));
@@ -518,7 +540,9 @@ describe('FeedEntryService', () => {
     );
 
     await expectAsync(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+      firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -533,9 +557,9 @@ describe('FeedEntryService', () => {
       }),
     );
 
-    const feedEntry = await feedEntryService
-      .get('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    const feedEntry = await firstValueFrom(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    );
 
     expect(feedEntry.content).toBe(content);
   }));
@@ -550,7 +574,9 @@ describe('FeedEntryService', () => {
     );
 
     await expectAsync(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+      firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
 
     httpClientSpy.get.and.returnValue(
@@ -560,7 +586,9 @@ describe('FeedEntryService', () => {
     );
 
     await expectAsync(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+      firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -575,9 +603,9 @@ describe('FeedEntryService', () => {
       }),
     );
 
-    let feedEntry = await feedEntryService
-      .get('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    let feedEntry = await firstValueFrom(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    );
 
     expect(feedEntry.authorName).toBe(authorName);
 
@@ -587,9 +615,9 @@ describe('FeedEntryService', () => {
       }),
     );
 
-    feedEntry = await feedEntryService
-      .get('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    feedEntry = await firstValueFrom(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    );
 
     expect(feedEntry.authorName).toBeNull();
   }));
@@ -604,7 +632,9 @@ describe('FeedEntryService', () => {
     );
 
     await expectAsync(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+      firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -619,9 +649,9 @@ describe('FeedEntryService', () => {
       }),
     );
 
-    const feedEntry = await feedEntryService
-      .get('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    const feedEntry = await firstValueFrom(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    );
 
     expect(feedEntry.fromSubscription).toBe(fromSubscription);
   }));
@@ -636,7 +666,9 @@ describe('FeedEntryService', () => {
     );
 
     await expectAsync(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+      firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -651,9 +683,9 @@ describe('FeedEntryService', () => {
       }),
     );
 
-    const feedEntry = await feedEntryService
-      .get('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    const feedEntry = await firstValueFrom(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    );
 
     expect(feedEntry.isRead).toBe(isRead);
   }));
@@ -668,7 +700,9 @@ describe('FeedEntryService', () => {
     );
 
     await expectAsync(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+      firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -683,9 +717,9 @@ describe('FeedEntryService', () => {
       }),
     );
 
-    const feedEntry = await feedEntryService
-      .get('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    const feedEntry = await firstValueFrom(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    );
 
     expect(feedEntry.isFavorite).toBe(isFavorite);
   }));
@@ -700,7 +734,9 @@ describe('FeedEntryService', () => {
     );
 
     await expectAsync(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+      firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -715,9 +751,9 @@ describe('FeedEntryService', () => {
       }),
     );
 
-    const feedEntry = await feedEntryService
-      .get('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    const feedEntry = await firstValueFrom(
+      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    );
 
     expect(feedEntry.feedUuid).toBe(feedUuid);
   }));
@@ -732,7 +768,9 @@ describe('FeedEntryService', () => {
     );
 
     await expectAsync(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000').toPromise(),
+      firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -745,7 +783,7 @@ describe('FeedEntryService', () => {
       }),
     );
 
-    const languages = await feedEntryService.getLanguages().toPromise();
+    const languages = await firstValueFrom(feedEntryService.getLanguages());
 
     expect(languages).toEqual(['ENG', 'JPN']);
   }));
@@ -759,9 +797,9 @@ describe('FeedEntryService', () => {
       }),
     );
 
-    const languages = await feedEntryService
-      .getLanguages('iso639_3')
-      .toPromise();
+    const languages = await firstValueFrom(
+      feedEntryService.getLanguages('iso639_3'),
+    );
 
     expect(languages).toEqual(['ENG', 'JPN']);
   }));
@@ -775,9 +813,9 @@ describe('FeedEntryService', () => {
       }),
     );
 
-    const languages = await feedEntryService
-      .getLanguages('iso639_1')
-      .toPromise();
+    const languages = await firstValueFrom(
+      feedEntryService.getLanguages('iso639_1'),
+    );
 
     expect(languages).toEqual(['EN', 'JA']);
   }));
@@ -791,7 +829,9 @@ describe('FeedEntryService', () => {
       }),
     );
 
-    const languages = await feedEntryService.getLanguages('name').toPromise();
+    const languages = await firstValueFrom(
+      feedEntryService.getLanguages('name'),
+    );
 
     expect(languages).toEqual(['ENGLISH', 'JAPANESE']);
   }));

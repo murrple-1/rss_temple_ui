@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { fakeAsync } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 
 import { MockConfigService } from '@app/test/config.service.mock';
 
@@ -38,14 +38,15 @@ describe('RegistrationService', () => {
 
     httpClientSpy.post.and.returnValue(of<void>());
 
-    await registrationService
-      .register(
+    await firstValueFrom(
+      registrationService.register(
         'test@test.com',
         'password',
         'captchaKey',
         'captchaSecretPhrase',
-      )
-      .toPromise();
+      ),
+      { defaultValue: undefined },
+    );
     expect(httpClientSpy.post).toHaveBeenCalledTimes(1);
     expect(httpClientSpy.post).toHaveBeenCalledWith(
       jasmine.stringMatching(/\/api\/registration$/),

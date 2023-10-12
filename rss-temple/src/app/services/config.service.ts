@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { z } from 'zod';
 
 @Injectable({
@@ -11,15 +12,14 @@ export class ConfigService {
   constructor(private http: HttpClient) {}
 
   async load() {
-    await this.http
-      .get<unknown>('/assets/config.json', {
+    await firstValueFrom(
+      this.http.get<unknown>('/assets/config.json', {
         responseType: 'json',
-      })
-      .toPromise()
-      .then(retVal => {
-        const config = z.record(z.unknown()).parse(retVal);
-        this.config = config;
-      });
+      }),
+    ).then(retVal => {
+      const config = z.record(z.unknown()).parse(retVal);
+      this.config = config;
+    });
   }
 
   get<T = unknown>(key: string): T | undefined {

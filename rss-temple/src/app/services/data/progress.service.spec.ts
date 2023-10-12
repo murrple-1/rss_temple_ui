@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { fakeAsync } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { z } from 'zod';
 
 import { AuthTokenService } from '@app/services/auth-token.service';
@@ -46,9 +46,9 @@ describe('ProgressService', () => {
       }),
     );
 
-    let progress = await progressService
-      .checkProgress('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    let progress = await firstValueFrom(
+      progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
+    );
 
     expect(progress).toEqual(
       jasmine.objectContaining({
@@ -66,9 +66,9 @@ describe('ProgressService', () => {
       }),
     );
 
-    progress = await progressService
-      .checkProgress('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    progress = await firstValueFrom(
+      progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
+    );
 
     expect(progress).toEqual(
       jasmine.objectContaining({
@@ -86,9 +86,9 @@ describe('ProgressService', () => {
       }),
     );
 
-    progress = await progressService
-      .checkProgress('123e4567-e89b-12d3-a456-426614174000')
-      .toPromise();
+    progress = await firstValueFrom(
+      progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
+    );
 
     expect(progress).toEqual(
       jasmine.objectContaining({
@@ -105,9 +105,9 @@ describe('ProgressService', () => {
     httpClientSpy.get.and.returnValue(of([1]));
 
     await expectAsync(
-      progressService
-        .checkProgress('123e4567-e89b-12d3-a456-426614174000')
-        .toPromise(),
+      firstValueFrom(
+        progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -122,9 +122,9 @@ describe('ProgressService', () => {
     );
 
     await expectAsync(
-      progressService
-        .checkProgress('123e4567-e89b-12d3-a456-426614174000')
-        .toPromise(),
+      firstValueFrom(
+        progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -140,9 +140,9 @@ describe('ProgressService', () => {
     );
 
     await expectAsync(
-      progressService
-        .checkProgress('123e4567-e89b-12d3-a456-426614174000')
-        .toPromise(),
+      firstValueFrom(
+        progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -158,9 +158,9 @@ describe('ProgressService', () => {
     );
 
     await expectAsync(
-      progressService
-        .checkProgress('123e4567-e89b-12d3-a456-426614174000')
-        .toPromise(),
+      firstValueFrom(
+        progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -175,9 +175,9 @@ describe('ProgressService', () => {
     );
 
     await expectAsync(
-      progressService
-        .checkProgress('123e4567-e89b-12d3-a456-426614174000')
-        .toPromise(),
+      firstValueFrom(
+        progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -193,9 +193,9 @@ describe('ProgressService', () => {
     );
 
     await expectAsync(
-      progressService
-        .checkProgress('123e4567-e89b-12d3-a456-426614174000')
-        .toPromise(),
+      firstValueFrom(
+        progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -210,9 +210,9 @@ describe('ProgressService', () => {
     );
 
     await expectAsync(
-      progressService
-        .checkProgress('123e4567-e89b-12d3-a456-426614174000')
-        .toPromise(),
+      firstValueFrom(
+        progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
   }));
 
@@ -228,9 +228,9 @@ describe('ProgressService', () => {
     );
 
     await expectAsync(
-      progressService
-        .checkProgress('123e4567-e89b-12d3-a456-426614174000')
-        .toPromise(),
+      firstValueFrom(
+        progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
+      ),
     ).toBeRejectedWithError(z.ZodError);
   }));
 });

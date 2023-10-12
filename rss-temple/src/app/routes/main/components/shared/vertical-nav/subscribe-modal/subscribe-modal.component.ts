@@ -1,6 +1,6 @@
 import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Subject } from 'rxjs';
+import { Subject, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 export interface SubscriptionDetails {
@@ -31,7 +31,7 @@ export class SubscribeModalComponent implements OnDestroy {
 
   openChanged(open: boolean) {
     if (!open) {
-      this.result.next();
+      this.result.next(undefined);
     }
 
     this.open = open;
@@ -82,5 +82,5 @@ export function openModal(modal: SubscribeModalComponent) {
   modal.reset();
   modal.open = true;
 
-  return modal.result.pipe(take(1)).toPromise();
+  return firstValueFrom(modal.result.pipe(take(1)));
 }

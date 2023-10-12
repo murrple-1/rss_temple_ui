@@ -3,7 +3,7 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { ClrLoadingState } from '@clr/angular';
 import { format as formatDate } from 'date-fns';
 import { where as langsWhere } from 'langs';
-import { Observable, Subject, combineLatest, of } from 'rxjs';
+import { Observable, Subject, combineLatest, firstValueFrom, of } from 'rxjs';
 import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 import { compare } from '@app/libs/compare.lib';
@@ -152,10 +152,11 @@ export class SearchComponent implements OnInit, OnDestroy {
         },
       });
 
-    this.feedEntryService
-      .getLanguages('iso639_1')
-      .pipe(takeUntil(this.unsubscribe$))
-      .toPromise()
+    firstValueFrom(
+      this.feedEntryService
+        .getLanguages('iso639_1')
+        .pipe(takeUntil(this.unsubscribe$)),
+    )
       .then(languages_Iso639_1 => {
         return Promise.all(
           Array.from(new Set(languages_Iso639_1)).map<

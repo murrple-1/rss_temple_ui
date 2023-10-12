@@ -1,5 +1,5 @@
 import { Component, NgZone, OnDestroy } from '@angular/core';
-import { Observable, Subject, forkJoin } from 'rxjs';
+import { Observable, Subject, firstValueFrom, forkJoin } from 'rxjs';
 import { map, take, takeUntil } from 'rxjs/operators';
 
 import { UserCategory } from '@app/models';
@@ -185,5 +185,5 @@ export function openModal(modal: GlobalUserCategoriesModalComponent) {
   modal.open = true;
   modal.load();
 
-  return modal.result.pipe(take(1)).toPromise();
+  return firstValueFrom(modal.result.pipe(take(1)));
 }

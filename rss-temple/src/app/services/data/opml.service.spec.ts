@@ -1,6 +1,6 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { fakeAsync } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 
 import { AuthTokenService } from '@app/services/auth-token.service';
 import { MockConfigService } from '@app/test/config.service.mock';
@@ -44,7 +44,7 @@ describe('OPMLService', () => {
 
     httpClientSpy.get.and.returnValue(of(downloadText));
 
-    const xmlText = await opmlService.download().toPromise();
+    const xmlText = await firstValueFrom(opmlService.download());
 
     expect(xmlText).toBe(downloadText);
   }));
@@ -58,7 +58,7 @@ describe('OPMLService', () => {
 
     httpClientSpy.post.and.returnValue(of(response));
 
-    const response_ = await opmlService.upload('<opml></opml>').toPromise();
+    const response_ = await firstValueFrom(opmlService.upload('<opml></opml>'));
 
     expect(response_.status).toBe(200);
   }));
@@ -72,9 +72,9 @@ describe('OPMLService', () => {
 
     httpClientSpy.post.and.returnValue(of(response));
 
-    const response_ = await opmlService
-      .upload(new ArrayBuffer(100))
-      .toPromise();
+    const response_ = await firstValueFrom(
+      opmlService.upload(new ArrayBuffer(100)),
+    );
 
     expect(response_.status).toBe(200);
   }));

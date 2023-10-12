@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { shareButtonName } from 'ngx-sharebuttons';
-import { Subject } from 'rxjs';
+import { Subject, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 export interface ShareButtonDescriptor {
@@ -140,5 +140,5 @@ export function openModal(
   modal.shouldUseWebShareAPI = shouldUseWebShareAPI;
   modal.open = true;
 
-  return modal.result.pipe(take(1)).toPromise();
+  return firstValueFrom(modal.result.pipe(take(1)));
 }

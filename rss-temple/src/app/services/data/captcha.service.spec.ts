@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { fakeAsync } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 
 import { MockConfigService } from '@app/test/config.service.mock';
 
@@ -34,7 +34,7 @@ describe('CaptchaService', () => {
 
     httpClientSpy.post.and.returnValue(of('newkey'));
 
-    await captchaService.getKey().toPromise();
+    await firstValueFrom(captchaService.getKey());
     expect(httpClientSpy.post).toHaveBeenCalledTimes(1);
   }));
 

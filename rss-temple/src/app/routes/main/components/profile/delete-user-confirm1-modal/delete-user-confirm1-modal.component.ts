@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 @Component({
@@ -40,5 +40,5 @@ export class DeleteUserConfirm1ModalComponent implements OnDestroy {
 export function openModal(modal: DeleteUserConfirm1ModalComponent) {
   modal.open = true;
 
-  return modal.result.pipe(take(1)).toPromise();
+  return firstValueFrom(modal.result.pipe(take(1)));
 }

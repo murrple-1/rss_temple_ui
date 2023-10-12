@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Subject } from 'rxjs';
+import { Subject, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { ConfigService } from '@app/services';
@@ -53,5 +53,5 @@ export function openModal(modal: OnboardingModalComponent) {
   modal.reset();
   modal.open = true;
 
-  return modal.result.pipe(take(1)).toPromise();
+  return firstValueFrom(modal.result.pipe(take(1)));
 }

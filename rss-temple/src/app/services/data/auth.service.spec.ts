@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { fakeAsync } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 
 import { ZUser } from '@app/models/user';
 import { AuthTokenService } from '@app/services/auth-token.service';
@@ -47,9 +47,9 @@ describe('AuthService', () => {
       }),
     );
 
-    const response = await authService
-      .login('test@test.com', 'password')
-      .toPromise();
+    const response = await firstValueFrom(
+      authService.login('test@test.com', 'password'),
+    );
     expect(httpClientSpy.post).toHaveBeenCalledTimes(1);
     expect(httpClientSpy.post).toHaveBeenCalledWith(
       jasmine.stringMatching(/\/api\/auth\/login$/),
@@ -70,11 +70,12 @@ describe('AuthService', () => {
     const { httpClientSpy, authService } = setup();
     httpClientSpy.post.and.returnValue(of<void>());
 
-    await authService
-      .logout({
+    await firstValueFrom(
+      authService.logout({
         authToken: 'sessionId',
-      })
-      .toPromise();
+      }),
+      { defaultValue: undefined },
+    );
     expect(httpClientSpy.post).toHaveBeenCalledTimes(1);
     expect(httpClientSpy.post).toHaveBeenCalledWith(
       jasmine.stringMatching(/\/api\/auth\/logout$/),
@@ -93,7 +94,9 @@ describe('AuthService', () => {
     httpClientSpy.post.and.returnValue(of());
 
     await expectAsync(
-      authService.requestPasswordReset('test@example.com').toPromise(),
+      firstValueFrom(authService.requestPasswordReset('test@example.com'), {
+        defaultValue: undefined,
+      }),
     ).toBeResolved();
   }));
 
@@ -103,9 +106,10 @@ describe('AuthService', () => {
     httpClientSpy.post.and.returnValue(of());
 
     await expectAsync(
-      authService
-        .resetPassword('a-token', 'a-user-id', 'newPassword1!')
-        .toPromise(),
+      firstValueFrom(
+        authService.resetPassword('a-token', 'a-user-id', 'newPassword1!'),
+        { defaultValue: undefined },
+      ),
     ).toBeResolved();
   }));
 
@@ -121,7 +125,7 @@ describe('AuthService', () => {
       }),
     );
 
-    const user = await authService.getUser().toPromise();
+    const user = await firstValueFrom(authService.getUser());
     expect(ZUser.safeParse(user).success).toBeTrue();
   }));
 
@@ -131,7 +135,9 @@ describe('AuthService', () => {
     httpClientSpy.put.and.returnValue(of());
 
     await expectAsync(
-      authService.updateUserAttributes({}).toPromise(),
+      firstValueFrom(authService.updateUserAttributes({}), {
+        defaultValue: undefined,
+      }),
     ).toBeResolved();
   }));
 });

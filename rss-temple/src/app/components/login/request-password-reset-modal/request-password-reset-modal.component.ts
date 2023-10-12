@@ -1,7 +1,7 @@
 import { Component, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ClrLoadingState } from '@clr/angular';
-import { Subject } from 'rxjs';
+import { Subject, firstValueFrom } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 
 import { HttpErrorService } from '@app/services';
@@ -94,5 +94,5 @@ export function openModal(modal: RequestPasswordResetModalComponent) {
   modal.reset();
   modal.open = true;
 
-  return modal.result.pipe(take(1)).toPromise();
+  return firstValueFrom(modal.result.pipe(take(1)));
 }

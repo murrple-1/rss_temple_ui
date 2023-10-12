@@ -5,7 +5,7 @@ import {
   OnDestroy,
   ViewChild,
 } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, firstValueFrom } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 
 import { HttpErrorService } from '@app/services';
@@ -180,5 +180,5 @@ export function openModal(modal: OPMLModalComponent) {
   modal.reset();
   modal.open = true;
 
-  return modal.result.pipe(take(1)).toPromise();
+  return firstValueFrom(modal.result.pipe(take(1)));
 }

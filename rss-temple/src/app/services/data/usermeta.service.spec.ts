@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { fakeAsync } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 
 import { AuthTokenService } from '@app/services/auth-token.service';
 import { MockConfigService } from '@app/test/config.service.mock';
@@ -35,7 +35,7 @@ describe('UserMetaService', () => {
 
     httpClientSpy.get.and.returnValue(of(1000));
 
-    const readCount = await userMetaService.getReadCount().toPromise();
+    const readCount = await firstValueFrom(userMetaService.getReadCount());
 
     expect(readCount).toEqual(1000);
   }));
