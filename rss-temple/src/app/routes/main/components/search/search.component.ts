@@ -157,8 +157,8 @@ export class SearchComponent implements OnInit, OnDestroy {
         .getLanguages('iso639_1')
         .pipe(takeUntil(this.unsubscribe$)),
     )
-      .then(languages_Iso639_1 => {
-        return Promise.all(
+      .then(languages_Iso639_1 =>
+        Promise.all(
           Array.from(new Set(languages_Iso639_1)).map<
             Promise<LanguageSelect | null>
           >(async l => {
@@ -193,8 +193,8 @@ export class SearchComponent implements OnInit, OnDestroy {
               }
             }
           }),
-        );
-      })
+        ),
+      )
       .then(languageSelects => {
         const languageSelects_ = languageSelects.filter(
           ls => ls !== null,

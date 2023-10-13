@@ -107,9 +107,7 @@ export function clarityIconsFactory() {
 }
 
 export function configFactory(configService: ConfigService) {
-  return () => {
-    return configService.load();
-  };
+  return () => configService.load();
 }
 
 @NgModule({
