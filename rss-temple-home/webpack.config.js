@@ -7,5 +7,6 @@ module.exports = {
     filename: "main.min.js",
     publicPath: "/scripts/"
   },
+  cache: false, // TODO disabled until server has more memory...uses in-memory cache by default
   mode: "production"
 };
