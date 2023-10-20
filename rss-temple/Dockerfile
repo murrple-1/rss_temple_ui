@@ -10,7 +10,7 @@ RUN cp /build/src/environments/environment.production.ts /build/src/environments
   && yarn install --frozen-lockfile \
   && yarn generate-licenses-file \
   && yarn collect-envvars \
-  && yarn run ng build -c ${APP_ENVIRONMENT}
+  && yarn ng build -c ${APP_ENVIRONMENT}
 
 FROM caddy:2-alpine AS production
 

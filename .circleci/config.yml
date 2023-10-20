@@ -126,7 +126,7 @@ jobs:
           working_directory: rss-temple/
       - run:
           name: angular-test
-          command: yarn run cross-env TEST_TYPE=xml ng test --code-coverage --no-watch --no-progress
+          command: yarn cross-env TEST_TYPE=xml ng test --code-coverage --no-watch --no-progress
           working_directory: rss-temple/
       - store_test_results:
           path: rss-temple/test-results/
