@@ -4,14 +4,14 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "watch:sass": "sass --watch styles:_site/styles",
-    "build:sass": "sass styles:_site/styles",
+    "watch:sass": "sass --watch styles/:_site/styles/",
+    "build:sass": "sass styles/:_site/styles/",
     "watch:webpack": "webpack --watch",
     "build:webpack": "webpack",
     "watch:eleventy": "eleventy --serve",
     "build:eleventy": "eleventy",
-    "start": "npm-run-all build:sass build:webpack --parallel watch:*",
-    "build": "npm-run-all build:*",
+    "start": "npm-run-all --parallel watch:*",
+    "build": "npm-run-all --parallel build:*",
     "lint": "eslint src/ scripts/"
   },
   "dependencies": {
