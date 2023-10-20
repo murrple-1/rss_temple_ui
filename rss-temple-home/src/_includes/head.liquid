@@ -1,0 +1,17 @@
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>RSS Temple - {{ page_name }}</title>
+
+<link href="/media/favicon.ico" rel="icon" type="image/x-icon" />
+<link
+  href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic"
+  rel="stylesheet"
+  type="text/css"
+/>
+<link href="/styles/main.css" rel="stylesheet" type="text/css" />
+{% for additional_link in additional_links %}
+<link href="{{ additional_link.href }}" rel="{{ additional_link.rel }}" type="{{ additional_link.type }}" />
+{% endfor %}
+
+{{ head_custom_filename | headCustom }}

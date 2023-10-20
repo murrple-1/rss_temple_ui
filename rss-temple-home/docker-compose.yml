@@ -10,6 +10,17 @@ services:
       - caddy_config:/config/
       - caddy_srv:/srv/
   rss_temple_home:
+    command: >
+      ash -c "
+        [ \"$$(ls -A /srv/)\" ] || echo '<html><body><h1>Building Site...</h1></body></html>' > /srv/index.html
+        yarn run build
+
+        rm -rf /srv/* && cp -R /build/_site/* /srv/
+
+        while :; do
+          sleep 3600
+        done
+      "
     volumes:
       - caddy_srv:/srv/
 volumes:

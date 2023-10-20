@@ -1,8 +1,8 @@
-@import "bootstrap.scss";
+@import "../node_modules/bootstrap/scss/bootstrap.scss";
 $fa-font-path: "/media/fonts";
-@import "fontawesome.scss";
-@import "solid.scss";
-@import "brands.scss";
+@import "../node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@import "../node_modules/@fortawesome/fontawesome-free/scss/solid.scss";
+@import "../node_modules/@fortawesome/fontawesome-free/scss/brands.scss";
 
 body {
   --bs-primary-rgb: 222, 136, 0;

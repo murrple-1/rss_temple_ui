@@ -1,18 +1,30 @@
+---
+layout: base.liquid
+---
+<nav class="navbar navbar-light bg-light static-top">
+  <div class="container">
+    <a class="navbar-brand" href="/"
+      >{{  "media/icon.svg" | include }}<span>RSS Temple</span></a
+    >
+    <a class="btn btn-primary" href="{{ env.app_url }}">Go To App</a>
+  </div>
+</nav>
+{{ content }}
 <footer class="app--footer bg-light">
   <div class="container">
     <div class="row">
       <div class="col-lg-6 h-100 text-center text-lg-left my-auto">
         <ul class="list-inline mb-2">
           <li class="list-inline-item">
-            <a href="/contact.html">Contact</a>
+            <a href="/contact">Contact</a>
           </li>
           <li class="list-inline-item">&sdot;</li>
           <li class="list-inline-item">
-            <a href="/tos.html">Terms of Service</a>
+            <a href="/tos">Terms of Service</a>
           </li>
           <li class="list-inline-item">&sdot;</li>
           <li class="list-inline-item">
-            <a href="/privacy.html">Privacy Policy</a>
+            <a href="/privacy">Privacy Policy</a>
           </li>
         </ul>
         <p class="text-muted small mb-4 mb-lg-0">
@@ -22,17 +34,17 @@
       <div class="col-lg-6 h-100 text-center text-lg-right my-auto">
         <ul class="list-inline mb-0">
           <li class="list-inline-item mr-3">
-            <a href="{{fb_url}}">
+            <a href="{{ env.fb_url }}">
               <i class="fab fa-facebook fa-2x fa-fw"></i>
             </a>
           </li>
           <li class="list-inline-item mr-3">
-            <a href="{{twitter_url}}">
+            <a href="{{ env.twitter_url }}">
               <i class="fab fa-twitter-square fa-2x fa-fw"></i>
             </a>
           </li>
           <li class="list-inline-item">
-            <a href="{{insta_url}}">
+            <a href="{{ env.insta_url }}">
               <i class="fab fa-instagram fa-2x fa-fw"></i>
             </a>
           </li>
@@ -41,3 +53,4 @@
     </div>
   </div>
 </footer>
+<script src="/scripts/main.min.js"></script>
