@@ -4,8 +4,8 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "watch:sass": "sass --watch styles/:_site/styles/",
-    "build:sass": "sass styles/:_site/styles/",
+    "watch:sass": "sass --style=compressed --watch styles/main.scss:_site/styles/main.min.css styles/tos.scss:_site/styles/tos.min.css",
+    "build:sass": "sass --style=compressed styles/main.scss:_site/styles/main.min.css styles/tos.scss:_site/styles/tos.min.css",
     "watch:webpack": "webpack --watch",
     "build:webpack": "webpack",
     "watch:eleventy": "eleventy --serve",

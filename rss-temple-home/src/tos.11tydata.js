@@ -5,7 +5,7 @@ module.exports = function () {
     head_custom_filename: "tos.head.html",
     additional_links: [
       {
-        href: "/styles/tos.css",
+        href: "/styles/tos.min.css",
         rel: "stylesheet",
         type: "text/css"
       }
