@@ -40,6 +40,10 @@
   & ::ng-deep a[href] {
     color: #8fbed2;
   }
+
+  & .alert-app-level * {
+    color: var(--clr-app-alert-info-font-color, hsl(198, 0%, 100%));
+  }
 }
 
 .app--has-focus {
@@ -63,4 +67,8 @@
   animation-duration: 200ms;
   animation-iteration-count: 1;
   animation-timing-function: linear;
+}
+
+.alert-action.app--yes-action {
+  margin-right: 8px;
 }

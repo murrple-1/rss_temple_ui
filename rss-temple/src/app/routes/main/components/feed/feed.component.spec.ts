@@ -14,11 +14,13 @@ import { SubscribeModalComponent } from '@app/routes/main/components/shared/vert
 import { VerticalNavComponent } from '@app/routes/main/components/shared/vertical-nav/vertical-nav.component';
 import { InfiniteScrollDirective } from '@app/routes/main/directives/infinite-scroll.directive';
 import {
+  FeedEntryVoteService,
   FeedObservableService,
   ReadCounterService,
   UserCategoryObservableService,
 } from '@app/routes/main/services';
 import {
+  ClassifierLabelService,
   FeedEntryService,
   FeedService,
   OPMLService,
@@ -51,6 +53,14 @@ async function setup() {
   const mockProgressService = jasmine.createSpyObj<ProgressService>(
     'ProgressService',
     ['checkProgress'],
+  );
+  const mockClassifierLabelService =
+    jasmine.createSpyObj<ClassifierLabelService>('ClassifierLabelService', [
+      'getAll',
+    ]);
+  const mockFeedEntryVoteService = jasmine.createSpyObj<FeedEntryVoteService>(
+    'FeedEntryVoteService',
+    ['shouldForceLabelVote'],
   );
 
   await TestBed.configureTestingModule({
@@ -98,6 +108,14 @@ async function setup() {
         provide: ReadCounterService,
         useValue: mockReadCounterService,
       },
+      {
+        provide: ClassifierLabelService,
+        useValue: mockClassifierLabelService,
+      },
+      {
+        provide: FeedEntryVoteService,
+        useValue: mockFeedEntryVoteService,
+      },
     ],
   }).compileComponents();
 
@@ -107,6 +125,8 @@ async function setup() {
     mockFeedEntryService,
     mockOPMLService,
     mockProgressService,
+    mockClassifierLabelService,
+    mockFeedEntryVoteService,
   };
 }
 

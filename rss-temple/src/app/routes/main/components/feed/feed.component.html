@@ -169,6 +169,7 @@
       [appInViewportScrollParent]="scrollContainer"
       [appInViewportOffset]="{ 'bottom': -64 }"
       [shareModalComponent]="shareModalComponent"
+      [labelVoteModalComponent]="labelVoteModalComponent"
       (appInViewportWatch)="onEntryEnteredViewport($event, feedEntryView)"
       (click)="onEntryClicked($event, feedEntryView)"
     ></app-feed-entry-view>
@@ -186,3 +187,4 @@
 
 <app-user-categories-modal></app-user-categories-modal>
 <app-share-modal #shareModalComponent></app-share-modal>
+<app-label-vote-modal #labelVoteModalComponent></app-label-vote-modal>

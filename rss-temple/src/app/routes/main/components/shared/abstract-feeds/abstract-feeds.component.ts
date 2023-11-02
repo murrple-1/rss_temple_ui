@@ -8,16 +8,19 @@ import {
   OnDestroy,
   QueryList,
 } from '@angular/core';
-import { Observable, Subject, of } from 'rxjs';
+import { Observable, Subject, forkJoin, of } from 'rxjs';
 import { map, mergeMap, takeUntil, tap } from 'rxjs/operators';
 
-import { Feed, FeedEntry } from '@app/models';
+import { ClassifierLabel, Feed, FeedEntry } from '@app/models';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
 import { State as FeedsFooterState } from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
 import { InViewportEvent } from '@app/routes/main/directives/inviewport.directive';
-import { ReadCounterService } from '@app/routes/main/services';
+import {
+  FeedEntryVoteService,
+  ReadCounterService,
+} from '@app/routes/main/services';
 import { HttpErrorService, ModalOpenService } from '@app/services';
-import { FeedEntryService } from '@app/services/data';
+import { ClassifierLabelService, FeedEntryService } from '@app/services/data';
 import { Field, SortField } from '@app/services/data/feedentry.service';
 import { Objects } from '@app/services/data/objects';
 import { Sort } from '@app/services/data/sort.interface';
@@ -44,7 +47,9 @@ export type FeedEntryImpl = Required<
     | 'hasTopImageBeenProcessed'
     | 'topImageSrc'
   >
->;
+> & {
+  possibleClassifierLabel: ClassifierLabel | null;
+};
 
 export enum LoadingState {
   IsLoading,
@@ -105,8 +110,10 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
     protected changeDetectorRef: ChangeDetectorRef,
     protected feedEntryService: FeedEntryService,
     protected readCounterService: ReadCounterService,
+    protected classifierLabelService: ClassifierLabelService,
     protected httpErrorService: HttpErrorService,
     protected modalOpenService: ModalOpenService,
+    protected feedEntryVoteService: FeedEntryVoteService,
   ) {}
 
   ngOnDestroy() {
@@ -164,10 +171,10 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
   }
 
   protected getFeedEntries(skip?: number) {
-    let feedEntriesObservale: Observable<Objects<FeedEntry>>;
+    let feedEntriesObservable: Observable<Objects<FeedEntry>>;
     if (this.stableQueryToken === null) {
       try {
-        feedEntriesObservale = this.feedEntryService
+        feedEntriesObservable = this.feedEntryService
           .createStableQuery(this.feedEntryCreateStableQueryOptions(this.feeds))
           .pipe(
             tap(token => {
@@ -179,7 +186,7 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
               ),
             ),
           );
-      } catch (e) {
+      } catch (e: unknown) {
         if (e instanceof NoLoadError) {
           return of([]);
         } else {
@@ -187,7 +194,7 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
         }
       }
     } else {
-      feedEntriesObservale = this.feedEntryService.stableQuery(
+      feedEntriesObservable = this.feedEntryService.stableQuery(
         this.feedEntryStableQueryOptions(
           this.stableQueryToken,
           this.count,
@@ -196,14 +203,47 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
       );
     }
 
-    return feedEntriesObservale.pipe(
-      map(feedEntries => {
+    return feedEntriesObservable.pipe(
+      mergeMap(feedEntries => {
         if (feedEntries.objects !== undefined) {
-          return feedEntries.objects as FeedEntryImpl[];
+          if (feedEntries.objects.length < 1) {
+            return of([[], []]);
+          }
+
+          const classifierLabelObservables: Observable<
+            ClassifierLabel[] | null
+          >[] = [];
+          for (const fe of feedEntries.objects) {
+            const uuid = fe.uuid as string;
+            if (this.feedEntryVoteService.shouldForceLabelVote(uuid)) {
+              classifierLabelObservables.push(
+                this.classifierLabelService.getAll(uuid),
+              );
+            } else {
+              classifierLabelObservables.push(of(null));
+            }
+          }
+          return forkJoin([
+            of(feedEntries.objects),
+            forkJoin(classifierLabelObservables),
+          ]);
         }
         throw new Error('malformed response');
       }),
-      map(feedEntries => {
+      map(([feedEntries_, classifierLabels]) => {
+        const feedEntries = feedEntries_.map((fe, index) => {
+          const feImpl = fe as FeedEntryImpl;
+          const classifierLabelList = classifierLabels[index];
+          if (classifierLabelList === undefined) {
+            throw new Error('classifierLabelList undefined');
+          } else if (classifierLabelList === null) {
+            feImpl.possibleClassifierLabel = null;
+          } else {
+            feImpl.possibleClassifierLabel = classifierLabelList[0] ?? null;
+          }
+          return feImpl;
+        });
+
         for (const feedEntry of feedEntries) {
           let title = feedEntry.title.trim();
           if (title.length < 1) {
@@ -237,7 +277,7 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
           next: feedEntries => {
             this.zone.run(() => {
               if (feedEntries.length > 0) {
-                this.feedEntries = this.feedEntries.concat(...feedEntries);
+                this.feedEntries = [...this.feedEntries, ...feedEntries];
                 this.loadingState = LoadingState.IsNotLoading;
               } else {
                 this.loadingState = LoadingState.NoMoreToLoad;

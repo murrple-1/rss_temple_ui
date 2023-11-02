@@ -1,15 +1,23 @@
 import { Component, ElementRef, Input, NgZone, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Subject, forkJoin } from 'rxjs';
+import { mergeMap, takeUntil } from 'rxjs/operators';
 
-import { Feed } from '@app/models';
+import { ClassifierLabel, Feed } from '@app/models';
 import { FeedEntryImpl } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
+import {
+  LabelVoteModalComponent,
+  openModal as openLabelVoteModal,
+} from '@app/routes/main/components/shared/label-vote-modal/label-vote-modal.component';
 import {
   ShareModalComponent,
   openModal as openShareModal,
 } from '@app/routes/main/components/shared/share-modal/share-modal.component';
-import { ReadCounterService } from '@app/routes/main/services';
-import { FeedEntryService } from '@app/services/data';
+import {
+  FeedEntryVoteService,
+  ReadCounterService,
+} from '@app/routes/main/services';
+import { HttpErrorService } from '@app/services';
+import { ClassifierLabelService, FeedEntryService } from '@app/services/data';
 
 type FeedImpl = Required<Pick<Feed, 'calculatedTitle' | 'homeUrl' | 'feedUrl'>>;
 
@@ -34,7 +42,12 @@ export class FeedEntryViewComponent implements OnDestroy {
   @Input()
   shareModalComponent?: ShareModalComponent;
 
+  @Input()
+  labelVoteModalComponent?: LabelVoteModalComponent;
+
   flashing = false;
+
+  isClassifierLabelDismissed = false;
 
   private hasAutoRead = false;
 
@@ -45,6 +58,9 @@ export class FeedEntryViewComponent implements OnDestroy {
     public elementRef: ElementRef<HTMLElement>,
     private feedEntryService: FeedEntryService,
     private readCounterService: ReadCounterService,
+    private classifierLabelService: ClassifierLabelService,
+    private httpErrorService: HttpErrorService,
+    private feedEntryVoteService: FeedEntryVoteService,
   ) {}
 
   ngOnDestroy() {
@@ -101,8 +117,8 @@ export class FeedEntryViewComponent implements OnDestroy {
             }
           });
         },
-        error: error => {
-          console.log(error);
+        error: (error: unknown) => {
+          this.httpErrorService.handleError(error);
         },
       });
   }
@@ -123,8 +139,8 @@ export class FeedEntryViewComponent implements OnDestroy {
             }
           });
         },
-        error: error => {
-          console.log(error);
+        error: (error: unknown) => {
+          this.httpErrorService.handleError(error);
         },
       });
   }
@@ -143,6 +159,90 @@ export class FeedEntryViewComponent implements OnDestroy {
       this.feedEntry.title,
       this.shareModalComponent,
     );
+  }
+
+  voteYes() {
+    this.isClassifierLabelDismissed = true;
+
+    const feedEntry = this.feedEntry;
+    if (feedEntry === undefined) {
+      return;
+    }
+
+    const possibleClassifierLabel = feedEntry.possibleClassifierLabel;
+    if (possibleClassifierLabel === null) {
+      return;
+    }
+
+    this.feedEntryVoteService.forceHide(feedEntry.uuid);
+
+    this.classifierLabelService
+      .getMyVotes(feedEntry.uuid)
+      .pipe(
+        mergeMap(votes => {
+          const voteUuids = new Set(votes.map(v => v.uuid));
+          voteUuids.add(possibleClassifierLabel.uuid);
+          return this.classifierLabelService.vote(
+            feedEntry.uuid,
+            Array.from(voteUuids),
+          );
+        }),
+        takeUntil(this.unsubscribe$),
+      )
+      .subscribe({
+        error: (error: unknown) => {
+          this.httpErrorService.handleError(error);
+        },
+      });
+  }
+
+  voteNo() {
+    this.isClassifierLabelDismissed = true;
+
+    if (this.feedEntry === undefined) {
+      return;
+    }
+    this.feedEntryVoteService.forceHide(this.feedEntry.uuid);
+  }
+
+  voteLabels() {
+    const labelVoteModalComponent = this.labelVoteModalComponent;
+    if (labelVoteModalComponent === undefined) {
+      throw new Error('labelVoteModalComponent undefined');
+    }
+
+    const feedEntry = this.feedEntry;
+    if (feedEntry === undefined) {
+      return;
+    }
+
+    forkJoin([
+      this.classifierLabelService.getAll(feedEntry.uuid),
+      this.classifierLabelService.getMyVotes(feedEntry.uuid),
+    ])
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: async ([classifierLabels, votes]) => {
+          const votedLabelIndexes = new Set<number>();
+          for (const vote of votes) {
+            const index = classifierLabels.findIndex(
+              cl => cl.uuid === vote.uuid,
+            );
+            if (index > -1) {
+              votedLabelIndexes.add(index);
+            }
+          }
+          await openLabelVoteModal(
+            feedEntry.uuid,
+            classifierLabels,
+            votedLabelIndexes,
+            labelVoteModalComponent,
+          );
+        },
+        error: (error: unknown) => {
+          this.httpErrorService.handleError(error);
+        },
+      });
   }
 
   onClick(event: MouseEvent) {

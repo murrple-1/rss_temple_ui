@@ -9,3 +9,4 @@ export { SocialService } from './social.service';
 export { RegistrationService } from './registration.service';
 export { CaptchaService } from './captcha.service';
 export { UserMetaService } from './usermeta.service';
+export { ClassifierLabelService } from './classifierlabel.service';

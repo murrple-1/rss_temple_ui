@@ -10,6 +10,7 @@ import {
   envelopeIcon,
   exclamationCircleIcon,
   exclamationTriangleIcon,
+  flaskIcon,
   folderIcon,
   libraryIcon,
   logoutIcon,
@@ -101,6 +102,7 @@ export function clarityIconsFactory() {
       envelopeIcon,
       talkBubblesIcon,
       searchIcon,
+      flaskIcon,
       ...myCollectionIcons,
     );
   };

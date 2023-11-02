@@ -18,6 +18,7 @@ import { ProfileComponent } from '@app/routes/main/components/profile/profile.co
 import { SearchComponent } from '@app/routes/main/components/search/search.component';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
 import { FeedsFooterComponent } from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
+import { LabelVoteModalComponent } from '@app/routes/main/components/shared/label-vote-modal/label-vote-modal.component';
 import { ShareModalComponent } from '@app/routes/main/components/shared/share-modal/share-modal.component';
 import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
 import { SubscribeModalComponent as HeaderSubscribeModalComponent } from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
@@ -28,6 +29,7 @@ import { InViewportDirective } from '@app/routes/main/directives/inviewport.dire
 import { MainComponent } from '@app/routes/main/main.component';
 import { routes } from '@app/routes/main/main.routing';
 import {
+  FeedEntryVoteService,
   FeedObservableService,
   ReadCounterService,
   UserCategoryObservableService,
@@ -50,6 +52,7 @@ import {
     FeedObservableService,
     UserCategoryObservableService,
     ReadCounterService,
+    FeedEntryVoteService,
   ],
   declarations: [
     InViewportDirective,
@@ -71,6 +74,7 @@ import {
     VerticalNavComponent,
     FeedEntryViewComponent,
     ShareModalComponent,
+    LabelVoteModalComponent,
     HeaderSubscribeModalComponent,
     HeaderOPMLModalComponent,
   ],

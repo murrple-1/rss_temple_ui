@@ -26,11 +26,13 @@ import {
 } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
 import {
+  FeedEntryVoteService,
   ReadCounterService,
   UserCategoryObservableService,
 } from '@app/routes/main/services';
 import { HttpErrorService, ModalOpenService } from '@app/services';
 import {
+  ClassifierLabelService,
   FeedEntryService,
   FeedService,
   UserCategoryService,
@@ -100,16 +102,20 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
     changeDetectorRef: ChangeDetectorRef,
     feedEntryService: FeedEntryService,
     readCounterService: ReadCounterService,
+    classifierLabelService: ClassifierLabelService,
     httpErrorService: HttpErrorService,
     modalOpenService: ModalOpenService,
+    feedEntryVoteService: FeedEntryVoteService,
   ) {
     super(
       zone,
       changeDetectorRef,
       feedEntryService,
       readCounterService,
+      classifierLabelService,
       httpErrorService,
       modalOpenService,
+      feedEntryVoteService,
     );
   }
 

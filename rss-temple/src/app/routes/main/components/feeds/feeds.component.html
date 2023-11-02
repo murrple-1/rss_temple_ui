@@ -47,6 +47,7 @@
       [appInViewportOffset]="{ 'bottom': -64 }"
       (appInViewportWatch)="onEntryEnteredViewport($event, feedEntryView)"
       [shareModalComponent]="shareModalComponent"
+      [labelVoteModalComponent]="labelVoteModalComponent"
       (click)="onEntryClicked($event, feedEntryView)"
     ></app-feed-entry-view>
   </div>
@@ -62,3 +63,4 @@
 </div>
 
 <app-share-modal #shareModalComponent></app-share-modal>
+<app-label-vote-modal #labelVoteModalComponent></app-label-vote-modal>

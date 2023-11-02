@@ -22,6 +22,36 @@
       <p class="p7 app--date">{{ feedEntry.publishedAt | dateFormat }}</p>
     </div>
     <div
+      *ngIf="
+        !isClassifierLabelDismissed &&
+        feedEntry.possibleClassifierLabel !== null
+      "
+      class="alert alert-app-level alert-info"
+      role="alert"
+    >
+      <div class="alert-items">
+        <div class="alert-item static">
+          <div class="alert-icon-wrapper">
+            <cds-icon class="alert-icon" shape="info-circle"></cds-icon>
+          </div>
+          <div class="alert-text">
+            Is this article about "{{
+              feedEntry.possibleClassifierLabel.text
+            }}"?
+          </div>
+          <div class="alert-actions">
+            <button
+              class="btn alert-action app--yes-action"
+              (click)="voteYes()"
+            >
+              Yes
+            </button>
+            <button class="btn alert-action" (click)="voteNo()">No</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
       *ngIf="feedEntry.hasTopImageBeenProcessed && feedEntry.topImageSrc !== ''"
       class="card-text app--content app--top-image"
     >
@@ -61,6 +91,9 @@
     </ng-template>
     <button class="btn btn-icon btn-sm" (click)="share()">
       <cds-icon shape="share"></cds-icon>
+    </button>
+    <button class="btn btn-icon btn-sm" (click)="voteLabels()">
+      <cds-icon shape="flask"></cds-icon>
     </button>
     <a
       *ngIf="isGoToVisible && feed !== undefined"

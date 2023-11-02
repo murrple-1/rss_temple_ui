@@ -7,8 +7,8 @@ export type FeedImpl = Required<Pick<Feed, 'uuid'>> & Omit<Feed, 'uuid'>;
 
 @Injectable()
 export class FeedObservableService {
-  feedAdded = new Subject<FeedImpl>();
-  feedRemoved = new Subject<FeedImpl>();
+  readonly feedAdded = new Subject<FeedImpl>();
+  readonly feedRemoved = new Subject<FeedImpl>();
 
-  feedsChanged = new Subject<void>();
+  readonly feedsChanged = new Subject<void>();
 }
