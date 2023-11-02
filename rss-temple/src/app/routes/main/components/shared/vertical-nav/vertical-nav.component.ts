@@ -310,15 +310,18 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
           this.feedObservableService.feedAdded.next(feed);
 
           this.zone.run(() => {
-            this.categorizedFeeds.noCategory.feeds =
-              this.categorizedFeeds.noCategory.feeds
-                .concat({
-                  uuid: feed.uuid,
-                  calculatedTitle: feed.calculatedTitle,
-                  feedUrl: feed.feedUrl,
-                  homeUrl: feed.homeUrl,
-                })
-                .sort(VerticalNavComponent.sortFeeds);
+            this.categorizedFeeds.noCategory.feeds = [
+              ...this.categorizedFeeds.noCategory.feeds,
+              {
+                uuid: feed.uuid,
+                calculatedTitle: feed.calculatedTitle,
+                feedUrl: feed.feedUrl,
+                homeUrl: feed.homeUrl,
+              },
+            ];
+            this.categorizedFeeds.noCategory.feeds.sort(
+              VerticalNavComponent.sortFeeds,
+            );
           });
         },
         error: error => {

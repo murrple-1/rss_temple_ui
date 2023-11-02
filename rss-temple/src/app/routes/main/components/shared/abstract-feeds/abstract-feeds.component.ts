@@ -206,27 +206,21 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
     return feedEntriesObservable.pipe(
       mergeMap(feedEntries => {
         if (feedEntries.objects !== undefined) {
-          if (feedEntries.objects.length < 1) {
-            return of([[], []]);
-          }
-
           const classifierLabelObservables: Observable<
             ClassifierLabel[] | null
-          >[] = [];
-          for (const fe of feedEntries.objects) {
+          >[] = feedEntries.objects.map(fe => {
             const uuid = fe.uuid as string;
-            if (this.feedEntryVoteService.shouldForceLabelVote(uuid)) {
-              classifierLabelObservables.push(
-                this.classifierLabelService.getAll(uuid),
-              );
-            } else {
-              classifierLabelObservables.push(of(null));
-            }
-          }
-          return forkJoin([
-            of(feedEntries.objects),
-            forkJoin(classifierLabelObservables),
-          ]);
+            return this.feedEntryVoteService.shouldForceLabelVote(uuid)
+              ? this.classifierLabelService.getAll(uuid)
+              : of(null);
+          });
+
+          return classifierLabelObservables.length > 0
+            ? forkJoin([
+                of(feedEntries.objects),
+                forkJoin(classifierLabelObservables),
+              ])
+            : of([[], []]);
         }
         throw new Error('malformed response');
       }),
@@ -236,7 +230,9 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
           const classifierLabelList = classifierLabels[index];
           if (classifierLabelList === undefined) {
             throw new Error('classifierLabelList undefined');
-          } else if (classifierLabelList === null) {
+          }
+
+          if (classifierLabelList === null) {
             feImpl.possibleClassifierLabel = null;
           } else {
             feImpl.possibleClassifierLabel = classifierLabelList[0] ?? null;

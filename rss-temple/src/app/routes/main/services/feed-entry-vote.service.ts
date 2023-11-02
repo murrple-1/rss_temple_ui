@@ -10,8 +10,12 @@ export class FeedEntryVoteService {
   private forceLabelThreshold: number;
 
   constructor(configService: ConfigService) {
-    this.forceLabelThreshold =
+    const forceLabelThreshold =
       configService.get<number>('forceLabelThreshold') ?? 0.5;
+    if (typeof forceLabelThreshold !== 'number') {
+      throw new Error('forceLabelThreshold malformed');
+    }
+    this.forceLabelThreshold = forceLabelThreshold;
   }
 
   shouldForceLabelVote(feedEntryUuid: string): boolean {
