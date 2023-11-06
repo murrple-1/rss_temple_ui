@@ -2,6 +2,7 @@ import { Component, ElementRef, Input, NgZone, OnDestroy } from '@angular/core';
 import { Subject, forkJoin } from 'rxjs';
 import { mergeMap, takeUntil } from 'rxjs/operators';
 
+import { compare } from '@app/libs/compare.lib';
 import { ClassifierLabel, Feed } from '@app/models';
 import { FeedEntryImpl } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 import {
@@ -205,6 +206,10 @@ export class FeedEntryViewComponent implements OnDestroy {
     this.feedEntryVoteService.forceHide(this.feedEntry.uuid);
   }
 
+  private sortClassifierLabels(a: ClassifierLabel, b: ClassifierLabel) {
+    return compare(a.text, b.text);
+  }
+
   voteLabels() {
     const labelVoteModalComponent = this.labelVoteModalComponent;
     if (labelVoteModalComponent === undefined) {
@@ -223,6 +228,8 @@ export class FeedEntryViewComponent implements OnDestroy {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: async ([classifierLabels, votes]) => {
+          classifierLabels.sort(this.sortClassifierLabels);
+
           const votedLabelIndexes = new Set<number>();
           for (const vote of votes) {
             const index = classifierLabels.findIndex(
