@@ -6,6 +6,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import {
   ClarityIcons,
+  bookIcon,
+  bookmarkIcon,
   clipboardIcon,
   envelopeIcon,
   exclamationCircleIcon,
@@ -13,6 +15,7 @@ import {
   flaskIcon,
   folderIcon,
   libraryIcon,
+  linkIcon,
   logoutIcon,
   minusIcon,
   playIcon,
@@ -67,6 +70,11 @@ const FacebookMessengerLogoSVG: string =
 const WhatsAppLogoSVG: string =
   require('!!raw-loader!../custom_cds_icon_svgs/whatsapp.svg').default;
 
+const BookStrikethroughSVG: string =
+  require('!!raw-loader!../custom_cds_icon_svgs/book-strikethrough.svg').default;
+const StarFilledSVG: string =
+  require('!!raw-loader!../custom_cds_icon_svgs/star-filled.svg').default;
+
 export function clarityIconsFactory() {
   return () => {
     const myCollectionIcons: IconShapeTuple[] = [
@@ -81,6 +89,8 @@ export function clarityIconsFactory() {
       ['brand-telegram', TelegramLogoSVG],
       ['brand-facebook-messenger', FacebookMessengerLogoSVG],
       ['brand-whatsapp', WhatsAppLogoSVG],
+      ['book-strikethrough', BookStrikethroughSVG],
+      ['star-filled', StarFilledSVG],
     ];
     ClarityIcons.addIcons(
       exclamationCircleIcon,
@@ -103,6 +113,9 @@ export function clarityIconsFactory() {
       talkBubblesIcon,
       searchIcon,
       flaskIcon,
+      bookIcon,
+      linkIcon,
+      bookmarkIcon,
       ...myCollectionIcons,
     );
   };

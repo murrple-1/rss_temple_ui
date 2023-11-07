@@ -72,3 +72,11 @@
 .alert-action.app--yes-action {
   margin-right: 8px;
 }
+
+.app--button-label {
+  margin-left: 4px;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}

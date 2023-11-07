@@ -76,19 +76,30 @@
               "
             ></ng-container>
             <ng-template #unsubscribeButton>
-              <button class="btn btn-warning" (click)="unsubscribe(feed)">
-                Unsubscribe
+              <button
+                class="btn btn-warning btn-sm btn-icon"
+                (click)="unsubscribe(feed)"
+                title="Unsubscribe"
+              >
+                <cds-icon shape="bookmark"></cds-icon
+                ><span class="app--button-label">Unsubscribe</span>
               </button>
             </ng-template>
             <ng-template #subscribeButton>
-              <button class="btn btn-primary" (click)="subscribe(feed)">
-                Subscribe
+              <button
+                class="btn btn-success btn-sm btn-icon"
+                (click)="subscribe(feed)"
+                title="Subscribe"
+              >
+                <cds-icon shape="bookmark"></cds-icon
+                ><span class="app--button-label">Subscribe</span>
               </button>
             </ng-template>
             <a
               class="btn btn-link btn-sm"
               [routerLink]="['/main/feed/', feed.feedUrl]"
-              >Go to Feed</a
+              ><cds-icon shape="link"></cds-icon
+              ><span class="app--button-label">Go to Feed</span></a
             >
           </div>
         </div>

@@ -67,39 +67,66 @@
       *ngIf="feedEntry.isRead; then unreadButton; else readButton"
     ></ng-container>
     <ng-template #unreadButton>
-      <button class="btn btn-outline-primary btn-sm" (click)="unread()">
-        Unread
+      <button
+        class="btn btn-primary btn-icon btn-sm"
+        (click)="unread()"
+        title="Unread"
+      >
+        <cds-icon shape="book"></cds-icon
+        ><span class="app--button-label">Unread</span>
       </button>
     </ng-template>
     <ng-template #readButton>
-      <button class="btn btn-outline-primary btn-sm" (click)="read()">
-        Read
+      <button
+        class="btn btn-primary btn-icon btn-sm"
+        (click)="read()"
+        title="Read"
+      >
+        <cds-icon shape="book-strikethrough"></cds-icon
+        ><span class="app--button-label">Read</span>
       </button>
     </ng-template>
     <ng-container
       *ngIf="feedEntry.isFavorite; then unfavoriteButton; else favoriteButton"
     ></ng-container>
     <ng-template #unfavoriteButton>
-      <button class="btn btn-outline-success btn-sm" (click)="unfavorite()">
-        Unfavorite
+      <button
+        class="btn btn-success btn-icon btn-sm"
+        (click)="unfavorite()"
+        title="Unfavorite"
+      >
+        <cds-icon shape="star-filled"></cds-icon
+        ><span class="app--button-label">Unfavorite</span>
       </button>
     </ng-template>
     <ng-template #favoriteButton>
-      <button class="btn btn-outline-success btn-sm" (click)="favorite()">
-        Favorite
+      <button
+        class="btn btn-success btn-icon btn-sm"
+        (click)="favorite()"
+        title="Favorite"
+      >
+        <cds-icon shape="star"></cds-icon
+        ><span class="app--button-label">Favorite</span>
       </button>
     </ng-template>
-    <button class="btn btn-icon btn-sm" (click)="share()">
-      <cds-icon shape="share"></cds-icon>
+    <button class="btn btn-icon btn-sm" (click)="share()" title="Share">
+      <cds-icon shape="share"></cds-icon
+      ><span class="app--button-label">Share</span>
     </button>
-    <button class="btn btn-icon btn-sm" (click)="voteLabels()">
-      <cds-icon shape="flask"></cds-icon>
+    <button
+      class="btn btn-icon btn-sm"
+      (click)="voteLabels()"
+      title="ML Labeling"
+    >
+      <cds-icon shape="flask"></cds-icon
+      ><span class="app--button-label">ML Labeling</span>
     </button>
     <a
       *ngIf="isGoToVisible && feed !== undefined"
       class="btn btn-link btn-sm"
       [routerLink]="['/main/feed/', feed.feedUrl]"
-      >Go to Feed</a
+      ><cds-icon shape="link"></cds-icon
+      ><span class="app--button-label">Go to Feed</span></a
     >
   </div>
 </div>
