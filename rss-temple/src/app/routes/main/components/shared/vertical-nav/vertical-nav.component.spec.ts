@@ -5,6 +5,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ClarityModule } from '@clr/angular';
 import { of } from 'rxjs';
 
+import { InfoModalComponent } from '@app/components/shared/info-modal/info-modal.component';
+import { ExposedFeedsModalComponent } from '@app/routes/main/components/shared/vertical-nav/exposed-feeds-modal/exposed-feeds-modal.component';
 import { OPMLModalComponent } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
 import { SubscribeModalComponent } from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
 import {
@@ -54,6 +56,8 @@ async function setup() {
       VerticalNavComponent,
       SubscribeModalComponent,
       OPMLModalComponent,
+      ExposedFeedsModalComponent,
+      InfoModalComponent,
     ],
     providers: [
       FeedObservableService,

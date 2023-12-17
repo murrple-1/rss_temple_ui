@@ -4,8 +4,16 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Observable, Subject, forkJoin, of } from 'rxjs';
 import { filter, map, mergeMap, startWith, takeUntil } from 'rxjs/operators';
 
+import {
+  InfoModalComponent,
+  openModal as openInfoModal,
+} from '@app/components/shared/info-modal/info-modal.component';
 import { compare } from '@app/libs/compare.lib';
 import { Feed, UserCategory } from '@app/models';
+import {
+  ExposedFeedsModalComponent,
+  openModal as openExposedFeedsModal,
+} from '@app/routes/main/components/shared/vertical-nav/exposed-feeds-modal/exposed-feeds-modal.component';
 import {
   OPMLModalComponent,
   openModal as openOPMLModal,
@@ -77,6 +85,12 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
 
   @ViewChild(OPMLModalComponent, { static: true })
   private opmlModal?: OPMLModalComponent;
+
+  @ViewChild(ExposedFeedsModalComponent, { static: true })
+  private exposedFeedsModal?: ExposedFeedsModalComponent;
+
+  @ViewChild(InfoModalComponent, { static: true })
+  private infoModal?: InfoModalComponent;
 
   private readonly unsubscribe$ = new Subject<void>();
 
@@ -258,6 +272,16 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
       throw new Error();
     }
 
+    const exposedFeedsModal = this.exposedFeedsModal;
+    if (exposedFeedsModal === undefined) {
+      throw new Error();
+    }
+
+    const infoModal = this.infoModal;
+    if (infoModal === undefined) {
+      throw new Error();
+    }
+
     this.modalOpenService.isModalOpen$.next(true);
     const result = await openSubscribeModal(this.subscribeModal);
     this.modalOpenService.isModalOpen$.next(false);
@@ -267,7 +291,41 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
     }
 
     this.feedService
-      .get(result.feedUrl, {
+      .lookupFeeds(result.feedUrl)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: async exposedFeeds => {
+          if (exposedFeeds.length < 1) {
+            await openInfoModal(
+              'No feed detected',
+              'Could not find feed exposed in supplied URL',
+              'danger',
+              infoModal,
+            );
+          } else if (exposedFeeds.length == 1) {
+            this.doFeedAdd(result.feedUrl, result.customTitle);
+          } else {
+            const result_ = await openExposedFeedsModal(
+              exposedFeeds.map(ef => ({
+                url: ef.href,
+                title: ef.title,
+              })),
+              exposedFeedsModal,
+            );
+            if (result_ !== null) {
+              this.doFeedAdd(result_, result.customTitle);
+            }
+          }
+        },
+        error: error => {
+          this.httpErrorService.handleError(error);
+        },
+      });
+  }
+
+  private doFeedAdd(feedUrl: string, customTitle: string | undefined) {
+    this.feedService
+      .get(feedUrl, {
         fields: ['uuid', 'title', 'subscribed', 'homeUrl'],
       })
       .pipe(
@@ -287,10 +345,10 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
           if (!_feed.subscribed) {
             observables = [
               of(_feed),
-              this.feedService.subscribe(result.feedUrl, result.customTitle),
+              this.feedService.subscribe(feedUrl, customTitle),
             ];
           } else {
-            observables = [of(_feed), of<void>()];
+            observables = [of(_feed), of()];
           }
           return forkJoin(observables);
         }),
@@ -299,11 +357,9 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
         next: ([_feed]) => {
           const feed: FeedImpl = {
             uuid: _feed.uuid,
-            feedUrl: result.feedUrl,
+            feedUrl: feedUrl,
             calculatedTitle:
-              result.customTitle !== undefined
-                ? result.customTitle
-                : _feed.title,
+              customTitle !== undefined ? customTitle : _feed.title,
             homeUrl: _feed.homeUrl,
           };
 

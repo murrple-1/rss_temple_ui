@@ -1,0 +1,18 @@
+<clr-modal [clrModalOpen]="open" (clrModalOpenChange)="openChanged($event)">
+  <h4 class="modal-title">Multiple Feeds</h4>
+  <div class="modal-body">
+    <clr-datagrid [(clrDgSingleSelected)]="selectedExposedFeed">
+      <clr-dg-column>Title</clr-dg-column>
+      <clr-dg-row
+        *clrDgItems="let exposedFeed of exposedFeeds"
+        [clrDgItem]="exposedFeed"
+      >
+        <clr-dg-cell>{{ exposedFeed.title }}</clr-dg-cell>
+      </clr-dg-row>
+    </clr-datagrid>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-outline" (click)="onCancel()">Cancel</button>
+    <button class="btn btn-primary" (click)="onOk()">Ok</button>
+  </div>
+</clr-modal>

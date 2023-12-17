@@ -6,9 +6,12 @@ import { ClarityModule } from '@clr/angular';
 import { ShareModule } from 'ngx-sharebuttons';
 import { of } from 'rxjs';
 
+import { InfoModalComponent } from '@app/components/shared/info-modal/info-modal.component';
 import { UserCategoriesModalComponent } from '@app/routes/main/components/feed/user-categories-modal/user-categories-modal.component';
 import { FeedsFooterComponent } from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
+import { LabelVoteModalComponent } from '@app/routes/main/components/shared/label-vote-modal/label-vote-modal.component';
 import { ShareModalComponent } from '@app/routes/main/components/shared/share-modal/share-modal.component';
+import { ExposedFeedsModalComponent } from '@app/routes/main/components/shared/vertical-nav/exposed-feeds-modal/exposed-feeds-modal.component';
 import { OPMLModalComponent } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
 import { SubscribeModalComponent } from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
 import { VerticalNavComponent } from '@app/routes/main/components/shared/vertical-nav/vertical-nav.component';
@@ -76,6 +79,9 @@ async function setup() {
       VerticalNavComponent,
       SubscribeModalComponent,
       OPMLModalComponent,
+      ExposedFeedsModalComponent,
+      LabelVoteModalComponent,
+      InfoModalComponent,
       UserCategoriesModalComponent,
       FeedsFooterComponent,
       InfiniteScrollDirective,

@@ -48,11 +48,7 @@ export class SubscribeModalComponent implements OnDestroy {
   }
 
   finish() {
-    if (this._subscribeForm === undefined) {
-      throw new Error();
-    }
-
-    if (this._subscribeForm.invalid) {
+    if (this._subscribeForm?.invalid) {
       return;
     }
 

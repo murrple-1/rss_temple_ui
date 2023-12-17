@@ -4,7 +4,7 @@
     <div class="modal-body">
       <fieldset>
         <clr-input-container>
-          <label>Feed URL</label>
+          <label>Feed/Site URL</label>
           <input
             clrInput
             type="text"
@@ -12,9 +12,13 @@
             placeholder="http://example.com/rss.xml"
             [(ngModel)]="feedUrl"
             required
+            appUrl
           />
           <clr-control-error *clrIfError="'required'"
             >Feed URL required</clr-control-error
+          >
+          <clr-control-error *clrIfError="'invalidurl'"
+            >URL malformed</clr-control-error
           >
         </clr-input-container>
         <clr-input-container>

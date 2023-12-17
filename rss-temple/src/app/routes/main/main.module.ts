@@ -20,8 +20,9 @@ import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-
 import { FeedsFooterComponent } from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
 import { LabelVoteModalComponent } from '@app/routes/main/components/shared/label-vote-modal/label-vote-modal.component';
 import { ShareModalComponent } from '@app/routes/main/components/shared/share-modal/share-modal.component';
-import { OPMLModalComponent as HeaderOPMLModalComponent } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
-import { SubscribeModalComponent as HeaderSubscribeModalComponent } from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
+import { ExposedFeedsModalComponent as VerticalNavExposedFeedsModalComponent } from '@app/routes/main/components/shared/vertical-nav/exposed-feeds-modal/exposed-feeds-modal.component';
+import { OPMLModalComponent as VerticalNavOPMLModalComponent } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
+import { SubscribeModalComponent as VerticalNavSubscribeModalComponent } from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
 import { VerticalNavComponent } from '@app/routes/main/components/shared/vertical-nav/vertical-nav.component';
 import { SupportComponent } from '@app/routes/main/components/support/support.component';
 import { InfiniteScrollDirective } from '@app/routes/main/directives/infinite-scroll.directive';
@@ -75,8 +76,9 @@ import {
     FeedEntryViewComponent,
     ShareModalComponent,
     LabelVoteModalComponent,
-    HeaderSubscribeModalComponent,
-    HeaderOPMLModalComponent,
+    VerticalNavSubscribeModalComponent,
+    VerticalNavOPMLModalComponent,
+    VerticalNavExposedFeedsModalComponent,
   ],
 })
 export class MainModule {}

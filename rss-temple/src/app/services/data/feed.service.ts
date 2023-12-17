@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
+import { z } from 'zod';
 
 import { Feed } from '@app/models';
 import { ZFeed } from '@app/models/feed';
@@ -27,6 +28,11 @@ import { queryAllFn } from '@app/services/data/queryall.function';
 
 export type Field = keyof Feed;
 export type SortField = keyof Feed;
+
+const ZExposedFeed = z.object({
+  title: z.string(),
+  href: z.string().url(),
+});
 
 @Injectable({
   providedIn: 'root',
@@ -79,6 +85,22 @@ export class FeedService {
 
   queryAll(options: AllOptions<Field, SortField> = {}, pageSize = 1000) {
     return queryAllFn(options, this.query.bind(this), pageSize);
+  }
+
+  lookupFeeds(url: string, options: CommonOptions = {}) {
+    const headers = commonToHeaders(options, () =>
+      this.authTokenService.authToken$.getValue(),
+    );
+    const params: Record<string, string | string[]> = {
+      url,
+    };
+
+    return this.http
+      .get<unknown>(`${this.apiHost}/api/feed/lookup`, {
+        headers,
+        params,
+      })
+      .pipe(map(retObj => z.array(ZExposedFeed).parse(retObj)));
   }
 
   subscribe(url: string, customTitle?: string, options: CommonOptions = {}) {
