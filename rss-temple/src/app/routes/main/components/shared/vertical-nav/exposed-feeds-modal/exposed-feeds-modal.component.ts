@@ -39,7 +39,7 @@ export class ExposedFeedsModalComponent implements OnDestroy {
     this.open = open;
   }
 
-  onCancel() {
+  onOk() {
     this.result.next(
       this.selectedExposedFeed !== null ? this.selectedExposedFeed.url : null,
     );
@@ -47,7 +47,7 @@ export class ExposedFeedsModalComponent implements OnDestroy {
     this.open = false;
   }
 
-  onOk() {
+  onCancel() {
     this.result.next(null);
 
     this.open = false;
