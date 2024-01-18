@@ -160,6 +160,8 @@ export class ReadCounterService implements OnDestroy {
               this.taskQueue.stopProcessing();
             }
           } else {
+            this._feedCounts$.next({});
+
             if (
               this.refreshTimeoutId !== null &&
               this.refreshTimeoutId !== false
@@ -170,7 +172,6 @@ export class ReadCounterService implements OnDestroy {
 
             this.taskQueue.stopProcessing();
             this.taskQueue.queueEntries = [];
-            this._feedCounts$.next({});
           }
         },
       });
