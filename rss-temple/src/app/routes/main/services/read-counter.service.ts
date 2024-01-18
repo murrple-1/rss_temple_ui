@@ -170,6 +170,7 @@ export class ReadCounterService implements OnDestroy {
 
             this.taskQueue.stopProcessing();
             this.taskQueue.queueEntries = [];
+            this._feedCounts$.next({});
           }
         },
       });
