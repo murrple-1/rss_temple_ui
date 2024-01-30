@@ -7,6 +7,12 @@ services:
     volumes:
       - caddy_data:/data/
       - caddy_config:/config/
+    networks:
+      - default
+      - rss_temple_app_net
 volumes:
   caddy_data:
   caddy_config:
+networks:
+  rss_temple_app_net:
+    internal: true

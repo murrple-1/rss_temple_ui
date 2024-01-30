@@ -9,6 +9,9 @@ services:
       - caddy_data:/data/
       - caddy_config:/config/
       - caddy_srv:/srv/
+    networks:
+      - default
+      - rss_temple_home_net
   rss_temple_home:
     command: >
       ash -c "
@@ -23,7 +26,12 @@ services:
       "
     volumes:
       - caddy_srv:/srv/
+    networks:
+      - rss_temple_home_net
 volumes:
   caddy_data:
   caddy_config:
   caddy_srv:
+networks:
+  rss_temple_home_net:
+    internal: true
