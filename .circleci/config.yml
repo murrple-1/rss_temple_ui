@@ -42,7 +42,7 @@ jobs:
       - setup_remote_docker
       - run:
           name: Docker Build
-          working_directory: rss-temple/
+          working_directory: rss-temple-app/
           command: docker build -t rss_temple_app:latest .
       - run:
           name: Docker Upload
@@ -59,7 +59,7 @@ jobs:
       - setup_remote_docker
       - run:
           name: Docker Build
-          working_directory: rss-temple/
+          working_directory: rss-temple-app/
           command: docker build -t rss_temple_app:latest .
       - run:
           name: Docker Upload
@@ -109,13 +109,13 @@ jobs:
       - browser-tools/install-browser-tools
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "rss-temple/yarn.lock" }}
+          key: dependency-cache-{{ checksum "rss-temple-app/yarn.lock" }}
       - run:
           name: install-dependencies
           command: yarn install --frozen-lockfile
-          working_directory: rss-temple/
+          working_directory: rss-temple-app/
       - save_cache:
-          key: dependency-cache-{{ checksum "rss-temple/yarn.lock" }}
+          key: dependency-cache-{{ checksum "rss-temple-app/yarn.lock" }}
           paths:
             - ~/.cache/yarn
       - run:
@@ -123,13 +123,13 @@ jobs:
           command: |
             yarn generate-licenses-file
             cp src/environments/environment.dev.ts src/environments/environment.ts
-          working_directory: rss-temple/
+          working_directory: rss-temple-app/
       - run:
           name: angular-test
           command: yarn cross-env TEST_TYPE=xml ng test --code-coverage --no-watch --no-progress
-          working_directory: rss-temple/
+          working_directory: rss-temple-app/
       - store_test_results:
-          path: rss-temple/test-results/
+          path: rss-temple-app/test-results/
       - store_artifacts:
-          path: rss-temple/test-results/
+          path: rss-temple-app/test-results/
       - codecov/upload

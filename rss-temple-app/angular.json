@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "rss-temple": {
+    "rss-temple-app": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -88,11 +88,11 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "rss-temple:build"
+            "browserTarget": "rss-temple-app:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "rss-temple:build:production"
+              "browserTarget": "rss-temple-app:build:production"
             }
           }
         },
