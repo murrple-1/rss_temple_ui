@@ -1,5 +1,5 @@
 {
-  "name": "rss-temple-app",
+  "name": "rss-temple-web-app",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
@@ -9,7 +9,7 @@
     "test": "cross-env TEST_TYPE=standard ng test",
     "lint": "ng lint",
     "generate-licenses-file": "license-checker --production --direct --json --out src/app/os-licenses.json",
-    "collect-envvars": "ng run rss-temple-app:collect-vars"
+    "collect-envvars": "ng run rss-temple-web-app:collect-vars"
   },
   "private": true,
   "dependencies": {

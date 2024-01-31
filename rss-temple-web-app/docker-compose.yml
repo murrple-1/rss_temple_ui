@@ -1,7 +1,7 @@
 version: '3.9'
 
 services:
-  rss_temple_app:
+  rss_temple_web_app:
     ports:
       - '4200:4200'
     volumes:
@@ -9,10 +9,10 @@ services:
       - caddy_config:/config/
     networks:
       - default
-      - rss_temple_app_net
+      - rss_temple_web_app_net
 volumes:
   caddy_data:
   caddy_config:
 networks:
-  rss_temple_app_net:
+  rss_temple_web_app_net:
     internal: true

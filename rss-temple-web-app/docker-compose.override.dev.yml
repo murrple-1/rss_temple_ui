@@ -1,0 +1,4 @@
+services:
+  rss_temple_web_app:
+    image: rss_temple_web_app:latest
+    build: .

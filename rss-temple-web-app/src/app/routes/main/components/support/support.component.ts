@@ -7,7 +7,9 @@ const RSSIconSVG: string =
   require('!!raw-loader!../../../../../assets/images/rss-icon.svg').default;
 
 const licensesText = Object.entries(osLicenses)
-  .filter(([projectName, _details]) => !projectName.includes('rss-temple-app'))
+  .filter(
+    ([projectName, _details]) => !projectName.includes('rss-temple-web-app'),
+  )
   .map(
     ([projectName, details]: [
       string,

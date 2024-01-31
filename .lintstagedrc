@@ -1,4 +1,4 @@
 {
-  "rss-temple-app/**/*.{json,js,jsx,ts,tsx,html,md,yml,yaml,css,scss}": "prettier --config rss-temple-app/.prettierrc --ignore-path rss-temple-app/.prettierignore --plugin=@trivago/prettier-plugin-sort-imports --write",
+  "rss-temple-web-app/**/*.{json,js,jsx,ts,tsx,html,md,yml,yaml,css,scss}": "prettier --config rss-temple-web-app/.prettierrc --ignore-path rss-temple-web-app/.prettierignore --plugin=@trivago/prettier-plugin-sort-imports --write",
   "rss-temple-home/**/*.{json,js,ts,html,md,yml,yaml,css,scss,hbs}": "prettier --config rss-temple-home/.prettierrc --ignore-path rss-temple-home/.prettierignore --write"
 }

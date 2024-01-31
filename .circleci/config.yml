@@ -42,14 +42,14 @@ jobs:
       - setup_remote_docker
       - run:
           name: Docker Build
-          working_directory: rss-temple-app/
-          command: docker build -t rss_temple_app:latest .
+          working_directory: rss-temple-web-app/
+          command: docker build -t rss_temple_web_app:latest .
       - run:
           name: Docker Upload
           command: |
             docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-            docker tag rss_temple_app:latest $DOCKER_USERNAME/rss_temple_app:latest
-            docker push $DOCKER_USERNAME/rss_temple_app:latest
+            docker tag rss_temple_web_app:latest $DOCKER_USERNAME/rss_temple_web_app:latest
+            docker push $DOCKER_USERNAME/rss_temple_web_app:latest
 
   build_app_tag:
     docker:
@@ -59,14 +59,14 @@ jobs:
       - setup_remote_docker
       - run:
           name: Docker Build
-          working_directory: rss-temple-app/
-          command: docker build -t rss_temple_app:latest .
+          working_directory: rss-temple-web-app/
+          command: docker build -t rss_temple_web_app:latest .
       - run:
           name: Docker Upload
           command: |
             docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-            docker tag rss_temple_app:latest $DOCKER_USERNAME/rss_temple_app:$CIRCLE_TAG
-            docker push $DOCKER_USERNAME/rss_temple_app:$CIRCLE_TAG
+            docker tag rss_temple_web_app:latest $DOCKER_USERNAME/rss_temple_web_app:$CIRCLE_TAG
+            docker push $DOCKER_USERNAME/rss_temple_web_app:$CIRCLE_TAG
 
   build_home_latest:
     docker:
@@ -109,13 +109,13 @@ jobs:
       - browser-tools/install-browser-tools
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "rss-temple-app/yarn.lock" }}
+          key: dependency-cache-{{ checksum "rss-temple-web-app/yarn.lock" }}
       - run:
           name: install-dependencies
           command: yarn install --frozen-lockfile
-          working_directory: rss-temple-app/
+          working_directory: rss-temple-web-app/
       - save_cache:
-          key: dependency-cache-{{ checksum "rss-temple-app/yarn.lock" }}
+          key: dependency-cache-{{ checksum "rss-temple-web-app/yarn.lock" }}
           paths:
             - ~/.cache/yarn
       - run:
@@ -123,13 +123,13 @@ jobs:
           command: |
             yarn generate-licenses-file
             cp src/environments/environment.dev.ts src/environments/environment.ts
-          working_directory: rss-temple-app/
+          working_directory: rss-temple-web-app/
       - run:
           name: angular-test
           command: yarn cross-env TEST_TYPE=xml ng test --code-coverage --no-watch --no-progress
-          working_directory: rss-temple-app/
+          working_directory: rss-temple-web-app/
       - store_test_results:
-          path: rss-temple-app/test-results/
+          path: rss-temple-web-app/test-results/
       - store_artifacts:
-          path: rss-temple-app/test-results/
+          path: rss-temple-web-app/test-results/
       - codecov/upload
