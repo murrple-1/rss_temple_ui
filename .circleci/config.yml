@@ -34,7 +34,7 @@ orbs:
   codecov: codecov/codecov@3.3.0
 
 jobs:
-  build_app_latest:
+  build_web_app_latest:
     docker:
       - image: docker:20
     steps:
@@ -51,7 +51,7 @@ jobs:
             docker tag rss_temple_web_app:latest $DOCKER_USERNAME/rss_temple_web_app:latest
             docker push $DOCKER_USERNAME/rss_temple_web_app:latest
 
-  build_app_tag:
+  build_web_app_tag:
     docker:
       - image: docker:20
     steps:
@@ -102,7 +102,7 @@ jobs:
             docker tag rss_temple_home:latest $DOCKER_USERNAME/rss_temple_home:$CIRCLE_TAG
             docker push $DOCKER_USERNAME/rss_temple_home:$CIRCLE_TAG
 
-  test_app:
+  test_web_app:
     docker:
       - image: cimg/node:16.20-browsers
     steps:
