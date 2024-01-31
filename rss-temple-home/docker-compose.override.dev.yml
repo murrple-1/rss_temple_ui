@@ -6,7 +6,7 @@ services:
     image: rss_temple_home:latest
     build: .
     environment:
-      APP_URL: "http://localhost:3001"
+      WEB_APP_URL: "http://localhost:3001"
       TWITTER_URL: "https://twitter.com"
       FB_URL: "https://facebook.com"
       INSTA_URL: "https://instagram.com"
