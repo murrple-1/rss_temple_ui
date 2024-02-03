@@ -215,6 +215,14 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
+  private static cleanAndEscapeText(t: string) {
+    return t
+      .trim()
+      .replace('"', '\\"')
+      .replace('\n', '\\n')
+      .replace('\t', '\\t');
+  }
+
   private searchEntries(
     title: string,
     content: string,
@@ -225,9 +233,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     count: number,
     skip: number,
   ) {
-    title = title.trim();
-    content = content.trim();
-    authorName = authorName.trim();
+    title = SearchComponent.cleanAndEscapeText(title);
+    content = SearchComponent.cleanAndEscapeText(content);
+    authorName = SearchComponent.cleanAndEscapeText(authorName);
 
     const searchParts: string[] = ['isArchived:"false"'];
     if (title.length > 0) {
@@ -266,7 +274,6 @@ export class SearchComponent implements OnInit, OnDestroy {
       .query({
         fields: [
           'authorName',
-          'content',
           'publishedAt',
           'feedUuid',
           'title',
@@ -357,7 +364,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   private searchFeeds(title: string, count: number, skip: number) {
-    title = title.trim();
+    title = SearchComponent.cleanAndEscapeText(title);
 
     const searchParts: string[] = [];
     if (title.length > 0) {
