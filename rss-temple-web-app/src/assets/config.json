@@ -7,5 +7,6 @@
   "clientRepoUrl": "https://github.com/murrple-1/rss_temple_ui",
   "serverRepoUrl": "https://github.com/murrple-1/rss_temple",
   "forceLabelThreshold": 0.5,
-  "donationLinks": []
+  "extraNavLinks": [],
+  "donationBadges": []
 }

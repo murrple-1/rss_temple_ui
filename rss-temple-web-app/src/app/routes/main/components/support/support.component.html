@@ -19,6 +19,19 @@
             <p>
               <a [href]="serverRepoUrl">Server Git Repo</a>
             </p>
+            <ng-container *ngIf="donationBadges.length > 0">
+              <h4>Donate to the Project</h4>
+              <div
+                *ngFor="let donationBadge of donationBadges"
+                class="app--donation-container"
+              >
+                <a [href]="donationBadge.href" target="_blank"
+                  ><img
+                    [src]="donationBadge.imageSrc"
+                    [height]="donationBadge.height"
+                /></a>
+              </div>
+            </ng-container>
           </clr-accordion-content>
         </clr-accordion-panel>
         <clr-accordion-panel>

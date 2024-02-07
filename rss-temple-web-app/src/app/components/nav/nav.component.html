@@ -9,8 +9,8 @@
     ></ng-container>
     <ng-template #hrefNavLink>
       <a
-        href="{{ navLink.href }}"
-        target="{{ navLink.target }}"
+        [href]="navLink.href"
+        [target]="navLink.target"
         class="nav-link nav-text"
         >{{ navLink.name }}</a
       >

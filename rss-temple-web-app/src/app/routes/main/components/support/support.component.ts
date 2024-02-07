@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { z } from 'zod';
 
 import osLicenses from '@app/os-licenses.json';
 import { ConfigService } from '@app/services';
@@ -32,6 +33,18 @@ const licensesText = Object.entries(osLicenses)
   )
   .join('\n\n');
 
+const ZDonationBadge = z.object({
+  href: z.string().url(),
+  imageSrc: z.string(),
+  height: z.number(),
+});
+
+interface DonationBadge {
+  href: string;
+  imageSrc: string;
+  height: number;
+}
+
 @Component({
   templateUrl: './support.component.html',
   styleUrls: ['./support.component.scss'],
@@ -40,16 +53,18 @@ export class SupportComponent {
   readonly issueTrackerUrl: string;
   readonly clientRepoUrl: string;
   readonly serverRepoUrl: string;
+  readonly donationBadges: DonationBadge[];
 
   readonly licensesText = licensesText;
   readonly rssIconSvg = RSSIconSVG;
 
   constructor(configService: ConfigService) {
-    const [issueTrackerUrl, clientRepoUrl, serverRepoUrl] =
+    const [issueTrackerUrl, clientRepoUrl, serverRepoUrl, donationBadges_] =
       configService.getMany<string>(
         'issueTrackerUrl',
         'clientRepoUrl',
         'serverRepoUrl',
+        'donationBadges',
       );
     if (typeof issueTrackerUrl !== 'string') {
       throw new Error('issueTrackerUrl malformed');
@@ -64,5 +79,19 @@ export class SupportComponent {
     this.issueTrackerUrl = issueTrackerUrl;
     this.clientRepoUrl = clientRepoUrl;
     this.serverRepoUrl = serverRepoUrl;
+
+    const donationBadgesSafeParse = z
+      .array(ZDonationBadge)
+      .safeParse(donationBadges_);
+
+    if (donationBadgesSafeParse.success) {
+      this.donationBadges = donationBadgesSafeParse.data.map(dl => ({
+        href: dl.href,
+        imageSrc: dl.imageSrc,
+        height: dl.height,
+      }));
+    } else {
+      this.donationBadges = [];
+    }
   }
 }

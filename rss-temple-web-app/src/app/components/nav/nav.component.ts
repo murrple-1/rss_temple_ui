@@ -2,6 +2,7 @@ import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
+import { z } from 'zod';
 
 import {
   SearchModalComponent,
@@ -17,6 +18,11 @@ import {
   ModalOpenService,
 } from '@app/services';
 import { AuthService } from '@app/services/data';
+
+const ZExtraNavLink = z.object({
+  title: z.string(),
+  href: z.string().url(),
+});
 
 interface _NavLink {
   name: string;
@@ -122,19 +128,20 @@ export class NavComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    const donationLinks:
-      | {
-          title: string;
-          href: string;
-        }[]
-      | undefined = this.configService.get('donationLinks');
+    const extraNavLinkSafeParse = z
+      .array(ZExtraNavLink)
+      .safeParse(this.configService.get('extraNavLinks'));
 
-    const donationNavLinks: NavLink[] =
-      donationLinks?.map(dl => ({
-        name: dl.title,
-        href: dl.href,
+    let extraNavLinks: NavLink[];
+    if (extraNavLinkSafeParse.success) {
+      extraNavLinks = extraNavLinkSafeParse.data.map(enl => ({
+        name: enl.title,
+        href: enl.href,
         target: '_blank',
-      })) ?? [];
+      }));
+    } else {
+      extraNavLinks = [];
+    }
 
     this.authTokenService.isLoggedIn$
       .pipe(takeUntil(this.unsubscribe$))
@@ -147,12 +154,12 @@ export class NavComponent implements OnInit, OnDestroy {
                 this.exploreLink,
                 this.profileLink,
                 this.supportLink,
-                ...donationNavLinks,
+                ...extraNavLinks,
               ];
               this.navActions = [this.searchAction, this.logoutAction];
               this.isSearchVisible = true;
             } else {
-              this.navLinks = [this.loginLink, ...donationNavLinks];
+              this.navLinks = [this.loginLink, ...extraNavLinks];
               this.navActions = [];
               this.isSearchVisible = false;
             }
