@@ -24,6 +24,7 @@ interface _NavLink {
 
 interface _NavLinkHref extends _NavLink {
   href: string;
+  target?: string;
 }
 
 interface _NavLinkRouterLink extends _NavLink {
@@ -132,6 +133,7 @@ export class NavComponent implements OnInit, OnDestroy {
       donationLinks?.map(dl => ({
         name: dl.title,
         href: dl.href,
+        target: '_blank',
       })) ?? [];
 
     this.authTokenService.isLoggedIn$
