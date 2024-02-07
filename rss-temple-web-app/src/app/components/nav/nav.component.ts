@@ -11,14 +11,27 @@ import {
   ConfirmModalComponent,
   openModal as openConfirmModal,
 } from '@app/components/shared/confirm-modal/confirm-modal.component';
-import { AuthTokenService, ModalOpenService } from '@app/services';
+import {
+  AuthTokenService,
+  ConfigService,
+  ModalOpenService,
+} from '@app/services';
 import { AuthService } from '@app/services/data';
 
-interface NavLink {
+interface _NavLink {
   name: string;
+}
+
+interface _NavLinkHref extends _NavLink {
+  href: string;
+}
+
+interface _NavLinkRouterLink extends _NavLink {
   routerLink: string;
   routerLinkActiveAlt$: Observable<boolean>;
 }
+
+type NavLink = _NavLinkHref | _NavLinkRouterLink;
 
 interface NavAction {
   clrIconShape: string;
@@ -104,9 +117,23 @@ export class NavComponent implements OnInit, OnDestroy {
     private authTokenService: AuthTokenService,
     private modalOpenService: ModalOpenService,
     private authService: AuthService,
+    private configService: ConfigService,
   ) {}
 
   ngOnInit() {
+    const donationLinks:
+      | {
+          title: string;
+          href: string;
+        }[]
+      | undefined = this.configService.get('donationLinks');
+
+    const donationNavLinks: NavLink[] =
+      donationLinks?.map(dl => ({
+        name: dl.title,
+        href: dl.href,
+      })) ?? [];
+
     this.authTokenService.isLoggedIn$
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
@@ -118,11 +145,12 @@ export class NavComponent implements OnInit, OnDestroy {
                 this.exploreLink,
                 this.profileLink,
                 this.supportLink,
+                ...donationNavLinks,
               ];
               this.navActions = [this.searchAction, this.logoutAction];
               this.isSearchVisible = true;
             } else {
-              this.navLinks = [this.loginLink];
+              this.navLinks = [this.loginLink, ...donationNavLinks];
               this.navActions = [];
               this.isSearchVisible = false;
             }
