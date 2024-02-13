@@ -638,14 +638,14 @@ describe('FeedEntryService', () => {
     ).toBeRejectedWithError(z.ZodError);
   }));
 
-  it('should `fromSubscription`', fakeAsync(async () => {
+  it('should `isFromSubscription`', fakeAsync(async () => {
     const { httpClientSpy, feedEntryService } = setup();
 
-    const fromSubscription = true;
+    const isFromSubscription = true;
 
     httpClientSpy.get.and.returnValue(
       of({
-        fromSubscription,
+        isFromSubscription,
       }),
     );
 
@@ -653,15 +653,15 @@ describe('FeedEntryService', () => {
       feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
     );
 
-    expect(feedEntry.fromSubscription).toBe(fromSubscription);
+    expect(feedEntry.isFromSubscription).toBe(isFromSubscription);
   }));
 
-  it('should `fromSubscription` type error', fakeAsync(async () => {
+  it('should `isFromSubscription` type error', fakeAsync(async () => {
     const { httpClientSpy, feedEntryService } = setup();
 
     httpClientSpy.get.and.returnValue(
       of({
-        fromSubscription: 0,
+        isFromSubscription: 0,
       }),
     );
 

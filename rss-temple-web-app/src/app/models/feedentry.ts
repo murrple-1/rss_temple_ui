@@ -21,7 +21,7 @@ export const ZFeedEntry = z
     content: z.string(),
     authorName: z.string().nullable(),
     feedUuid: z.string().uuid(),
-    fromSubscription: z.boolean(),
+    isFromSubscription: z.boolean(),
     isRead: z.boolean(),
     isFavorite: z.boolean(),
     readAt: z.date().nullable(),
