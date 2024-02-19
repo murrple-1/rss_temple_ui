@@ -40,7 +40,7 @@ type FeedImpl = Required<
   Pick<Feed, 'uuid' | 'calculatedTitle' | 'feedUrl' | 'homeUrl'>
 >;
 type FeedImpl2 = Required<
-  Pick<Feed, 'uuid' | 'title' | 'subscribed' | 'homeUrl'>
+  Pick<Feed, 'uuid' | 'title' | 'isSubscribed' | 'homeUrl'>
 >;
 
 interface FeedDescriptor {
@@ -226,7 +226,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
       this.feedService
         .queryAll({
           fields: ['uuid', 'calculatedTitle', 'feedUrl', 'homeUrl'],
-          search: 'subscribed:"true"',
+          search: 'isSubscribed:"true"',
           sort: new Sort([['calculatedTitle', 'ASC']]),
           returnTotalCount: false,
         })
@@ -326,7 +326,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
   private doFeedAdd(feedUrl: string, customTitle: string | undefined) {
     this.feedService
       .get(feedUrl, {
-        fields: ['uuid', 'title', 'subscribed', 'homeUrl'],
+        fields: ['uuid', 'title', 'isSubscribed', 'homeUrl'],
       })
       .pipe(
         takeUntil(this.unsubscribe$),
@@ -342,7 +342,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
         }),
         mergeMap(_feed => {
           let observables: [Observable<FeedImpl2>, Observable<void>];
-          if (!_feed.subscribed) {
+          if (!_feed.isSubscribed) {
             observables = [
               of(_feed),
               this.feedService.subscribe(feedUrl, customTitle),
@@ -432,7 +432,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
       this.feedService
         .queryAll({
           fields: ['uuid', 'calculatedTitle', 'feedUrl', 'homeUrl'],
-          search: 'subscribed:"true"',
+          search: 'isSubscribed:"true"',
           sort: new Sort([['calculatedTitle', 'ASC']]),
           returnTotalCount: false,
         })

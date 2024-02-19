@@ -369,14 +369,14 @@ describe('FeedService', () => {
     ).toBeRejectedWithError(z.ZodError);
   }));
 
-  it('should `subscribed`', fakeAsync(async () => {
+  it('should `isSubscribed`', fakeAsync(async () => {
     const { httpClientSpy, feedService } = setup();
 
-    const subscribed = false;
+    const isSubscribed = false;
 
     httpClientSpy.get.and.returnValue(
       of({
-        subscribed,
+        isSubscribed,
       }),
     );
 
@@ -384,15 +384,15 @@ describe('FeedService', () => {
       feedService.get('http://www.fake.com/rss.xml'),
     );
 
-    expect(feed.subscribed).toBe(subscribed);
+    expect(feed.isSubscribed).toBe(isSubscribed);
   }));
 
-  it('should `subscribed` type error', fakeAsync(async () => {
+  it('should `isSubscribed` type error', fakeAsync(async () => {
     const { httpClientSpy, feedService } = setup();
 
     httpClientSpy.get.and.returnValue(
       of({
-        subscribed: 0,
+        isSubscribed: 0,
       }),
     );
 

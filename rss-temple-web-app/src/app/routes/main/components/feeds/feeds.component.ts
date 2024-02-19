@@ -151,7 +151,7 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
     this.feedService
       .queryAll({
         fields: ['uuid', 'calculatedTitle', 'homeUrl', 'feedUrl'],
-        search: 'subscribed:"true"',
+        search: 'isSubscribed:"true"',
         returnTotalCount: false,
       })
       .pipe(

@@ -16,7 +16,7 @@
           <div class="clr-col-12">
             <ng-container
               *ngIf="
-                feed.subscribed;
+                feed.isSubscribed;
                 then unsubscribeOptions;
                 else subscribeOptions
               "

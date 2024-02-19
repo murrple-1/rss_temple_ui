@@ -13,7 +13,7 @@ export const ZFeed = z
       .union([z.string().datetime({ offset: true }), z.date()])
       .transform(arg => new Date(arg))
       .nullable(),
-    subscribed: z.boolean(),
+    isSubscribed: z.boolean(),
     customTitle: z.string().nullable(),
     calculatedTitle: z.string(),
     userCategoryUuids: z.array(z.string().uuid()),

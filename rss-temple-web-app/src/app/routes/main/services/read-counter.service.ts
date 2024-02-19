@@ -288,7 +288,7 @@ export class ReadCounterService implements OnDestroy {
                   .queryAll({
                     fields: ['uuid', 'unreadCount'],
                     returnTotalCount: false,
-                    search: 'subscribed:"true"',
+                    search: 'isSubscribed:"true"',
                   })
                   .pipe(
                     takeUntil(this.unsubscribe$),

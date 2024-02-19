@@ -47,7 +47,7 @@ type FeedImpl = BaseFeedImpl &
       | 'homeUrl'
       | 'feedUrl'
       | 'customTitle'
-      | 'subscribed'
+      | 'isSubscribed'
       | 'userCategoryUuids'
       | 'calculatedTitle'
     >
@@ -201,7 +201,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
           'title',
           'homeUrl',
           'customTitle',
-          'subscribed',
+          'isSubscribed',
           'userCategoryUuids',
           'calculatedTitle',
         ],
@@ -308,7 +308,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
         .subscribe({
           next: () => {
             this.zone.run(() => {
-              feed.subscribed = true;
+              feed.isSubscribed = true;
             });
           },
           error: error => {
@@ -327,7 +327,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
         .subscribe({
           next: () => {
             this.zone.run(() => {
-              feed.subscribed = false;
+              feed.isSubscribed = false;
             });
           },
           error: error => {
