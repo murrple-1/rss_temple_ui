@@ -206,33 +206,30 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
     return feedEntriesObservable.pipe(
       mergeMap(feedEntries => {
         if (feedEntries.objects !== undefined) {
-          const classifierLabelObservables: Observable<
-            ClassifierLabel[] | null
-          >[] = feedEntries.objects.map(fe => {
-            const uuid = fe.uuid as string;
-            return this.feedEntryVoteService.shouldForceLabelVote(uuid)
-              ? this.classifierLabelService.getAll(uuid)
-              : of(null);
-          });
+          const feedEntryUuidsToClassify = feedEntries.objects
+            .filter(fe =>
+              this.feedEntryVoteService.shouldForceLabelVote(fe.uuid as string),
+            )
+            .map(fe => fe.uuid as string);
 
-          return classifierLabelObservables.length > 0
-            ? forkJoin([
-                of(feedEntries.objects),
-                forkJoin(classifierLabelObservables),
-              ])
-            : of([[], []]);
+          return (
+            feedEntryUuidsToClassify.length > 0
+              ? forkJoin([
+                  of(feedEntries.objects),
+                  this.classifierLabelService.getAllMulti(
+                    feedEntryUuidsToClassify,
+                  ),
+                ])
+              : of([[], {}])
+          ) as Observable<[FeedEntry[], Record<string, ClassifierLabel[]>]>;
         }
         throw new Error('malformed response');
       }),
       map(([feedEntries_, classifierLabels]) => {
-        const feedEntries = feedEntries_.map((fe, index) => {
+        const feedEntries = feedEntries_.map(fe => {
           const feImpl = fe as FeedEntryImpl;
-          const classifierLabelList = classifierLabels[index];
+          const classifierLabelList = classifierLabels[feImpl.uuid];
           if (classifierLabelList === undefined) {
-            throw new Error('classifierLabelList undefined');
-          }
-
-          if (classifierLabelList === null) {
             feImpl.possibleClassifierLabel = null;
           } else {
             feImpl.possibleClassifierLabel = classifierLabelList[0] ?? null;

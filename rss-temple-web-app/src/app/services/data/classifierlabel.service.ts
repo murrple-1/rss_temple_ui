@@ -11,6 +11,10 @@ import {
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
 
+const ZMultiClassifierLabels = z.object({
+  classifierLabels: z.record(z.array(ZClassifierLabel)),
+});
+
 @Injectable({
   providedIn: 'root',
 })
@@ -45,6 +49,24 @@ export class ClassifierLabelService {
         params,
       })
       .pipe(map(retObj => z.array(ZClassifierLabel).parse(retObj)));
+  }
+
+  getAllMulti(feedEntryUuids: string[], options: CommonOptions = {}) {
+    const headers = commonToHeaders(options, () =>
+      this.authTokenService.authToken$.getValue(),
+    );
+    const params: Record<string, string | string[]> = {
+      feedEntryUuids,
+    };
+
+    return this.http
+      .get<unknown>(`${this.apiHost}/api/classifierlabels/multi`, {
+        headers,
+        params,
+      })
+      .pipe(
+        map(retObj => ZMultiClassifierLabels.parse(retObj).classifierLabels),
+      );
   }
 
   getMyVotes(feedEntryUuid: string, options: CommonOptions = {}) {
