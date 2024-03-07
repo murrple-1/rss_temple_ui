@@ -51,18 +51,17 @@ export class ClassifierLabelService {
       .pipe(map(retObj => z.array(ZClassifierLabel).parse(retObj)));
   }
 
-  getAllMulti(feedEntryUuids: string[], options: CommonOptions = {}) {
+  getAllByEntry(feedEntryUuids: string[], options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
       this.authTokenService.authToken$.getValue(),
     );
-    const params: Record<string, string | string[]> = {
+    const body = {
       feedEntryUuids,
     };
 
     return this.http
-      .get<unknown>(`${this.apiHost}/api/classifierlabels/multi`, {
+      .post<unknown>(`${this.apiHost}/api/classifierlabels/entries`, body, {
         headers,
-        params,
       })
       .pipe(
         map(retObj => ZMultiClassifierLabels.parse(retObj).classifierLabels),

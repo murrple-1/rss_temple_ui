@@ -216,7 +216,7 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
             feedEntryUuidsToClassify.length > 0
               ? forkJoin([
                   of(feedEntries.objects),
-                  this.classifierLabelService.getAllMulti(
+                  this.classifierLabelService.getAllByEntry(
                     feedEntryUuidsToClassify,
                   ),
                 ])
