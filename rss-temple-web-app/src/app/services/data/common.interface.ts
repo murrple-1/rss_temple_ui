@@ -1,16 +1,16 @@
 export interface CommonOptions {
-  authToken?: string;
+  csrfToken?: string;
 }
 
 export function toHeaders(
   options: CommonOptions,
-  authTokenFn: () => string | null,
+  csrfTokenFn: () => string | null,
 ) {
   const headers: Record<string, string | string[]> = {};
 
-  const authToken = options.authToken ?? authTokenFn();
-  if (authToken !== null) {
-    headers['Authorization'] = `Token ${authToken}`;
+  const csrfToken = options.csrfToken ?? csrfTokenFn();
+  if (csrfToken !== null) {
+    headers['X-CSRFToken'] = csrfToken;
   }
 
   return headers;

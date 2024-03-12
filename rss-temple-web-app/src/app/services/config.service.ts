@@ -12,14 +12,12 @@ export class ConfigService {
   constructor(private http: HttpClient) {}
 
   async load() {
-    await firstValueFrom(
-      this.http.get<unknown>('/assets/config.json', {
-        responseType: 'json',
-      }),
-    ).then(retVal => {
-      const config = z.record(z.unknown()).parse(retVal);
-      this.config = config;
-    });
+    await firstValueFrom(this.http.get<unknown>('/assets/config.json')).then(
+      retVal => {
+        const config = z.record(z.unknown()).parse(retVal);
+        this.config = config;
+      },
+    );
   }
 
   get<T = unknown>(key: string): T | undefined {

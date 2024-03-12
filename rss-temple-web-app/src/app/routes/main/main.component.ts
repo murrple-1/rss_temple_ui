@@ -6,7 +6,7 @@ import {
   OnboardingModalComponent,
   openModal as openOnboardingModal,
 } from '@app/routes/main/components/onboarding-modal/onboarding-modal.component';
-import { AuthTokenService, ModalOpenService } from '@app/services';
+import { AuthStateService, ModalOpenService } from '@app/services';
 import { AuthService } from '@app/services/data';
 
 @Component({
@@ -22,12 +22,12 @@ export class MainComponent implements OnInit, OnDestroy {
   constructor(
     private zone: NgZone,
     private authService: AuthService,
-    private authTokenService: AuthTokenService,
+    private authStateService: AuthStateService,
     private modalOpenService: ModalOpenService,
   ) {}
 
   ngOnInit() {
-    this.authTokenService.isLoggedIn$
+    this.authStateService.isLoggedIn$
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: isLoggedIn => {

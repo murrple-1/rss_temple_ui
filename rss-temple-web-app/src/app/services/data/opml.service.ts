@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { AuthTokenService } from '@app/services/auth-token.service';
+import { AuthStateService } from '@app/services/auth-state.service';
 import { ConfigService } from '@app/services/config.service';
 import {
   CommonOptions,
@@ -16,7 +16,7 @@ export class OPMLService {
 
   constructor(
     private http: HttpClient,
-    private authTokenService: AuthTokenService,
+    private authStateService: AuthStateService,
     configService: ConfigService,
   ) {
     const apiHost = configService.get<string>('apiHost');
@@ -29,23 +29,25 @@ export class OPMLService {
 
   download(options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http.get(`${this.apiHost}/api/opml`, {
       headers,
       responseType: 'text',
+      withCredentials: true,
     });
   }
 
   upload(opmlText: string | ArrayBuffer, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http.post(`${this.apiHost}/api/opml`, opmlText, {
       headers,
       observe: 'response',
+      withCredentials: true,
     });
   }
 }

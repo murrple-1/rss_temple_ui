@@ -26,7 +26,7 @@ import {
 import { ReadCounterService } from '@app/routes/main/services';
 import {
   AppAlertsService,
-  AuthTokenService,
+  AuthStateService,
   FBAuthService,
   GAuthService,
   HttpErrorService,
@@ -112,7 +112,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   constructor(
     private zone: NgZone,
     private router: Router,
-    private authTokenService: AuthTokenService,
+    private authStateService: AuthStateService,
     private feedService: FeedService,
     private userMetaService: UserMetaService,
     private opmlService: OPMLService,
@@ -534,9 +534,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.deleteUserConfirm2Modal,
       );
       if (done) {
-        this.authTokenService.authToken$.next(null);
-        localStorage.removeItem('auth-token-service:authToken');
-        sessionStorage.removeItem('auth-token-service:authToken');
+        this.authStateService.csrfToken$.next(null);
+        AuthStateService.removeCSRFTokenFromStorage();
 
         this.router.navigate(['/login']);
       }

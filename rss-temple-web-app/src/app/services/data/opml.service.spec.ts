@@ -2,7 +2,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { fakeAsync } from '@angular/core/testing';
 import { firstValueFrom, of } from 'rxjs';
 
-import { AuthTokenService } from '@app/services/auth-token.service';
+import { AuthStateService } from '@app/services/auth-state.service';
 import { MockConfigService } from '@app/test/config.service.mock';
 
 import { OPMLService } from './opml.service';
@@ -12,20 +12,20 @@ function setup() {
     'get',
     'post',
   ]);
-  const authTokenService = new AuthTokenService();
+  const authStateService = new AuthStateService();
   const mockConfigService = new MockConfigService({
     apiHost: '',
   });
 
   const opmlService = new OPMLService(
     httpClientSpy,
-    authTokenService,
+    authStateService,
     mockConfigService,
   );
 
   return {
     httpClientSpy,
-    authTokenService,
+    authStateService,
     mockConfigService,
 
     opmlService,
@@ -34,7 +34,7 @@ function setup() {
 
 describe('OPMLService', () => {
   beforeEach(() => {
-    localStorage.removeItem('auth-token-service:authToken');
+    AuthStateService.removeCSRFTokenFromStorage();
   });
 
   it('should download', fakeAsync(async () => {

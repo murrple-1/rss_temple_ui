@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { z } from 'zod';
 
-import { AuthTokenService } from '@app/services/auth-token.service';
+import { AuthStateService } from '@app/services/auth-state.service';
 import { ConfigService } from '@app/services/config.service';
 import {
   CommonOptions,
@@ -32,7 +32,7 @@ export class ExploreService {
 
   constructor(
     private http: HttpClient,
-    private authTokenService: AuthTokenService,
+    private authStateService: AuthStateService,
     configService: ConfigService,
   ) {
     const apiHost = configService.get<string>('apiHost');
@@ -45,12 +45,13 @@ export class ExploreService {
 
   explore(options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http
       .get<unknown>(`${this.apiHost}/api/explore`, {
         headers,
+        withCredentials: true,
       })
       .pipe(map(retObj => z.array(ZTagDescriptors).parse(retObj)));
   }

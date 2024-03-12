@@ -9,8 +9,8 @@ function fieldsFn(): Field[] {
   return ['prop1'];
 }
 
-function authTokenFn() {
-  return 'auth-token';
+function csrfTokenFn() {
+  return 'csrf-token';
 }
 
 describe('query.interface', () => {
@@ -122,9 +122,9 @@ describe('query.interface', () => {
   });
 
   it('should parse headers', () => {
-    const headers = toHeaders({}, authTokenFn);
+    const headers = toHeaders({}, csrfTokenFn);
     expect(headers).toEqual({
-      'Authorization': `Token ${authTokenFn()}`,
+      'X-CSRFToken': csrfTokenFn(),
     });
   });
 

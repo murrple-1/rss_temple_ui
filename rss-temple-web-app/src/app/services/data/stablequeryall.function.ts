@@ -23,7 +23,7 @@ export function stableQueryAllFn<
   return createFn({
     search: options.search,
     sort: options.sort,
-    authToken: options.authToken,
+    csrfToken: options.csrfToken,
   }).pipe(
     mergeMap(token =>
       queryFn({
@@ -33,7 +33,7 @@ export function stableQueryAllFn<
         fields: options.fields,
         returnObjects: true,
         returnTotalCount: true,
-        authToken: options.authToken,
+        csrfToken: options.csrfToken,
       }).pipe(
         mergeMap(retObj => {
           const allCalls: Observable<Objects<T>>[] = [of(retObj)];
@@ -49,7 +49,7 @@ export function stableQueryAllFn<
                 returnObjects: true,
                 returnTotalCount: false,
                 skip,
-                authToken: options.authToken,
+                csrfToken: options.csrfToken,
               }),
             );
 

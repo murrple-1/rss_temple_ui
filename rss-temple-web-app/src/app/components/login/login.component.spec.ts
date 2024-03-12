@@ -130,7 +130,12 @@ describe('LoginComponent', () => {
 
   it('should handle Google login', waitForAsync(async () => {
     const { mockSocialService } = await setup();
-    mockSocialService.googleLogin.and.returnValue(of('atoken'));
+    mockSocialService.googleLogin.and.returnValue(
+      of({
+        key: 'atoken',
+        csrfToken: 'csrfToken',
+      }),
+    );
     const router = TestBed.inject(Router);
     spyOn(router, 'navigate');
 
@@ -145,7 +150,12 @@ describe('LoginComponent', () => {
 
   it('should handle Facebook login', waitForAsync(async () => {
     const { mockSocialService } = await setup();
-    mockSocialService.facebookLogin.and.returnValue(of('atoken'));
+    mockSocialService.facebookLogin.and.returnValue(
+      of({
+        key: 'atoken',
+        csrfToken: 'csrfToken',
+      }),
+    );
     const router = TestBed.inject(Router);
     spyOn(router, 'navigate');
 
@@ -265,7 +275,8 @@ describe('LoginComponent', () => {
     const { mockAuthService } = await setup();
     mockAuthService.login.and.returnValue(
       of({
-        key: 'b75a903f398823a74e5f8e7ec231705bac3c6161',
+        authToken: 'b75a903f398823a74e5f8e7ec231705bac3c6161',
+        csrfToken: 'csrfToken',
       }),
     );
     const router = TestBed.inject(Router);
@@ -304,7 +315,12 @@ describe('LoginComponent', () => {
 
   it('should be able to login with Google', waitForAsync(async () => {
     const { mockSocialService } = await setup();
-    mockSocialService.googleLogin.and.returnValue(of('atoken'));
+    mockSocialService.googleLogin.and.returnValue(
+      of({
+        key: 'atoken',
+        csrfToken: 'csrfToken',
+      }),
+    );
     const router = TestBed.inject(Router);
     spyOn(router, 'navigate');
     const gAuthService = TestBed.inject(GAuthService) as MockGAuthService;
@@ -324,7 +340,12 @@ describe('LoginComponent', () => {
 
   it('should be able to login with Facebook', waitForAsync(async () => {
     const { mockSocialService } = await setup();
-    mockSocialService.facebookLogin.and.returnValue(of('atoken'));
+    mockSocialService.facebookLogin.and.returnValue(
+      of({
+        key: 'atoken',
+        csrfToken: 'csrfToken',
+      }),
+    );
     const router = TestBed.inject(Router);
     spyOn(router, 'navigate');
     const fbAuthService = TestBed.inject(FBAuthService) as MockFBAuthService;

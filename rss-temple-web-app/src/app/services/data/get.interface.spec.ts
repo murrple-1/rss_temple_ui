@@ -6,35 +6,35 @@ function fieldsFn(): Field[] {
   return ['prop1'];
 }
 
-function authTokenFn() {
+function csrfTokenFn() {
   return 'auth-token';
 }
 
 describe('get.interface', () => {
   it('should generate headers', () => {
-    let headers = toHeaders<Field>({}, authTokenFn);
+    let headers = toHeaders<Field>({}, csrfTokenFn);
     expect(headers).toEqual({
-      'Authorization': `Token ${authTokenFn()}`,
+      'X-CSRFToken': csrfTokenFn(),
     });
 
     headers = toHeaders<Field>(
       {
         fields: ['prop1'],
       },
-      authTokenFn,
+      csrfTokenFn,
     );
     expect(headers).toEqual({
-      'Authorization': `Token ${authTokenFn()}`,
+      'X-CSRFToken': csrfTokenFn(),
     });
 
     headers = toHeaders<Field>(
       {
-        authToken: 'another-token',
+        csrfToken: 'another-token',
       },
-      authTokenFn,
+      csrfTokenFn,
     );
     expect(headers).toEqual({
-      'Authorization': 'Token another-token',
+      'X-CSRFToken': 'another-token',
     });
   });
 
@@ -56,7 +56,7 @@ describe('get.interface', () => {
 
     params = toParams<Field>(
       {
-        authToken: 'another-token',
+        csrfToken: 'another-token',
       },
       fieldsFn,
     );

@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { fakeAsync } from '@angular/core/testing';
 import { firstValueFrom, of } from 'rxjs';
 
+import { AuthStateService } from '@app/services';
 import { MockConfigService } from '@app/test/config.service.mock';
 
 import { CaptchaService } from './captcha.service';
@@ -26,7 +27,7 @@ function setup() {
 
 describe('CaptchaService', () => {
   beforeEach(() => {
-    localStorage.removeItem('auth-token-service:authToken');
+    AuthStateService.removeCSRFTokenFromStorage();
   });
 
   it('should get new key', fakeAsync(async () => {

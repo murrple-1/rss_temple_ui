@@ -24,7 +24,7 @@ import {
 
 import { AsyncTaskQueue } from '@app/libs/task-queue';
 import { Feed, FeedEntry } from '@app/models';
-import { AuthTokenService, HttpErrorService } from '@app/services';
+import { AuthStateService, HttpErrorService } from '@app/services';
 import { FeedEntryService, FeedService } from '@app/services/data';
 
 type FeedImpl = Required<Pick<Feed, 'uuid' | 'unreadCount'>>;
@@ -71,7 +71,7 @@ export class ReadCounterService implements OnDestroy {
   private unsubscribe$ = new Subject<void>();
 
   constructor(
-    private authTokenService: AuthTokenService,
+    private authStateService: AuthStateService,
     private feedEntryService: FeedEntryService,
     private feedService: FeedService,
     private httpErrorService: HttpErrorService,
@@ -139,7 +139,7 @@ export class ReadCounterService implements OnDestroy {
         map(_event => undefined),
         startWith(undefined),
       ),
-      this.authTokenService.isLoggedIn$,
+      this.authStateService.isLoggedIn$,
     ])
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({

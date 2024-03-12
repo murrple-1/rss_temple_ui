@@ -4,7 +4,7 @@ import { map } from 'rxjs/operators';
 
 import { UserCategory } from '@app/models';
 import { ZUserCategory } from '@app/models/usercategory';
-import { AuthTokenService } from '@app/services/auth-token.service';
+import { AuthStateService } from '@app/services/auth-state.service';
 import { ConfigService } from '@app/services/config.service';
 import { AllOptions } from '@app/services/data/all.interface';
 import {
@@ -46,7 +46,7 @@ export class UserCategoryService {
 
   constructor(
     private http: HttpClient,
-    private authTokenService: AuthTokenService,
+    private authStateService: AuthStateService,
     configService: ConfigService,
   ) {
     const apiHost = configService.get<string>('apiHost');
@@ -59,7 +59,7 @@ export class UserCategoryService {
 
   get(uuid: string, options: GetOptions<Field> = {}) {
     const headers = getToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
     const params = getToParams<Field>(options, () => ['uuid']);
 
@@ -67,13 +67,14 @@ export class UserCategoryService {
       .get<unknown>(`${this.apiHost}/api/usercategory/${uuid}`, {
         headers,
         params,
+        withCredentials: true,
       })
       .pipe(map(retObj => ZUserCategory.parse(retObj)));
   }
 
   query(options: QueryOptions<Field, SortField> = {}) {
     const headers = queryToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
     const params = queryToParams('usercategories');
     const body = queryToBody<Field, SortField>(options, () => ['uuid']);
@@ -82,6 +83,7 @@ export class UserCategoryService {
       .post<unknown>(`${this.apiHost}/api/usercategories/query`, body, {
         headers,
         params,
+        withCredentials: true,
       })
       .pipe(map(retObj => toObjects(retObj, ZUserCategory)));
   }
@@ -95,7 +97,7 @@ export class UserCategoryService {
     options: GetOptions<Field> = {},
   ) {
     const headers = getToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     const params = getToParams<Field>(options, () => ['uuid']);
@@ -104,24 +106,25 @@ export class UserCategoryService {
       .post<unknown>(`${this.apiHost}/api/usercategory`, userCategoryJson, {
         headers,
         params,
-        responseType: 'json',
+        withCredentials: true,
       })
       .pipe(map(retObj => ZUserCategory.parse(retObj)));
   }
 
   delete(uuid: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http.delete<void>(`${this.apiHost}/api/usercategory/${uuid}`, {
       headers,
+      withCredentials: true,
     });
   }
 
   apply(apply: IApply, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     const mappings: Record<string, string[]> = {};
@@ -137,6 +140,7 @@ export class UserCategoryService {
       },
       {
         headers,
+        withCredentials: true,
       },
     );
   }

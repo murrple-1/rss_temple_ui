@@ -23,12 +23,24 @@ import { AlertEntry } from '@app/components/shared/local-alerts/local-alerts.com
 import { passwordContainerOverride } from '@app/libs/password-container-override';
 import {
   AppAlertsService,
-  AuthTokenService,
+  AuthStateService,
   FBAuthService,
   GAuthService,
   ModalOpenService,
 } from '@app/services';
 import { AuthService, SocialService } from '@app/services/data';
+
+function getCachedEmail() {
+  return localStorage.getItem('login:cachedEmail');
+}
+
+function setCachedEmailInLocalStorage(email: string) {
+  localStorage.setItem('login:cachedEmail', email);
+}
+
+function removeCachedEmailFromStorage() {
+  localStorage.removeItem('login:cachedEmail');
+}
 
 @Component({
   templateUrl: './login.component.html',
@@ -69,12 +81,12 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
     private authService: AuthService,
     private socialService: SocialService,
     private appAlertsService: AppAlertsService,
-    private authTokenService: AuthTokenService,
+    private authStateService: AuthStateService,
     private modalOpenService: ModalOpenService,
   ) {}
 
   ngOnInit() {
-    const email = localStorage.getItem('login:cached_email');
+    const email = getCachedEmail();
 
     if (email !== null) {
       this.email = email;
@@ -179,20 +191,15 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe({
         next: authResponse => {
           if (this.rememberMe) {
-            localStorage.setItem('login:cached_email', email);
-            localStorage.setItem(
-              'auth-token-service:authToken',
-              authResponse.key,
-            );
+            setCachedEmailInLocalStorage(email);
+
+            AuthStateService.setCSRFTokenInLocalStorage(authResponse.csrfToken);
           } else {
-            localStorage.removeItem('login:cached_email');
+            removeCachedEmailFromStorage();
           }
-          sessionStorage.setItem(
-            'auth-token-service:authToken',
-            authResponse.key,
-          );
+          AuthStateService.setCSRFTokenInSessionStorage(authResponse.csrfToken);
           this.zone.run(() => {
-            this.handleLoginSuccess(authResponse.key);
+            this.handleLoginSuccess(authResponse.csrfToken);
           });
         },
         error: error => {
@@ -258,8 +265,8 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
-  private handleLoginSuccess(authToken: string) {
-    this.authTokenService.authToken$.next(authToken);
+  private handleLoginSuccess(csrfToken: string) {
+    this.authStateService.csrfToken$.next(csrfToken);
 
     this.router.navigate([this._returnUrl]);
   }
@@ -279,9 +286,13 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
       .googleLogin(idToken)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: authToken => {
+        next: authResponse => {
+          if (this.rememberMe) {
+            AuthStateService.setCSRFTokenInLocalStorage(authResponse.csrfToken);
+          }
+          AuthStateService.setCSRFTokenInSessionStorage(authResponse.csrfToken);
           this.zone.run(() => {
-            this.handleLoginSuccess(authToken);
+            this.handleLoginSuccess(authResponse.csrfToken);
           });
         },
         error: error => {
@@ -352,9 +363,13 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
       .facebookLogin(accessToken)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: authToken => {
+        next: authResponse => {
+          if (this.rememberMe) {
+            AuthStateService.setCSRFTokenInLocalStorage(authResponse.csrfToken);
+          }
+          AuthStateService.setCSRFTokenInSessionStorage(authResponse.csrfToken);
           this.zone.run(() => {
-            this.handleLoginSuccess(authToken);
+            this.handleLoginSuccess(authResponse.csrfToken);
           });
         },
         error: error => {

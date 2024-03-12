@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { z } from 'zod';
 
-import { AuthTokenService } from '@app/services/auth-token.service';
+import { AuthStateService } from '@app/services/auth-state.service';
 import { ConfigService } from '@app/services/config.service';
 import {
   CommonOptions,
@@ -26,7 +26,7 @@ export class ProgressService {
 
   constructor(
     private http: HttpClient,
-    private authTokenService: AuthTokenService,
+    private authStateService: AuthStateService,
     configService: ConfigService,
   ) {
     const apiHost = configService.get<string>('apiHost');
@@ -39,12 +39,13 @@ export class ProgressService {
 
   checkProgress(uuid: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http
       .get<unknown>(`${this.apiHost}/api/feed/subscribe/progress/${uuid}`, {
         headers,
+        withCredentials: true,
       })
       .pipe(map(retObj => ZProgressInterface.parse(retObj)));
   }

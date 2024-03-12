@@ -8,19 +8,19 @@ import {
   UrlTree,
 } from '@angular/router';
 
-import { AuthTokenService } from '@app/services';
+import { AuthStateService } from '@app/services';
 
 import { AuthGuard, NoAuthGuard } from './auth.guard';
 
 function setup_auth() {
   const routerSpy = jasmine.createSpyObj<Router>('Router', ['createUrlTree']);
-  const authTokenService = new AuthTokenService();
+  const authStateService = new AuthStateService();
 
-  const authGuard = new AuthGuard(routerSpy, authTokenService);
+  const authGuard = new AuthGuard(routerSpy, authStateService);
 
   return {
     routerSpy,
-    authTokenService,
+    authStateService,
 
     authGuard,
   };
@@ -28,14 +28,13 @@ function setup_auth() {
 
 describe('AuthGuard', () => {
   beforeEach(() => {
-    localStorage.removeItem('auth-token-service:authToken');
-    sessionStorage.removeItem('auth-token-service:authToken');
+    AuthStateService.removeCSRFTokenFromStorage();
   });
 
   it('can activate', () => {
-    const { routerSpy, authTokenService, authGuard } = setup_auth();
+    const { routerSpy, authStateService, authGuard } = setup_auth();
 
-    authTokenService.authToken$.next('a-token');
+    authStateService.csrfToken$.next('a-token');
 
     const activatedRouteSnapshot = {} as ActivatedRouteSnapshot;
     const state = {
@@ -105,13 +104,13 @@ describe('AuthGuard', () => {
 
 function setup_noauth() {
   const routerSpy = jasmine.createSpyObj<Router>('Router', ['createUrlTree']);
-  const authTokenService = new AuthTokenService();
+  const authStateService = new AuthStateService();
 
-  const noAuthGuard = new NoAuthGuard(routerSpy, authTokenService);
+  const noAuthGuard = new NoAuthGuard(routerSpy, authStateService);
 
   return {
     routerSpy,
-    authTokenService,
+    authStateService,
 
     noAuthGuard,
   };
@@ -119,8 +118,7 @@ function setup_noauth() {
 
 describe('NoAuthGuard', () => {
   beforeEach(() => {
-    localStorage.removeItem('auth-token-service:authToken');
-    sessionStorage.removeItem('auth-token-service:authToken');
+    AuthStateService.removeCSRFTokenFromStorage();
   });
 
   it('can activate', () => {
@@ -136,7 +134,7 @@ describe('NoAuthGuard', () => {
   });
 
   it('can not activate', () => {
-    const { routerSpy, authTokenService, noAuthGuard } = setup_noauth();
+    const { routerSpy, authStateService, noAuthGuard } = setup_noauth();
 
     const fakeUrlTree = {
       root: {
@@ -151,7 +149,7 @@ describe('NoAuthGuard', () => {
     } as UrlTree;
     routerSpy.createUrlTree.and.returnValue(fakeUrlTree);
 
-    authTokenService.authToken$.next('a-token');
+    authStateService.csrfToken$.next('a-token');
 
     const activatedRouteSnapshot = {
       url: [''] as unknown as UrlSegment[],
@@ -167,7 +165,7 @@ describe('NoAuthGuard', () => {
   });
 
   it('will not renavigate to the same place', () => {
-    const { routerSpy, authTokenService, noAuthGuard } = setup_noauth();
+    const { routerSpy, authStateService, noAuthGuard } = setup_noauth();
 
     const fakeUrlTree = {
       root: {
@@ -182,7 +180,7 @@ describe('NoAuthGuard', () => {
     } as UrlTree;
     routerSpy.createUrlTree.and.returnValue(fakeUrlTree);
 
-    authTokenService.authToken$.next('a-token');
+    authStateService.csrfToken$.next('a-token');
 
     const activatedRouteSnapshot = {
       url: ['test'] as unknown as UrlSegment[],

@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 import { Feed } from '@app/models';
 import { ZFeed } from '@app/models/feed';
-import { AuthTokenService } from '@app/services/auth-token.service';
+import { AuthStateService } from '@app/services/auth-state.service';
 import { ConfigService } from '@app/services/config.service';
 import { AllOptions } from '@app/services/data/all.interface';
 import {
@@ -42,7 +42,7 @@ export class FeedService {
 
   constructor(
     private http: HttpClient,
-    private authTokenService: AuthTokenService,
+    private authStateService: AuthStateService,
     configService: ConfigService,
   ) {
     const apiHost = configService.get<string>('apiHost');
@@ -55,7 +55,7 @@ export class FeedService {
 
   get(feedUrl: string, options: GetOptions<Field> = {}) {
     const headers = getToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
     const params = getToParams<Field>(options, () => ['uuid']);
     params.url = feedUrl;
@@ -64,13 +64,14 @@ export class FeedService {
       .get<unknown>(`${this.apiHost}/api/feed`, {
         headers,
         params,
+        withCredentials: true,
       })
       .pipe(map(retObj => ZFeed.parse(retObj)));
   }
 
   query(options: QueryOptions<Field, SortField> = {}) {
     const headers = queryToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
     const params = queryToParams('feeds');
     const body = queryToBody<Field, SortField>(options, () => ['uuid']);
@@ -79,6 +80,7 @@ export class FeedService {
       .post<unknown>(`${this.apiHost}/api/feeds/query`, body, {
         headers,
         params,
+        withCredentials: true,
       })
       .pipe(map(retObj => toObjects<Feed>(retObj, ZFeed)));
   }
@@ -89,7 +91,7 @@ export class FeedService {
 
   lookupFeeds(url: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
     const params: Record<string, string | string[]> = {
       url,
@@ -99,13 +101,14 @@ export class FeedService {
       .get<unknown>(`${this.apiHost}/api/feed/lookup`, {
         headers,
         params,
+        withCredentials: true,
       })
       .pipe(map(retObj => z.array(ZExposedFeed).parse(retObj)));
   }
 
   subscribe(url: string, customTitle?: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http.post<void>(
@@ -116,6 +119,7 @@ export class FeedService {
       },
       {
         headers,
+        withCredentials: true,
       },
     );
   }
@@ -126,7 +130,7 @@ export class FeedService {
     options: CommonOptions = {},
   ) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http.put<void>(
@@ -137,13 +141,14 @@ export class FeedService {
       },
       {
         headers,
+        withCredentials: true,
       },
     );
   }
 
   unsubscribe(url: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http.delete<void>(`${this.apiHost}/api/feed/subscribe`, {
@@ -151,6 +156,7 @@ export class FeedService {
       body: {
         url,
       },
+      withCredentials: true,
     });
   }
 }

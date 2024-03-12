@@ -4,7 +4,7 @@ import { map } from 'rxjs/operators';
 import { z } from 'zod';
 
 import { ZClassifierLabel } from '@app/models/classifierlabel';
-import { AuthTokenService } from '@app/services/auth-token.service';
+import { AuthStateService } from '@app/services/auth-state.service';
 import { ConfigService } from '@app/services/config.service';
 import {
   CommonOptions,
@@ -23,7 +23,7 @@ export class ClassifierLabelService {
 
   constructor(
     private http: HttpClient,
-    private authTokenService: AuthTokenService,
+    private authStateService: AuthStateService,
     configService: ConfigService,
   ) {
     const apiHost = configService.get<string>('apiHost');
@@ -36,7 +36,7 @@ export class ClassifierLabelService {
 
   getAll(feedEntryUuid: string | undefined, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
     const params: Record<string, string | string[]> = {};
     if (feedEntryUuid !== undefined) {
@@ -47,13 +47,14 @@ export class ClassifierLabelService {
       .get<unknown>(`${this.apiHost}/api/classifierlabels`, {
         headers,
         params,
+        withCredentials: true,
       })
       .pipe(map(retObj => z.array(ZClassifierLabel).parse(retObj)));
   }
 
   getAllByEntry(feedEntryUuids: string[], options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
     const body = {
       feedEntryUuids,
@@ -62,6 +63,7 @@ export class ClassifierLabelService {
     return this.http
       .post<unknown>(`${this.apiHost}/api/classifierlabels/entries`, body, {
         headers,
+        withCredentials: true,
       })
       .pipe(
         map(retObj => ZMultiClassifierLabels.parse(retObj).classifierLabels),
@@ -70,7 +72,7 @@ export class ClassifierLabelService {
 
   getMyVotes(feedEntryUuid: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http
@@ -78,6 +80,7 @@ export class ClassifierLabelService {
         `${this.apiHost}/api/classifierlabels/votes/${feedEntryUuid}`,
         {
           headers,
+          withCredentials: true,
         },
       )
       .pipe(map(retObj => z.array(ZClassifierLabel).parse(retObj)));
@@ -89,7 +92,7 @@ export class ClassifierLabelService {
     options: CommonOptions = {},
   ) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
     const body = {
       classifierLabelUuids,
@@ -100,6 +103,7 @@ export class ClassifierLabelService {
       body,
       {
         headers,
+        withCredentials: true,
       },
     );
   }
@@ -112,7 +116,7 @@ export class ClassifierLabelService {
     options: CommonOptions = {},
   ) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     const params: Record<string, string | string[]> = {};
@@ -128,6 +132,7 @@ export class ClassifierLabelService {
       {
         headers,
         params,
+        withCredentials: true,
       },
     );
   }

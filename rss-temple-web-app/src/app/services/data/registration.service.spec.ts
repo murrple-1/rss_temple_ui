@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { fakeAsync } from '@angular/core/testing';
 import { firstValueFrom, of } from 'rxjs';
 
+import { AuthStateService } from '@app/services';
 import { MockConfigService } from '@app/test/config.service.mock';
 
 import { RegistrationService } from './registration.service';
@@ -30,7 +31,7 @@ function setup() {
 
 describe('RegistrationService', () => {
   beforeEach(() => {
-    localStorage.removeItem('auth-token-service:authToken');
+    AuthStateService.removeCSRFTokenFromStorage();
   });
 
   it('should register', fakeAsync(async () => {

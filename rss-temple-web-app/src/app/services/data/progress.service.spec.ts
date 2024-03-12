@@ -3,27 +3,27 @@ import { fakeAsync } from '@angular/core/testing';
 import { firstValueFrom, of } from 'rxjs';
 import { z } from 'zod';
 
-import { AuthTokenService } from '@app/services/auth-token.service';
+import { AuthStateService } from '@app/services/auth-state.service';
 import { MockConfigService } from '@app/test/config.service.mock';
 
 import { ProgressService } from './progress.service';
 
 function setup() {
   const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', ['get']);
-  const authTokenService = new AuthTokenService();
+  const authStateService = new AuthStateService();
   const mockConfigService = new MockConfigService({
     apiHost: '',
   });
 
   const progressService = new ProgressService(
     httpClientSpy,
-    authTokenService,
+    authStateService,
     mockConfigService,
   );
 
   return {
     httpClientSpy,
-    authTokenService,
+    authStateService,
     mockConfigService,
 
     progressService,
@@ -32,7 +32,7 @@ function setup() {
 
 describe('ProgressService', () => {
   beforeEach(() => {
-    localStorage.removeItem('auth-token-service:authToken');
+    AuthStateService.removeCSRFTokenFromStorage();
   });
 
   it('should check progress', fakeAsync(async () => {

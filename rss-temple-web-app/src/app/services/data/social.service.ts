@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { z } from 'zod';
 
-import { AuthTokenService } from '@app/services/auth-token.service';
+import { AuthStateService } from '@app/services/auth-state.service';
 import { ConfigService } from '@app/services/config.service';
 import {
   CommonOptions,
@@ -43,7 +43,7 @@ export class SocialService {
 
   constructor(
     private http: HttpClient,
-    private authTokenService: AuthTokenService,
+    private authStateService: AuthStateService,
     configService: ConfigService,
   ) {
     const apiHost = configService.get<string>('apiHost');
@@ -56,22 +56,43 @@ export class SocialService {
 
   socialList(options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http
       .get<unknown>(`${this.apiHost}/api/social`, {
         headers,
+        withCredentials: true,
       })
       .pipe(map(retObj => z.array(ZSocialItem).parse(retObj)));
   }
 
-  googleLogin(token: string): Observable<string> {
+  googleLogin(token: string): Observable<{
+    key: string;
+    csrfToken: string;
+  }> {
     return this.http
-      .post<unknown>(`${this.apiHost}/api/social/google`, {
-        access_token: token,
-      })
-      .pipe(map(retObj => ZSocialToken.parse(retObj).key));
+      .post<unknown>(
+        `${this.apiHost}/api/social/google`,
+        {
+          access_token: token,
+        },
+        {
+          observe: 'response',
+        },
+      )
+      .pipe(
+        map(response => {
+          const csrfToken = response.headers.get('X-CSRFToken');
+          if (csrfToken === null) {
+            throw new Error('csrfToken null');
+          }
+          return {
+            key: ZSocialToken.parse(response.body).key,
+            csrfToken,
+          };
+        }),
+      );
   }
 
   googleConnect(
@@ -79,7 +100,7 @@ export class SocialService {
     options: CommonOptions = {},
   ): Observable<string> {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http
@@ -90,6 +111,7 @@ export class SocialService {
         },
         {
           headers,
+          withCredentials: true,
         },
       )
       .pipe(map(retObj => ZSocialToken.parse(retObj).key));
@@ -97,7 +119,7 @@ export class SocialService {
 
   googleDisconnect(options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http.post<void>(
@@ -105,16 +127,37 @@ export class SocialService {
       {},
       {
         headers,
+        withCredentials: true,
       },
     );
   }
 
-  facebookLogin(token: string): Observable<string> {
+  facebookLogin(token: string): Observable<{
+    key: string;
+    csrfToken: string;
+  }> {
     return this.http
-      .post<unknown>(`${this.apiHost}/api/social/facebook`, {
-        access_token: token,
-      })
-      .pipe(map(retObj => ZSocialToken.parse(retObj).key));
+      .post<unknown>(
+        `${this.apiHost}/api/social/facebook`,
+        {
+          access_token: token,
+        },
+        {
+          observe: 'response',
+        },
+      )
+      .pipe(
+        map(response => {
+          const csrfToken = response.headers.get('X-CSRFToken');
+          if (csrfToken === null) {
+            throw new Error('csrfToken null');
+          }
+          return {
+            key: ZSocialToken.parse(response.body).key,
+            csrfToken,
+          };
+        }),
+      );
   }
 
   facebookConnect(
@@ -122,7 +165,7 @@ export class SocialService {
     options: CommonOptions = {},
   ): Observable<string> {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http
@@ -133,6 +176,7 @@ export class SocialService {
         },
         {
           headers,
+          withCredentials: true,
         },
       )
       .pipe(map(retObj => ZSocialToken.parse(retObj).key));
@@ -140,7 +184,7 @@ export class SocialService {
 
   facebookDisconnect(options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http.post<void>(
@@ -148,6 +192,7 @@ export class SocialService {
       {},
       {
         headers,
+        withCredentials: true,
       },
     );
   }

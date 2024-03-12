@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { z } from 'zod';
 
 import { ZUser } from '@app/models/user';
-import { AuthTokenService } from '@app/services/auth-token.service';
+import { AuthStateService } from '@app/services/auth-state.service';
 import { ConfigService } from '@app/services/config.service';
 import {
   CommonOptions,
@@ -23,7 +24,7 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    private authTokenService: AuthTokenService,
+    private authStateService: AuthStateService,
     configService: ConfigService,
   ) {
     const apiHost = configService.get<string>('apiHost');
@@ -34,7 +35,13 @@ export class AuthService {
     this.apiHost = apiHost;
   }
 
-  login(email: string, password: string) {
+  login(
+    email: string,
+    password: string,
+  ): Observable<{
+    authToken: string;
+    csrfToken: string;
+  }> {
     return this.http
       .post<unknown>(
         `${this.apiHost}/api/auth/login`,
@@ -43,22 +50,35 @@ export class AuthService {
           password,
         },
         {
-          responseType: 'json',
+          withCredentials: true,
+          observe: 'response',
         },
       )
-      .pipe(map(retObj => ZLoginResponse.parse(retObj)));
+      .pipe(
+        map(response => {
+          const csrfToken = response.headers.get('X-CSRFToken');
+          if (csrfToken === null) {
+            throw new Error('csrfToken null');
+          }
+          return {
+            authToken: ZLoginResponse.parse(response.body).key,
+            csrfToken,
+          };
+        }),
+      );
   }
 
   logout(
-    options: Required<Pick<CommonOptions, 'authToken'>> &
-      Omit<CommonOptions, 'authToken'>,
+    options: Required<Pick<CommonOptions, 'csrfToken'>> &
+      Omit<CommonOptions, 'csrfToken'>,
   ) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http.post<void>(`${this.apiHost}/api/auth/logout`, undefined, {
       headers,
+      withCredentials: true,
     });
   }
 
@@ -68,7 +88,7 @@ export class AuthService {
     options: CommonOptions = {},
   ) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http.post<void>(
@@ -80,6 +100,7 @@ export class AuthService {
       {
         responseType: 'json',
         headers,
+        withCredentials: true,
       },
     );
   }
@@ -103,12 +124,13 @@ export class AuthService {
 
   getUser(options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http
       .get<unknown>(`${this.apiHost}/api/auth/user`, {
         headers,
+        withCredentials: true,
       })
       .pipe(map(retObj => ZUser.parse(retObj)));
   }
@@ -118,7 +140,7 @@ export class AuthService {
     options: CommonOptions = {},
   ) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http.put<void>(
@@ -126,13 +148,14 @@ export class AuthService {
       attributes,
       {
         headers,
+        withCredentials: true,
       },
     );
   }
 
   deleteUser(password: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http.post<void>(
@@ -142,6 +165,7 @@ export class AuthService {
       },
       {
         headers,
+        withCredentials: true,
       },
     );
   }

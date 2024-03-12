@@ -3,7 +3,7 @@ import { of } from 'rxjs';
 
 import {
   AppAlertsService,
-  AuthTokenService,
+  AuthStateService,
   HttpErrorService,
 } from '@app/services';
 import { FeedEntryService, FeedService } from '@app/services/data';
@@ -14,11 +14,11 @@ function setup() {
   const routerSpy = jasmine.createSpyObj<Router>('Router', ['navigate']);
 
   const appAlertService = new AppAlertsService();
-  const authTokenService = new AuthTokenService();
+  const authStateService = new AuthStateService();
   const httpErrorService = new HttpErrorService(
     routerSpy,
     appAlertService,
-    authTokenService,
+    authStateService,
   );
 
   const mockFeedService = jasmine.createSpyObj<FeedService>('FeedService', [
@@ -37,7 +37,7 @@ function setup() {
   );
 
   const readCounterService = new ReadCounterService(
-    authTokenService,
+    authStateService,
     mockFeedEntryService,
     mockFeedService,
     httpErrorService,
@@ -46,7 +46,7 @@ function setup() {
   return {
     routerSpy,
     appAlertService,
-    authTokenService,
+    authStateService,
     httpErrorService,
 
     readCounterService,

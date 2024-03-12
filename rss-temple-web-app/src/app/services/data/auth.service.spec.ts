@@ -3,7 +3,7 @@ import { fakeAsync } from '@angular/core/testing';
 import { firstValueFrom, of } from 'rxjs';
 
 import { ZUser } from '@app/models/user';
-import { AuthTokenService } from '@app/services/auth-token.service';
+import { AuthStateService } from '@app/services/auth-state.service';
 import { MockConfigService } from '@app/test/config.service.mock';
 
 import { AuthService } from './auth.service';
@@ -14,20 +14,20 @@ function setup() {
     'post',
     'put',
   ]);
-  const authTokenService = new AuthTokenService();
+  const authStateService = new AuthStateService();
   const mockConfigService = new MockConfigService({
     apiHost: '',
   });
 
   const authService = new AuthService(
     httpClientSpy,
-    authTokenService,
+    authStateService,
     mockConfigService,
   );
 
   return {
     httpClientSpy,
-    authTokenService,
+    authStateService,
     mockConfigService,
 
     authService,
@@ -36,14 +36,21 @@ function setup() {
 
 describe('AuthService', () => {
   beforeEach(() => {
-    localStorage.removeItem('auth-token-service:authToken');
+    AuthStateService.removeCSRFTokenFromStorage();
   });
 
   it('should login', fakeAsync(async () => {
     const { httpClientSpy, authService } = setup();
     httpClientSpy.post.and.returnValue(
       of({
-        key: '',
+        headers: {
+          get: function (headerName: string) {
+            return 'a-token';
+          },
+        },
+        body: {
+          key: '',
+        },
       }),
     );
 
@@ -61,7 +68,8 @@ describe('AuthService', () => {
     );
     expect(response).toEqual(
       jasmine.objectContaining({
-        key: jasmine.any(String),
+        authToken: jasmine.any(String),
+        csrfToken: jasmine.any(String),
       }),
     );
   }));
@@ -72,7 +80,7 @@ describe('AuthService', () => {
 
     await firstValueFrom(
       authService.logout({
-        authToken: 'sessionId',
+        csrfToken: 'csrfToken',
       }),
       { defaultValue: undefined },
     );
@@ -82,7 +90,7 @@ describe('AuthService', () => {
       undefined,
       jasmine.objectContaining({
         headers: jasmine.objectContaining({
-          'Authorization': jasmine.any(String),
+          'X-CSRFToken': jasmine.any(String),
         }),
       }),
     );

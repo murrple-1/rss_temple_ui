@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 import { FeedEntry } from '@app/models';
 import { ZFeedEntry } from '@app/models/feedentry';
-import { AuthTokenService } from '@app/services/auth-token.service';
+import { AuthStateService } from '@app/services/auth-state.service';
 import { ConfigService } from '@app/services/config.service';
 import { AllOptions } from '@app/services/data/all.interface';
 import {
@@ -53,7 +53,7 @@ export class FeedEntryService {
 
   constructor(
     private http: HttpClient,
-    private authTokenService: AuthTokenService,
+    private authStateService: AuthStateService,
     configService: ConfigService,
   ) {
     const apiHost = configService.get<string>('apiHost');
@@ -66,7 +66,7 @@ export class FeedEntryService {
 
   get(uuid: string, options: GetOptions<Field> = {}) {
     const headers = getToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
     const params = getToParams<Field>(options, () => ['uuid']);
 
@@ -74,13 +74,14 @@ export class FeedEntryService {
       .get<unknown>(`${this.apiHost}/api/feedentry/${uuid}`, {
         headers,
         params,
+        withCredentials: true,
       })
       .pipe(map(retObj => ZFeedEntry.parse(retObj)));
   }
 
   query(options: QueryOptions<Field, SortField> = {}) {
     const headers = queryToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
     const params = queryToParams('feedentries');
     const body = queryToBody<Field, SortField>(options, () => ['uuid']);
@@ -89,6 +90,7 @@ export class FeedEntryService {
       .post<unknown>(`${this.apiHost}/api/feedentries/query`, body, {
         headers,
         params,
+        withCredentials: true,
       })
       .pipe(map(retObj => toObjects<FeedEntry>(retObj, ZFeedEntry)));
   }
@@ -99,7 +101,7 @@ export class FeedEntryService {
 
   createStableQuery(options: CreateStableQueryOptions<SortField> = {}) {
     const headers = toCreateStableQueryHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
     const params = toCreateStableQueryParams('feedentries');
     const body = toCreateStableQueryBody(options);
@@ -111,6 +113,7 @@ export class FeedEntryService {
         {
           headers,
           params,
+          withCredentials: true,
         },
       )
       .pipe(map(retObj => z.string().parse(retObj)));
@@ -118,7 +121,7 @@ export class FeedEntryService {
 
   stableQuery(options: StableQueryOptions<Field>) {
     const headers = toStableQueryHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
     const params = toStableQueryParams('feedentries');
     const body = toStableQueryBody<Field>(options, () => ['uuid']);
@@ -127,6 +130,7 @@ export class FeedEntryService {
       .post<unknown>(`${this.apiHost}/api/feedentries/query/stable`, body, {
         headers,
         params,
+        withCredentials: true,
       })
       .pipe(map(retObj => toObjects<FeedEntry>(retObj, ZFeedEntry)));
   }
@@ -142,7 +146,7 @@ export class FeedEntryService {
 
   read(feedEntryUuid: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http
@@ -151,6 +155,7 @@ export class FeedEntryService {
         null,
         {
           headers,
+          withCredentials: true,
         },
       )
       .pipe(
@@ -180,13 +185,14 @@ export class FeedEntryService {
 
   unread(feedEntryUuid: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http.delete<void>(
       `${this.apiHost}/api/feedentry/${feedEntryUuid}/read`,
       {
         headers,
+        withCredentials: true,
       },
     );
   }
@@ -197,7 +203,7 @@ export class FeedEntryService {
     options: CommonOptions = {},
   ) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http.post<void>(
@@ -208,13 +214,14 @@ export class FeedEntryService {
       },
       {
         headers,
+        withCredentials: true,
       },
     );
   }
 
   unreadSome(feedEntryUuids: string[], options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http.request<void>(
@@ -225,13 +232,14 @@ export class FeedEntryService {
         body: {
           feedEntryUuids,
         },
+        withCredentials: true,
       },
     );
   }
 
   favorite(feedEntryUuid: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http.post<void>(
@@ -239,26 +247,28 @@ export class FeedEntryService {
       null,
       {
         headers,
+        withCredentials: true,
       },
     );
   }
 
   unfavorite(feedEntryUuid: string, options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http.delete<void>(
       `${this.apiHost}/api/feedentry/${feedEntryUuid}/favorite`,
       {
         headers,
+        withCredentials: true,
       },
     );
   }
 
   favoriteSome(feedEntryUuids: string[], options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http.post<void>(
@@ -266,13 +276,14 @@ export class FeedEntryService {
       feedEntryUuids,
       {
         headers,
+        withCredentials: true,
       },
     );
   }
 
   unfavoriteSome(feedEntryUuids: string[], options: CommonOptions = {}) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     return this.http.request<void>(
@@ -283,6 +294,7 @@ export class FeedEntryService {
         body: {
           feedEntryUuids,
         },
+        withCredentials: true,
       },
     );
   }
@@ -292,7 +304,7 @@ export class FeedEntryService {
     options: CommonOptions = {},
   ) {
     const headers = commonToHeaders(options, () =>
-      this.authTokenService.authToken$.getValue(),
+      this.authStateService.csrfToken$.getValue(),
     );
 
     const params: Record<string, string | string[]> = {};
@@ -304,6 +316,7 @@ export class FeedEntryService {
       .get<void>(`${this.apiHost}/api/feedentry/languages`, {
         headers,
         params,
+        withCredentials: true,
       })
       .pipe(map(retObj => ZLanguages.parse(retObj).languages));
   }

@@ -13,7 +13,7 @@ import {
   openModal as openConfirmModal,
 } from '@app/components/shared/confirm-modal/confirm-modal.component';
 import {
-  AuthTokenService,
+  AuthStateService,
   ConfigService,
   ModalOpenService,
 } from '@app/services';
@@ -121,7 +121,7 @@ export class NavComponent implements OnInit, OnDestroy {
   constructor(
     private zone: NgZone,
     private router: Router,
-    private authTokenService: AuthTokenService,
+    private authStateService: AuthStateService,
     private modalOpenService: ModalOpenService,
     private authService: AuthService,
     private configService: ConfigService,
@@ -143,7 +143,7 @@ export class NavComponent implements OnInit, OnDestroy {
       extraNavLinks = [];
     }
 
-    this.authTokenService.isLoggedIn$
+    this.authStateService.isLoggedIn$
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: isLoggedIn => {
@@ -210,22 +210,23 @@ export class NavComponent implements OnInit, OnDestroy {
     this.modalOpenService.isModalOpen$.next(false);
 
     if (result) {
-      const authToken = this.authTokenService.authToken$.getValue();
-      if (authToken !== null) {
+      const csrfToken = this.authStateService.csrfToken$.getValue();
+      if (csrfToken !== null) {
         this.authService
-          .logout({ authToken })
+          .logout({ csrfToken })
           .pipe(takeUntil(this.unsubscribe$))
           .subscribe({
+            next: () => {
+              this.authStateService.csrfToken$.next(null);
+              AuthStateService.removeCSRFTokenFromStorage();
+
+              this.router.navigate(['/login']);
+            },
             error: error => {
               console.error(error);
             },
           });
       }
-      this.authTokenService.authToken$.next(null);
-      localStorage.removeItem('auth-token-service:authToken');
-      sessionStorage.removeItem('auth-token-service:authToken');
-
-      this.router.navigate(['/login']);
     }
   }
 }

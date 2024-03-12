@@ -86,17 +86,17 @@ export function toStableQueryBody<Field extends string>(
 
 export function toCreateStableQueryHeaders<SortField extends string>(
   options: CreateStableQueryOptions<SortField>,
-  authTokenFn: () => string | null,
+  csrfTokenFn: () => string | null,
 ) {
-  const headers = commonToHeaders(options, authTokenFn);
+  const headers = commonToHeaders(options, csrfTokenFn);
   return headers;
 }
 
 export function toStableQueryHeaders<Field extends string>(
   options: StableQueryOptions<Field>,
-  authTokenFn: () => string | null,
+  csrfTokenFn: () => string | null,
 ) {
-  const headers = commonToHeaders(options, authTokenFn);
+  const headers = commonToHeaders(options, csrfTokenFn);
   return headers;
 }
 
