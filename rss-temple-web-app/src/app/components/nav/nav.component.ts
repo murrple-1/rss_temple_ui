@@ -1,7 +1,7 @@
 import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
-import { filter, map, share, takeUntil } from 'rxjs/operators';
+import { filter, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { z } from 'zod';
 
 import {
@@ -55,7 +55,7 @@ export class NavComponent implements OnInit, OnDestroy {
   private readonly navEnd$ = this.router.events.pipe(
     filter(navEvent => navEvent instanceof NavigationEnd),
     map(navEvent => navEvent as NavigationEnd),
-    share(),
+    shareReplay(1),
   );
 
   private readonly loginLink: NavLink = {
@@ -69,7 +69,7 @@ export class NavComponent implements OnInit, OnDestroy {
     name: 'Home',
     routerLink: '/main/feeds',
     routerLinkActiveAlt$: this.navEnd$.pipe(
-      map(navEnd => /^\/main\/feed/.test(navEnd.urlAfterRedirects)),
+      map(navEnd => /^\/main\/feeds/.test(navEnd.urlAfterRedirects)),
     ),
   };
   private readonly exploreLink: NavLink = {
