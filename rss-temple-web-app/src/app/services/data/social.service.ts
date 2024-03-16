@@ -69,13 +69,7 @@ export class SocialService {
       .pipe(map(retObj => z.array(ZSocialItem).parse(retObj)));
   }
 
-  googleLogin(
-    token: string,
-    stayLoggedIn: boolean,
-  ): Observable<{
-    key: string;
-    csrfToken: string;
-  }> {
+  googleLogin(token: string, stayLoggedIn: boolean) {
     return this.http
       .post<unknown>(
         `${this.apiHost}/api/social/google`,
@@ -87,18 +81,7 @@ export class SocialService {
           observe: 'response',
         },
       )
-      .pipe(
-        map(response => {
-          const csrfToken = response.headers.get('X-CSRFToken');
-          if (csrfToken === null) {
-            throw new Error('csrfToken null');
-          }
-          return {
-            key: ZSocialToken.parse(response.body).key,
-            csrfToken,
-          };
-        }),
-      );
+      .pipe(map(retObj => ZSocialToken.parse(retObj)));
   }
 
   googleConnect(
@@ -140,36 +123,13 @@ export class SocialService {
     );
   }
 
-  facebookLogin(
-    token: string,
-    stayLoggedIn: boolean,
-  ): Observable<{
-    key: string;
-    csrfToken: string;
-  }> {
+  facebookLogin(token: string, stayLoggedIn: boolean) {
     return this.http
-      .post<unknown>(
-        `${this.apiHost}/api/social/facebook`,
-        {
-          access_token: token,
-          stayLoggedIn,
-        },
-        {
-          observe: 'response',
-        },
-      )
-      .pipe(
-        map(response => {
-          const csrfToken = response.headers.get('X-CSRFToken');
-          if (csrfToken === null) {
-            throw new Error('csrfToken null');
-          }
-          return {
-            key: ZSocialToken.parse(response.body).key,
-            csrfToken,
-          };
-        }),
-      );
+      .post<unknown>(`${this.apiHost}/api/social/facebook`, {
+        access_token: token,
+        stayLoggedIn,
+      })
+      .pipe(map(retObj => ZSocialToken.parse(retObj)));
   }
 
   facebookConnect(
