@@ -9,17 +9,20 @@ import {
 } from '@angular/router';
 
 import { AuthStateService } from '@app/services';
+import { MockCookieService } from '@app/test/cookie.service.mock';
 
 import { AuthGuard, NoAuthGuard } from './auth.guard';
 
 function setup_auth() {
   const routerSpy = jasmine.createSpyObj<Router>('Router', ['createUrlTree']);
-  const authStateService = new AuthStateService();
+  const mockCookieService = new MockCookieService({});
+  const authStateService = new AuthStateService(mockCookieService);
 
   const authGuard = new AuthGuard(routerSpy, authStateService);
 
   return {
     routerSpy,
+    mockCookieService,
     authStateService,
 
     authGuard,
@@ -28,8 +31,10 @@ function setup_auth() {
 
 describe('AuthGuard', () => {
   beforeEach(() => {
-    AuthStateService.removeLoggedInFlagFromSessionStorage();
-    AuthStateService.removeLoggedInFlagFromLocalStorage();
+    const mockCookieService = new MockCookieService({});
+    const authStateService = new AuthStateService(mockCookieService);
+    authStateService.removeLoggedInFlagFromCookieStorage();
+    authStateService.removeLoggedInFlagFromLocalStorage();
   });
 
   it('can activate', () => {
@@ -105,12 +110,14 @@ describe('AuthGuard', () => {
 
 function setup_noauth() {
   const routerSpy = jasmine.createSpyObj<Router>('Router', ['createUrlTree']);
-  const authStateService = new AuthStateService();
+  const mockCookieService = new MockCookieService({});
+  const authStateService = new AuthStateService(mockCookieService);
 
   const noAuthGuard = new NoAuthGuard(routerSpy, authStateService);
 
   return {
     routerSpy,
+    mockCookieService,
     authStateService,
 
     noAuthGuard,
@@ -119,8 +126,10 @@ function setup_noauth() {
 
 describe('NoAuthGuard', () => {
   beforeEach(() => {
-    AuthStateService.removeLoggedInFlagFromSessionStorage();
-    AuthStateService.removeLoggedInFlagFromLocalStorage();
+    const mockCookieService = new MockCookieService({});
+    const authStateService = new AuthStateService(mockCookieService);
+    authStateService.removeLoggedInFlagFromCookieStorage();
+    authStateService.removeLoggedInFlagFromLocalStorage();
   });
 
   it('can activate', () => {

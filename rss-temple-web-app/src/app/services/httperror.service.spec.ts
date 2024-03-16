@@ -7,6 +7,7 @@ import {
   AppAlertsService,
 } from '@app/services/app-alerts.service';
 import { AuthStateService } from '@app/services/auth-state.service';
+import { MockCookieService } from '@app/test/cookie.service.mock';
 
 import { HttpErrorService } from './httperror.service';
 
@@ -14,7 +15,8 @@ function setup() {
   spyOn(console, 'error');
 
   const routerSpy = jasmine.createSpyObj<Router>('Router', ['navigate']);
-  const authStateService = new AuthStateService();
+  const mockCookieService = new MockCookieService({});
+  const authStateService = new AuthStateService(mockCookieService);
   const appAlertService = new AppAlertsService();
 
   const httpErrorService = new HttpErrorService(
@@ -25,6 +27,8 @@ function setup() {
 
   return {
     routerSpy,
+    mockCookieService,
+    authStateService,
     appAlertService,
 
     httpErrorService,
@@ -33,8 +37,10 @@ function setup() {
 
 describe('HttpErrorService', () => {
   beforeEach(() => {
-    AuthStateService.removeLoggedInFlagFromSessionStorage();
-    AuthStateService.removeLoggedInFlagFromLocalStorage();
+    const mockCookieService = new MockCookieService({});
+    const authStateService = new AuthStateService(mockCookieService);
+    authStateService.removeLoggedInFlagFromCookieStorage();
+    authStateService.removeLoggedInFlagFromLocalStorage();
   });
 
   it('should handle HttpErrorResponses', async () => {

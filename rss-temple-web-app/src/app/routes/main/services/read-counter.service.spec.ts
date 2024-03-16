@@ -7,6 +7,7 @@ import {
   HttpErrorService,
 } from '@app/services';
 import { FeedEntryService, FeedService } from '@app/services/data';
+import { MockCookieService } from '@app/test/cookie.service.mock';
 
 import { ReadCounterService } from './read-counter.service';
 
@@ -14,7 +15,8 @@ function setup() {
   const routerSpy = jasmine.createSpyObj<Router>('Router', ['navigate']);
 
   const appAlertService = new AppAlertsService();
-  const authStateService = new AuthStateService();
+  const mockCookieService = new MockCookieService({});
+  const authStateService = new AuthStateService(mockCookieService);
   const httpErrorService = new HttpErrorService(
     routerSpy,
     appAlertService,
@@ -54,6 +56,13 @@ function setup() {
 }
 
 describe('UserCategoryObservableService', () => {
+  beforeEach(() => {
+    const mockCookieService = new MockCookieService({});
+    const authStateService = new AuthStateService(mockCookieService);
+    authStateService.removeLoggedInFlagFromCookieStorage();
+    authStateService.removeLoggedInFlagFromLocalStorage();
+  });
+
   it('should initialize', () => {
     const { readCounterService } = setup();
     expect(readCounterService).toBeTruthy();
