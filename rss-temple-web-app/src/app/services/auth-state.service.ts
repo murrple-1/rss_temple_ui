@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -7,30 +8,30 @@ import { BehaviorSubject } from 'rxjs';
 export class AuthStateService {
   isLoggedIn$: BehaviorSubject<boolean>;
 
-  constructor() {
-    this.isLoggedIn$ = new BehaviorSubject(AuthStateService.getLoggedInFlag());
+  constructor(private cookieService: CookieService) {
+    this.isLoggedIn$ = new BehaviorSubject(this.getLoggedInFlag());
   }
 
-  private static getLoggedInFlag() {
+  private getLoggedInFlag() {
     return (
       localStorage.getItem('auth-state-service:isLoggedIn') !== null ||
-      sessionStorage.getItem('auth-state-service:isLoggedIn') !== null
+      this.cookieService.check('auth-state-service:isLoggedIn')
     );
   }
 
-  static setLoggedInFlagInLocalStorage() {
+  setLoggedInFlagInLocalStorage() {
     localStorage.setItem('auth-state-service:isLoggedIn', 'true');
   }
 
-  static removeLoggedInFlagFromLocalStorage() {
+  removeLoggedInFlagFromLocalStorage() {
     localStorage.removeItem('auth-state-service:isLoggedIn');
   }
 
-  static setLoggedInFlagInSessionStorage() {
-    sessionStorage.setItem('auth-state-service:isLoggedIn', 'true');
+  setLoggedInFlagInCookieStorage() {
+    this.cookieService.set('auth-state-service:isLoggedIn', 'true');
   }
 
-  static removeLoggedInFlagFromSessionStorage() {
-    sessionStorage.removeItem('auth-state-service:isLoggedIn');
+  removeLoggedInFlagFromCookieStorage() {
+    this.cookieService.delete('auth-state-service:isLoggedIn');
   }
 }

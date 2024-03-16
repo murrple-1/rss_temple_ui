@@ -193,7 +193,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe({
         next: _authResponse => {
           if (rememberMe) {
-            AuthStateService.setLoggedInFlagInLocalStorage();
+            this.authStateService.setLoggedInFlagInLocalStorage();
             setCachedEmailInLocalStorage(email);
           } else {
             removeCachedEmailFromStorage();
@@ -266,7 +266,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private handleLoginSuccess() {
-    AuthStateService.setLoggedInFlagInSessionStorage();
+    this.authStateService.setLoggedInFlagInCookieStorage();
     this.authStateService.isLoggedIn$.next(true);
 
     this.router.navigate([this._returnUrl]);
@@ -291,7 +291,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe({
         next: _authResponse => {
           if (rememberMe) {
-            AuthStateService.setLoggedInFlagInLocalStorage();
+            this.authStateService.setLoggedInFlagInLocalStorage();
           }
           this.zone.run(() => {
             this.handleLoginSuccess();
@@ -369,7 +369,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe({
         next: _authResponse => {
           if (rememberMe) {
-            AuthStateService.setLoggedInFlagInLocalStorage();
+            this.authStateService.setLoggedInFlagInLocalStorage();
           }
           this.zone.run(() => {
             this.handleLoginSuccess();

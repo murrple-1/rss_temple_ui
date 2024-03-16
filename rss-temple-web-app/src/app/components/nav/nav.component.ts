@@ -215,8 +215,8 @@ export class NavComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: () => {
-            AuthStateService.removeLoggedInFlagFromSessionStorage();
-            AuthStateService.removeLoggedInFlagFromLocalStorage();
+            this.authStateService.removeLoggedInFlagFromCookieStorage();
+            this.authStateService.removeLoggedInFlagFromLocalStorage();
             this.authStateService.isLoggedIn$.next(false);
 
             this.router.navigate(['/login']);
