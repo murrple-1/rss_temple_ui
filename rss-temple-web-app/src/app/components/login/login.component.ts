@@ -339,6 +339,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
           }
 
           if (!errorHandled) {
+            console.error('Unknown Error', error);
             this.appAlertsService.appAlertDescriptor$.next({
               autoCloseInterval: 5000,
               canClose: true,
@@ -416,6 +417,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
           }
 
           if (!errorHandled) {
+            console.error('Unknown Error', error);
             this.appAlertsService.appAlertDescriptor$.next({
               autoCloseInterval: 5000,
               canClose: true,
