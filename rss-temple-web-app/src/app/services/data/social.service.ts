@@ -71,16 +71,10 @@ export class SocialService {
 
   googleLogin(token: string, stayLoggedIn: boolean) {
     return this.http
-      .post<unknown>(
-        `${this.apiHost}/api/social/google`,
-        {
-          access_token: token,
-          stayLoggedIn,
-        },
-        {
-          observe: 'response',
-        },
-      )
+      .post<unknown>(`${this.apiHost}/api/social/google`, {
+        access_token: token,
+        stayLoggedIn,
+      })
       .pipe(map(retObj => ZSocialToken.parse(retObj)));
   }
 
