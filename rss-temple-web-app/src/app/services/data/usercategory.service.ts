@@ -1,16 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
 import { map } from 'rxjs/operators';
 
 import { UserCategory } from '@app/models';
 import { ZUserCategory } from '@app/models/usercategory';
-import { AuthStateService } from '@app/services/auth-state.service';
 import { ConfigService } from '@app/services/config.service';
 import { AllOptions } from '@app/services/data/all.interface';
 import {
   CommonOptions,
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
+import { createCSRFTokenFnWithService } from '@app/services/data/csrftoken.lib';
 import {
   GetOptions,
   toHeaders as getToHeaders,
@@ -46,7 +47,7 @@ export class UserCategoryService {
 
   constructor(
     private http: HttpClient,
-    private authStateService: AuthStateService,
+    private cookieService: CookieService,
     configService: ConfigService,
   ) {
     const apiHost = configService.get<string>('apiHost');
@@ -58,8 +59,9 @@ export class UserCategoryService {
   }
 
   get(uuid: string, options: GetOptions<Field> = {}) {
-    const headers = getToHeaders(options, () =>
-      this.authStateService.csrfToken$.getValue(),
+    const headers = getToHeaders(
+      options,
+      createCSRFTokenFnWithService(this.cookieService),
     );
     const params = getToParams<Field>(options, () => ['uuid']);
 
@@ -73,8 +75,9 @@ export class UserCategoryService {
   }
 
   query(options: QueryOptions<Field, SortField> = {}) {
-    const headers = queryToHeaders(options, () =>
-      this.authStateService.csrfToken$.getValue(),
+    const headers = queryToHeaders(
+      options,
+      createCSRFTokenFnWithService(this.cookieService),
     );
     const params = queryToParams('usercategories');
     const body = queryToBody<Field, SortField>(options, () => ['uuid']);
@@ -96,8 +99,9 @@ export class UserCategoryService {
     userCategoryJson: ICreateUserCategory,
     options: GetOptions<Field> = {},
   ) {
-    const headers = getToHeaders(options, () =>
-      this.authStateService.csrfToken$.getValue(),
+    const headers = getToHeaders(
+      options,
+      createCSRFTokenFnWithService(this.cookieService),
     );
 
     const params = getToParams<Field>(options, () => ['uuid']);
@@ -112,8 +116,9 @@ export class UserCategoryService {
   }
 
   delete(uuid: string, options: CommonOptions = {}) {
-    const headers = commonToHeaders(options, () =>
-      this.authStateService.csrfToken$.getValue(),
+    const headers = commonToHeaders(
+      options,
+      createCSRFTokenFnWithService(this.cookieService),
     );
 
     return this.http.delete<void>(`${this.apiHost}/api/usercategory/${uuid}`, {
@@ -123,8 +128,9 @@ export class UserCategoryService {
   }
 
   apply(apply: IApply, options: CommonOptions = {}) {
-    const headers = commonToHeaders(options, () =>
-      this.authStateService.csrfToken$.getValue(),
+    const headers = commonToHeaders(
+      options,
+      createCSRFTokenFnWithService(this.cookieService),
     );
 
     const mappings: Record<string, string[]> = {};

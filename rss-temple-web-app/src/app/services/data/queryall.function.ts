@@ -18,7 +18,6 @@ export function queryAllFn<Field extends string, SortField extends string, T>(
     search: options.search,
     skip: 0,
     sort: options.sort,
-    csrfToken: options.csrfToken,
   }).pipe(
     mergeMap(retObj => {
       const allCalls: Observable<Objects<T>>[] = [of(retObj)];
@@ -35,7 +34,6 @@ export function queryAllFn<Field extends string, SortField extends string, T>(
             search: options.search,
             skip,
             sort: options.sort,
-            csrfToken: options.csrfToken,
           }),
         );
 

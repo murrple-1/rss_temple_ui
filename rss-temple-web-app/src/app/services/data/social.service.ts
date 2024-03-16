@@ -1,15 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { z } from 'zod';
 
-import { AuthStateService } from '@app/services/auth-state.service';
 import { ConfigService } from '@app/services/config.service';
 import {
   CommonOptions,
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
+import { createCSRFTokenFnWithService } from '@app/services/data/csrftoken.lib';
 
 const ZSocialToken = z.object({
   key: z.string(),
@@ -43,7 +44,7 @@ export class SocialService {
 
   constructor(
     private http: HttpClient,
-    private authStateService: AuthStateService,
+    private cookieService: CookieService,
     configService: ConfigService,
   ) {
     const apiHost = configService.get<string>('apiHost');
@@ -55,8 +56,9 @@ export class SocialService {
   }
 
   socialList(options: CommonOptions = {}) {
-    const headers = commonToHeaders(options, () =>
-      this.authStateService.csrfToken$.getValue(),
+    const headers = commonToHeaders(
+      options,
+      createCSRFTokenFnWithService(this.cookieService),
     );
 
     return this.http
@@ -67,7 +69,10 @@ export class SocialService {
       .pipe(map(retObj => z.array(ZSocialItem).parse(retObj)));
   }
 
-  googleLogin(token: string): Observable<{
+  googleLogin(
+    token: string,
+    stayLoggedIn: boolean,
+  ): Observable<{
     key: string;
     csrfToken: string;
   }> {
@@ -76,6 +81,7 @@ export class SocialService {
         `${this.apiHost}/api/social/google`,
         {
           access_token: token,
+          stayLoggedIn,
         },
         {
           observe: 'response',
@@ -99,8 +105,9 @@ export class SocialService {
     token: string,
     options: CommonOptions = {},
   ): Observable<string> {
-    const headers = commonToHeaders(options, () =>
-      this.authStateService.csrfToken$.getValue(),
+    const headers = commonToHeaders(
+      options,
+      createCSRFTokenFnWithService(this.cookieService),
     );
 
     return this.http
@@ -118,8 +125,9 @@ export class SocialService {
   }
 
   googleDisconnect(options: CommonOptions = {}) {
-    const headers = commonToHeaders(options, () =>
-      this.authStateService.csrfToken$.getValue(),
+    const headers = commonToHeaders(
+      options,
+      createCSRFTokenFnWithService(this.cookieService),
     );
 
     return this.http.post<void>(
@@ -132,7 +140,10 @@ export class SocialService {
     );
   }
 
-  facebookLogin(token: string): Observable<{
+  facebookLogin(
+    token: string,
+    stayLoggedIn: boolean,
+  ): Observable<{
     key: string;
     csrfToken: string;
   }> {
@@ -141,6 +152,7 @@ export class SocialService {
         `${this.apiHost}/api/social/facebook`,
         {
           access_token: token,
+          stayLoggedIn,
         },
         {
           observe: 'response',
@@ -164,8 +176,9 @@ export class SocialService {
     token: string,
     options: CommonOptions = {},
   ): Observable<string> {
-    const headers = commonToHeaders(options, () =>
-      this.authStateService.csrfToken$.getValue(),
+    const headers = commonToHeaders(
+      options,
+      createCSRFTokenFnWithService(this.cookieService),
     );
 
     return this.http
@@ -183,8 +196,9 @@ export class SocialService {
   }
 
   facebookDisconnect(options: CommonOptions = {}) {
-    const headers = commonToHeaders(options, () =>
-      this.authStateService.csrfToken$.getValue(),
+    const headers = commonToHeaders(
+      options,
+      createCSRFTokenFnWithService(this.cookieService),
     );
 
     return this.http.post<void>(

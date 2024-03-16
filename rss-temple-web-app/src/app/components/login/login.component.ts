@@ -185,21 +185,21 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const email = this.email;
 
+    const rememberMe = this.rememberMe;
+
     this.authService
-      .login(email, this.password)
+      .login(email, this.password, rememberMe)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: authResponse => {
-          if (this.rememberMe) {
+        next: _authResponse => {
+          if (rememberMe) {
+            AuthStateService.setLoggedInFlagInLocalStorage();
             setCachedEmailInLocalStorage(email);
-
-            AuthStateService.setCSRFTokenInLocalStorage(authResponse.csrfToken);
           } else {
             removeCachedEmailFromStorage();
           }
-          AuthStateService.setCSRFTokenInSessionStorage(authResponse.csrfToken);
           this.zone.run(() => {
-            this.handleLoginSuccess(authResponse.csrfToken);
+            this.handleLoginSuccess();
           });
         },
         error: error => {
@@ -265,8 +265,9 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
-  private handleLoginSuccess(csrfToken: string) {
-    this.authStateService.csrfToken$.next(csrfToken);
+  private handleLoginSuccess() {
+    AuthStateService.setLoggedInFlagInSessionStorage();
+    this.authStateService.isLoggedIn$.next(true);
 
     this.router.navigate([this._returnUrl]);
   }
@@ -282,17 +283,18 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private handleGoogleUser(idToken: string) {
+    const rememberMe = this.rememberMe;
+
     this.socialService
-      .googleLogin(idToken)
+      .googleLogin(idToken, rememberMe)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: authResponse => {
-          if (this.rememberMe) {
-            AuthStateService.setCSRFTokenInLocalStorage(authResponse.csrfToken);
+        next: _authResponse => {
+          if (rememberMe) {
+            AuthStateService.setLoggedInFlagInLocalStorage();
           }
-          AuthStateService.setCSRFTokenInSessionStorage(authResponse.csrfToken);
           this.zone.run(() => {
-            this.handleLoginSuccess(authResponse.csrfToken);
+            this.handleLoginSuccess();
           });
         },
         error: error => {
@@ -359,17 +361,17 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private handleFacebookUser(accessToken: string) {
+    const rememberMe = this.rememberMe;
     this.socialService
-      .facebookLogin(accessToken)
+      .facebookLogin(accessToken, rememberMe)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: authResponse => {
-          if (this.rememberMe) {
-            AuthStateService.setCSRFTokenInLocalStorage(authResponse.csrfToken);
+        next: _authResponse => {
+          if (rememberMe) {
+            AuthStateService.setLoggedInFlagInLocalStorage();
           }
-          AuthStateService.setCSRFTokenInSessionStorage(authResponse.csrfToken);
           this.zone.run(() => {
-            this.handleLoginSuccess(authResponse.csrfToken);
+            this.handleLoginSuccess();
           });
         },
         error: error => {

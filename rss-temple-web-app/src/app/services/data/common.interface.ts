@@ -1,15 +1,10 @@
-export interface CommonOptions {
-  csrfToken?: string;
-}
+export interface CommonOptions {}
 
-export function toHeaders(
-  options: CommonOptions,
-  csrfTokenFn: () => string | null,
-) {
+export function toHeaders(_options: CommonOptions, csrfTokenFn: () => string) {
   const headers: Record<string, string | string[]> = {};
 
-  const csrfToken = options.csrfToken ?? csrfTokenFn();
-  if (csrfToken !== null) {
+  const csrfToken = csrfTokenFn();
+  if (csrfToken) {
     headers['X-CSRFToken'] = csrfToken;
   }
 

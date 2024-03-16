@@ -9,7 +9,7 @@ export interface GetOptions<Field extends string> extends CommonOptions {
 
 export function toHeaders<Field extends string>(
   options: GetOptions<Field>,
-  csrfTokenFn: () => string | null,
+  csrfTokenFn: () => string,
 ) {
   const headers = commonToHeaders(options, csrfTokenFn);
   return headers;

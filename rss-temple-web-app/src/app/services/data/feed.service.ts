@@ -1,17 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
 import { map } from 'rxjs/operators';
 import { z } from 'zod';
 
 import { Feed } from '@app/models';
 import { ZFeed } from '@app/models/feed';
-import { AuthStateService } from '@app/services/auth-state.service';
 import { ConfigService } from '@app/services/config.service';
 import { AllOptions } from '@app/services/data/all.interface';
 import {
   CommonOptions,
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
+import { createCSRFTokenFnWithService } from '@app/services/data/csrftoken.lib';
 import {
   GetOptions,
   toHeaders as getToHeaders,
@@ -42,7 +43,7 @@ export class FeedService {
 
   constructor(
     private http: HttpClient,
-    private authStateService: AuthStateService,
+    private cookieService: CookieService,
     configService: ConfigService,
   ) {
     const apiHost = configService.get<string>('apiHost');
@@ -54,8 +55,9 @@ export class FeedService {
   }
 
   get(feedUrl: string, options: GetOptions<Field> = {}) {
-    const headers = getToHeaders(options, () =>
-      this.authStateService.csrfToken$.getValue(),
+    const headers = getToHeaders(
+      options,
+      createCSRFTokenFnWithService(this.cookieService),
     );
     const params = getToParams<Field>(options, () => ['uuid']);
     params.url = feedUrl;
@@ -70,8 +72,9 @@ export class FeedService {
   }
 
   query(options: QueryOptions<Field, SortField> = {}) {
-    const headers = queryToHeaders(options, () =>
-      this.authStateService.csrfToken$.getValue(),
+    const headers = queryToHeaders(
+      options,
+      createCSRFTokenFnWithService(this.cookieService),
     );
     const params = queryToParams('feeds');
     const body = queryToBody<Field, SortField>(options, () => ['uuid']);
@@ -90,8 +93,9 @@ export class FeedService {
   }
 
   lookupFeeds(url: string, options: CommonOptions = {}) {
-    const headers = commonToHeaders(options, () =>
-      this.authStateService.csrfToken$.getValue(),
+    const headers = commonToHeaders(
+      options,
+      createCSRFTokenFnWithService(this.cookieService),
     );
     const params: Record<string, string | string[]> = {
       url,
@@ -107,8 +111,9 @@ export class FeedService {
   }
 
   subscribe(url: string, customTitle?: string, options: CommonOptions = {}) {
-    const headers = commonToHeaders(options, () =>
-      this.authStateService.csrfToken$.getValue(),
+    const headers = commonToHeaders(
+      options,
+      createCSRFTokenFnWithService(this.cookieService),
     );
 
     return this.http.post<void>(
@@ -129,8 +134,9 @@ export class FeedService {
     customTitle: string | undefined,
     options: CommonOptions = {},
   ) {
-    const headers = commonToHeaders(options, () =>
-      this.authStateService.csrfToken$.getValue(),
+    const headers = commonToHeaders(
+      options,
+      createCSRFTokenFnWithService(this.cookieService),
     );
 
     return this.http.put<void>(
@@ -147,8 +153,9 @@ export class FeedService {
   }
 
   unsubscribe(url: string, options: CommonOptions = {}) {
-    const headers = commonToHeaders(options, () =>
-      this.authStateService.csrfToken$.getValue(),
+    const headers = commonToHeaders(
+      options,
+      createCSRFTokenFnWithService(this.cookieService),
     );
 
     return this.http.delete<void>(`${this.apiHost}/api/feed/subscribe`, {

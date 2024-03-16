@@ -86,7 +86,7 @@ export function toStableQueryBody<Field extends string>(
 
 export function toCreateStableQueryHeaders<SortField extends string>(
   options: CreateStableQueryOptions<SortField>,
-  csrfTokenFn: () => string | null,
+  csrfTokenFn: () => string,
 ) {
   const headers = commonToHeaders(options, csrfTokenFn);
   return headers;
@@ -94,7 +94,7 @@ export function toCreateStableQueryHeaders<SortField extends string>(
 
 export function toStableQueryHeaders<Field extends string>(
   options: StableQueryOptions<Field>,
-  csrfTokenFn: () => string | null,
+  csrfTokenFn: () => string,
 ) {
   const headers = commonToHeaders(options, csrfTokenFn);
   return headers;

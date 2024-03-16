@@ -1,54 +1,36 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { skip, takeUntil } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthStateService implements OnDestroy {
-  csrfToken$: BehaviorSubject<string | null>;
-
-  private _isLoggedIn$: BehaviorSubject<boolean>;
-  isLoggedIn$: Observable<boolean>;
-
-  private unsubscribe$ = new Subject<void>();
-
-  get isLoggedIn() {
-    return this._isLoggedIn$.getValue();
-  }
+export class AuthStateService {
+  isLoggedIn$: BehaviorSubject<boolean>;
 
   constructor() {
-    let csrfToken = localStorage.getItem('auth-state-service:csrfToken');
-    if (csrfToken === null) {
-      csrfToken = sessionStorage.getItem('auth-state-service:csrfToken');
-    }
-    this.csrfToken$ = new BehaviorSubject(csrfToken);
-
-    this._isLoggedIn$ = new BehaviorSubject(csrfToken !== null);
-    this.isLoggedIn$ = this._isLoggedIn$;
-
-    this.csrfToken$.pipe(skip(1), takeUntil(this.unsubscribe$)).subscribe({
-      next: st => {
-        this._isLoggedIn$.next(st !== null);
-      },
-    });
+    this.isLoggedIn$ = new BehaviorSubject(AuthStateService.getLoggedInFlag());
   }
 
-  static setCSRFTokenInSessionStorage(csrfToken: string) {
-    sessionStorage.setItem('auth-state-service:csrfToken', csrfToken);
+  private static getLoggedInFlag() {
+    return (
+      localStorage.getItem('auth-state-service:isLoggedIn') !== null ||
+      sessionStorage.getItem('auth-state-service:isLoggedIn') !== null
+    );
   }
 
-  static setCSRFTokenInLocalStorage(csrfToken: string) {
-    localStorage.setItem('auth-state-service:csrfToken', csrfToken);
+  static setLoggedInFlagInLocalStorage() {
+    localStorage.setItem('auth-state-service:isLoggedIn', 'true');
   }
 
-  static removeCSRFTokenFromStorage() {
-    localStorage.removeItem('auth-state-service:csrfToken');
-    sessionStorage.removeItem('auth-state-service:csrfToken');
+  static removeLoggedInFlagFromLocalStorage() {
+    localStorage.removeItem('auth-state-service:isLoggedIn');
   }
 
-  ngOnDestroy() {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
+  static setLoggedInFlagInSessionStorage() {
+    sessionStorage.setItem('auth-state-service:isLoggedIn', 'true');
+  }
+
+  static removeLoggedInFlagFromSessionStorage() {
+    sessionStorage.removeItem('auth-state-service:isLoggedIn');
   }
 }

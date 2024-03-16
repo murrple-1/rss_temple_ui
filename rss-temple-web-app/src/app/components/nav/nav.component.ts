@@ -210,23 +210,21 @@ export class NavComponent implements OnInit, OnDestroy {
     this.modalOpenService.isModalOpen$.next(false);
 
     if (result) {
-      const csrfToken = this.authStateService.csrfToken$.getValue();
-      if (csrfToken !== null) {
-        this.authService
-          .logout({ csrfToken })
-          .pipe(takeUntil(this.unsubscribe$))
-          .subscribe({
-            next: () => {
-              this.authStateService.csrfToken$.next(null);
-              AuthStateService.removeCSRFTokenFromStorage();
+      this.authService
+        .logout()
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe({
+          next: () => {
+            AuthStateService.removeLoggedInFlagFromSessionStorage();
+            AuthStateService.removeLoggedInFlagFromLocalStorage();
+            this.authStateService.isLoggedIn$.next(false);
 
-              this.router.navigate(['/login']);
-            },
-            error: error => {
-              console.error(error);
-            },
-          });
-      }
+            this.router.navigate(['/login']);
+          },
+          error: error => {
+            console.error(error);
+          },
+        });
     }
   }
 }

@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
 
-import { AuthStateService } from '@app/services/auth-state.service';
 import { ConfigService } from '@app/services/config.service';
 import {
   CommonOptions,
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
+import { createCSRFTokenFnWithService } from '@app/services/data/csrftoken.lib';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +17,7 @@ export class OPMLService {
 
   constructor(
     private http: HttpClient,
-    private authStateService: AuthStateService,
+    private cookieService: CookieService,
     configService: ConfigService,
   ) {
     const apiHost = configService.get<string>('apiHost');
@@ -28,8 +29,9 @@ export class OPMLService {
   }
 
   download(options: CommonOptions = {}) {
-    const headers = commonToHeaders(options, () =>
-      this.authStateService.csrfToken$.getValue(),
+    const headers = commonToHeaders(
+      options,
+      createCSRFTokenFnWithService(this.cookieService),
     );
 
     return this.http.get(`${this.apiHost}/api/opml`, {
@@ -40,8 +42,9 @@ export class OPMLService {
   }
 
   upload(opmlText: string | ArrayBuffer, options: CommonOptions = {}) {
-    const headers = commonToHeaders(options, () =>
-      this.authStateService.csrfToken$.getValue(),
+    const headers = commonToHeaders(
+      options,
+      createCSRFTokenFnWithService(this.cookieService),
     );
 
     return this.http.post(`${this.apiHost}/api/opml`, opmlText, {

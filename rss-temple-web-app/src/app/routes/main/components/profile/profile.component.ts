@@ -534,8 +534,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.deleteUserConfirm2Modal,
       );
       if (done) {
-        this.authStateService.csrfToken$.next(null);
-        AuthStateService.removeCSRFTokenFromStorage();
+        AuthStateService.removeLoggedInFlagFromSessionStorage();
+        AuthStateService.removeLoggedInFlagFromLocalStorage();
+        this.authStateService.isLoggedIn$.next(false);
 
         this.router.navigate(['/login']);
       }

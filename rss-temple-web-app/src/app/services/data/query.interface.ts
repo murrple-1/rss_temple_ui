@@ -68,7 +68,7 @@ export function toBody<Field extends string, SortField extends string>(
 
 export function toHeaders<Field extends string, SortField extends string>(
   options: QueryOptions<Field, SortField>,
-  csrfTokenFn: () => string | null,
+  csrfTokenFn: () => string,
 ) {
   const headers = commonToHeaders(options, csrfTokenFn);
   return headers;

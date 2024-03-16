@@ -1,15 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
 import { map } from 'rxjs/operators';
 import { z } from 'zod';
 
 import { ZClassifierLabel } from '@app/models/classifierlabel';
-import { AuthStateService } from '@app/services/auth-state.service';
 import { ConfigService } from '@app/services/config.service';
 import {
   CommonOptions,
   toHeaders as commonToHeaders,
 } from '@app/services/data/common.interface';
+import { createCSRFTokenFnWithService } from '@app/services/data/csrftoken.lib';
 
 const ZMultiClassifierLabels = z.object({
   classifierLabels: z.record(z.array(ZClassifierLabel)),
@@ -23,7 +24,7 @@ export class ClassifierLabelService {
 
   constructor(
     private http: HttpClient,
-    private authStateService: AuthStateService,
+    private cookieService: CookieService,
     configService: ConfigService,
   ) {
     const apiHost = configService.get<string>('apiHost');
@@ -35,8 +36,9 @@ export class ClassifierLabelService {
   }
 
   getAll(feedEntryUuid: string | undefined, options: CommonOptions = {}) {
-    const headers = commonToHeaders(options, () =>
-      this.authStateService.csrfToken$.getValue(),
+    const headers = commonToHeaders(
+      options,
+      createCSRFTokenFnWithService(this.cookieService),
     );
     const params: Record<string, string | string[]> = {};
     if (feedEntryUuid !== undefined) {
@@ -53,8 +55,9 @@ export class ClassifierLabelService {
   }
 
   getAllByEntry(feedEntryUuids: string[], options: CommonOptions = {}) {
-    const headers = commonToHeaders(options, () =>
-      this.authStateService.csrfToken$.getValue(),
+    const headers = commonToHeaders(
+      options,
+      createCSRFTokenFnWithService(this.cookieService),
     );
     const body = {
       feedEntryUuids,
@@ -71,8 +74,9 @@ export class ClassifierLabelService {
   }
 
   getMyVotes(feedEntryUuid: string, options: CommonOptions = {}) {
-    const headers = commonToHeaders(options, () =>
-      this.authStateService.csrfToken$.getValue(),
+    const headers = commonToHeaders(
+      options,
+      createCSRFTokenFnWithService(this.cookieService),
     );
 
     return this.http
@@ -91,8 +95,9 @@ export class ClassifierLabelService {
     classifierLabelUuids: string[],
     options: CommonOptions = {},
   ) {
-    const headers = commonToHeaders(options, () =>
-      this.authStateService.csrfToken$.getValue(),
+    const headers = commonToHeaders(
+      options,
+      createCSRFTokenFnWithService(this.cookieService),
     );
     const body = {
       classifierLabelUuids,
@@ -115,8 +120,9 @@ export class ClassifierLabelService {
     },
     options: CommonOptions = {},
   ) {
-    const headers = commonToHeaders(options, () =>
-      this.authStateService.csrfToken$.getValue(),
+    const headers = commonToHeaders(
+      options,
+      createCSRFTokenFnWithService(this.cookieService),
     );
 
     const params: Record<string, string | string[]> = {};

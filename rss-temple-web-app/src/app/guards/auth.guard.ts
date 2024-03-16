@@ -18,7 +18,7 @@ export class AuthGuard {
   ) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (this.authStateService.isLoggedIn) {
+    if (this.authStateService.isLoggedIn$.getValue()) {
       return true;
     }
 
@@ -44,7 +44,7 @@ export class NoAuthGuard {
   ) {}
 
   canActivate(route: ActivatedRouteSnapshot, _state: RouterStateSnapshot) {
-    if (!this.authStateService.isLoggedIn) {
+    if (!this.authStateService.isLoggedIn$.getValue()) {
       return true;
     }
 

@@ -32,6 +32,7 @@ import {
 import { IconShapeTuple } from '@cds/core/icon/interfaces/icon.interfaces';
 import '@cds/core/icon/register.js';
 import { ClarityModule } from '@clr/angular';
+import { CookieService } from 'ngx-cookie-service';
 
 import { AppSharedModule } from '@app/app-shared.module';
 import { AppComponent } from '@app/app.component';
@@ -157,6 +158,8 @@ export function configFactory(configService: ConfigService) {
       useFactory: clarityIconsFactory,
       multi: true,
     },
+
+    CookieService,
 
     {
       provide: APP_INITIALIZER,

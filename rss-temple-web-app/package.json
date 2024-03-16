@@ -33,6 +33,7 @@
     "file-saver": "^2.0.5",
     "langs": "^2.0.0",
     "language-icons": "^0.3.0",
+    "ngx-cookie-service": "^17.1.0",
     "ngx-sharebuttons": "^13.0.0",
     "rxjs": "~7.8.1",
     "tinyqueue": "^2.0.3",
