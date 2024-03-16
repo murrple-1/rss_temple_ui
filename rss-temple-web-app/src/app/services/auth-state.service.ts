@@ -15,7 +15,7 @@ export class AuthStateService {
   private getLoggedInFlag() {
     return (
       localStorage.getItem('auth-state-service:isLoggedIn') !== null ||
-      this.cookieService.check('auth-state-service:isLoggedIn')
+      this.cookieService.check('auth-state-service--isLoggedIn')
     );
   }
 
@@ -28,10 +28,19 @@ export class AuthStateService {
   }
 
   setLoggedInFlagInCookieStorage() {
-    this.cookieService.set('auth-state-service:isLoggedIn', 'true');
+    this.cookieService.set('auth-state-service--isLoggedIn', 'true', {
+      sameSite: 'None',
+      path: '/',
+    });
   }
 
   removeLoggedInFlagFromCookieStorage() {
-    this.cookieService.delete('auth-state-service:isLoggedIn');
+    this.cookieService.delete(
+      'auth-state-service--isLoggedIn',
+      '/',
+      undefined,
+      undefined,
+      'None',
+    );
   }
 }
