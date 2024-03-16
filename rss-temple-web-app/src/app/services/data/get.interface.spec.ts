@@ -26,16 +26,6 @@ describe('get.interface', () => {
     expect(headers).toEqual({
       'X-CSRFToken': csrfTokenFn(),
     });
-
-    headers = toHeaders<Field>(
-      {
-        csrfToken: 'another-token',
-      },
-      csrfTokenFn,
-    );
-    expect(headers).toEqual({
-      'X-CSRFToken': 'another-token',
-    });
   });
 
   it('should generate params', () => {
@@ -52,16 +42,6 @@ describe('get.interface', () => {
     );
     expect(params).toEqual({
       fields: ['prop1', 'prop2'],
-    });
-
-    params = toParams<Field>(
-      {
-        csrfToken: 'another-token',
-      },
-      fieldsFn,
-    );
-    expect(params).toEqual({
-      fields: ['prop1'],
     });
   });
 });

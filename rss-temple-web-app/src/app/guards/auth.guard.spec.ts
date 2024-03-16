@@ -28,13 +28,14 @@ function setup_auth() {
 
 describe('AuthGuard', () => {
   beforeEach(() => {
-    AuthStateService.removeCSRFTokenFromStorage();
+    AuthStateService.removeLoggedInFlagFromSessionStorage();
+    AuthStateService.removeLoggedInFlagFromLocalStorage();
   });
 
   it('can activate', () => {
     const { routerSpy, authStateService, authGuard } = setup_auth();
 
-    authStateService.csrfToken$.next('a-token');
+    authStateService.isLoggedIn$.next(true);
 
     const activatedRouteSnapshot = {} as ActivatedRouteSnapshot;
     const state = {
@@ -68,7 +69,7 @@ describe('AuthGuard', () => {
       url: 'http://example.com',
     } as RouterStateSnapshot;
 
-    expect(authGuard.canActivate(activatedRouteSnapshot, state)).toBe(
+    expect(authGuard.canActivate(activatedRouteSnapshot, state)).toEqual(
       fakeUrlTree,
     );
     expect(routerSpy.createUrlTree).toHaveBeenCalledTimes(1);
@@ -118,7 +119,8 @@ function setup_noauth() {
 
 describe('NoAuthGuard', () => {
   beforeEach(() => {
-    AuthStateService.removeCSRFTokenFromStorage();
+    AuthStateService.removeLoggedInFlagFromSessionStorage();
+    AuthStateService.removeLoggedInFlagFromLocalStorage();
   });
 
   it('can activate', () => {
@@ -149,7 +151,7 @@ describe('NoAuthGuard', () => {
     } as UrlTree;
     routerSpy.createUrlTree.and.returnValue(fakeUrlTree);
 
-    authStateService.csrfToken$.next('a-token');
+    authStateService.isLoggedIn$.next(true);
 
     const activatedRouteSnapshot = {
       url: [''] as unknown as UrlSegment[],
@@ -158,7 +160,7 @@ describe('NoAuthGuard', () => {
       url: 'http://example.com',
     } as RouterStateSnapshot;
 
-    expect(noAuthGuard.canActivate(activatedRouteSnapshot, state)).toBe(
+    expect(noAuthGuard.canActivate(activatedRouteSnapshot, state)).toEqual(
       fakeUrlTree,
     );
     expect(routerSpy.createUrlTree).toHaveBeenCalledTimes(1);
@@ -180,7 +182,7 @@ describe('NoAuthGuard', () => {
     } as UrlTree;
     routerSpy.createUrlTree.and.returnValue(fakeUrlTree);
 
-    authStateService.csrfToken$.next('a-token');
+    authStateService.isLoggedIn$.next(true);
 
     const activatedRouteSnapshot = {
       url: ['test'] as unknown as UrlSegment[],

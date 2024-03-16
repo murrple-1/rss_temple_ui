@@ -2,27 +2,27 @@ import { HttpClient } from '@angular/common/http';
 import { fakeAsync } from '@angular/core/testing';
 import { firstValueFrom, of } from 'rxjs';
 
-import { AuthStateService } from '@app/services/auth-state.service';
 import { MockConfigService } from '@app/test/config.service.mock';
+import { MockCookieService } from '@app/test/cookie.service.mock';
 
 import { UserMetaService } from './usermeta.service';
 
 function setup() {
   const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', ['get']);
-  const authStateService = new AuthStateService();
+  const mockCookieService = new MockCookieService({});
   const mockConfigService = new MockConfigService({
     apiHost: '',
   });
 
   const userMetaService = new UserMetaService(
     httpClientSpy,
-    authStateService,
+    mockCookieService,
     mockConfigService,
   );
 
   return {
     httpClientSpy,
-    authStateService,
+    mockCookieService,
     mockConfigService,
 
     userMetaService,

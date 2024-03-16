@@ -275,8 +275,7 @@ describe('LoginComponent', () => {
     const { mockAuthService } = await setup();
     mockAuthService.login.and.returnValue(
       of({
-        authToken: 'b75a903f398823a74e5f8e7ec231705bac3c6161',
-        csrfToken: 'csrfToken',
+        key: 'b75a903f398823a74e5f8e7ec231705bac3c6161',
       }),
     );
     const router = TestBed.inject(Router);
@@ -310,6 +309,7 @@ describe('LoginComponent', () => {
     expect(mockAuthService.login).toHaveBeenCalledWith(
       'test@test.com',
       'password',
+      false,
     );
   }));
 

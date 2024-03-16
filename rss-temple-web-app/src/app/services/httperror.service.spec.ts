@@ -14,8 +14,8 @@ function setup() {
   spyOn(console, 'error');
 
   const routerSpy = jasmine.createSpyObj<Router>('Router', ['navigate']);
-  const appAlertService = new AppAlertsService();
   const authStateService = new AuthStateService();
+  const appAlertService = new AppAlertsService();
 
   const httpErrorService = new HttpErrorService(
     routerSpy,
@@ -26,7 +26,6 @@ function setup() {
   return {
     routerSpy,
     appAlertService,
-    authStateService,
 
     httpErrorService,
   };
@@ -34,7 +33,8 @@ function setup() {
 
 describe('HttpErrorService', () => {
   beforeEach(() => {
-    AuthStateService.removeCSRFTokenFromStorage();
+    AuthStateService.removeLoggedInFlagFromSessionStorage();
+    AuthStateService.removeLoggedInFlagFromLocalStorage();
   });
 
   it('should handle HttpErrorResponses', async () => {

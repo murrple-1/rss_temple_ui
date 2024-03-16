@@ -4,8 +4,8 @@ import { firstValueFrom, of } from 'rxjs';
 import { z } from 'zod';
 
 import { ZUserCategory } from '@app/models/usercategory';
-import { AuthStateService } from '@app/services/auth-state.service';
 import { MockConfigService } from '@app/test/config.service.mock';
+import { MockCookieService } from '@app/test/cookie.service.mock';
 
 import { UserCategoryService } from './usercategory.service';
 
@@ -16,20 +16,20 @@ function setup() {
     'put',
     'delete',
   ]);
-  const authStateService = new AuthStateService();
+  const mockCookieService = new MockCookieService({});
   const mockConfigService = new MockConfigService({
     apiHost: '',
   });
 
   const userCategoryService = new UserCategoryService(
     httpClientSpy,
-    authStateService,
+    mockCookieService,
     mockConfigService,
   );
 
   return {
     httpClientSpy,
-    authStateService,
+    mockCookieService,
     mockConfigService,
 
     userCategoryService,
@@ -37,10 +37,6 @@ function setup() {
 }
 
 describe('UserCategoryService', () => {
-  beforeEach(() => {
-    AuthStateService.removeCSRFTokenFromStorage();
-  });
-
   it('should get', fakeAsync(async () => {
     const { httpClientSpy, userCategoryService } = setup();
 

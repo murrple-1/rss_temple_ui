@@ -5,8 +5,8 @@ import { firstValueFrom, of } from 'rxjs';
 import { z } from 'zod';
 
 import { ZFeed } from '@app/models/feed';
-import { AuthStateService } from '@app/services/auth-state.service';
 import { MockConfigService } from '@app/test/config.service.mock';
+import { MockCookieService } from '@app/test/cookie.service.mock';
 
 import { FeedService } from './feed.service';
 
@@ -16,20 +16,20 @@ function setup() {
     'post',
     'delete',
   ]);
-  const authStateService = new AuthStateService();
+  const mockCookieService = new MockCookieService({});
   const mockConfigService = new MockConfigService({
     apiHost: '',
   });
 
   const feedService = new FeedService(
     httpClientSpy,
-    authStateService,
+    mockCookieService,
     mockConfigService,
   );
 
   return {
     httpClientSpy,
-    authStateService,
+    mockCookieService,
     mockConfigService,
 
     feedService,
@@ -37,10 +37,6 @@ function setup() {
 }
 
 describe('FeedService', () => {
-  beforeEach(() => {
-    AuthStateService.removeCSRFTokenFromStorage();
-  });
-
   it('should get', fakeAsync(async () => {
     const { httpClientSpy, feedService } = setup();
 

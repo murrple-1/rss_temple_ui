@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { fakeAsync } from '@angular/core/testing';
 
-import { AuthStateService } from '@app/services/auth-state.service';
 import { MockConfigService } from '@app/test/config.service.mock';
+import { MockCookieService } from '@app/test/cookie.service.mock';
 
 import { SocialService } from './social.service';
 
@@ -12,20 +12,20 @@ function setup() {
     'delete',
   ]);
 
-  const authStateService = new AuthStateService();
+  const mockCookieService = new MockCookieService({});
   const mockConfigService = new MockConfigService({
     apiHost: '',
   });
 
   const socialService = new SocialService(
     httpClientSpy,
-    authStateService,
+    mockCookieService,
     mockConfigService,
   );
 
   return {
     httpClientSpy,
-    authStateService,
+    mockCookieService,
     mockConfigService,
 
     socialService,
@@ -33,10 +33,6 @@ function setup() {
 }
 
 describe('SocialService', () => {
-  beforeEach(() => {
-    AuthStateService.removeCSRFTokenFromStorage();
-  });
-
   it('should create "google" login', fakeAsync(async () => {
     const { httpClientSpy, socialService } = setup();
     // TODO implement

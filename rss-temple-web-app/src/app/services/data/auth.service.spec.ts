@@ -3,8 +3,8 @@ import { fakeAsync } from '@angular/core/testing';
 import { firstValueFrom, of } from 'rxjs';
 
 import { ZUser } from '@app/models/user';
-import { AuthStateService } from '@app/services/auth-state.service';
 import { MockConfigService } from '@app/test/config.service.mock';
+import { MockCookieService } from '@app/test/cookie.service.mock';
 
 import { AuthService } from './auth.service';
 
@@ -14,20 +14,20 @@ function setup() {
     'post',
     'put',
   ]);
-  const authStateService = new AuthStateService();
+  const mockCookieService = new MockCookieService({});
   const mockConfigService = new MockConfigService({
     apiHost: '',
   });
 
   const authService = new AuthService(
     httpClientSpy,
-    authStateService,
+    mockCookieService,
     mockConfigService,
   );
 
   return {
     httpClientSpy,
-    authStateService,
+    mockCookieService,
     mockConfigService,
 
     authService,
@@ -35,27 +35,16 @@ function setup() {
 }
 
 describe('AuthService', () => {
-  beforeEach(() => {
-    AuthStateService.removeCSRFTokenFromStorage();
-  });
-
   it('should login', fakeAsync(async () => {
     const { httpClientSpy, authService } = setup();
     httpClientSpy.post.and.returnValue(
       of({
-        headers: {
-          get: function (headerName: string) {
-            return 'a-token';
-          },
-        },
-        body: {
-          key: '',
-        },
+        key: '',
       }),
     );
 
     const response = await firstValueFrom(
-      authService.login('test@test.com', 'password'),
+      authService.login('test@test.com', 'password', false),
     );
     expect(httpClientSpy.post).toHaveBeenCalledTimes(1);
     expect(httpClientSpy.post).toHaveBeenCalledWith(
@@ -68,22 +57,19 @@ describe('AuthService', () => {
     );
     expect(response).toEqual(
       jasmine.objectContaining({
-        authToken: jasmine.any(String),
-        csrfToken: jasmine.any(String),
+        key: jasmine.any(String),
       }),
     );
   }));
 
   it('should logout', fakeAsync(async () => {
-    const { httpClientSpy, authService } = setup();
-    httpClientSpy.post.and.returnValue(of<void>());
+    const { httpClientSpy, mockCookieService, authService } = setup();
+    httpClientSpy.post.and.returnValue(of());
+    mockCookieService._cookieConfig = {
+      'csrftoken': 'a-token',
+    };
 
-    await firstValueFrom(
-      authService.logout({
-        csrfToken: 'csrfToken',
-      }),
-      { defaultValue: undefined },
-    );
+    await firstValueFrom(authService.logout(), { defaultValue: undefined });
     expect(httpClientSpy.post).toHaveBeenCalledTimes(1);
     expect(httpClientSpy.post).toHaveBeenCalledWith(
       jasmine.stringMatching(/\/api\/auth\/logout$/),
