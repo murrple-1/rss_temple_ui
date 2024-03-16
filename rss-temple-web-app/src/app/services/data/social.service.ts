@@ -71,10 +71,16 @@ export class SocialService {
 
   googleLogin(token: string, stayLoggedIn: boolean) {
     return this.http
-      .post<unknown>(`${this.apiHost}/api/social/google`, {
-        access_token: token,
-        stayLoggedIn,
-      })
+      .post<unknown>(
+        `${this.apiHost}/api/social/google`,
+        {
+          access_token: token,
+          stayLoggedIn,
+        },
+        {
+          withCredentials: true,
+        },
+      )
       .pipe(map(retObj => ZSocialToken.parse(retObj)));
   }
 
@@ -119,10 +125,16 @@ export class SocialService {
 
   facebookLogin(token: string, stayLoggedIn: boolean) {
     return this.http
-      .post<unknown>(`${this.apiHost}/api/social/facebook`, {
-        access_token: token,
-        stayLoggedIn,
-      })
+      .post<unknown>(
+        `${this.apiHost}/api/social/facebook`,
+        {
+          access_token: token,
+          stayLoggedIn,
+        },
+        {
+          withCredentials: true,
+        },
+      )
       .pipe(map(retObj => ZSocialToken.parse(retObj)));
   }
 
