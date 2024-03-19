@@ -19,6 +19,7 @@ export const ZFeed = z
     userCategoryUuids: z.array(z.string().uuid()),
     unreadCount: z.number(),
     readCount: z.number(),
+    isDormant: z.boolean(),
   })
   .partial();
 
