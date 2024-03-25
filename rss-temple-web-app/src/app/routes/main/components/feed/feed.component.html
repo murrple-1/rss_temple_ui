@@ -132,7 +132,9 @@
             </h2>
           </ng-template>
           <ng-template #hasNoCustomTitle>
-            <h2>{{ feed.title }}</h2>
+            <h2>
+              {{ feed.title }}
+            </h2>
           </ng-template>
         </div>
       </div>
@@ -155,6 +157,17 @@
               </ng-container>
             </ng-container>
           </span>
+        </div>
+      </div>
+      <div *ngIf="!feed.isDead" class="clr-row">
+        <div class="clr-col-12">
+          <cds-icon
+            class="app--subheader-icon"
+            shape="exclamation-circle"
+            size="md"
+            status="warning"
+          ></cds-icon
+          ><span>No new content in a long time</span>
         </div>
       </div>
     </ng-container>

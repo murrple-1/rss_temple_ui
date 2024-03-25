@@ -25,7 +25,13 @@
             [routerLink]="['/main/feed/', feed.feedUrl]"
             routerLinkActive="active"
           >
-            {{ feed.calculatedTitle }}
+            <cds-icon
+              *ngIf="!feed.isDead"
+              shape="exclamation-circle"
+              size="md"
+              status="warning"
+            ></cds-icon
+            >{{ feed.calculatedTitle }}
             <ng-container *appVar="feedCounts[feed.uuid] as feedCount">
               <ng-container *ngIf="feedCount !== undefined && feedCount > 0">
                 &nbsp;({{ feedCount | number }})

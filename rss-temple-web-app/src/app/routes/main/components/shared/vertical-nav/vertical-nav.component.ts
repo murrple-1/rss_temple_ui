@@ -40,7 +40,7 @@ type FeedImpl = Required<
   Pick<Feed, 'uuid' | 'calculatedTitle' | 'feedUrl' | 'homeUrl'>
 >;
 type FeedImpl2 = Required<
-  Pick<Feed, 'uuid' | 'title' | 'isSubscribed' | 'homeUrl'>
+  Pick<Feed, 'uuid' | 'title' | 'isSubscribed' | 'homeUrl' | 'isDead'>
 >;
 
 interface FeedDescriptor {
@@ -326,7 +326,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
   private doFeedAdd(feedUrl: string, customTitle: string | undefined) {
     this.feedService
       .get(feedUrl, {
-        fields: ['uuid', 'title', 'isSubscribed', 'homeUrl'],
+        fields: ['uuid', 'title', 'isSubscribed', 'homeUrl', 'isDead'],
       })
       .pipe(
         takeUntil(this.unsubscribe$),

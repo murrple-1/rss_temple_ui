@@ -50,6 +50,7 @@ type FeedImpl = BaseFeedImpl &
       | 'isSubscribed'
       | 'userCategoryUuids'
       | 'calculatedTitle'
+      | 'isDead'
     >
   >;
 type UserCategoryImpl = Required<Pick<UserCategory, 'text'>>;
@@ -204,6 +205,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
           'isSubscribed',
           'userCategoryUuids',
           'calculatedTitle',
+          'isDead',
         ],
       })
       .pipe(
