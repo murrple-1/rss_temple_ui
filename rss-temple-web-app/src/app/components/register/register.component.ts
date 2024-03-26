@@ -53,7 +53,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   registerForm?: NgForm;
 
   @ViewChild(InfoModalComponent, { static: true })
-  infoModalComponent?: InfoModalComponent;
+  infoModal?: InfoModalComponent;
 
   private readonly unsubscribe$ = new Subject<void>();
 
@@ -170,7 +170,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   private async handleRegisterSuccess() {
-    const infoModalComponent = this.infoModalComponent;
+    const infoModalComponent = this.infoModal;
     if (infoModalComponent === undefined) {
       throw new Error('infoModalComponent undefined');
     }

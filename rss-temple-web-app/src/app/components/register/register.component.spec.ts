@@ -401,9 +401,7 @@ describe('RegisterComponent', () => {
     componentFixture.detectChanges();
     await componentFixture.whenStable();
 
-    expect(
-      componentFixture.componentInstance.infoModalComponent?.open,
-    ).toBeTrue();
+    expect(componentFixture.componentInstance.infoModal?.open).toBeTrue();
   }));
 
   it('should handle registration errors: cannot connect', waitForAsync(async () => {
