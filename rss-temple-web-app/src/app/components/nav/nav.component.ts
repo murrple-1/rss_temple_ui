@@ -110,10 +110,10 @@ export class NavComponent implements OnInit, OnDestroy {
   isSearchVisible = false;
   searchText = '';
 
-  @ViewChild('logoutConfirmModal', { static: true })
+  @ViewChild(ConfirmModalComponent, { static: true })
   private logoutConfirmModal?: ConfirmModalComponent;
 
-  @ViewChild('searchModal', { static: true })
+  @ViewChild(SearchModalComponent, { static: true })
   private searchModal?: SearchModalComponent;
 
   private unsubscribe$ = new Subject<void>();
