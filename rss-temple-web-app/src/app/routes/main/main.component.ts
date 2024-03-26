@@ -14,7 +14,7 @@ import { AuthService } from '@app/services/data';
   styleUrls: ['./main.component.scss'],
 })
 export class MainComponent implements OnInit, OnDestroy {
-  @ViewChild(OnboardingModalComponent)
+  @ViewChild(OnboardingModalComponent, { static: true })
   private onboardingModal?: OnboardingModalComponent;
 
   private readonly unsubscribe$ = new Subject<void>();

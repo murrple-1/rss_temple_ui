@@ -65,7 +65,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('loginForm', { static: true })
   loginForm?: NgForm;
 
-  @ViewChild(RequestPasswordResetModalComponent)
+  @ViewChild(RequestPasswordResetModalComponent, { static: true })
   _requestPasswordResetModal?: RequestPasswordResetModalComponent;
 
   private readonly unsubscribe$ = new Subject<void>();
