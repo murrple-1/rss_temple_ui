@@ -446,7 +446,7 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
 
   @HostListener('document:keypress', ['$event'])
   handleKeyPress(event: KeyboardEvent) {
-    if (this.modalOpenService.isModalOpen$.getValue()) {
+    if (this.modalOpenService.isModalOpen) {
       return;
     }
 

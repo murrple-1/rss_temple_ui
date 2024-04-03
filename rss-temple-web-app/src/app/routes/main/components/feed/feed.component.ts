@@ -340,31 +340,35 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
   }
 
   async onEditUserCategories() {
-    if (this.userCategoriesModal === undefined) {
+    const userCategoriesModal = this.userCategoriesModal;
+    if (userCategoriesModal === undefined) {
       throw new Error();
     }
 
-    if (this.feed === null) {
+    const feed = this.feed;
+    if (feed === null) {
       throw new Error();
     }
 
-    this.modalOpenService.isModalOpen$.next(true);
-    const returnData = await openUserCategoriesModal(
-      this.feed.uuid,
-      new Set<string>(
-        this.userCategories.map(userCategory => userCategory.text),
-      ),
-      this.userCategoriesModal,
-    );
-    this.modalOpenService.isModalOpen$.next(false);
+    this.modalOpenService.openModal(async () => {
+      const returnData = await openUserCategoriesModal(
+        feed.uuid,
+        new Set<string>(
+          this.userCategories.map(userCategory => userCategory.text),
+        ),
+        userCategoriesModal,
+      );
 
-    if (returnData !== undefined) {
-      this.userCategories = returnData.categories.map<UserCategoryImpl>(c => ({
-        text: c,
-      }));
+      if (returnData !== undefined) {
+        this.userCategories = returnData.categories.map<UserCategoryImpl>(
+          c => ({
+            text: c,
+          }),
+        );
 
-      this.userCategoryObservableService.userCategoriesChanged$.next();
-    }
+        this.userCategoryObservableService.userCategoriesChanged$.next();
+      }
+    });
   }
 
   onFeedRename() {

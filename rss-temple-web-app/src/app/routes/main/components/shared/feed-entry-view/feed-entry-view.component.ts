@@ -148,21 +148,19 @@ export class FeedEntryViewComponent implements OnDestroy {
   }
 
   async share() {
-    if (this.shareModalComponent === undefined) {
+    const shareModalComponent = this.shareModalComponent;
+    if (shareModalComponent === undefined) {
       throw new Error('shareModalComponent undefined');
     }
 
-    if (this.feedEntry === undefined) {
+    const feedEntry = this.feedEntry;
+    if (feedEntry === undefined) {
       return;
     }
 
-    this.modalOpenService.isModalOpen$.next(true);
-    await openShareModal(
-      this.feedEntry.url,
-      this.feedEntry.title,
-      this.shareModalComponent,
-    );
-    this.modalOpenService.isModalOpen$.next(false);
+    this.modalOpenService.openModal(async () => {
+      await openShareModal(feedEntry.url, feedEntry.title, shareModalComponent);
+    });
   }
 
   voteYes() {
@@ -242,14 +240,14 @@ export class FeedEntryViewComponent implements OnDestroy {
               votedLabelIndexes.add(index);
             }
           }
-          this.modalOpenService.isModalOpen$.next(true);
-          await openLabelVoteModal(
-            feedEntry.uuid,
-            classifierLabels,
-            votedLabelIndexes,
-            labelVoteModalComponent,
-          );
-          this.modalOpenService.isModalOpen$.next(false);
+          this.modalOpenService.openModal(async () => {
+            await openLabelVoteModal(
+              feedEntry.uuid,
+              classifierLabels,
+              votedLabelIndexes,
+              labelVoteModalComponent,
+            );
+          });
         },
         error: (error: unknown) => {
           this.httpErrorService.handleError(error);

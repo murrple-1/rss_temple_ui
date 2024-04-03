@@ -430,11 +430,12 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   async onForgottenPassword() {
-    if (this._requestPasswordResetModal === undefined) {
+    const requestPasswordResetModal = this._requestPasswordResetModal;
+    if (requestPasswordResetModal === undefined) {
       throw new Error();
     }
-    this.modalOpenService.isModalOpen$.next(true);
-    await openRequestPasswordResetModal(this._requestPasswordResetModal);
-    this.modalOpenService.isModalOpen$.next(false);
+    this.modalOpenService.openModal(async () => {
+      await openRequestPasswordResetModal(requestPasswordResetModal);
+    });
   }
 }

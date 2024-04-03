@@ -176,15 +176,15 @@ export class RegisterComponent implements OnInit, OnDestroy {
       throw new Error('infoModalComponent undefined');
     }
 
-    this.modalOpenService.isModalOpen$.next(true);
-    await openInfoModal(
-      'Registration Started',
-      'You will receive an email at the address you specified with a confirmation link. You will be unable to login until the link has been followed.',
-      'info',
-      infoModalComponent,
-    );
-    this.modalOpenService.isModalOpen$.next(false);
-    this.router.navigate(['/login']);
+    this.modalOpenService.openModal(async () => {
+      await openInfoModal(
+        'Registration Started',
+        'You will receive an email at the address you specified with a confirmation link. You will be unable to login until the link has been followed.',
+        'info',
+        infoModalComponent,
+      );
+      this.router.navigate(['/login']);
+    });
   }
 
   private handleRegisterError(error: unknown) {

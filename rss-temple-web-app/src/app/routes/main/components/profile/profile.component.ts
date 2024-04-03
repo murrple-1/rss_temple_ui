@@ -499,13 +499,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   async editUserCategories() {
-    if (this.globalUserCategoriesModal === undefined) {
+    const globalUserCategoriesModal = this.globalUserCategoriesModal;
+    if (globalUserCategoriesModal === undefined) {
       throw new Error();
     }
 
-    this.modalOpenService.isModalOpen$.next(true);
-    await openGlobalUserCategoriesModal(this.globalUserCategoriesModal);
-    this.modalOpenService.isModalOpen$.next(false);
+    this.modalOpenService.openModal(async () => {
+      await openGlobalUserCategoriesModal(globalUserCategoriesModal);
+    });
   }
 
   resetOnboarding() {
@@ -518,32 +519,32 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   async deleteUser() {
-    if (this.deleteUserConfirm1Modal === undefined) {
+    const deleteUserConfirm1Modal = this.deleteUserConfirm1Modal;
+    if (deleteUserConfirm1Modal === undefined) {
       throw new Error('deleteUserConfirm1Modal undefined');
     }
 
-    if (this.deleteUserConfirm2Modal === undefined) {
+    const deleteUserConfirm2Modal = this.deleteUserConfirm2Modal;
+    if (deleteUserConfirm2Modal === undefined) {
       throw new Error('deleteUserConfirm2Modal undefined');
     }
 
-    this.modalOpenService.isModalOpen$.next(true);
-    const agreed = await openDeleteUserConfirm1Modal(
-      this.deleteUserConfirm1Modal,
-    );
-    if (agreed) {
-      const done = await openDeleteUserConfirm2Modal(
-        this.deleteUserConfirm2Modal,
-      );
-      this.modalOpenService.isModalOpen$.next(false);
-      if (done) {
-        this.authStateService.removeLoggedInFlagFromCookieStorage();
-        this.authStateService.removeLoggedInFlagFromLocalStorage();
-        this.authStateService.isLoggedIn$.next(false);
+    this.modalOpenService.openModal(async () => {
+      const agreed = await openDeleteUserConfirm1Modal(deleteUserConfirm1Modal);
+      if (agreed) {
+        this.modalOpenService.openModal(async () => {
+          const done = await openDeleteUserConfirm2Modal(
+            deleteUserConfirm2Modal,
+          );
+          if (done) {
+            this.authStateService.removeLoggedInFlagFromCookieStorage();
+            this.authStateService.removeLoggedInFlagFromLocalStorage();
+            this.authStateService.isLoggedIn$.next(false);
 
-        this.router.navigate(['/login']);
+            this.router.navigate(['/login']);
+          }
+        });
       }
-    } else {
-      this.modalOpenService.isModalOpen$.next(false);
-    }
+    });
   }
 }

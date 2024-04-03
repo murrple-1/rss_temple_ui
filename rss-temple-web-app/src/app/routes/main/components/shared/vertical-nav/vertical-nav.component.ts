@@ -268,7 +268,8 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
   }
 
   async addFeed() {
-    if (this.subscribeModal === undefined) {
+    const subscribeModal = this.subscribeModal;
+    if (subscribeModal === undefined) {
       throw new Error();
     }
 
@@ -282,49 +283,50 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
       throw new Error();
     }
 
-    this.modalOpenService.isModalOpen$.next(true);
-    const result = await openSubscribeModal(this.subscribeModal);
-    this.modalOpenService.isModalOpen$.next(false);
+    this.modalOpenService.openModal(async () => {
+      const result = await openSubscribeModal(subscribeModal);
 
-    if (result === undefined) {
-      return;
-    }
+      if (result === undefined) {
+        return;
+      }
 
-    this.feedService
-      .lookupFeeds(result.feedUrl)
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe({
-        next: async exposedFeeds => {
-          if (exposedFeeds.length < 1) {
-            this.modalOpenService.isModalOpen$.next(true);
-            await openInfoModal(
-              'No feed detected',
-              'Could not find feed exposed in supplied URL',
-              'danger',
-              infoModal,
-            );
-            this.modalOpenService.isModalOpen$.next(false);
-          } else if (exposedFeeds.length == 1) {
-            this.doFeedAdd(result.feedUrl, result.customTitle);
-          } else {
-            this.modalOpenService.isModalOpen$.next(true);
-            const result_ = await openExposedFeedsModal(
-              exposedFeeds.map(ef => ({
-                url: ef.href,
-                title: ef.title,
-              })),
-              exposedFeedsModal,
-            );
-            this.modalOpenService.isModalOpen$.next(false);
-            if (result_ !== null) {
-              this.doFeedAdd(result_, result.customTitle);
+      this.feedService
+        .lookupFeeds(result.feedUrl)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe({
+          next: async exposedFeeds => {
+            if (exposedFeeds.length < 1) {
+              this.modalOpenService.openModal(async () => {
+                await openInfoModal(
+                  'No feed detected',
+                  'Could not find feed exposed in supplied URL',
+                  'danger',
+                  infoModal,
+                );
+              });
+            } else if (exposedFeeds.length == 1) {
+              this.doFeedAdd(result.feedUrl, result.customTitle);
+            } else {
+              this.modalOpenService.openModal(async () => {
+                const result_ = await openExposedFeedsModal(
+                  exposedFeeds.map(ef => ({
+                    url: ef.href,
+                    title: ef.title,
+                  })),
+                  exposedFeedsModal,
+                );
+
+                if (result_ !== null) {
+                  this.doFeedAdd(result_, result.customTitle);
+                }
+              });
             }
-          }
-        },
-        error: error => {
-          this.httpErrorService.handleError(error);
-        },
-      });
+          },
+          error: error => {
+            this.httpErrorService.handleError(error);
+          },
+        });
+    });
   }
 
   private doFeedAdd(feedUrl: string, customTitle: string | undefined) {
@@ -408,69 +410,70 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
   }
 
   async uploadOPML() {
-    if (this.opmlModal === undefined) {
+    const opmlModal = this.opmlModal;
+    if (opmlModal === undefined) {
       throw new Error();
     }
 
-    this.modalOpenService.isModalOpen$.next(true);
-    await openOPMLModal(this.opmlModal);
-    this.modalOpenService.isModalOpen$.next(false);
+    this.modalOpenService.openModal(async () => {
+      await openOPMLModal(opmlModal);
 
-    this.feedObservableService.feedsChanged.next();
+      this.feedObservableService.feedsChanged.next();
 
-    forkJoin([
-      this.userCategoryService
-        .queryAll({
-          fields: ['text', 'feedUuids'],
-          sort: new Sort([['text', 'ASC']]),
-          returnTotalCount: false,
-        })
-        .pipe(
-          map(response => {
-            if (response.objects !== undefined) {
-              return response.objects as UserCategoryImpl[];
-            }
-            throw new Error('malformed response');
-          }),
-        ),
-      this.feedService
-        .queryAll({
-          fields: ['uuid', 'calculatedTitle', 'feedUrl', 'homeUrl'],
-          search: 'isSubscribed:"true"',
-          sort: new Sort([['calculatedTitle', 'ASC']]),
-          returnTotalCount: false,
-        })
-        .pipe(
-          map(response => {
-            if (response.objects !== undefined) {
-              return response.objects as FeedImpl[];
-            }
-            throw new Error('malformed response');
-          }),
-          map(feeds => {
-            for (const feed of feeds) {
-              let calculatedTitle = feed.calculatedTitle.trim();
-              if (calculatedTitle.length < 1) {
-                calculatedTitle = '[No Title]';
+      forkJoin([
+        this.userCategoryService
+          .queryAll({
+            fields: ['text', 'feedUuids'],
+            sort: new Sort([['text', 'ASC']]),
+            returnTotalCount: false,
+          })
+          .pipe(
+            map(response => {
+              if (response.objects !== undefined) {
+                return response.objects as UserCategoryImpl[];
               }
-              feed.calculatedTitle = calculatedTitle;
-            }
-            return feeds;
-          }),
-        ),
-    ])
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe({
-        next: ([userCategories, feeds]) => {
-          const categorizedFeeds = VerticalNavComponent.buildCategorizedFeeds(
-            this.router.url,
-            userCategories,
-            feeds,
-          );
-          this.zone.run(() => {
-            this.categorizedFeeds = categorizedFeeds;
-          });
-        },
-      });
+              throw new Error('malformed response');
+            }),
+          ),
+        this.feedService
+          .queryAll({
+            fields: ['uuid', 'calculatedTitle', 'feedUrl', 'homeUrl'],
+            search: 'isSubscribed:"true"',
+            sort: new Sort([['calculatedTitle', 'ASC']]),
+            returnTotalCount: false,
+          })
+          .pipe(
+            map(response => {
+              if (response.objects !== undefined) {
+                return response.objects as FeedImpl[];
+              }
+              throw new Error('malformed response');
+            }),
+            map(feeds => {
+              for (const feed of feeds) {
+                let calculatedTitle = feed.calculatedTitle.trim();
+                if (calculatedTitle.length < 1) {
+                  calculatedTitle = '[No Title]';
+                }
+                feed.calculatedTitle = calculatedTitle;
+              }
+              return feeds;
+            }),
+          ),
+      ])
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe({
+          next: ([userCategories, feeds]) => {
+            const categorizedFeeds = VerticalNavComponent.buildCategorizedFeeds(
+              this.router.url,
+              userCategories,
+              feeds,
+            );
+            this.zone.run(() => {
+              this.categorizedFeeds = categorizedFeeds;
+            });
+          },
+        });
+    });
   }
 }

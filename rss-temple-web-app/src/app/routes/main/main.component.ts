@@ -41,18 +41,19 @@ export class MainComponent implements OnInit, OnDestroy {
 
                   if (attributes.onboarded !== true) {
                     this.zone.run(async () => {
-                      if (this.onboardingModal !== undefined) {
-                        this.modalOpenService.isModalOpen$.next(true);
-                        await openOnboardingModal(this.onboardingModal);
-                        this.modalOpenService.isModalOpen$.next(false);
-
+                      const onboardingModal = this.onboardingModal;
+                      if (onboardingModal === undefined) {
+                        throw new Error();
+                      }
+                      this.modalOpenService.openModal(async () => {
+                        await openOnboardingModal(onboardingModal);
                         this.authService
                           .updateUserAttributes({
                             onboarded: true,
                           })
                           .pipe(takeUntil(this.unsubscribe$))
                           .subscribe();
-                      }
+                      });
                     });
                   }
                 },

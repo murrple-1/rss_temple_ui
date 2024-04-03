@@ -183,50 +183,52 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   private async showSearchModal() {
-    if (this.searchModal === undefined) {
+    const searchModal = this.searchModal;
+    if (searchModal === undefined) {
       throw new Error('searchModal undefined');
     }
 
-    this.modalOpenService.isModalOpen$.next(true);
-    let searchText = await openSearchModal(this.searchModal);
-    this.modalOpenService.isModalOpen$.next(false);
-    if (searchText !== null) {
-      searchText = searchText.trim();
-      if (searchText.length > 0) {
-        this.router.navigate(['/main/search', { searchText }]);
+    this.modalOpenService.openModal(async () => {
+      let searchText = await openSearchModal(searchModal);
+      if (searchText !== null) {
+        searchText = searchText.trim();
+        if (searchText.length > 0) {
+          this.router.navigate(['/main/search', { searchText }]);
+        }
       }
-    }
+    });
   }
 
   private async logout() {
-    if (this.logoutConfirmModal === undefined) {
+    const logoutConfirmModal = this.logoutConfirmModal;
+    if (logoutConfirmModal === undefined) {
       throw new Error();
     }
 
-    this.modalOpenService.isModalOpen$.next(true);
-    const result = await openConfirmModal(
-      'Logout?',
-      'Are you sure you want to log-out?',
-      this.logoutConfirmModal,
-    );
-    this.modalOpenService.isModalOpen$.next(false);
+    this.modalOpenService.openModal(async () => {
+      const result = await openConfirmModal(
+        'Logout?',
+        'Are you sure you want to log-out?',
+        logoutConfirmModal,
+      );
 
-    if (result) {
-      this.authService
-        .logout()
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe({
-          next: () => {
-            this.authStateService.removeLoggedInFlagFromCookieStorage();
-            this.authStateService.removeLoggedInFlagFromLocalStorage();
-            this.authStateService.isLoggedIn$.next(false);
+      if (result) {
+        this.authService
+          .logout()
+          .pipe(takeUntil(this.unsubscribe$))
+          .subscribe({
+            next: () => {
+              this.authStateService.removeLoggedInFlagFromCookieStorage();
+              this.authStateService.removeLoggedInFlagFromLocalStorage();
+              this.authStateService.isLoggedIn$.next(false);
 
-            this.router.navigate(['/login']);
-          },
-          error: error => {
-            console.error(error);
-          },
-        });
-    }
+              this.router.navigate(['/login']);
+            },
+            error: error => {
+              console.error(error);
+            },
+          });
+      }
+    });
   }
 }
