@@ -526,6 +526,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       throw new Error('deleteUserConfirm2Modal undefined');
     }
 
+    this.modalOpenService.isModalOpen$.next(true);
     const agreed = await openDeleteUserConfirm1Modal(
       this.deleteUserConfirm1Modal,
     );
@@ -533,6 +534,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       const done = await openDeleteUserConfirm2Modal(
         this.deleteUserConfirm2Modal,
       );
+      this.modalOpenService.isModalOpen$.next(false);
       if (done) {
         this.authStateService.removeLoggedInFlagFromCookieStorage();
         this.authStateService.removeLoggedInFlagFromLocalStorage();
@@ -540,6 +542,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
         this.router.navigate(['/login']);
       }
+    } else {
+      this.modalOpenService.isModalOpen$.next(false);
     }
   }
 }

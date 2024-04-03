@@ -187,7 +187,9 @@ export class NavComponent implements OnInit, OnDestroy {
       throw new Error('searchModal undefined');
     }
 
+    this.modalOpenService.isModalOpen$.next(true);
     let searchText = await openSearchModal(this.searchModal);
+    this.modalOpenService.isModalOpen$.next(false);
     if (searchText !== null) {
       searchText = searchText.trim();
       if (searchText.length > 0) {

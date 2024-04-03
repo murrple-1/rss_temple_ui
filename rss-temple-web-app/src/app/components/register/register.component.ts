@@ -23,7 +23,7 @@ import {
   SpecialCharacters as PasswordSpecialCharacters,
   passwordRequirementsTextHtml,
 } from '@app/libs/password.lib';
-import { AppAlertsService } from '@app/services';
+import { AppAlertsService, ModalOpenService } from '@app/services';
 import { CaptchaService, RegistrationService } from '@app/services/data';
 
 const Z422Error = z.record(z.unknown());
@@ -64,6 +64,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     private registrationService: RegistrationService,
     private captchaService: CaptchaService,
     private appAlertsService: AppAlertsService,
+    private modalOpenService: ModalOpenService,
   ) {}
 
   ngOnInit() {
@@ -175,12 +176,14 @@ export class RegisterComponent implements OnInit, OnDestroy {
       throw new Error('infoModalComponent undefined');
     }
 
+    this.modalOpenService.isModalOpen$.next(true);
     await openInfoModal(
       'Registration Started',
       'You will receive an email at the address you specified with a confirmation link. You will be unable to login until the link has been followed.',
       'info',
       infoModalComponent,
     );
+    this.modalOpenService.isModalOpen$.next(false);
     this.router.navigate(['/login']);
   }
 

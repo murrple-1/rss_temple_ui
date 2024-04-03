@@ -296,15 +296,18 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
       .subscribe({
         next: async exposedFeeds => {
           if (exposedFeeds.length < 1) {
+            this.modalOpenService.isModalOpen$.next(true);
             await openInfoModal(
               'No feed detected',
               'Could not find feed exposed in supplied URL',
               'danger',
               infoModal,
             );
+            this.modalOpenService.isModalOpen$.next(false);
           } else if (exposedFeeds.length == 1) {
             this.doFeedAdd(result.feedUrl, result.customTitle);
           } else {
+            this.modalOpenService.isModalOpen$.next(true);
             const result_ = await openExposedFeedsModal(
               exposedFeeds.map(ef => ({
                 url: ef.href,
@@ -312,6 +315,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
               })),
               exposedFeedsModal,
             );
+            this.modalOpenService.isModalOpen$.next(false);
             if (result_ !== null) {
               this.doFeedAdd(result_, result.customTitle);
             }

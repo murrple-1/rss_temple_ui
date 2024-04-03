@@ -17,7 +17,7 @@ import {
   FeedEntryVoteService,
   ReadCounterService,
 } from '@app/routes/main/services';
-import { HttpErrorService } from '@app/services';
+import { HttpErrorService, ModalOpenService } from '@app/services';
 import { ClassifierLabelService, FeedEntryService } from '@app/services/data';
 
 type FeedImpl = Required<Pick<Feed, 'calculatedTitle' | 'homeUrl' | 'feedUrl'>>;
@@ -62,6 +62,7 @@ export class FeedEntryViewComponent implements OnDestroy {
     private classifierLabelService: ClassifierLabelService,
     private httpErrorService: HttpErrorService,
     private feedEntryVoteService: FeedEntryVoteService,
+    private modalOpenService: ModalOpenService,
   ) {}
 
   ngOnDestroy() {
@@ -155,11 +156,13 @@ export class FeedEntryViewComponent implements OnDestroy {
       return;
     }
 
+    this.modalOpenService.isModalOpen$.next(true);
     await openShareModal(
       this.feedEntry.url,
       this.feedEntry.title,
       this.shareModalComponent,
     );
+    this.modalOpenService.isModalOpen$.next(false);
   }
 
   voteYes() {
@@ -239,12 +242,14 @@ export class FeedEntryViewComponent implements OnDestroy {
               votedLabelIndexes.add(index);
             }
           }
+          this.modalOpenService.isModalOpen$.next(true);
           await openLabelVoteModal(
             feedEntry.uuid,
             classifierLabels,
             votedLabelIndexes,
             labelVoteModalComponent,
           );
+          this.modalOpenService.isModalOpen$.next(false);
         },
         error: (error: unknown) => {
           this.httpErrorService.handleError(error);
