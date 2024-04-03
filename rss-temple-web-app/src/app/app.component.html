@@ -14,3 +14,8 @@
     <router-outlet></router-outlet>
   </div>
 </clr-main-container>
+
+<app-cookie-consent-snackbar
+  *ngIf="shouldShowCookieConsent"
+  (cookieConsentAcknowledged)="onCookieConsentAckowledged()"
+></app-cookie-consent-snackbar>

@@ -1,0 +1,9 @@
+.app--cookie-consent-snackbar {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: auto;
+  z-index: 9999;
+  width: calc(100% - 40px);
+  max-width: 650px;
+}

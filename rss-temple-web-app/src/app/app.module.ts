@@ -38,6 +38,7 @@ import { AppSharedModule } from '@app/app-shared.module';
 import { AppComponent } from '@app/app.component';
 import { routes } from '@app/app.routing';
 import { AppAlertsComponent } from '@app/components/app-alerts/app-alerts.component';
+import { CookieConsentSnackbarComponent } from '@app/components/cookie-consent-snackbar/cookie-consent-snackbar.component';
 import { LoginComponent } from '@app/components/login/login.component';
 import { RequestPasswordResetModalComponent as LoginRequestPasswordResetModalComponent } from '@app/components/login/request-password-reset-modal/request-password-reset-modal.component';
 import { NavComponent } from '@app/components/nav/nav.component';
@@ -150,6 +151,7 @@ export function configFactory(configService: ConfigService) {
     ResetPasswordComponent,
     LoginRequestPasswordResetModalComponent,
     VerifyComponent,
+    CookieConsentSnackbarComponent,
   ],
   bootstrap: [AppComponent],
   providers: [
