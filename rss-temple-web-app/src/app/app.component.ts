@@ -22,7 +22,10 @@ export class AppComponent implements OnInit {
   }
 
   onCookieConsentAckowledged() {
-    this.cookieService.set('cookieconsent', 'true');
+    this.cookieService.set('cookieconsent', 'true', {
+      path: '/',
+      expires: 365,
+    });
     this.shouldShowCookieConsent = false;
   }
 }
