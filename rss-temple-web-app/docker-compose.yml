@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   rss_temple_web_app:
     ports:
