@@ -88,9 +88,9 @@ export class NavComponent implements OnInit, OnDestroy {
   };
   private readonly supportLink: NavLink = {
     name: 'Support',
-    routerLink: '/main/support',
+    routerLink: '/support',
     routerLinkActiveAlt$: this.navEnd$.pipe(
-      map(navEnd => /^\/main\/support/.test(navEnd.urlAfterRedirects)),
+      map(navEnd => /^\/support/.test(navEnd.urlAfterRedirects)),
     ),
   };
   private readonly searchAction: NavAction = {
@@ -159,7 +159,11 @@ export class NavComponent implements OnInit, OnDestroy {
               this.navActions = [this.searchAction, this.logoutAction];
               this.isSearchVisible = true;
             } else {
-              this.navLinks = [this.loginLink, ...extraNavLinks];
+              this.navLinks = [
+                this.loginLink,
+                this.supportLink,
+                ...extraNavLinks,
+              ];
               this.navActions = [];
               this.isSearchVisible = false;
             }

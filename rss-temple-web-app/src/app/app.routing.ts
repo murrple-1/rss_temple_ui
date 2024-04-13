@@ -3,6 +3,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from '@app/components/login/login.component';
 import { RegisterComponent } from '@app/components/register/register.component';
 import { ResetPasswordComponent } from '@app/components/reset-password/reset-password.component';
+import { SupportComponent } from '@app/components/support/support.component';
 import { VerifyComponent } from '@app/components/verify/verify.component';
 import { AuthGuard, NoAuthGuard } from '@app/guards/auth.guard';
 
@@ -21,6 +22,7 @@ export const routes: Routes = [
     path: 'verify',
     component: VerifyComponent,
   },
+  { path: 'support', component: SupportComponent, canActivate: [NoAuthGuard] },
   {
     path: 'main',
     canActivate: [AuthGuard],

@@ -5,7 +5,6 @@ import { FeedComponent } from '@app/routes/main/components/feed/feed.component';
 import { FeedsComponent } from '@app/routes/main/components/feeds/feeds.component';
 import { ProfileComponent } from '@app/routes/main/components/profile/profile.component';
 import { SearchComponent } from '@app/routes/main/components/search/search.component';
-import { SupportComponent } from '@app/routes/main/components/support/support.component';
 import { MainComponent } from '@app/routes/main/main.component';
 
 export const routes: Routes = [
@@ -22,7 +21,6 @@ export const routes: Routes = [
         component: SearchComponent,
       },
       { path: 'profile', component: ProfileComponent },
-      { path: 'support', component: SupportComponent },
     ],
   },
 ];

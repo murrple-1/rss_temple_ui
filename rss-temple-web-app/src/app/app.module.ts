@@ -46,6 +46,7 @@ import { SearchModalComponent } from '@app/components/nav/search-modal/search-mo
 import { RegisterComponent } from '@app/components/register/register.component';
 import { ResetPasswordComponent } from '@app/components/reset-password/reset-password.component';
 import { SubNavComponent } from '@app/components/subnav/subnav.component';
+import { SupportComponent } from '@app/components/support/support.component';
 import { VerifyComponent } from '@app/components/verify/verify.component';
 import { ConfigService } from '@app/services';
 
@@ -151,6 +152,7 @@ export function configFactory(configService: ConfigService) {
     ResetPasswordComponent,
     LoginRequestPasswordResetModalComponent,
     VerifyComponent,
+    SupportComponent,
     CookieConsentSnackbarComponent,
   ],
   bootstrap: [AppComponent],

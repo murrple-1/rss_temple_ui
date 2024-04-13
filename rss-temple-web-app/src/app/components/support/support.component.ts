@@ -5,7 +5,7 @@ import osLicenses from '@app/os-licenses.json';
 import { ConfigService } from '@app/services';
 
 const RSSIconSVG: string =
-  require('!!raw-loader!../../../../../assets/images/rss-icon.svg').default;
+  require('!!raw-loader!../../../assets/images/rss-icon.svg').default;
 
 const licensesText = Object.entries(osLicenses)
   .filter(

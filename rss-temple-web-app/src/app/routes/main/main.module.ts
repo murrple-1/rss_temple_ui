@@ -24,7 +24,6 @@ import { ExposedFeedsModalComponent as VerticalNavExposedFeedsModalComponent } f
 import { OPMLModalComponent as VerticalNavOPMLModalComponent } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
 import { SubscribeModalComponent as VerticalNavSubscribeModalComponent } from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
 import { VerticalNavComponent } from '@app/routes/main/components/shared/vertical-nav/vertical-nav.component';
-import { SupportComponent } from '@app/routes/main/components/support/support.component';
 import { InfiniteScrollDirective } from '@app/routes/main/directives/infinite-scroll.directive';
 import { InViewportDirective } from '@app/routes/main/directives/inviewport.directive';
 import { MainComponent } from '@app/routes/main/main.component';
@@ -68,7 +67,6 @@ import {
     ExploreComponent,
     SearchComponent,
     ProfileComponent,
-    SupportComponent,
     GlobalUserCategoriesModalComponent,
     DeleteUserConfirm1ModalComponent,
     DeleteUserConfirm2ModalComponent,
