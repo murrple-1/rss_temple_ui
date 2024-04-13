@@ -6,6 +6,7 @@
   "issueTrackerUrl": "https://github.com/murrple-1/rss_temple/issues",
   "clientRepoUrl": "https://github.com/murrple-1/rss_temple_ui",
   "serverRepoUrl": "https://github.com/murrple-1/rss_temple",
+  "privacyPolicyUrl": "http://localhost:8080/privacy/",
   "forceLabelThreshold": 0.5,
   "extraNavLinks": [],
   "donationBadges": []
