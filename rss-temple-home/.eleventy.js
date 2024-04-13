@@ -1,7 +1,7 @@
 const { EleventyHtmlBasePlugin } = require("@11ty/eleventy");
 const fs = require("fs");
 
-const customHtmlDir = process.env.HEAD_CUSTOM_DIR;
+const customHtmlDir = process.env.CUSTOM_HTML_DIR;
 
 module.exports = function (eleventyConfig) {
   eleventyConfig.addPlugin(EleventyHtmlBasePlugin);
