@@ -162,6 +162,19 @@
             <pre>{{ licensesText }}</pre>
           </clr-accordion-content>
         </clr-accordion-panel>
+        <clr-accordion-panel
+          *ngIf="tosUrl !== null || privacyPolicyUrl !== null"
+        >
+          <clr-accordion-title>Legal</clr-accordion-title>
+          <clr-accordion-content *clrIfExpanded>
+            <p *ngIf="tosUrl !== null">
+              <a [href]="tosUrl">Terms of Service</a>
+            </p>
+            <p *ngIf="privacyPolicyUrl !== null">
+              <a [href]="privacyPolicyUrl">Privacy Policy</a>
+            </p>
+          </clr-accordion-content>
+        </clr-accordion-panel>
       </clr-accordion>
     </div>
   </div>

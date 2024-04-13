@@ -54,18 +54,28 @@ export class SupportComponent {
   readonly clientRepoUrl: string;
   readonly serverRepoUrl: string;
   readonly donationBadges: DonationBadge[];
+  readonly tosUrl: string | null;
+  readonly privacyPolicyUrl: string | null;
 
   readonly licensesText = licensesText;
   readonly rssIconSvg = RSSIconSVG;
 
   constructor(configService: ConfigService) {
-    const [issueTrackerUrl, clientRepoUrl, serverRepoUrl, donationBadges_] =
-      configService.getMany<string>(
-        'issueTrackerUrl',
-        'clientRepoUrl',
-        'serverRepoUrl',
-        'donationBadges',
-      );
+    const [
+      issueTrackerUrl,
+      clientRepoUrl,
+      serverRepoUrl,
+      donationBadges_,
+      tosUrl,
+      privacyPolicyUrl,
+    ] = configService.getMany<string>(
+      'issueTrackerUrl',
+      'clientRepoUrl',
+      'serverRepoUrl',
+      'donationBadges',
+      'tosUrl',
+      'privacyPolicyUrl',
+    );
     if (typeof issueTrackerUrl !== 'string') {
       throw new Error('issueTrackerUrl malformed');
     }
@@ -93,5 +103,8 @@ export class SupportComponent {
     } else {
       this.donationBadges = [];
     }
+
+    this.tosUrl = tosUrl ?? null;
+    this.privacyPolicyUrl = privacyPolicyUrl ?? null;
   }
 }
