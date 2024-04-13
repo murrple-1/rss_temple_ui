@@ -1,6 +1,7 @@
 const { EleventyHtmlBasePlugin } = require("@11ty/eleventy");
 const fs = require("fs");
-const headCustomDir = process.env.HEAD_CUSTOM_DIR;
+
+const customHtmlDir = process.env.HEAD_CUSTOM_DIR;
 
 module.exports = function (eleventyConfig) {
   eleventyConfig.addPlugin(EleventyHtmlBasePlugin);
@@ -18,19 +19,33 @@ module.exports = function (eleventyConfig) {
 
   eleventyConfig.addFilter("include", (filePath, encoding) => {
     encoding = encoding || "utf8";
-    return fs.readFileSync(filePath, encoding);
-  });
-  eleventyConfig.addFilter("headCustom", (file, encoding) => {
-    if (headCustomDir) {
-      encoding = encoding || "utf8";
-      try {
-        return fs.readFileSync(headCustomDir + "/" + file, encoding);
-      } catch (e) {
-        console.error(e);
-      }
+
+    const f = fs.openSync(filePath, "r");
+    try {
+      return fs.readFileSync(f, encoding);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      fs.closeSync(f);
     }
 
     return undefined;
+  });
+  eleventyConfig.addFilter("customHtml", (file, default_, encoding) => {
+    encoding = encoding || "utf8";
+
+    if (customHtmlDir) {
+      const f = fs.openSync(customHtmlDir + "/" + file, "r");
+      try {
+        return fs.readFileSync(f, encoding);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        fs.closeSync(f);
+      }
+    }
+
+    return default_;
   });
 
   return {
