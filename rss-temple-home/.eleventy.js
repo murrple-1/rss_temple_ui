@@ -20,13 +20,16 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addFilter("include", (filePath, encoding) => {
     encoding = encoding || "utf8";
 
-    const f = fs.openSync(filePath, "r");
+    let f = null;
     try {
+      f = fs.openSync(filePath, "r");
       return fs.readFileSync(f, encoding);
     } catch (e) {
       console.error(e);
     } finally {
-      fs.closeSync(f);
+      if (f !== null) {
+        fs.closeSync(f);
+      }
     }
 
     return undefined;
@@ -35,13 +38,16 @@ module.exports = function (eleventyConfig) {
     encoding = encoding || "utf8";
 
     if (customHtmlDir) {
-      const f = fs.openSync(customHtmlDir + "/" + file, "r");
+      let f = null;
       try {
+        f = fs.openSync(customHtmlDir + "/" + file, "r");
         return fs.readFileSync(f, encoding);
       } catch (e) {
         console.error(e);
       } finally {
-        fs.closeSync(f);
+        if (f !== null) {
+          fs.closeSync(f);
+        }
       }
     }
 
