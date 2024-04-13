@@ -22,7 +22,7 @@ export const routes: Routes = [
     path: 'verify',
     component: VerifyComponent,
   },
-  { path: 'support', component: SupportComponent, canActivate: [NoAuthGuard] },
+  { path: 'support', component: SupportComponent },
   {
     path: 'main',
     canActivate: [AuthGuard],
