@@ -11,7 +11,7 @@ module.exports = function () {
     default_content: defaultContent,
     additional_links: [
       {
-        href: "/styles/tos.min.css",
+        href: "/styles/legal.min.css",
         rel: "stylesheet",
         type: "text/css"
       }

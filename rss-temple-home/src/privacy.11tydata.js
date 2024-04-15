@@ -8,6 +8,13 @@ module.exports = function () {
     layout: "standard.liquid",
     page_name: "Privacy Policy",
     head_custom_filename: "privacy.head.html",
-    default_content: defaultContent
+    default_content: defaultContent,
+    additional_links: [
+      {
+        href: "/styles/legal.min.css",
+        rel: "stylesheet",
+        type: "text/css"
+      }
+    ]
   };
 };
