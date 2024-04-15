@@ -6,7 +6,7 @@ fs.closeSync(f);
 module.exports = function () {
   return {
     layout: "standard.liquid",
-    page_name: "Privacy",
+    page_name: "Privacy Policy",
     head_custom_filename: "privacy.head.html",
     default_content: defaultContent
   };
