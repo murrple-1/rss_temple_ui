@@ -323,7 +323,25 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
             }
           },
           error: error => {
-            this.httpErrorService.handleError(error);
+            let errorHandled = false;
+            if (error instanceof HttpErrorResponse) {
+              switch (error.status) {
+                case 404: {
+                  errorHandled = true;
+                  this.appAlertsService.appAlertDescriptor$.next({
+                    autoCloseInterval: 5000,
+                    canClose: true,
+                    text: 'Could not find a feed at the supplied URL',
+                    type: 'danger',
+                  });
+                  break;
+                }
+              }
+            }
+
+            if (!errorHandled) {
+              this.httpErrorService.handleError(error);
+            }
           },
         });
     });
