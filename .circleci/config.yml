@@ -89,7 +89,7 @@ jobs:
             docker build
             -t rss_temple_home:latest
             --progress=plain
-          .
+            .
       - run:
           name: Docker Upload
           command: |
