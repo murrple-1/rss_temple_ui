@@ -326,16 +326,6 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
             let errorHandled = false;
             if (error instanceof HttpErrorResponse) {
               switch (error.status) {
-                case 404: {
-                  errorHandled = true;
-                  this.appAlertsService.appAlertDescriptor$.next({
-                    autoCloseInterval: 5000,
-                    canClose: true,
-                    text: 'Could not find a feed at the supplied URL',
-                    type: 'danger',
-                  });
-                  break;
-                }
               }
             }
 
@@ -348,6 +338,11 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
   }
 
   private doFeedAdd(feedUrl: string, customTitle: string | undefined) {
+    const infoModal = this.infoModal;
+    if (infoModal === undefined) {
+      throw new Error();
+    }
+
     this.feedService
       .get(feedUrl, {
         fields: ['uuid', 'title', 'isSubscribed', 'homeUrl', 'isDead'],
@@ -408,15 +403,30 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
           let errorHandled = false;
 
           if (error instanceof HttpErrorResponse) {
-            if (error.status === 422) {
-              console.error('feed is malformed', error);
-              this.appAlertsService.appAlertDescriptor$.next({
-                autoCloseInterval: null,
-                canClose: true,
-                text: 'Feed is unable to be read. Please ensure URL points to a valid RSS/Atom feed.',
-                type: 'danger',
-              });
-              errorHandled = true;
+            switch (error.status) {
+              case 404: {
+                this.modalOpenService.openModal(async () => {
+                  await openInfoModal(
+                    'No feed detected',
+                    'Could not find feed exposed in supplied URL',
+                    'danger',
+                    infoModal,
+                  );
+                });
+                errorHandled = true;
+                break;
+              }
+              case 422: {
+                console.error('feed is malformed', error);
+                this.appAlertsService.appAlertDescriptor$.next({
+                  autoCloseInterval: null,
+                  canClose: true,
+                  text: 'Feed is unable to be read. Please ensure URL points to a valid RSS/Atom feed.',
+                  type: 'danger',
+                });
+                errorHandled = true;
+                break;
+              }
             }
           }
 
