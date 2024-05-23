@@ -1,10 +1,52 @@
-const { EleventyHtmlBasePlugin } = require("@11ty/eleventy");
 const fs = require("fs");
+const path = require("path");
+
+const { EleventyHtmlBasePlugin } = require("@11ty/eleventy");
+const esbuild = require("esbuild");
+const sass = require("sass");
 
 const customHtmlDir = process.env.CUSTOM_HTML_DIR;
 
 module.exports = function (eleventyConfig) {
+  eleventyConfig.addTemplateFormats(["scss", "js"]);
+
   eleventyConfig.addPlugin(EleventyHtmlBasePlugin);
+
+  eleventyConfig.addExtension("scss", {
+    outputFileExtension: "min.css",
+
+    compile: async (inputContent) => {
+      const results = sass.compileString(inputContent, {
+        style: "compressed",
+        loadPaths: ["node_modules"]
+      });
+      return () => {
+        return results.css;
+      };
+    }
+  });
+  eleventyConfig.addExtension("js", {
+    outputFileExtension: "min.js",
+    compile: async (_inputContent, inputPath) => {
+      if (inputPath.endsWith(".11tydata.js")) {
+        return;
+      }
+
+      esbuild.buildSync({
+        entryPoints: [inputPath],
+        entryNames: "[dir]/[name]",
+        bundle: true,
+        outdir: "_site/scripts/",
+        splitting: true,
+        chunkNames: "[name]-[hash]",
+        minify: true,
+        format: "esm",
+        outExtension: {
+          ".js": ".min.js"
+        }
+      });
+    }
+  });
 
   eleventyConfig.addPassthroughCopy("media/");
   eleventyConfig.addPassthroughCopy({ "src/robots.txt": "/robots.txt" });
@@ -40,7 +82,7 @@ module.exports = function (eleventyConfig) {
     if (customHtmlDir) {
       let f = null;
       try {
-        f = fs.openSync(customHtmlDir + "/" + file, "r");
+        f = fs.openSync(path.join(`${customHtmlDir}/`, file), "r");
         return fs.readFileSync(f, encoding);
       } catch (e) {
         console.error(e);
