@@ -41,6 +41,7 @@ module.exports = function (eleventyConfig) {
         chunkNames: "[name]-[hash]",
         minify: true,
         format: "esm",
+        sourcemap: true,
         outExtension: {
           ".js": ".min.js"
         }
