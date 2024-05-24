@@ -6,6 +6,7 @@ const esbuild = require("esbuild");
 const sass = require("sass");
 
 const customHtmlDir = process.env.CUSTOM_HTML_DIR;
+const generateSourceMaps = process.env.GENERATE_SOURCE_MAPS === "true";
 
 module.exports = function (eleventyConfig) {
   eleventyConfig.addTemplateFormats(["scss", "js"]);
@@ -41,7 +42,7 @@ module.exports = function (eleventyConfig) {
         chunkNames: "[name]-[hash]",
         minify: true,
         format: "esm",
-        sourcemap: true,
+        sourcemap: generateSourceMaps,
         outExtension: {
           ".js": ".min.js"
         }
