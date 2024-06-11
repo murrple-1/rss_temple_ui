@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
-import { ShareModule } from 'ngx-sharebuttons';
+import { ShareButtonDirective } from 'ngx-sharebuttons';
 
 import { AppSharedModule } from '@app/app-shared.module';
 import { ExploreComponent } from '@app/routes/main/components/explore/explore.component';
@@ -42,7 +42,7 @@ import {
 
     ClarityModule,
 
-    ShareModule,
+    ShareButtonDirective,
 
     AppSharedModule,
 

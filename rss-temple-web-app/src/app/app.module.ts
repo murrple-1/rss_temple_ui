@@ -37,6 +37,19 @@ import '@cds/core/icon/register.js';
 import { ClarityModule } from '@clr/angular';
 import { CookieService } from 'ngx-cookie-service';
 
+import AppLogoSVG from '@app/../assets/images/icon.svg';
+import BookStrikethroughSVG from '@app/../custom_cds_icon_svgs/book-strikethrough.svg';
+import FacebookLogoSVG from '@app/../custom_cds_icon_svgs/facebook-f.svg';
+import FacebookMessengerLogoSVG from '@app/../custom_cds_icon_svgs/facebook-messenger.svg';
+import GoogleLogoSVG from '@app/../custom_cds_icon_svgs/google.svg';
+import LinkedInLogoSVG from '@app/../custom_cds_icon_svgs/linkedin.svg';
+import PinterestLogoSVG from '@app/../custom_cds_icon_svgs/pinterest.svg';
+import RedditLogoSVG from '@app/../custom_cds_icon_svgs/reddit.svg';
+import StarFilledSVG from '@app/../custom_cds_icon_svgs/star-filled.svg';
+import TelegramLogoSVG from '@app/../custom_cds_icon_svgs/telegram.svg';
+import TumblrLogoSVG from '@app/../custom_cds_icon_svgs/tumblr.svg';
+import TwitterLogoSVG from '@app/../custom_cds_icon_svgs/twitter.svg';
+import WhatsAppLogoSVG from '@app/../custom_cds_icon_svgs/whatsapp.svg';
 import { AppSharedModule } from '@app/app-shared.module';
 import { AppComponent } from '@app/app.component';
 import { routes } from '@app/app.routing';
@@ -52,34 +65,6 @@ import { SubNavComponent } from '@app/components/subnav/subnav.component';
 import { SupportComponent } from '@app/components/support/support.component';
 import { VerifyComponent } from '@app/components/verify/verify.component';
 import { ConfigService } from '@app/services';
-
-const AppLogoSVG: string =
-  require('!!raw-loader!../assets/images/icon.svg').default;
-const FacebookLogoSVG: string =
-  require('!!raw-loader!../custom_cds_icon_svgs/facebook-f.svg').default;
-const GoogleLogoSVG: string =
-  require('!!raw-loader!../custom_cds_icon_svgs/google.svg').default;
-const TwitterLogoSVG: string =
-  require('!!raw-loader!../custom_cds_icon_svgs/twitter.svg').default;
-const LinkedInLogoSVG: string =
-  require('!!raw-loader!../custom_cds_icon_svgs/linkedin.svg').default;
-const PinterestLogoSVG: string =
-  require('!!raw-loader!../custom_cds_icon_svgs/pinterest.svg').default;
-const RedditLogoSVG: string =
-  require('!!raw-loader!../custom_cds_icon_svgs/reddit.svg').default;
-const TumblrLogoSVG: string =
-  require('!!raw-loader!../custom_cds_icon_svgs/tumblr.svg').default;
-const TelegramLogoSVG: string =
-  require('!!raw-loader!../custom_cds_icon_svgs/telegram.svg').default;
-const FacebookMessengerLogoSVG: string =
-  require('!!raw-loader!../custom_cds_icon_svgs/facebook-messenger.svg').default;
-const WhatsAppLogoSVG: string =
-  require('!!raw-loader!../custom_cds_icon_svgs/whatsapp.svg').default;
-
-const BookStrikethroughSVG: string =
-  require('!!raw-loader!../custom_cds_icon_svgs/book-strikethrough.svg').default;
-const StarFilledSVG: string =
-  require('!!raw-loader!../custom_cds_icon_svgs/star-filled.svg').default;
 
 export function clarityIconsFactory() {
   return () => {

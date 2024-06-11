@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
 import { z } from 'zod';
 
+import RSSIconSVG from '@app/../assets/images/rss-icon.svg';
 import osLicenses from '@app/os-licenses.json';
 import { ConfigService } from '@app/services';
-
-const RSSIconSVG: string =
-  require('!!raw-loader!../../../assets/images/rss-icon.svg').default;
 
 const licensesText = Object.entries(osLicenses)
   .filter(

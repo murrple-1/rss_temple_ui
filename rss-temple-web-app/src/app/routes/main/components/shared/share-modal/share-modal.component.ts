@@ -1,73 +1,86 @@
 import { Component, OnDestroy } from '@angular/core';
-import { shareButtonName } from 'ngx-sharebuttons';
+import {
+  IShareButton,
+  copyParams,
+  emailParams,
+  facebookParams,
+  linkedInParams,
+  pinterestParams,
+  redditParams,
+  smsParams,
+  telegramParams,
+  tumblrParams,
+  whatsappParams,
+  xParams,
+} from 'ngx-sharebuttons';
 import { Subject, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 export interface ShareButtonDescriptor {
-  shareButtonName: shareButtonName;
+  shareButton: IShareButton;
   title: string;
   iconName: string;
 }
 
 export const DefaultShareButtonDescriptors: ShareButtonDescriptor[] = [
   {
-    shareButtonName: 'facebook',
+    shareButton: facebookParams,
     title: 'Facebook',
     iconName: 'brand-facebook',
   },
   {
-    shareButtonName: 'twitter',
+    shareButton: xParams,
     title: 'Twitter/X',
     iconName: 'brand-twitter',
   },
   {
-    shareButtonName: 'linkedin',
+    shareButton: linkedInParams,
     title: 'LinkedIn',
     iconName: 'brand-linkedin',
   },
   {
-    shareButtonName: 'pinterest',
+    shareButton: pinterestParams,
     title: 'Pinterest',
     iconName: 'brand-pinterest',
   },
   {
-    shareButtonName: 'reddit',
+    shareButton: redditParams,
     title: 'Reddit',
     iconName: 'brand-reddit',
   },
   {
-    shareButtonName: 'tumblr',
+    shareButton: tumblrParams,
     title: 'Tumblr',
     iconName: 'brand-tumblr',
   },
   {
-    shareButtonName: 'telegram',
+    shareButton: telegramParams,
     title: 'Telegram',
     iconName: 'brand-telegram',
   },
   // TODO doesn't appear to work right now...
   // {
-  //   shareButtonName: 'messenger',
+  //   shareButton: messengerParams,
   //   title: 'Facebook Messenger',
   //   iconName: 'brand-facebook-messenger',
   // },
   {
-    shareButtonName: 'whatsapp',
+    shareButton: whatsappParams,
     title: 'WhatsApp',
     iconName: 'brand-whatsapp',
   },
   {
-    shareButtonName: 'sms',
+    shareButton: smsParams,
     title: 'SMS',
     iconName: 'talk-bubbles',
   },
   {
-    shareButtonName: 'email',
+    shareButton: emailParams,
     title: 'Email',
     iconName: 'envelope',
   },
   {
-    shareButtonName: 'copy',
+    shareButton: copyParams,
     title: 'Copy to Clipboard',
     iconName: 'clipboard',
   },

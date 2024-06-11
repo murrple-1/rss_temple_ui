@@ -20,7 +20,7 @@
         *ngIf="!navLink.routerLinkIsHref"
         [routerLink]="navLink.routerLink"
         [ngClass]="{
-          'active': navLink.routerLinkActiveAlt$ | async
+          'app--active': navLink.routerLinkActiveAlt$ | async
         }"
         class="nav-link nav-text"
         >{{ navLink.name }}</a

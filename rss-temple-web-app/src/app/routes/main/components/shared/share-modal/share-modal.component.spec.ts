@@ -1,7 +1,7 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClarityModule } from '@clr/angular';
-import { ShareModule } from 'ngx-sharebuttons';
+import { ShareButtonDirective } from 'ngx-sharebuttons';
 
 import { MockConfigService } from '@app/test/config.service.mock';
 
@@ -14,7 +14,7 @@ async function setup() {
   });
 
   await TestBed.configureTestingModule({
-    imports: [BrowserAnimationsModule, ClarityModule, ShareModule],
+    imports: [BrowserAnimationsModule, ClarityModule, ShareButtonDirective],
     declarations: [ShareModalComponent],
   }).compileComponents();
 

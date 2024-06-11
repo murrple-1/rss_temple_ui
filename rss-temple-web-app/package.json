@@ -25,6 +25,10 @@
     "@cds/core": "^6.5.0",
     "@clr/angular": "^17.2.0",
     "@clr/ui": "^17.2.0",
+    "@fortawesome/angular-fontawesome": "^0.15.0",
+    "@fortawesome/fontawesome-svg-core": "^6.5.2",
+    "@fortawesome/free-brands-svg-icons": "^6.5.2",
+    "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@webcomponents/custom-elements": "^1.0.0",
     "@webcomponents/webcomponentsjs": "2.8.0",
     "core-js": "^3.9.1",
@@ -82,7 +86,6 @@
     "karma-junit-reporter": "^2.0.1",
     "license-checker": "^25.0.1",
     "ng-process-env": "^16.0.6",
-    "raw-loader": "^4.0.2",
     "typescript": "5.4.5"
   }
 }

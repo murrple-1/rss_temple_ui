@@ -9,6 +9,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ClarityModule } from '@clr/angular';
 import { of, throwError } from 'rxjs';
 import { take } from 'rxjs/operators';
+import imageBinary from 'test_files/sample.png';
+import audioBinary from 'test_files/sample.wav';
 
 import { InfoModalComponent } from '@app/components/shared/info-modal/info-modal.component';
 import { EmailValidatorDirective } from '@app/directives/email-validator.directive';
@@ -21,18 +23,12 @@ import { MockActivatedRoute } from '@app/test/activatedroute.mock';
 
 import { RegisterComponent } from './register.component';
 
-const imageBlob = new Blob(
-  [require('!!raw-loader!test_files/sample.png').default],
-  {
-    type: 'image/png',
-  },
-);
-const audioBlob = new Blob(
-  [require('!!raw-loader!test_files/sample.wav').default],
-  {
-    type: 'audio/wav',
-  },
-);
+const imageBlob = new Blob([imageBinary], {
+  type: 'image/png',
+});
+const audioBlob = new Blob([audioBinary], {
+  type: 'audio/wav',
+});
 
 @Component({})
 class MockComponent {}
