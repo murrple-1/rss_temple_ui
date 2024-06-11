@@ -1698,9 +1698,9 @@
   integrity sha512-S9K+Q39BGOghyLHmR0Wdcmu1i1noSUk8HcvMj+3IaohZw02WFd99aPTQDHJeseXrXZP3CNovaSlePI0R11NcFg==
 
 "@cds/core@^6.5.0":
-  version "6.9.2"
-  resolved "https://registry.yarnpkg.com/@cds/core/-/core-6.9.2.tgz#0c5c5e2e9a86f1bddf3f0fba6bc17a73826a00e9"
-  integrity sha512-Tx5L8/kLueBoSpu18w9eLonqFk1CVromp9bBXk6FLVVmYghE/lSt/WsYi6c0xyv7rJZpcHoGS/gh5p9Erelk3Q==
+  version "6.11.0"
+  resolved "https://registry.yarnpkg.com/@cds/core/-/core-6.11.0.tgz#9ab1312fd5d4d67f79086cf9db9ba3989db728c9"
+  integrity sha512-7tNZeLEfpcNdDN85jV9137zxy7euqBCtG8SRNX0E8XGMMODs7JpxvORahhwRGwd7geSbZpA70urNo+h5Y2Mqrg==
   dependencies:
     lit "^2.1.3"
     ramda "^0.29.0"
@@ -1710,16 +1710,16 @@
     modern-normalize "1.1.0"
 
 "@clr/angular@^16.0.1":
-  version "16.3.1"
-  resolved "https://registry.yarnpkg.com/@clr/angular/-/angular-16.3.1.tgz#bf458b3b58b0297a60956a9c35122fca36d86d83"
-  integrity sha512-IB6i5r8gnxhBu8e2lBFK4/SLvQYs4wlQasVzvCcCmfgA+4b20UZTsqeqOMYQ/KGL/jQt1E6pluBOx8Vc42ldQg==
+  version "16.5.0"
+  resolved "https://registry.yarnpkg.com/@clr/angular/-/angular-16.5.0.tgz#b9325f8711cff3c11c2c7eb086348e9b150fec44"
+  integrity sha512-JwMO0GKEdwX0AxypyvhGjm5QYtZlDE9TVyWIrCCF3+Jqmms4E0hZVbjl+h8Oxfpvtt0SrJNFn53tWXGaOwO5aA==
   dependencies:
     tslib "^2.3.0"
 
 "@clr/ui@^16.0.1":
-  version "16.3.1"
-  resolved "https://registry.yarnpkg.com/@clr/ui/-/ui-16.3.1.tgz#d9a9bf6dcf72da18be6a2d82b0f02740f2943406"
-  integrity sha512-khEPdf7Ib5xVzTD2+6i13WKSJkW5wo2gl/Pr7/rTdr0G/A5JUlTnMYLH38uA+Slkz8zbw1eA7VypdOx+tbYStQ==
+  version "16.5.0"
+  resolved "https://registry.yarnpkg.com/@clr/ui/-/ui-16.5.0.tgz#521d3f77c9c298ec9c6b29d32f380373f3b1bcf3"
+  integrity sha512-3il+ErISw9hToNhdoFs04cVqwZCZgGdjL8kbCHKi4WQBGNMIYmwHyBD5yoEne3cosLTnbwJMX0dO/xjmsKdHFg==
 
 "@colors/colors@1.5.0":
   version "1.5.0"
@@ -2702,9 +2702,9 @@
     "@types/serve-static" "*"
 
 "@types/facebook-js-sdk@^3.3.2":
-  version "3.3.10"
-  resolved "https://registry.yarnpkg.com/@types/facebook-js-sdk/-/facebook-js-sdk-3.3.10.tgz#c341ee9f390bd12f899a5379027b7fd344c6bac6"
-  integrity sha512-85YWoOkYD1N8yCKRjxcjaroK73UnE3pIEG6zPRIPrb8D4HFceqNp60EQ7SZlu7vHpWGD+yCRumBH606vRUuMLw==
+  version "3.3.11"
+  resolved "https://registry.yarnpkg.com/@types/facebook-js-sdk/-/facebook-js-sdk-3.3.11.tgz#c0a9dde1142d21b6a80cb4527b77e99c6cccbece"
+  integrity sha512-VMIZR6zG7rwGrviiKdujALtckGwsnz2V4tTFvmriAl4MKjNRwh5Gz6g3eExla9BB5eDPB+AREQVoIMekcxv9tg==
 
 "@types/file-saver@^2.0.2":
   version "2.0.7"
@@ -2763,9 +2763,9 @@
   integrity sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==
 
 "@types/langs@^2.0.2":
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/@types/langs/-/langs-2.0.4.tgz#e928d59a8f1cdea6442327298b00eae0a8ecf9b5"
-  integrity sha512-PELvm/40ArEeZzO3TyDWAi0xk5wm1cGvTGwMMYNgz8P7dUxTQCfZgJPP6D1faYdyQgVLSiSzun1L/VElBgsjXw==
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@types/langs/-/langs-2.0.5.tgz#2b97268760239b00e31c64bb063aed0f7e152647"
+  integrity sha512-DIUKT4mkbTBxSrX6lmnQR888ObeFVVo1uNEqBH5/ddQHpnG4CA24DibpK7aO8QAcJEZUTcIx0F96TWuzVT9Z4g==
 
 "@types/mime@*":
   version "3.0.1"
@@ -2790,9 +2790,9 @@
   integrity sha512-Mgq7eCtoTjT89FqNoTzzXg2XvCi5VMhRV6+I2aYanc6kQCBImeNaAYRs/DyoVqk1YEUJK5gN9VO7HRIdz4Wo3Q==
 
 "@types/node@^20.5.0":
-  version "20.11.16"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.11.16.tgz#4411f79411514eb8e2926f036c86c9f0e4ec6708"
-  integrity sha512-gKb0enTmRCzXSSUJDq6/sPcqrfCv2mkkG6Jt/clpn5eiCbKTY+SgZUxo+p8ZKMof5dCp9vHQUAB7wOUTod22wQ==
+  version "20.14.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.14.2.tgz#a5f4d2bcb4b6a87bffcaa717718c5a0f208f4a18"
+  integrity sha512-xyu6WAMVwv6AKFLB+e/7ySZVr/0zLCzOa7rSpq6jNwpqOrUbcACDWC+53d4n2QHOnDou0fbIsg8wZu/sxrnI4Q==
   dependencies:
     undici-types "~5.26.4"
 
@@ -4014,9 +4014,9 @@ core-js-compat@^3.36.1:
     browserslist "^4.23.0"
 
 core-js@^3.9.1:
-  version "3.35.1"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.35.1.tgz#9c28f8b7ccee482796f8590cc8d15739eaaf980c"
-  integrity sha512-IgdsbxNyMskrTFxa9lWHyMwAJU5gXOPP+1yO+K59d50VLVAIDAbs7gIv705KzALModfK3ZrSZTPNpC0PQgIZuw==
+  version "3.37.1"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.37.1.tgz#d21751ddb756518ac5a00e4d66499df981a62db9"
+  integrity sha512-Xn6qmxrQZyB0FFY8E3bgRXei3lWDJHhvI+u0q9TKIYM49G8pAr0FgnnrFRAmsbptZL1yxRADVXn+x5AGsbBfyw==
 
 core-util-is@~1.0.0:
   version "1.0.3"
@@ -5944,7 +5944,7 @@ is-what@^3.14.1:
 
 is-wsl@^2.2.0:
   version "2.2.0"
-  resolved "https://registry.npmjs.org/is-wsl/-/is-wsl-2.2.0.tgz"
+  resolved "https://registry.yarnpkg.com/is-wsl/-/is-wsl-2.2.0.tgz#74a4c76e77ca9fd3f932f290c17ea326cd157271"
   integrity sha512-fKzAra0rGJUUBwGBgNkHZuToZcn+TtXHpeCgmkMJMMYx1sQDYaCSyjJBSCa2nH1DGm7s3n1oBnohoVTBaN7Lww==
   dependencies:
     is-docker "^2.0.0"
@@ -6062,9 +6062,9 @@ jasmine-core@^4.1.0:
   integrity sha512-O236+gd0ZXS8YAjFx8xKaJ94/erqUliEkJTDedyE7iHvv4ZVqi+q+8acJxu05/WJDKm512EUNn809In37nWlAQ==
 
 jasmine-core@~5.1.0:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/jasmine-core/-/jasmine-core-5.1.1.tgz#38b6ccfbe60aa2a863cf441751d9639b5a571edc"
-  integrity sha512-UrzO3fL7nnxlQXlvTynNAenL+21oUQRlzqQFsA2U11ryb4+NLOCOePZ70PTojEaUKhiFugh7dG0Q+I58xlPdWg==
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/jasmine-core/-/jasmine-core-5.1.2.tgz#8f2789faa79ef1ffad7abab6bff8d4bd661094f7"
+  integrity sha512-2oIUMGn00FdUiqz6epiiJr7xcFyNYj3rDcfmnzfkBnHyBQ3cBQUs4mmyGsOb7TTLb9kxk7dBcmEmqhDKkBoDyA==
 
 jest-diff@^29.4.1:
   version "29.7.0"
@@ -6228,12 +6228,12 @@ karma-coverage@^2.0.3:
     minimatch "^3.0.4"
 
 karma-firefox-launcher@^2.1.0:
-  version "2.1.2"
-  resolved "https://registry.npmjs.org/karma-firefox-launcher/-/karma-firefox-launcher-2.1.2.tgz"
-  integrity sha512-VV9xDQU1QIboTrjtGVD4NCfzIH7n01ZXqy/qpBhnOeGVOkG5JYPEm8kuSd7psHE6WouZaQ9Ool92g8LFweSNMA==
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/karma-firefox-launcher/-/karma-firefox-launcher-2.1.3.tgz#b278a4cbffa92ab81394b1a398813847b0624a85"
+  integrity sha512-LMM2bseebLbYjODBOVt7TCPP9OI2vZIXCavIXhkO9m+10Uj5l7u/SKoeRmYx8FYHTVGZSpk6peX+3BMHC1WwNw==
   dependencies:
     is-wsl "^2.2.0"
-    which "^2.0.1"
+    which "^3.0.0"
 
 karma-jasmine-html-reporter@^2.1.0:
   version "2.1.0"
@@ -8813,10 +8813,15 @@ tsconfig-paths@^4.1.2:
     minimist "^1.2.6"
     strip-bom "^3.0.0"
 
-tslib@2.6.2, tslib@^2.0.0, tslib@^2.3.0, tslib@^2.3.1, tslib@^2.6.2:
+tslib@2.6.2, tslib@^2.6.2:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.6.2.tgz#703ac29425e7b37cd6fd456e92404d46d1f3e4ae"
   integrity sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==
+
+tslib@^2.0.0, tslib@^2.3.0, tslib@^2.3.1:
+  version "2.6.3"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.6.3.tgz#0438f810ad7a9edcde7a241c3d80db693c8cbfe0"
+  integrity sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==
 
 tslib@^2.1.0, tslib@^2.4.0:
   version "2.6.1"
@@ -9264,6 +9269,13 @@ which@^2.0.1:
   dependencies:
     isexe "^2.0.0"
 
+which@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/which/-/which-3.0.1.tgz#89f1cd0c23f629a8105ffe69b8172791c87b4be1"
+  integrity sha512-XA1b62dzQzLfaEOSQFTCOd5KFf/1VSzZo7/7TUjnya6u0vGGKzU96UQBZTAThCb2j4/xjBAyii1OhRLJEivHvg==
+  dependencies:
+    isexe "^2.0.0"
+
 which@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/which/-/which-4.0.0.tgz#cd60b5e74503a3fbcfbf6cd6b4138a8bae644c1a"
@@ -9386,9 +9398,9 @@ yocto-queue@^1.0.0:
   integrity sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==
 
 zod@^3.21.4:
-  version "3.22.4"
-  resolved "https://registry.yarnpkg.com/zod/-/zod-3.22.4.tgz#f31c3a9386f61b1f228af56faa9255e845cf3fff"
-  integrity sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==
+  version "3.23.8"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.23.8.tgz#e37b957b5d52079769fb8097099b592f0ef4067d"
+  integrity sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==
 
 zone.js@~0.14.7:
   version "0.14.7"
