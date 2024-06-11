@@ -1,4 +1,10 @@
-import { Component, OnDestroy } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  Output,
+} from '@angular/core';
 import { Subject, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 
@@ -10,7 +16,11 @@ import { take } from 'rxjs/operators';
 export class SearchModalComponent implements OnDestroy {
   open = false;
 
+  @Input()
   searchText = '';
+
+  @Output()
+  searchTextChange = new EventEmitter<string>();
 
   result = new Subject<string | null>();
 
@@ -18,8 +28,9 @@ export class SearchModalComponent implements OnDestroy {
     this.result.complete();
   }
 
-  reset() {
-    this.searchText = '';
+  _searchTextChanged(searchText: string) {
+    this.searchText = searchText;
+    this.searchTextChange.emit(searchText);
   }
 
   openChanged(open: boolean) {
@@ -38,7 +49,6 @@ export class SearchModalComponent implements OnDestroy {
 }
 
 export function openModal(modal: SearchModalComponent) {
-  modal.reset();
   modal.open = true;
 
   return firstValueFrom(modal.result.pipe(take(1)));

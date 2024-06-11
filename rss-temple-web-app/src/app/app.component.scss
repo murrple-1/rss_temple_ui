@@ -1,3 +1,7 @@
+clr-header.app--header {
+  background-color: var(--clr-color-action-800);
+}
+
 .content-container ::ng-deep > ng-component {
   display: contents;
 }

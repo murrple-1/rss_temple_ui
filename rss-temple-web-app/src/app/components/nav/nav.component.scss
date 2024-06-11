@@ -3,35 +3,12 @@
   flex: 1;
 }
 
-.search {
-  flex: 1;
-  max-width: unset;
-
-  label[for='search-input'] {
-    display: flex;
-    flex: 1;
-    max-width: unset;
-
-    input#search-input {
-      flex: 1;
-      margin-left: 8px;
-    }
-  }
-
-  @media (max-width: 768px) {
+.header-actions .app--search-action {
+  @media (min-width: 769px) {
     display: none;
   }
 }
 
-.header-actions {
-  flex: 0;
-  .app--search-action {
-    @media (min-width: 769px) {
-      display: none;
-    }
-  }
-}
-
 a.app--active {
-  background-color: var(--cds-alias-utility-dark-blue);
+  background-color: rgba(255, 255, 255, 0.15);
 }

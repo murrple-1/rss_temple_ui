@@ -1,3 +1,12 @@
+.card-header.app--card-header {
+  a {
+    font-size: unset;
+    font-weight: unset;
+    line-height: unset;
+    letter-spacing: unset;
+  }
+}
+
 .app--feed-image img {
   max-height: 150px;
   object-fit: contain;

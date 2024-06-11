@@ -8,7 +8,8 @@
           clrInput
           type="text"
           name="searchText"
-          [(ngModel)]="searchText"
+          [ngModel]="searchText"
+          (ngModelChange)="_searchTextChanged($event)"
         />
       </clr-input-container>
     </div>
