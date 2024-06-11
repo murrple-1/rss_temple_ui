@@ -1,5 +1,8 @@
 import { APP_BASE_HREF } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -22,13 +25,6 @@ async function setup() {
   });
 
   await TestBed.configureTestingModule({
-    imports: [
-      FormsModule,
-      BrowserAnimationsModule,
-      HttpClientModule,
-      ClarityModule,
-      RouterTestingModule.withRoutes([]),
-    ],
     declarations: [
       AppComponent,
       AppAlertsComponent,
@@ -36,6 +32,12 @@ async function setup() {
       SubNavComponent,
       ConfirmModalComponent,
       SearchModalComponent,
+    ],
+    imports: [
+      FormsModule,
+      BrowserAnimationsModule,
+      ClarityModule,
+      RouterTestingModule.withRoutes([]),
     ],
     providers: [
       {
@@ -46,6 +48,7 @@ async function setup() {
         provide: ConfigService,
         useValue: mockConfigService,
       },
+      provideHttpClient(withInterceptorsFromDi()),
     ],
   }).compileComponents();
 

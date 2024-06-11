@@ -1,4 +1,7 @@
-﻿import { HttpClientModule } from '@angular/common/http';
+﻿import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -129,18 +132,6 @@ export function configFactory(configService: ConfigService) {
 }
 
 @NgModule({
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    FormsModule,
-    HttpClientModule,
-
-    ClarityModule,
-
-    AppSharedModule,
-
-    RouterModule.forRoot(routes, { onSameUrlNavigation: 'reload' }),
-  ],
   declarations: [
     AppComponent,
     NavComponent,
@@ -156,21 +147,28 @@ export function configFactory(configService: ConfigService) {
     CookieConsentSnackbarComponent,
   ],
   bootstrap: [AppComponent],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    FormsModule,
+    ClarityModule,
+    AppSharedModule,
+    RouterModule.forRoot(routes, { onSameUrlNavigation: 'reload' }),
+  ],
   providers: [
     {
       provide: APP_INITIALIZER,
       useFactory: clarityIconsFactory,
       multi: true,
     },
-
     CookieService,
-
     {
       provide: APP_INITIALIZER,
       useFactory: configFactory,
       multi: true,
       deps: [ConfigService],
     },
+    provideHttpClient(withInterceptorsFromDi()),
   ],
 })
 export class AppModule {}
