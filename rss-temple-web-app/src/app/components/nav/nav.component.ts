@@ -1,5 +1,10 @@
 import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import {
+  ActivatedRoute,
+  ActivatedRouteSnapshot,
+  NavigationEnd,
+  Router,
+} from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { filter, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { z } from 'zod';
@@ -121,6 +126,7 @@ export class NavComponent implements OnInit, OnDestroy {
   constructor(
     private zone: NgZone,
     private router: Router,
+    private route: ActivatedRoute,
     private authStateService: AuthStateService,
     private modalOpenService: ModalOpenService,
     private authService: AuthService,
@@ -177,13 +183,25 @@ export class NavComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
+  private async smartSearch(searchText: string) {
+    let route: ActivatedRouteSnapshot | null = this.route.snapshot;
+    while (route?.firstChild) {
+      route = route.firstChild;
+    }
+    if (route.routeConfig?.path === 'search/feeds') {
+      await this.router.navigate(['/main/search/feeds', { searchText }]);
+    } else {
+      await this.router.navigate(['/main/search/entries', { searchText }]);
+    }
+  }
+
   async onSearch() {
     const searchText = this.searchText.trim();
     if (searchText.length < 1) {
       return;
     }
 
-    await this.router.navigate(['/main/search', { searchText }]);
+    await this.smartSearch(searchText);
   }
 
   private async showSearchModal() {
@@ -196,9 +214,11 @@ export class NavComponent implements OnInit, OnDestroy {
       let searchText = await openSearchModal(searchModal);
       if (searchText !== null) {
         searchText = searchText.trim();
-        if (searchText.length > 0) {
-          this.router.navigate(['/main/search', { searchText }]);
+        if (searchText.length < 1) {
+          return;
         }
+
+        await this.smartSearch(searchText);
       }
     });
   }

@@ -15,7 +15,8 @@ import { DeleteUserConfirm1ModalComponent } from '@app/routes/main/components/pr
 import { DeleteUserConfirm2ModalComponent } from '@app/routes/main/components/profile/delete-user-confirm2-modal/delete-user-confirm2-modal.component';
 import { GlobalUserCategoriesModalComponent } from '@app/routes/main/components/profile/global-user-categories-modal/global-user-categories-modal.component';
 import { ProfileComponent } from '@app/routes/main/components/profile/profile.component';
-import { SearchComponent } from '@app/routes/main/components/search/search.component';
+import { SearchEntriesComponent } from '@app/routes/main/components/search/search-entries/search-entries.component';
+import { SearchFeedsComponent } from '@app/routes/main/components/search/search-feeds/search-feeds.component';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
 import { FeedsFooterComponent } from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
 import { LabelVoteModalComponent } from '@app/routes/main/components/shared/label-vote-modal/label-vote-modal.component';
@@ -65,7 +66,8 @@ import {
     FeedsFooterComponent,
     UserCategoriesModalComponent,
     ExploreComponent,
-    SearchComponent,
+    SearchEntriesComponent,
+    SearchFeedsComponent,
     ProfileComponent,
     GlobalUserCategoriesModalComponent,
     DeleteUserConfirm1ModalComponent,

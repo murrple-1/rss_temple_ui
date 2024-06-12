@@ -1,24 +1,25 @@
-import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { ClrLoadingState } from '@clr/angular';
 import { format as formatDate } from 'date-fns';
 import { where as langsWhere } from 'langs';
-import { Observable, Subject, combineLatest, firstValueFrom, of } from 'rxjs';
+import { Observable, combineLatest, firstValueFrom, of } from 'rxjs';
 import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 import { compare } from '@app/libs/compare.lib';
 import { Feed, FeedEntry } from '@app/models';
-import { HttpErrorService } from '@app/services';
+import { HttpErrorService, SubNavLinksService } from '@app/services';
 import { FeedEntryService, FeedService } from '@app/services/data';
 import { Sort } from '@app/services/data/sort.interface';
+
+import { AbstractSearchComponent } from '../abstract-search.component';
 
 type FeedImpl = Required<Pick<Feed, 'uuid' | 'title' | 'feedUrl' | 'homeUrl'>>;
 type FeedEntryImpl = Required<
   Pick<FeedEntry, 'publishedAt' | 'feedUuid' | 'title' | 'url' | 'authorName'>
 >;
-type FeedImpl2 = Required<Pick<Feed, 'title' | 'feedUrl' | 'homeUrl'>>;
 
-interface EntryDescriptor {
+interface FeedEntryDescriptor {
   title: string;
   url: string;
   publishedAt: Date;
@@ -26,12 +27,6 @@ interface EntryDescriptor {
   feedUrl: string;
   feedHomeUrl: string | null;
   authorName: string | null;
-}
-
-interface FeedDescriptor {
-  title: string;
-  feedUrl: string;
-  homeUrl: string | null;
 }
 
 enum LoadingState {
@@ -71,57 +66,52 @@ function languageSelectCompare(a: LanguageSelect, b: LanguageSelect): number {
 }
 
 @Component({
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss'],
+  templateUrl: './search-entries.component.html',
+  styleUrls: ['./search-entries.component.scss'],
 })
-export class SearchComponent implements OnInit, OnDestroy {
-  readonly LoadingState = LoadingState;
+export class SearchEntriesComponent extends AbstractSearchComponent {
+  searchTitle = '';
+  searchContent = '';
+  searchAuthorName = '';
+  searchPublishedAtStartDate: Date | null = null;
+  searchPublishedAtEndDate: Date | null = null;
+  searchButtonState = ClrLoadingState.DEFAULT;
+  availableLanguages: LanguageSelect[] | null = null;
+  searchLanguages: LanguageSelect[] = [];
 
-  entriesSearchTitle = '';
-  entriesSearchContent = '';
-  entriesSearchAuthorName = '';
-  entriesSearchPublishedAtStartDate: Date | null = null;
-  entriesSearchPublishedAtEndDate: Date | null = null;
-  entriesSearchButtonState = ClrLoadingState.DEFAULT;
-  entriesAvailableLanguages: LanguageSelect[] | null = null;
-  entriesSearchLanguages: LanguageSelect[] = [];
-  entriesLoadingState = LoadingState.IsNotLoading;
+  feedEntryDescriptors: FeedEntryDescriptor[] = [];
 
-  feedsSearchTitle = '';
-  feedsSearchButtonState = ClrLoadingState.DEFAULT;
-  feedsLoadingState = LoadingState.IsNotLoading;
-
-  entryDescriptors: EntryDescriptor[] = [];
-  feedDescriptors: FeedDescriptor[] = [];
-
-  private readonly unsubscribe$ = new Subject<void>();
-
-  get entriesSearchPublishedAtMinDate() {
-    if (this.entriesSearchPublishedAtStartDate === null) {
+  get searchPublishedAtMinDate() {
+    if (this.searchPublishedAtStartDate === null) {
       return undefined;
     } else {
-      return formatDate(this.entriesSearchPublishedAtStartDate, 'yyyy-MM-dd');
+      return formatDate(this.searchPublishedAtStartDate, 'yyyy-MM-dd');
     }
   }
 
-  get entriesSearchPublishedAtMaxDate() {
-    if (this.entriesSearchPublishedAtEndDate === null) {
+  get searchPublishedAtMaxDate() {
+    if (this.searchPublishedAtEndDate === null) {
       return undefined;
     } else {
-      return formatDate(this.entriesSearchPublishedAtEndDate, 'yyyy-MM-dd');
+      return formatDate(this.searchPublishedAtEndDate, 'yyyy-MM-dd');
     }
   }
 
   constructor(
-    private zone: NgZone,
-    private router: Router,
-    private route: ActivatedRoute,
+    zone: NgZone,
+    router: Router,
+    route: ActivatedRoute,
+    subnavLinksService: SubNavLinksService,
     private feedService: FeedService,
     private feedEntryService: FeedEntryService,
     private httpErrorService: HttpErrorService,
-  ) {}
+  ) {
+    super(zone, router, route, subnavLinksService);
+  }
 
   ngOnInit() {
+    super.ngOnInit();
+
     combineLatest([
       this.route.paramMap.pipe(startWith(undefined)),
       this.router.events.pipe(startWith(undefined)),
@@ -136,18 +126,15 @@ export class SearchComponent implements OnInit, OnDestroy {
           ) {
             const searchText = paramMap.get('searchText') ?? '';
             this.zone.run(() => {
-              this.entriesSearchTitle = searchText;
-              this.entriesSearchContent = '';
-              this.entriesSearchAuthorName = '';
-              this.entriesSearchPublishedAtStartDate = null;
-              this.entriesSearchPublishedAtEndDate = null;
-              this.entriesSearchLanguages = [];
-
-              this.feedsSearchTitle = searchText;
+              this.searchTitle = searchText;
+              this.searchContent = '';
+              this.searchAuthorName = '';
+              this.searchPublishedAtStartDate = null;
+              this.searchPublishedAtEndDate = null;
+              this.searchLanguages = [];
             });
 
-            this.updateEntriesSearch();
-            this.updateFeedsSearch();
+            this.updateSearch();
           }
         },
       });
@@ -203,27 +190,14 @@ export class SearchComponent implements OnInit, OnDestroy {
         return languageSelects_;
       })
       .then(entriesAvailableLanguages => {
-        this.entriesAvailableLanguages = entriesAvailableLanguages;
+        this.availableLanguages = entriesAvailableLanguages;
       })
       .catch(reason => {
         this.httpErrorService.handleError(reason);
       });
   }
 
-  ngOnDestroy() {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
-  }
-
-  private static cleanAndEscapeText(t: string) {
-    return t
-      .trim()
-      .replace('"', '\\"')
-      .replace('\n', '\\n')
-      .replace('\t', '\\t');
-  }
-
-  private searchEntries(
+  private doSearch(
     title: string,
     content: string,
     authorName: string,
@@ -233,9 +207,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     count: number,
     skip: number,
   ) {
-    title = SearchComponent.cleanAndEscapeText(title);
-    content = SearchComponent.cleanAndEscapeText(content);
-    authorName = SearchComponent.cleanAndEscapeText(authorName);
+    title = SearchEntriesComponent.cleanAndEscapeText(title);
+    content = SearchEntriesComponent.cleanAndEscapeText(content);
+    authorName = SearchEntriesComponent.cleanAndEscapeText(authorName);
 
     const searchParts: string[] = ['isArchived:"false"'];
     if (title.length > 0) {
@@ -343,7 +317,7 @@ export class SearchComponent implements OnInit, OnDestroy {
           );
         }),
         map(([feedEntries, feedEntryFeeds]) =>
-          feedEntries.map<EntryDescriptor>(fe => {
+          feedEntries.map<FeedEntryDescriptor>(fe => {
             const feed = feedEntryFeeds.find(f => f.uuid === fe.feedUuid);
             if (feed === undefined) {
               throw new Error('feed undefined');
@@ -363,69 +337,19 @@ export class SearchComponent implements OnInit, OnDestroy {
       );
   }
 
-  private searchFeeds(title: string, count: number, skip: number) {
-    title = SearchComponent.cleanAndEscapeText(title);
+  updateSearch() {
+    this.feedEntryDescriptors = [];
 
-    const searchParts: string[] = [];
-    if (title.length > 0) {
-      searchParts.push(`calculatedTitle:"${title}"`);
-    }
+    this.loadingState = LoadingState.IsLoading;
+    this.searchButtonState = ClrLoadingState.LOADING;
 
-    let search: string;
-    if (searchParts.length > 0) {
-      search = searchParts.join(' and ');
-    } else {
-      return of([]);
-    }
-
-    return this.feedService
-      .query({
-        fields: ['title', 'feedUrl', 'homeUrl'],
-        count,
-        skip,
-        returnTotalCount: false,
-        search,
-      })
-      .pipe(
-        map(response => {
-          if (response.objects !== undefined) {
-            return response.objects as FeedImpl2[];
-          }
-          throw new Error('malformed response');
-        }),
-        map(feeds => {
-          for (const feed of feeds) {
-            let title_ = feed.title.trim();
-            if (title_.length < 1) {
-              title_ = '[No Title]';
-            }
-            feed.title = title_;
-          }
-          return feeds;
-        }),
-        map(feeds =>
-          feeds.map<FeedDescriptor>(f => ({
-            title: f.title,
-            feedUrl: f.feedUrl,
-            homeUrl: f.homeUrl,
-          })),
-        ),
-      );
-  }
-
-  updateEntriesSearch() {
-    this.entryDescriptors = [];
-
-    this.entriesLoadingState = LoadingState.IsLoading;
-    this.entriesSearchButtonState = ClrLoadingState.LOADING;
-
-    this.searchEntries(
-      this.entriesSearchTitle,
-      this.entriesSearchContent,
-      this.entriesSearchAuthorName,
-      this.entriesSearchPublishedAtStartDate,
-      this.entriesSearchPublishedAtEndDate,
-      this.entriesSearchLanguages.map(e => e.value),
+    this.doSearch(
+      this.searchTitle,
+      this.searchContent,
+      this.searchAuthorName,
+      this.searchPublishedAtStartDate,
+      this.searchPublishedAtEndDate,
+      this.searchLanguages.map(e => e.value),
       Count,
       0,
     )
@@ -433,120 +357,59 @@ export class SearchComponent implements OnInit, OnDestroy {
       .subscribe({
         next: entryDescriptors => {
           this.zone.run(() => {
-            this.entriesLoadingState =
+            this.loadingState =
               entryDescriptors.length < Count
                 ? LoadingState.NoMoreToLoad
                 : LoadingState.IsNotLoading;
-            this.entriesSearchButtonState = ClrLoadingState.SUCCESS;
-            this.entryDescriptors = entryDescriptors;
+            this.searchButtonState = ClrLoadingState.SUCCESS;
+            this.feedEntryDescriptors = entryDescriptors;
           });
         },
         error: error => {
           this.zone.run(() => {
-            this.entriesLoadingState = LoadingState.IsNotLoading;
-            this.entriesSearchButtonState = ClrLoadingState.ERROR;
+            this.loadingState = LoadingState.IsNotLoading;
+            this.searchButtonState = ClrLoadingState.ERROR;
           });
           this.httpErrorService.handleError(error);
         },
       });
   }
 
-  updateFeedsSearch() {
-    this.feedDescriptors = [];
+  loadMore() {
+    this.loadingState = LoadingState.IsLoading;
+    this.searchButtonState = ClrLoadingState.LOADING;
 
-    this.feedsLoadingState = LoadingState.IsLoading;
-    this.feedsSearchButtonState = ClrLoadingState.LOADING;
-
-    this.searchFeeds(this.feedsSearchTitle, Count, 0)
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe({
-        next: feedDescriptors => {
-          this.zone.run(() => {
-            this.feedsLoadingState =
-              feedDescriptors.length < Count
-                ? LoadingState.NoMoreToLoad
-                : LoadingState.IsNotLoading;
-            this.feedsSearchButtonState = ClrLoadingState.SUCCESS;
-            this.feedDescriptors = feedDescriptors;
-          });
-        },
-        error: error => {
-          this.zone.run(() => {
-            this.feedsLoadingState = LoadingState.IsNotLoading;
-            this.feedsSearchButtonState = ClrLoadingState.ERROR;
-          });
-          this.httpErrorService.handleError(error);
-        },
-      });
-  }
-
-  loadMoreEntries() {
-    this.entriesLoadingState = LoadingState.IsLoading;
-    this.entriesSearchButtonState = ClrLoadingState.LOADING;
-
-    this.searchEntries(
-      this.entriesSearchTitle,
-      this.entriesSearchContent,
-      this.entriesSearchAuthorName,
-      this.entriesSearchPublishedAtStartDate,
-      this.entriesSearchPublishedAtEndDate,
-      this.entriesSearchLanguages.map(e => e.value),
+    this.doSearch(
+      this.searchTitle,
+      this.searchContent,
+      this.searchAuthorName,
+      this.searchPublishedAtStartDate,
+      this.searchPublishedAtEndDate,
+      this.searchLanguages.map(e => e.value),
       Count,
-      this.entryDescriptors.length,
+      this.feedEntryDescriptors.length,
     )
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: entryDescriptors => {
           const entryDescriptors_ = [
-            ...this.entryDescriptors,
+            ...this.feedEntryDescriptors,
             ...entryDescriptors,
           ];
 
           this.zone.run(() => {
-            this.entriesLoadingState =
+            this.loadingState =
               entryDescriptors.length < Count
                 ? LoadingState.NoMoreToLoad
                 : LoadingState.IsNotLoading;
-            this.entriesSearchButtonState = ClrLoadingState.SUCCESS;
-            this.entryDescriptors = entryDescriptors_;
+            this.searchButtonState = ClrLoadingState.SUCCESS;
+            this.feedEntryDescriptors = entryDescriptors_;
           });
         },
         error: error => {
           this.zone.run(() => {
-            this.entriesLoadingState = LoadingState.IsNotLoading;
-            this.entriesSearchButtonState = ClrLoadingState.ERROR;
-          });
-          this.httpErrorService.handleError(error);
-        },
-      });
-  }
-
-  loadMoreFeeds() {
-    this.feedsLoadingState = LoadingState.IsLoading;
-    this.feedsSearchButtonState = ClrLoadingState.LOADING;
-
-    this.searchFeeds(this.feedsSearchTitle, Count, this.feedDescriptors.length)
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe({
-        next: feedDescriptors => {
-          const feedDescriptors_ = [
-            ...this.feedDescriptors,
-            ...feedDescriptors,
-          ];
-
-          this.zone.run(() => {
-            this.feedsLoadingState =
-              feedDescriptors.length < Count
-                ? LoadingState.NoMoreToLoad
-                : LoadingState.IsNotLoading;
-            this.feedsSearchButtonState = ClrLoadingState.SUCCESS;
-            this.feedDescriptors = feedDescriptors_;
-          });
-        },
-        error: error => {
-          this.zone.run(() => {
-            this.feedsLoadingState = LoadingState.IsNotLoading;
-            this.feedsSearchButtonState = ClrLoadingState.ERROR;
+            this.loadingState = LoadingState.IsNotLoading;
+            this.searchButtonState = ClrLoadingState.ERROR;
           });
           this.httpErrorService.handleError(error);
         },

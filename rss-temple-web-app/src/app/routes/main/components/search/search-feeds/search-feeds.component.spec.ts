@@ -7,7 +7,7 @@ import { of } from 'rxjs';
 
 import { FeedEntryService, FeedService } from '@app/services/data';
 
-import { SearchComponent } from './search.component';
+import { SearchFeedsComponent } from './search-feeds.component';
 
 async function setup() {
   const mockFeedService = jasmine.createSpyObj<FeedService>('FeedService', [
@@ -25,7 +25,7 @@ async function setup() {
       ClarityModule,
       RouterTestingModule.withRoutes([]),
     ],
-    declarations: [SearchComponent],
+    declarations: [SearchFeedsComponent],
     providers: [
       {
         provide: FeedService,
@@ -56,7 +56,7 @@ describe('SearchComponent', () => {
       of(['ENG', 'UND', 'JPN']),
     );
 
-    const componentFixture = TestBed.createComponent(SearchComponent);
+    const componentFixture = TestBed.createComponent(SearchFeedsComponent);
     const component = componentFixture.componentInstance;
     expect(component).toBeTruthy();
     componentFixture.detectChanges();

@@ -3,7 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 
 export interface SubNavLink {
   text: string;
-  routerLink: string;
+  routerLink: string | any[];
 }
 
 @Injectable({

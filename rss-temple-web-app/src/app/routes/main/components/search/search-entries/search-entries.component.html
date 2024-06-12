@@ -1,0 +1,169 @@
+<div class="content-area">
+  <div class="clr-row">
+    <div class="clr-col-12">
+      <clr-accordion>
+        <clr-accordion-panel>
+          <clr-accordion-title>Advanced Search</clr-accordion-title>
+          <clr-accordion-content *clrIfExpanded>
+            <div class="clr-row">
+              <div class="clr-col-12">
+                <form clrForm #searchForm="ngForm" (ngSubmit)="updateSearch()">
+                  <clr-input-container>
+                    <label>Title</label>
+                    <input
+                      clrInput
+                      type="text"
+                      name="title"
+                      [(ngModel)]="searchTitle"
+                    />
+                  </clr-input-container>
+                  <clr-input-container>
+                    <label>Content</label>
+                    <input
+                      clrInput
+                      type="text"
+                      name="content"
+                      [(ngModel)]="searchContent"
+                    />
+                  </clr-input-container>
+                  <clr-input-container>
+                    <label>Author Name</label>
+                    <input
+                      clrInput
+                      type="text"
+                      name="authorName"
+                      [(ngModel)]="searchAuthorName"
+                    />
+                  </clr-input-container>
+                  <clr-date-container>
+                    <label>Published between...</label>
+                    <input
+                      clrDate
+                      type="date"
+                      placeholder="Start Date"
+                      name="publishedAtStartDate"
+                      [max]="searchPublishedAtMaxDate"
+                      ngModel
+                      [(clrDate)]="searchPublishedAtStartDate"
+                    />
+                  </clr-date-container>
+                  <clr-date-container>
+                    <input
+                      clrDate
+                      type="date"
+                      placeholder="End Date"
+                      name="publishedAtEndDate"
+                      [min]="searchPublishedAtMinDate"
+                      ngModel
+                      [(clrDate)]="searchPublishedAtEndDate"
+                    />
+                  </clr-date-container>
+                  <clr-combobox-container *ngIf="availableLanguages !== null">
+                    <label>Languages</label>
+                    <clr-combobox
+                      [(ngModel)]="searchLanguages"
+                      name="languages"
+                      clrMulti="true"
+                    >
+                      <ng-container *clrOptionSelected="let selected">
+                        <img class="app--flag" [src]="selected.imgSrc" />{{
+                          selected.name
+                        }}
+                      </ng-container>
+                      <clr-options>
+                        <clr-option
+                          *clrOptionItems="
+                            let state of availableLanguages;
+                            field: 'name'
+                          "
+                          [clrValue]="state"
+                        >
+                          <img class="app--flag" [src]="state.imgSrc" />{{
+                            state.name
+                          }}
+                        </clr-option>
+                      </clr-options>
+                    </clr-combobox>
+                  </clr-combobox-container>
+                  <button
+                    type="submit"
+                    class="btn btn-primary"
+                    [clrLoading]="searchButtonState"
+                  >
+                    Search
+                  </button>
+                </form>
+              </div>
+            </div>
+          </clr-accordion-content>
+        </clr-accordion-panel>
+      </clr-accordion>
+    </div>
+  </div>
+  <div class="clr-row">
+    <div class="clr-col-12">
+      <ng-container
+        *ngIf="feedEntryDescriptors.length > 0; then entries; else noEntries"
+      ></ng-container>
+      <ng-template #entries>
+        <div class="clr-row">
+          <div
+            *ngFor="let feedEntryDescriptor of feedEntryDescriptors"
+            class="clr-col-12"
+          >
+            <div class="card">
+              <div class="card-header app--card-header">
+                <a [attr.href]="feedEntryDescriptor.url" target="_blank">{{
+                  feedEntryDescriptor.title
+                }}</a>
+              </div>
+              <div class="card-block">
+                <div class="card-text">
+                  <p class="p4 app--creator">
+                    From
+                    <a
+                      [attr.href]="feedEntryDescriptor.feedHomeUrl"
+                      target="_blank"
+                      >{{ feedEntryDescriptor.feedTitle }}</a
+                    ><ng-container
+                      *ngIf="feedEntryDescriptor.authorName !== null"
+                      >&nbsp;by
+                      {{ feedEntryDescriptor.authorName }}</ng-container
+                    >
+                  </p>
+                  <p class="p7 app--date">
+                    {{ feedEntryDescriptor.publishedAt | dateFormat }}
+                  </p>
+                </div>
+              </div>
+              <div class="card-footer">
+                <a
+                  class="btn btn-outline-success btn-sm"
+                  [routerLink]="['/main/feed', feedEntryDescriptor.feedUrl]"
+                >
+                  Go To Feed
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="loadingState === LoadingState.IsNotLoading" class="clr-row">
+          <div class="clr-col-12">
+            <button class="btn btn-sm" (click)="loadMore()">See More...</button>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template #noEntries>
+        <div class="clr-row">
+          <div class="clr-col-12">No Entries Found</div>
+        </div>
+      </ng-template>
+      <div *ngIf="loadingState === LoadingState.IsLoading" class="clr-row">
+        <div class="clr-col-12">
+          <clr-spinner [clrInline]="true"></clr-spinner>
+          <span class="app--loading-text">Loading...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
