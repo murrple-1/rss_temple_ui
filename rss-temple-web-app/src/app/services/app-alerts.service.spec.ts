@@ -8,7 +8,7 @@ function setup() {
   };
 }
 
-describe('AlertService', () => {
+describe('AppAlertsService', () => {
   it('should construct', () => {
     const { appAlertsService } = setup();
 

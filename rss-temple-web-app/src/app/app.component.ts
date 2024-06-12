@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { CookieService } from 'ngx-cookie-service';
 
+import { ThemeService } from '@app/services';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -13,12 +15,15 @@ export class AppComponent implements OnInit {
   constructor(
     private title: Title,
     private cookieService: CookieService,
+    private themeService: ThemeService,
   ) {}
 
   ngOnInit() {
     this.title.setTitle('RSS Temple');
 
     this.shouldShowCookieConsent = !this.cookieService.check('cookieconsent');
+
+    this.themeService.init();
   }
 
   onCookieConsentAckowledged() {

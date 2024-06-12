@@ -30,6 +30,7 @@ import {
   AuthStateService,
   ConfigService,
   ModalOpenService,
+  ThemeService,
 } from '@app/services';
 import { AuthService } from '@app/services/data';
 
@@ -146,8 +147,7 @@ export class NavComponent implements OnInit, OnDestroy {
     private zone: NgZone,
     private router: Router,
     private route: ActivatedRoute,
-    @Inject(DOCUMENT) private document: Document,
-    private renderer: Renderer2,
+    private themeService: ThemeService,
     private authStateService: AuthStateService,
     private modalOpenService: ModalOpenService,
     private authService: AuthService,
@@ -249,16 +249,12 @@ export class NavComponent implements OnInit, OnDestroy {
     });
   }
 
-  private async enableDarkMode() {
-    this.renderer.setAttribute(this.document.body, 'cds-theme', 'dark');
-
-    // TODO save this preference
+  private enableDarkMode() {
+    this.themeService.enableDarkMode();
   }
 
-  private async enableLightMode() {
-    this.renderer.setAttribute(this.document.body, 'cds-theme', 'light');
-
-    // TODO save this preference
+  private enableLightMode() {
+    this.themeService.enableLightMode();
   }
 
   private async logout() {
