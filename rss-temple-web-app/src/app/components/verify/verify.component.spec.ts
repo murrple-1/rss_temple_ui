@@ -1,5 +1,5 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { RouterModule } from '@angular/router';
 
 import { RegistrationService } from '@app/services/data';
 
@@ -12,7 +12,7 @@ async function setup() {
   );
 
   await TestBed.configureTestingModule({
-    imports: [RouterTestingModule.withRoutes([])],
+    imports: [RouterModule.forRoot([])],
     declarations: [VerifyComponent],
     providers: [
       {

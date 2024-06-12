@@ -4,8 +4,7 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute, Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { of, throwError } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -49,7 +48,7 @@ async function setup() {
 
       ClarityModule,
 
-      RouterTestingModule.withRoutes([
+      RouterModule.forRoot([
         {
           path: 'main',
           component: MockComponent,

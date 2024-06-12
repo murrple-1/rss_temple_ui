@@ -1,10 +1,9 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
-import { ShareModule } from 'ngx-sharebuttons';
+import { ShareButtonDirective } from 'ngx-sharebuttons';
 import { of } from 'rxjs';
 
 import { InfoModalComponent } from '@app/components/shared/info-modal/info-modal.component';
@@ -74,8 +73,8 @@ async function setup() {
       FormsModule,
       BrowserAnimationsModule,
       ClarityModule,
-      ShareModule,
-      RouterTestingModule.withRoutes([]),
+      ShareButtonDirective,
+      RouterModule.forRoot([]),
     ],
     declarations: [
       FeedsComponent,

@@ -3,7 +3,7 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
+import { RouterModule } from '@angular/router';
 import { ClarityModule, ClrLoadingState } from '@clr/angular';
 import { of, throwError } from 'rxjs';
 
@@ -22,7 +22,7 @@ async function setup() {
       FormsModule,
       BrowserAnimationsModule,
       ClarityModule,
-      RouterTestingModule.withRoutes([]),
+      RouterModule.forRoot([]),
     ],
     declarations: [RequestPasswordResetModalComponent, EmailValidatorDirective],
     providers: [

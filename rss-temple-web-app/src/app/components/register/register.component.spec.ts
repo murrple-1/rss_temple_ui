@@ -4,14 +4,13 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { of, throwError } from 'rxjs';
 import { take } from 'rxjs/operators';
-import imageBinary from 'test_files/sample.png';
-import audioBinary from 'test_files/sample.wav';
 
+import imageBinary from '@app/../test_files/sample.png';
+import audioBinary from '@app/../test_files/sample.wav';
 import { InfoModalComponent } from '@app/components/shared/info-modal/info-modal.component';
 import { EmailValidatorDirective } from '@app/directives/email-validator.directive';
 import { PasswordValidatorDirective } from '@app/directives/password-validator.directive';
@@ -55,7 +54,7 @@ async function setup() {
 
       ClarityModule,
 
-      RouterTestingModule.withRoutes([
+      RouterModule.forRoot([
         {
           path: 'login',
           component: MockComponent,

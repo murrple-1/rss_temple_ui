@@ -1,17 +1,13 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
+import { RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 
 import { ExposedFeedsModalComponent } from './exposed-feeds-modal.component';
 
 async function setup() {
   await TestBed.configureTestingModule({
-    imports: [
-      ClarityModule,
-      BrowserAnimationsModule,
-      RouterTestingModule.withRoutes([]),
-    ],
+    imports: [ClarityModule, BrowserAnimationsModule, RouterModule.forRoot([])],
     declarations: [ExposedFeedsModalComponent],
   }).compileComponents();
 
