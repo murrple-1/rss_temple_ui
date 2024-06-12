@@ -10,8 +10,6 @@ enum LoadingState {
   NoMoreToLoad,
 }
 
-const Count = 10;
-
 @Directive()
 export abstract class AbstractSearchComponent implements OnInit, OnDestroy {
   readonly LoadingState = LoadingState;

@@ -119,7 +119,7 @@
             <ng-container
               *ngIf="captchaImageSrc !== null && captchaAudio !== null"
             >
-              <img [src]="captchaImageSrc" />
+              <img [src]="captchaImageSrc" alt="" title="Captcha" />
               <ng-container
                 *ngIf="captchaAudio.paused; then playButton; else stopButton"
               ></ng-container>

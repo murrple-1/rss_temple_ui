@@ -10,7 +10,11 @@
   >
   <ng-container *ngSwitchCase="State.IsEmpty">
     <div class="app--no-entries">
-      <img src="/assets/images/no_entries.png" class="app--no-entries-image" />
+      <img
+        src="/assets/images/no_entries.png"
+        class="app--no-entries-image"
+        alt="No Entries"
+      />
     </div>
   </ng-container>
   <ng-container *ngSwitchCase="State.HasNoMoreToLoad"

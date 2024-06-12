@@ -1,4 +1,4 @@
-import { Component, NgZone } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { ClrLoadingState } from '@clr/angular';
 import { format as formatDate } from 'date-fns';
@@ -69,7 +69,10 @@ function languageSelectCompare(a: LanguageSelect, b: LanguageSelect): number {
   templateUrl: './search-entries.component.html',
   styleUrls: ['./search-entries.component.scss'],
 })
-export class SearchEntriesComponent extends AbstractSearchComponent {
+export class SearchEntriesComponent
+  extends AbstractSearchComponent
+  implements OnInit
+{
   searchTitle = '';
   searchContent = '';
   searchAuthorName = '';

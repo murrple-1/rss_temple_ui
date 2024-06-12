@@ -66,9 +66,11 @@
                       clrMulti="true"
                     >
                       <ng-container *clrOptionSelected="let selected">
-                        <img class="app--flag" [src]="selected.imgSrc" />{{
-                          selected.name
-                        }}
+                        <img
+                          class="app--flag"
+                          [src]="selected.imgSrc"
+                          alt=""
+                        />{{ selected.name }}
                       </ng-container>
                       <clr-options>
                         <clr-option
@@ -78,9 +80,11 @@
                           "
                           [clrValue]="state"
                         >
-                          <img class="app--flag" [src]="state.imgSrc" />{{
-                            state.name
-                          }}
+                          <img
+                            class="app--flag"
+                            [src]="state.imgSrc"
+                            alt=""
+                          />{{ state.name }}
                         </clr-option>
                       </clr-options>
                     </clr-combobox>

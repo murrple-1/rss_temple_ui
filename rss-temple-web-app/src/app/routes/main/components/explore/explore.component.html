@@ -56,7 +56,7 @@
             </ng-template>
           </div>
           <div *ngIf="feed.imageSrc !== null" class="card-img app--feed-image">
-            <img [src]="feed.imageSrc" />
+            <img [src]="feed.imageSrc" alt="{{ feed.name }} image" />
           </div>
           <div class="card-block">
             <p>Example Articles</p>

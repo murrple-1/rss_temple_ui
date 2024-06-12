@@ -15,7 +15,7 @@ export class HttpErrorService {
     private authStateService: AuthStateService,
   ) {}
 
-  handleError(error: any) {
+  handleError(error: unknown) {
     let errorMessage = 'Unknown Error';
     if (error instanceof HttpErrorResponse) {
       switch (error.status) {

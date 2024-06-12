@@ -1,13 +1,4 @@
-import { DOCUMENT } from '@angular/common';
-import {
-  Component,
-  Inject,
-  NgZone,
-  OnDestroy,
-  OnInit,
-  Renderer2,
-  ViewChild,
-} from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,

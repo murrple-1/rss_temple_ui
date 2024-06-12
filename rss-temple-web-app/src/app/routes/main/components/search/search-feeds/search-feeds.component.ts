@@ -1,4 +1,4 @@
-import { Component, NgZone } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { ClrLoadingState } from '@clr/angular';
 import { combineLatest, of } from 'rxjs';
@@ -30,7 +30,10 @@ const Count = 10;
   templateUrl: './search-feeds.component.html',
   styleUrls: ['./search-feeds.component.scss'],
 })
-export class SearchFeedsComponent extends AbstractSearchComponent {
+export class SearchFeedsComponent
+  extends AbstractSearchComponent
+  implements OnInit
+{
   searchTitle = '';
   searchButtonState = ClrLoadingState.DEFAULT;
 

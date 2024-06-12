@@ -7,6 +7,7 @@
     'app--has-focus': hasFocus
   }"
   (click)="onClick($event)"
+  role="presentation"
 >
   <div class="card-header app--card-header">
     <a [attr.href]="feedEntry.url" target="_blank">{{ feedEntry.title }}</a>
@@ -55,7 +56,7 @@
       *ngIf="feedEntry.hasTopImageBeenProcessed && feedEntry.topImageSrc !== ''"
       class="card-text app--content app--top-image"
     >
-      <img [src]="feedEntry.topImageSrc" />
+      <img [src]="feedEntry.topImageSrc" alt="" />
     </div>
     <div
       class="card-text app--content"
