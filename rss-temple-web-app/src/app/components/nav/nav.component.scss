@@ -9,6 +9,11 @@
   }
 }
 
+:host-context(body[cds-theme='light']) .app--light-mode-action,
+:host-context(body[cds-theme='dark']) .app--dark-mode-action {
+  display: none;
+}
+
 a.app--active {
   background-color: rgba(255, 255, 255, 0.15);
 }

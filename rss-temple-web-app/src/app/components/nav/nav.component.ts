@@ -1,4 +1,13 @@
-import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import {
+  Component,
+  Inject,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  Renderer2,
+  ViewChild,
+} from '@angular/core';
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,
@@ -103,6 +112,16 @@ export class NavComponent implements OnInit, OnDestroy {
     onClick: () => this.showSearchModal(),
     classes: { 'app--search-action': true },
   };
+  private readonly lightModeAction: NavAction = {
+    clrIconShape: 'lightbulb',
+    onClick: () => this.enableLightMode(),
+    classes: { 'app--light-mode-action': true },
+  };
+  private readonly darkModeAction: NavAction = {
+    clrIconShape: 'lightbulb',
+    onClick: () => this.enableDarkMode(),
+    classes: { 'app--dark-mode-action': true },
+  };
   private readonly logoutAction: NavAction = {
     clrIconShape: 'logout',
     onClick: () => this.logout(),
@@ -127,6 +146,8 @@ export class NavComponent implements OnInit, OnDestroy {
     private zone: NgZone,
     private router: Router,
     private route: ActivatedRoute,
+    @Inject(DOCUMENT) private document: Document,
+    private renderer: Renderer2,
     private authStateService: AuthStateService,
     private modalOpenService: ModalOpenService,
     private authService: AuthService,
@@ -162,7 +183,12 @@ export class NavComponent implements OnInit, OnDestroy {
                 this.supportLink,
                 ...extraNavLinks,
               ];
-              this.navActions = [this.searchAction, this.logoutAction];
+              this.navActions = [
+                this.searchAction,
+                this.lightModeAction,
+                this.darkModeAction,
+                this.logoutAction,
+              ];
               this.isSearchVisible = true;
             } else {
               this.navLinks = [
@@ -170,7 +196,7 @@ export class NavComponent implements OnInit, OnDestroy {
                 this.supportLink,
                 ...extraNavLinks,
               ];
-              this.navActions = [];
+              this.navActions = [this.lightModeAction, this.darkModeAction];
               this.isSearchVisible = false;
             }
           });
@@ -221,6 +247,18 @@ export class NavComponent implements OnInit, OnDestroy {
         await this.smartSearch(searchText);
       }
     });
+  }
+
+  private async enableDarkMode() {
+    this.renderer.setAttribute(this.document.body, 'cds-theme', 'dark');
+
+    // TODO save this preference
+  }
+
+  private async enableLightMode() {
+    this.renderer.setAttribute(this.document.body, 'cds-theme', 'light');
+
+    // TODO save this preference
   }
 
   private async logout() {

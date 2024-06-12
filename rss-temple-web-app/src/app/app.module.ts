@@ -18,6 +18,7 @@ import {
   flaskIcon,
   folderIcon,
   libraryIcon,
+  lightbulbIcon,
   linkIcon,
   logoutIcon,
   minusIcon,
@@ -107,6 +108,7 @@ export function clarityIconsFactory() {
       bookIcon,
       linkIcon,
       bookmarkIcon,
+      lightbulbIcon,
       ...myCollectionIcons,
     );
   };
