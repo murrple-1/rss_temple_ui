@@ -1,4 +1,5 @@
 ﻿import {
+  HttpClient,
   provideHttpClient,
   withInterceptorsFromDi,
 } from '@angular/common/http';
@@ -37,20 +38,8 @@ import { IconShapeTuple } from '@cds/core/icon/interfaces/icon.interfaces';
 import '@cds/core/icon/register.js';
 import { ClarityModule } from '@clr/angular';
 import { CookieService } from 'ngx-cookie-service';
+import { catchError, firstValueFrom, forkJoin, of } from 'rxjs';
 
-import AppLogoSVG from '@app/../assets/images/icon.svg';
-import BookStrikethroughSVG from '@app/../custom_cds_icon_svgs/book-strikethrough.svg';
-import FacebookLogoSVG from '@app/../custom_cds_icon_svgs/facebook-f.svg';
-import FacebookMessengerLogoSVG from '@app/../custom_cds_icon_svgs/facebook-messenger.svg';
-import GoogleLogoSVG from '@app/../custom_cds_icon_svgs/google.svg';
-import LinkedInLogoSVG from '@app/../custom_cds_icon_svgs/linkedin.svg';
-import PinterestLogoSVG from '@app/../custom_cds_icon_svgs/pinterest.svg';
-import RedditLogoSVG from '@app/../custom_cds_icon_svgs/reddit.svg';
-import StarFilledSVG from '@app/../custom_cds_icon_svgs/star-filled.svg';
-import TelegramLogoSVG from '@app/../custom_cds_icon_svgs/telegram.svg';
-import TumblrLogoSVG from '@app/../custom_cds_icon_svgs/tumblr.svg';
-import TwitterLogoSVG from '@app/../custom_cds_icon_svgs/twitter.svg';
-import WhatsAppLogoSVG from '@app/../custom_cds_icon_svgs/whatsapp.svg';
 import { AppSharedModule } from '@app/app-shared.module';
 import { AppComponent } from '@app/app.component';
 import { routes } from '@app/app.routing';
@@ -67,23 +56,8 @@ import { SupportComponent } from '@app/components/support/support.component';
 import { VerifyComponent } from '@app/components/verify/verify.component';
 import { ConfigService } from '@app/services';
 
-export function clarityIconsFactory() {
-  return () => {
-    const myCollectionIcons: IconShapeTuple[] = [
-      ['app-logo', AppLogoSVG],
-      ['brand-facebook', FacebookLogoSVG],
-      ['brand-google', GoogleLogoSVG],
-      ['brand-twitter', TwitterLogoSVG],
-      ['brand-linkedin', LinkedInLogoSVG],
-      ['brand-pinterest', PinterestLogoSVG],
-      ['brand-reddit', RedditLogoSVG],
-      ['brand-tumblr', TumblrLogoSVG],
-      ['brand-telegram', TelegramLogoSVG],
-      ['brand-facebook-messenger', FacebookMessengerLogoSVG],
-      ['brand-whatsapp', WhatsAppLogoSVG],
-      ['book-strikethrough', BookStrikethroughSVG],
-      ['star-filled', StarFilledSVG],
-    ];
+export function clarityIconsFactory(http: HttpClient) {
+  return async () => {
     ClarityIcons.addIcons(
       exclamationCircleIcon,
       windowCloseIcon,
@@ -109,8 +83,84 @@ export function clarityIconsFactory() {
       linkIcon,
       bookmarkIcon,
       lightbulbIcon,
-      ...myCollectionIcons,
     );
+
+    const myCollectionIconDownloads = await firstValueFrom(
+      forkJoin({
+        'app-logo': http
+          .get('/assets/images/icon.svg', {
+            responseType: 'text',
+          })
+          .pipe(catchError(() => of(null))),
+        'brand-facebook': http
+          .get('/assets/custom_cds_icon_svgs/facebook-f.svg', {
+            responseType: 'text',
+          })
+          .pipe(catchError(() => of(null))),
+        'brand-google': http
+          .get('/assets/custom_cds_icon_svgs/google.svg', {
+            responseType: 'text',
+          })
+          .pipe(catchError(() => of(null))),
+        'brand-twitter': http
+          .get('/assets/custom_cds_icon_svgs/twitter.svg', {
+            responseType: 'text',
+          })
+          .pipe(catchError(() => of(null))),
+        'brand-linkedin': http
+          .get('/assets/custom_cds_icon_svgs/linkedin.svg', {
+            responseType: 'text',
+          })
+          .pipe(catchError(() => of(null))),
+        'brand-pinterest': http
+          .get('/assets/custom_cds_icon_svgs/pinterest.svg', {
+            responseType: 'text',
+          })
+          .pipe(catchError(() => of(null))),
+        'brand-reddit': http
+          .get('/assets/custom_cds_icon_svgs/reddit.svg', {
+            responseType: 'text',
+          })
+          .pipe(catchError(() => of(null))),
+        'brand-tumblr': http
+          .get('/assets/custom_cds_icon_svgs/tumblr.svg', {
+            responseType: 'text',
+          })
+          .pipe(catchError(() => of(null))),
+        'brand-telegram': http
+          .get('/assets/custom_cds_icon_svgs/telegram.svg', {
+            responseType: 'text',
+          })
+          .pipe(catchError(() => of(null))),
+        'brand-facebook-messenger': http
+          .get('/assets/custom_cds_icon_svgs/facebook-messenger.svg', {
+            responseType: 'text',
+          })
+          .pipe(catchError(() => of(null))),
+        'brand-whatsapp': http
+          .get('/assets/custom_cds_icon_svgs/whatsapp.svg', {
+            responseType: 'text',
+          })
+          .pipe(catchError(() => of(null))),
+        'book-strikethrough': http
+          .get('/assets/custom_cds_icon_svgs/book-strikethrough.svg', {
+            responseType: 'text',
+          })
+          .pipe(catchError(() => of(null))),
+        'star-filled': http
+          .get('/assets/custom_cds_icon_svgs/star-filled.svg', {
+            responseType: 'text',
+          })
+          .pipe(catchError(() => of(null))),
+      }),
+    );
+    const myCollectionIcons: IconShapeTuple[] = [];
+    for (const [key, value] of Object.entries(myCollectionIconDownloads)) {
+      if (value !== null) {
+        myCollectionIcons.push([key, value]);
+      }
+    }
+    ClarityIcons.addIcons(...myCollectionIcons);
   };
 }
 
@@ -143,10 +193,12 @@ export function configFactory(configService: ConfigService) {
     RouterModule.forRoot(routes, { onSameUrlNavigation: 'reload' }),
   ],
   providers: [
+    provideHttpClient(withInterceptorsFromDi()),
     {
       provide: APP_INITIALIZER,
       useFactory: clarityIconsFactory,
       multi: true,
+      deps: [HttpClient],
     },
     CookieService,
     {
@@ -155,7 +207,6 @@ export function configFactory(configService: ConfigService) {
       multi: true,
       deps: [ConfigService],
     },
-    provideHttpClient(withInterceptorsFromDi()),
   ],
 })
 export class AppModule {}

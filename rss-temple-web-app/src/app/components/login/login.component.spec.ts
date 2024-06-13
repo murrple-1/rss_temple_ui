@@ -418,9 +418,10 @@ describe('LoginComponent', () => {
     const { mockAuthService } = await setup();
     mockAuthService.login.and.returnValue(
       throwError(
-        new HttpErrorResponse({
-          status: 0,
-        }),
+        () =>
+          new HttpErrorResponse({
+            status: 0,
+          }),
       ),
     );
     spyOn(console, 'error');
@@ -469,9 +470,10 @@ describe('LoginComponent', () => {
     const { mockAuthService } = await setup();
     mockAuthService.login.and.returnValue(
       throwError(
-        new HttpErrorResponse({
-          status: 401,
-        }),
+        () =>
+          new HttpErrorResponse({
+            status: 401,
+          }),
       ),
     );
     spyOn(console, 'error');
@@ -511,7 +513,7 @@ describe('LoginComponent', () => {
   it('should handle login errors: unknown error', waitForAsync(async () => {
     const { mockAuthService } = await setup();
     mockAuthService.login.and.returnValue(
-      throwError(new Error('unknown error')),
+      throwError(() => new Error('unknown error')),
     );
     spyOn(console, 'error');
     const appAlertService = TestBed.inject(AppAlertsService);
@@ -559,9 +561,10 @@ describe('LoginComponent', () => {
     const { mockSocialService } = await setup();
     mockSocialService.googleLogin.and.returnValue(
       throwError(
-        new HttpErrorResponse({
-          status: 0,
-        }),
+        () =>
+          new HttpErrorResponse({
+            status: 0,
+          }),
       ),
     );
     spyOn(console, 'error');
@@ -595,10 +598,11 @@ describe('LoginComponent', () => {
     const { mockSocialService } = await setup();
     mockSocialService.googleLogin.and.returnValue(
       throwError(
-        new HttpErrorResponse({
-          status: 422,
-          error: {},
-        }),
+        () =>
+          new HttpErrorResponse({
+            status: 422,
+            error: {},
+          }),
       ),
     );
 
@@ -616,7 +620,7 @@ describe('LoginComponent', () => {
   it('should handle Google login errors: unknown error', waitForAsync(async () => {
     const { mockSocialService } = await setup();
     mockSocialService.googleLogin.and.returnValue(
-      throwError(new Error('unknown error')),
+      throwError(() => new Error('unknown error')),
     );
     spyOn(console, 'error');
     const appAlertService = TestBed.inject(AppAlertsService);
@@ -649,9 +653,10 @@ describe('LoginComponent', () => {
     const { mockSocialService } = await setup();
     mockSocialService.facebookLogin.and.returnValue(
       throwError(
-        new HttpErrorResponse({
-          status: 0,
-        }),
+        () =>
+          new HttpErrorResponse({
+            status: 0,
+          }),
       ),
     );
     spyOn(console, 'error');
@@ -685,10 +690,11 @@ describe('LoginComponent', () => {
     const { mockSocialService } = await setup();
     mockSocialService.facebookLogin.and.returnValue(
       throwError(
-        new HttpErrorResponse({
-          status: 422,
-          error: {},
-        }),
+        () =>
+          new HttpErrorResponse({
+            status: 422,
+            error: {},
+          }),
       ),
     );
 
@@ -706,7 +712,7 @@ describe('LoginComponent', () => {
   it('should handle Facebook login errors: unknown error', waitForAsync(async () => {
     const { mockSocialService } = await setup();
     mockSocialService.facebookLogin.and.returnValue(
-      throwError(new Error('unknown error')),
+      throwError(() => new Error('unknown error')),
     );
     spyOn(console, 'error');
     const appAlertService = TestBed.inject(AppAlertsService);

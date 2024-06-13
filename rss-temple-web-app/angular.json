@@ -47,12 +47,7 @@
             "sourceMap": true,
             "namedChunks": true,
             "extractLicenses": false,
-            "browser": "src/main.ts",
-            "loader": {
-              ".svg": "text",
-              ".png": "binary",
-              ".wav": "binary"
-            }
+            "browser": "src/main.ts"
           },
           "configurations": {
             "production": {

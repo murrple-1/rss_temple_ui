@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { z } from 'zod';
 
-import RSSIconSVG from '@app/../assets/images/rss-icon.svg';
 import osLicenses from '@app/os-licenses.json';
 import { ConfigService } from '@app/services';
 
@@ -56,7 +55,6 @@ export class SupportComponent {
   readonly privacyPolicyUrl: string | null;
 
   readonly licensesText = licensesText;
-  readonly rssIconSvg = RSSIconSVG;
 
   constructor(configService: ConfigService) {
     const [

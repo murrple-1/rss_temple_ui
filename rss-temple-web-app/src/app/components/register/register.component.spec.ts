@@ -9,8 +9,6 @@ import { ClarityModule } from '@clr/angular';
 import { of, throwError } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import imageBinary from '@app/../test_files/sample.png';
-import audioBinary from '@app/../test_files/sample.wav';
 import { InfoModalComponent } from '@app/components/shared/info-modal/info-modal.component';
 import { EmailValidatorDirective } from '@app/directives/email-validator.directive';
 import { PasswordValidatorDirective } from '@app/directives/password-validator.directive';
@@ -22,17 +20,20 @@ import { MockActivatedRoute } from '@app/test/activatedroute.mock';
 
 import { RegisterComponent } from './register.component';
 
-const imageBlob = new Blob([imageBinary], {
-  type: 'image/png',
-});
-const audioBlob = new Blob([audioBinary], {
-  type: 'audio/wav',
-});
-
 @Component({})
 class MockComponent {}
 
+let imageBlob: Blob | null = null;
+let audioBlob: Blob | null = null;
+
 async function setup() {
+  if (imageBlob === null) {
+    throw new Error('Image blob not loaded');
+  }
+  if (audioBlob === null) {
+    throw new Error('Audio blob not loaded');
+  }
+
   const mockRoute = new MockActivatedRoute();
 
   const mockCaptchService = jasmine.createSpyObj<CaptchaService>(
@@ -93,6 +94,22 @@ async function setup() {
 }
 
 describe('RegisterComponent', () => {
+  beforeAll(async () => {
+    const [imageResponse, audioResponse] = await Promise.all([
+      fetch('/test_files/sample.png'),
+      fetch('/test_files/sample.wav'),
+    ]);
+    if (!imageResponse.ok) {
+      throw new Error(imageResponse.statusText);
+    }
+    if (!audioResponse.ok) {
+      throw new Error(imageResponse.statusText);
+    }
+
+    imageBlob = await imageResponse.blob();
+    audioBlob = await audioResponse.blob();
+  });
+
   it('should create the component', waitForAsync(async () => {
     await setup();
 
@@ -403,9 +420,10 @@ describe('RegisterComponent', () => {
     const { mockRegistrationService } = await setup();
     mockRegistrationService.register.and.returnValue(
       throwError(
-        new HttpErrorResponse({
-          status: 0,
-        }),
+        () =>
+          new HttpErrorResponse({
+            status: 0,
+          }),
       ),
     );
     spyOn(console, 'error');
@@ -463,9 +481,10 @@ describe('RegisterComponent', () => {
     const { mockRegistrationService } = await setup();
     mockRegistrationService.register.and.returnValue(
       throwError(
-        new HttpErrorResponse({
-          status: 409,
-        }),
+        () =>
+          new HttpErrorResponse({
+            status: 409,
+          }),
       ),
     );
     const appAlertService = TestBed.inject(AppAlertsService);

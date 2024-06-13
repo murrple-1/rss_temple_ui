@@ -157,9 +157,10 @@ describe('RequestPasswordResetModalComponent', () => {
     const { mockAuthService } = await setup();
     mockAuthService.requestPasswordReset.and.returnValue(
       throwError(
-        new HttpErrorResponse({
-          status: 0,
-        }),
+        () =>
+          new HttpErrorResponse({
+            status: 0,
+          }),
       ),
     );
     spyOn(console, 'error');
