@@ -14,5 +14,5 @@ RUN cp /build/src/environments/environment.production.ts /build/src/environments
 
 FROM caddy:2-alpine AS production
 
-COPY --from=builder /build/dist/ /srv/
+COPY --from=builder /build/dist/browser/ /srv/
 COPY ./Caddyfile /etc/caddy/Caddyfile
