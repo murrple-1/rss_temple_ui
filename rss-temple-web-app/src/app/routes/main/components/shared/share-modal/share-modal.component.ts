@@ -31,7 +31,7 @@ export const DefaultShareButtonDescriptors: ShareButtonDescriptor[] = [
   {
     shareButton: xParams,
     title: 'Twitter/X',
-    iconName: 'brand-twitter',
+    iconName: 'brand-twitter-x',
   },
   {
     shareButton: linkedInParams,

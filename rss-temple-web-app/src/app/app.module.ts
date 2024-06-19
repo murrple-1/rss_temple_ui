@@ -102,8 +102,8 @@ export function clarityIconsFactory(http: HttpClient) {
             responseType: 'text',
           })
           .pipe(catchError(() => of(null))),
-        'brand-twitter': http
-          .get('/assets/custom_cds_icon_svgs/twitter.svg', {
+        'brand-twitter-x': http
+          .get('/assets/custom_cds_icon_svgs/twitter-x.svg', {
             responseType: 'text',
           })
           .pipe(catchError(() => of(null))),

@@ -7,6 +7,6 @@ services:
     build: .
     environment:
       WEB_APP_URL: "http://localhost:3001"
-      TWITTER_URL: "https://twitter.com"
+      TWITTER_X_URL: "https://x.com"
       FB_URL: "https://facebook.com"
       INSTA_URL: "https://instagram.com"
