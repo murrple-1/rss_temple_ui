@@ -10,5 +10,12 @@
   "tosUrl": "http://localhost:8080/tos/",
   "forceLabelThreshold": 0.5,
   "extraNavLinks": [],
-  "donationBadges": []
+  "donationBadges": [],
+  "lemmyInstanceSuggestions": [
+    "lemmy.world",
+    "lemmy.ml",
+    "lemm.ee",
+    "lemmy.zip"
+  ],
+  "mastodonInstanceSuggestions": ["mastodon.social", "mastodon.online"]
 }

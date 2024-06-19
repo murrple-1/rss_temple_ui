@@ -142,6 +142,16 @@ export function clarityIconsFactory(http: HttpClient) {
             responseType: 'text',
           })
           .pipe(catchError(() => of(null))),
+        'brand-lemmy': http
+          .get('/assets/custom_cds_icon_svgs/lemmy.svg', {
+            responseType: 'text',
+          })
+          .pipe(catchError(() => of(null))),
+        'brand-mastodon': http
+          .get('/assets/custom_cds_icon_svgs/mastodon.svg', {
+            responseType: 'text',
+          })
+          .pipe(catchError(() => of(null))),
         'book-strikethrough': http
           .get('/assets/custom_cds_icon_svgs/book-strikethrough.svg', {
             responseType: 'text',

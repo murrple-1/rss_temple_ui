@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import {
   IShareButton,
   copyParams,
@@ -15,6 +15,15 @@ import {
 } from 'ngx-sharebuttons';
 import { Subject, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
+
+import {
+  LemmyShareModalComponent,
+  openModal as openLemmyShareModal,
+} from '@app/routes/main/components/shared/share-modal/lemmy-share-modal/lemmy-share-modal.component';
+import {
+  MastodonShareModalComponent,
+  openModal as openMastodonShareModal,
+} from '@app/routes/main/components/shared/share-modal/mastodon-share-modal/mastodon-share-modal.component';
 
 interface _ShareButtonDescriptor {
   iconName: string;
@@ -79,14 +88,14 @@ export class ShareModalComponent implements OnDestroy {
         text: 'Lemmy…',
         onClick: () => this.lemmyShare(),
       },
-      iconName: 'brand-telegram',
+      iconName: 'brand-lemmy',
     },
     {
       customShareButton: {
         text: 'Mastodon…',
         onClick: () => this.mastodonShare(),
       },
-      iconName: 'brand-telegram',
+      iconName: 'brand-mastodon',
     },
     {
       shareButton: telegramParams,
@@ -115,6 +124,12 @@ export class ShareModalComponent implements OnDestroy {
       iconName: 'clipboard',
     },
   ];
+
+  @ViewChild(LemmyShareModalComponent, { static: true })
+  lemmyShareModal?: LemmyShareModalComponent;
+
+  @ViewChild(MastodonShareModalComponent, { static: true })
+  mastodonShareModal?: MastodonShareModalComponent;
 
   result = new Subject<void>();
 
@@ -145,26 +160,36 @@ export class ShareModalComponent implements OnDestroy {
     }
   }
 
-  lemmyShare() {
-    // TODO this is a placeholder, need to implement this properly
-    let instance = window.prompt('Please tell me your Lemmy instance');
-    window.open(
-      `https://${instance}/create_post?title=${encodeURIComponent(
-        this.title,
-      )}&url=${encodeURIComponent(this.url)}`,
-      '_blank',
+  async lemmyShare() {
+    const lemmyShareModal = this.lemmyShareModal;
+    if (lemmyShareModal === undefined) {
+      throw new Error('lemmyShareModal undefined');
+    }
+
+    const url = await openLemmyShareModal(
+      this.title,
+      this.url,
+      lemmyShareModal,
     );
+    if (url !== null) {
+      window.open(url, '_blank');
+    }
   }
 
-  mastodonShare() {
-    // TODO this is a placeholder, need to implement this properly
-    let instance = window.prompt('Please tell me your Mastodon instance');
-    window.open(
-      `https://${instance}/share?text=${encodeURIComponent(
-        this.title,
-      )}%0A${encodeURIComponent(this.url)}`,
-      '_blank',
+  async mastodonShare() {
+    const mastodonShareModal = this.mastodonShareModal;
+    if (mastodonShareModal === undefined) {
+      throw new Error('mastodonShareModal undefined');
+    }
+
+    const url = await openMastodonShareModal(
+      this.title,
+      this.url,
+      mastodonShareModal,
     );
+    if (url !== null) {
+      window.open(url, '_blank');
+    }
   }
 
   close() {

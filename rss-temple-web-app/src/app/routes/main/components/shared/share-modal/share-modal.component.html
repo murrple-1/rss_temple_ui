@@ -27,7 +27,7 @@
         class="btn btn-outline app--share-button"
         (click)="shareButtonDescriptor.customShareButton.onClick()"
       >
-        <cds-icon shape="share"></cds-icon>
+        <cds-icon [attr.shape]="shareButtonDescriptor.iconName"></cds-icon>
         <span class="app--share-title">{{
           shareButtonDescriptor.customShareButton.text
         }}</span>
@@ -40,3 +40,6 @@
     </button>
   </div>
 </clr-modal>
+
+<app-lemmy-share-modal></app-lemmy-share-modal>
+<app-mastodon-share-modal></app-mastodon-share-modal>

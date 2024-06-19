@@ -4,12 +4,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClarityModule } from '@clr/angular';
 import { ShareButtonDirective } from 'ngx-sharebuttons';
 
-import { LemmyShareModalComponent } from '@app/routes/main/components/shared/share-modal/lemmy-share-modal/lemmy-share-modal.component';
-import { MastodonShareModalComponent } from '@app/routes/main/components/shared/share-modal/mastodon-share-modal/mastodon-share-modal.component';
 import { ConfigService } from '@app/services';
 import { MockConfigService } from '@app/test/config.service.mock';
 
-import { ShareModalComponent } from './share-modal.component';
+import { LemmyShareModalComponent } from './lemmy-share-modal.component';
 
 async function setup() {
   const mockConfigService = new MockConfigService({});
@@ -21,24 +19,18 @@ async function setup() {
       ClarityModule,
       ShareButtonDirective,
     ],
-    declarations: [
-      LemmyShareModalComponent,
-      MastodonShareModalComponent,
-      ShareModalComponent,
-    ],
+    declarations: [LemmyShareModalComponent],
     providers: [{ provide: ConfigService, useValue: mockConfigService }],
   }).compileComponents();
 
-  return {
-    mockConfigService,
-  };
+  return {};
 }
 
-describe('ShareModalComponent', () => {
+describe('LemmyShareModalComponent', () => {
   it('should create the component', waitForAsync(async () => {
     await setup();
 
-    const componentFixture = TestBed.createComponent(ShareModalComponent);
+    const componentFixture = TestBed.createComponent(LemmyShareModalComponent);
     const component = componentFixture.componentInstance;
     expect(component).toBeTruthy();
     componentFixture.detectChanges();

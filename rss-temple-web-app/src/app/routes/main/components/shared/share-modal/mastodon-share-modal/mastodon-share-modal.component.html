@@ -1,0 +1,32 @@
+<form clrForm #shareForm="ngForm" (ngSubmit)="onSearch()">
+  <clr-modal [clrModalOpen]="open" (clrModalOpenChange)="openChanged($event)">
+    <h4 class="modal-title">Share on Mastodon</h4>
+    <div class="modal-body">
+      <clr-datalist-container>
+        <label>Instance</label>
+        <input
+          clrDatalistInput
+          type="text"
+          name="instance"
+          required
+          appFediverseInstance
+          [ngModel]="instance"
+          (ngModelChange)="_instanceChanged($event)"
+        />
+        <datalist>
+          <option
+            *ngFor="let instanceSuggestion of instanceSuggestions"
+            [value]="instanceSuggestion"
+          ></option>
+        </datalist>
+        <clr-control-helper
+          >Enter the domain of a Mastodon instance</clr-control-helper
+        >
+        <clr-control-error>Not a valid instance</clr-control-error>
+      </clr-datalist-container>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" type="submit">Share</button>
+    </div>
+  </clr-modal>
+</form>

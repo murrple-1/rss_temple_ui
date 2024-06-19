@@ -20,11 +20,14 @@ import { SearchFeedsComponent } from '@app/routes/main/components/search/search-
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
 import { FeedsFooterComponent } from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
 import { LabelVoteModalComponent } from '@app/routes/main/components/shared/label-vote-modal/label-vote-modal.component';
+import { LemmyShareModalComponent } from '@app/routes/main/components/shared/share-modal/lemmy-share-modal/lemmy-share-modal.component';
+import { MastodonShareModalComponent } from '@app/routes/main/components/shared/share-modal/mastodon-share-modal/mastodon-share-modal.component';
 import { ShareModalComponent } from '@app/routes/main/components/shared/share-modal/share-modal.component';
 import { ExposedFeedsModalComponent as VerticalNavExposedFeedsModalComponent } from '@app/routes/main/components/shared/vertical-nav/exposed-feeds-modal/exposed-feeds-modal.component';
 import { OPMLModalComponent as VerticalNavOPMLModalComponent } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
 import { SubscribeModalComponent as VerticalNavSubscribeModalComponent } from '@app/routes/main/components/shared/vertical-nav/subscribe-modal/subscribe-modal.component';
 import { VerticalNavComponent } from '@app/routes/main/components/shared/vertical-nav/vertical-nav.component';
+import { FediverseInstanceValidatorDirective } from '@app/routes/main/directives/fediverse-instance-validator.directive';
 import { InfiniteScrollDirective } from '@app/routes/main/directives/infinite-scroll.directive';
 import { InViewportDirective } from '@app/routes/main/directives/inviewport.directive';
 import { MainComponent } from '@app/routes/main/main.component';
@@ -58,6 +61,7 @@ import {
   declarations: [
     InViewportDirective,
     InfiniteScrollDirective,
+    FediverseInstanceValidatorDirective,
 
     MainComponent,
     OnboardingModalComponent,
@@ -75,6 +79,8 @@ import {
     VerticalNavComponent,
     FeedEntryViewComponent,
     ShareModalComponent,
+    LemmyShareModalComponent,
+    MastodonShareModalComponent,
     LabelVoteModalComponent,
     VerticalNavSubscribeModalComponent,
     VerticalNavOPMLModalComponent,
