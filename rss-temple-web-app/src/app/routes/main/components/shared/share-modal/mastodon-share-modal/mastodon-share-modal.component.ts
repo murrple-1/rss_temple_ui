@@ -37,12 +37,27 @@ export class MastodonShareModalComponent implements OnDestroy {
   result = new Subject<string | null>();
 
   constructor(configService: ConfigService) {
-    const instanceSuggestions = configService.get(
+    const configInstanceSuggestions = configService.get(
       'mastodonInstanceSuggestions',
     );
-    this.instanceSuggestions = Array.isArray(instanceSuggestions)
-      ? (instanceSuggestions as string[])
-      : [];
+    let instanceSuggestions: string[] | null;
+    if (Array.isArray(configInstanceSuggestions)) {
+      if (
+        configInstanceSuggestions.every(
+          instanceSuggestion => typeof instanceSuggestion === 'string',
+        )
+      ) {
+        instanceSuggestions = configInstanceSuggestions as string[];
+      } else {
+        instanceSuggestions = null;
+      }
+    } else {
+      instanceSuggestions = null;
+    }
+    this.instanceSuggestions =
+      instanceSuggestions !== null
+        ? instanceSuggestions
+        : ['mastodon.social', 'mastodon.online'];
   }
 
   ngOnDestroy() {

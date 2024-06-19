@@ -37,10 +37,27 @@ export class LemmyShareModalComponent implements OnDestroy {
   result = new Subject<string | null>();
 
   constructor(configService: ConfigService) {
-    const instanceSuggestions = configService.get('lemmyInstanceSuggestions');
-    this.instanceSuggestions = Array.isArray(instanceSuggestions)
-      ? (instanceSuggestions as string[])
-      : [];
+    const configInstanceSuggestions = configService.get(
+      'lemmyInstanceSuggestions',
+    );
+    let instanceSuggestions: string[] | null;
+    if (Array.isArray(configInstanceSuggestions)) {
+      if (
+        configInstanceSuggestions.every(
+          instanceSuggestion => typeof instanceSuggestion === 'string',
+        )
+      ) {
+        instanceSuggestions = configInstanceSuggestions as string[];
+      } else {
+        instanceSuggestions = null;
+      }
+    } else {
+      instanceSuggestions = null;
+    }
+    this.instanceSuggestions =
+      instanceSuggestions !== null
+        ? instanceSuggestions
+        : ['lemmy.world', 'lemmy.ml', 'lemm.ee', 'lemmy.zip'];
   }
 
   ngOnDestroy() {
