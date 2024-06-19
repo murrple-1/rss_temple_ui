@@ -9,16 +9,30 @@
       <cds-icon shape="share"></cds-icon>
       <span class="app--share-title">Share via Browser…</span>
     </button>
-    <button
-      *ngFor="let shareButtonDescriptor of shareButtonDescriptors"
-      class="btn btn-outline app--share-button"
-      [shareButton]="shareButtonDescriptor.shareButton.type"
-      [url]="url"
-      [title]="title"
-    >
-      <cds-icon [attr.shape]="shareButtonDescriptor.iconName"></cds-icon>
-      <span class="app--share-title">{{ shareButtonDescriptor.title }}</span>
-    </button>
+    <ng-container *ngFor="let shareButtonDescriptor of shareButtonDescriptors">
+      <button
+        *ngIf="shareButtonDescriptor.shareButton !== undefined"
+        class="btn btn-outline app--share-button"
+        [shareButton]="shareButtonDescriptor.shareButton.type"
+        [url]="url"
+        [title]="title"
+      >
+        <cds-icon [attr.shape]="shareButtonDescriptor.iconName"></cds-icon>
+        <span class="app--share-title">{{
+          shareButtonDescriptor.shareButton.text
+        }}</span>
+      </button>
+      <button
+        *ngIf="shareButtonDescriptor.customShareButton !== undefined"
+        class="btn btn-outline app--share-button"
+        (click)="shareButtonDescriptor.customShareButton.onClick()"
+      >
+        <cds-icon shape="share"></cds-icon>
+        <span class="app--share-title">{{
+          shareButtonDescriptor.customShareButton.text
+        }}</span>
+      </button>
+    </ng-container>
   </div>
   <div class="modal-footer">
     <button class="btn btn-primary" type="button" (click)="close()">

@@ -16,75 +16,24 @@ import {
 import { Subject, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-export interface ShareButtonDescriptor {
-  shareButton: IShareButton;
-  title: string;
+interface _ShareButtonDescriptor {
   iconName: string;
 }
 
-export const DefaultShareButtonDescriptors: ShareButtonDescriptor[] = [
-  {
-    shareButton: facebookParams,
-    title: 'Facebook',
-    iconName: 'brand-facebook',
-  },
-  {
-    shareButton: xParams,
-    title: 'Twitter/X',
-    iconName: 'brand-twitter-x',
-  },
-  {
-    shareButton: linkedInParams,
-    title: 'LinkedIn',
-    iconName: 'brand-linkedin',
-  },
-  {
-    shareButton: pinterestParams,
-    title: 'Pinterest',
-    iconName: 'brand-pinterest',
-  },
-  {
-    shareButton: redditParams,
-    title: 'Reddit',
-    iconName: 'brand-reddit',
-  },
-  {
-    shareButton: tumblrParams,
-    title: 'Tumblr',
-    iconName: 'brand-tumblr',
-  },
-  {
-    shareButton: telegramParams,
-    title: 'Telegram',
-    iconName: 'brand-telegram',
-  },
-  // TODO doesn't appear to work right now...
-  // {
-  //   shareButton: messengerParams,
-  //   title: 'Facebook Messenger',
-  //   iconName: 'brand-facebook-messenger',
-  // },
-  {
-    shareButton: whatsappParams,
-    title: 'WhatsApp',
-    iconName: 'brand-whatsapp',
-  },
-  {
-    shareButton: smsParams,
-    title: 'SMS',
-    iconName: 'talk-bubbles',
-  },
-  {
-    shareButton: emailParams,
-    title: 'Email',
-    iconName: 'envelope',
-  },
-  {
-    shareButton: copyParams,
-    title: 'Copy to Clipboard',
-    iconName: 'clipboard',
-  },
-];
+interface _NgxShareButtonsShareButtonDescriptor extends _ShareButtonDescriptor {
+  shareButton: IShareButton;
+}
+
+interface _CustomShareButtonDescriptor extends _ShareButtonDescriptor {
+  customShareButton: {
+    text: string;
+    onClick: () => void;
+  };
+}
+
+type ShareButtonDescriptor =
+  | _NgxShareButtonsShareButtonDescriptor
+  | _CustomShareButtonDescriptor;
 
 @Component({
   selector: 'app-share-modal',
@@ -100,8 +49,72 @@ export class ShareModalComponent implements OnDestroy {
 
   readonly isWebShareAPIAvailable = Boolean(navigator.share);
 
-  shareButtonDescriptors: ShareButtonDescriptor[] =
-    DefaultShareButtonDescriptors;
+  shareButtonDescriptors: ShareButtonDescriptor[] = [
+    {
+      shareButton: facebookParams,
+      iconName: 'brand-facebook',
+    },
+    {
+      shareButton: xParams,
+      iconName: 'brand-twitter-x',
+    },
+    {
+      shareButton: linkedInParams,
+      iconName: 'brand-linkedin',
+    },
+    {
+      shareButton: pinterestParams,
+      iconName: 'brand-pinterest',
+    },
+    {
+      shareButton: redditParams,
+      iconName: 'brand-reddit',
+    },
+    {
+      shareButton: tumblrParams,
+      iconName: 'brand-tumblr',
+    },
+    {
+      customShareButton: {
+        text: 'Lemmy…',
+        onClick: () => this.lemmyShare(),
+      },
+      iconName: 'brand-telegram',
+    },
+    {
+      customShareButton: {
+        text: 'Mastodon…',
+        onClick: () => this.mastodonShare(),
+      },
+      iconName: 'brand-telegram',
+    },
+    {
+      shareButton: telegramParams,
+      iconName: 'brand-telegram',
+    },
+    // TODO to implement, see https://github.com/MurhafSousli/ngx-sharebuttons/wiki/Using-Messenger-on-Desktop
+    // {
+    //   kind: 'ngx-sharebuttons',
+    //   shareButton: messengerParams,
+    //   iconName: 'brand-facebook-messenger',
+    // },
+    {
+      shareButton: whatsappParams,
+      iconName: 'brand-whatsapp',
+    },
+    {
+      shareButton: smsParams,
+      iconName: 'talk-bubbles',
+    },
+    {
+      shareButton: emailParams,
+      iconName: 'envelope',
+    },
+    {
+      shareButton: copyParams,
+      iconName: 'clipboard',
+    },
+  ];
 
   result = new Subject<void>();
 
@@ -132,6 +145,28 @@ export class ShareModalComponent implements OnDestroy {
     }
   }
 
+  lemmyShare() {
+    // TODO this is a placeholder, need to implement this properly
+    let instance = window.prompt('Please tell me your Lemmy instance');
+    window.open(
+      `https://${instance}/create_post?title=${encodeURIComponent(
+        this.title,
+      )}&url=${encodeURIComponent(this.url)}`,
+      '_blank',
+    );
+  }
+
+  mastodonShare() {
+    // TODO this is a placeholder, need to implement this properly
+    let instance = window.prompt('Please tell me your Mastodon instance');
+    window.open(
+      `https://${instance}/share?text=${encodeURIComponent(
+        this.title,
+      )}%0A${encodeURIComponent(this.url)}`,
+      '_blank',
+    );
+  }
+
   close() {
     this.result.next();
 
@@ -143,13 +178,10 @@ export function openModal(
   url: string,
   title: string,
   modal: ShareModalComponent,
-  shareButtonDescriptors?: ShareButtonDescriptor[],
   shouldUseWebShareAPI = true,
 ) {
   modal.url = url;
   modal.title = title;
-  modal.shareButtonDescriptors =
-    shareButtonDescriptors ?? DefaultShareButtonDescriptors;
   modal.shouldUseWebShareAPI = shouldUseWebShareAPI;
   modal.open = true;
 
