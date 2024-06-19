@@ -13,7 +13,7 @@ services:
   rss_temple_home:
     command: >
       ash -c "
-        [ \"$$(ls -A /srv/)\" ] || echo '<html><body><h1>Building Site...</h1></body></html>' > /srv/index.html
+        [ \"$$(ls -A /srv/)\" ] || echo '<html><body><h1>Building Site…</h1></body></html>' > /srv/index.html
         yarn build
 
         rm -rf /srv/* && cp -R /build/_site/* /srv/
