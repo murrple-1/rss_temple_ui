@@ -36,7 +36,7 @@
                     />
                   </clr-input-container>
                   <clr-date-container>
-                    <label>Published between...</label>
+                    <label>Published between…</label>
                     <input
                       clrDate
                       type="date"
@@ -153,7 +153,7 @@
         </div>
         <div *ngIf="loadingState === LoadingState.IsNotLoading" class="clr-row">
           <div class="clr-col-12">
-            <button class="btn btn-sm" (click)="loadMore()">See More...</button>
+            <button class="btn btn-sm" (click)="loadMore()">See More…</button>
           </div>
         </div>
       </ng-template>
@@ -165,7 +165,7 @@
       <div *ngIf="loadingState === LoadingState.IsLoading" class="clr-row">
         <div class="clr-col-12">
           <clr-spinner [clrInline]="true"></clr-spinner>
-          <span class="app--loading-text">Loading...</span>
+          <span class="app--loading-text">Loading…</span>
         </div>
       </div>
     </div>

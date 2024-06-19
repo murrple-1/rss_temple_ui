@@ -21,9 +21,9 @@
       <span *ngIf="progressStatus"
         >Loading new feeds ({{ progressStatus.finishedCount | number }}/{{
           progressStatus.totalCount
-        }})...</span
+        }})…</span
       >
-      <span *ngIf="!progressStatus">Loading new feeds...</span>
+      <span *ngIf="!progressStatus">Loading new feeds…</span>
     </div>
     <div *ngIf="errorString !== null" class="alert alert-danger" role="alert">
       <div class="alert-items">
@@ -38,7 +38,7 @@
   </div>
   <div class="modal-footer">
     <button class="btn btn-primary" (click)="finish()" [disabled]="uploading">
-      Upload...
+      Upload…
     </button>
   </div>
 </clr-modal>
