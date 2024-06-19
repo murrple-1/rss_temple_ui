@@ -96,9 +96,11 @@ export class MastodonShareModalComponent implements OnDestroy {
       return;
     }
 
+    const shareText = `${this._title}\n\n${this._url}`;
+
     const finalUrl = `https://${this.instance}/share?text=${encodeURIComponent(
-      this._title,
-    )}%0A${encodeURIComponent(this._url)}`;
+      shareText,
+    )}`;
 
     this.result.next(finalUrl);
 
