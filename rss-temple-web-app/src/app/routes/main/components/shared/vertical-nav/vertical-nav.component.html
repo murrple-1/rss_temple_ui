@@ -6,8 +6,12 @@
       routerLink="/main/feeds"
     >
       <cds-icon clrVerticalNavIcon shape="library"></cds-icon>
-      All<ng-container *ngIf="totalCount > 0"
-        >&nbsp;({{ totalCount | number }})</ng-container
+      <span class="app--feed-title">All</span>
+      <span
+        *ngIf="totalCount > 0"
+        class="app--feed-count"
+        [title]="totalCount | number"
+        >({{ totalCount | truncateNumber: 1000 }})</span
       >
     </a>
     <ng-container *ngFor="let categoryDescriptor of categorizedFeeds.category">
@@ -17,13 +21,16 @@
         [(clrVerticalNavGroupExpanded)]="categoryDescriptor.isExpanded"
       >
         <cds-icon shape="folder" clrVerticalNavIcon></cds-icon>
-        {{ categoryDescriptor.name }}
+        <span class="app--category-title" [title]="categoryDescriptor.name">{{
+          categoryDescriptor.name
+        }}</span>
         <clr-vertical-nav-group-children>
           <a
             *ngFor="let feed of categoryDescriptor.feeds"
             clrVerticalNavLink
             [routerLink]="['/main/feed/', feed.feedUrl]"
             routerLinkActive="active"
+            [title]="feed.calculatedTitle"
           >
             <cds-icon
               *ngIf="feed.isDead"
@@ -31,11 +38,15 @@
               size="md"
               status="warning"
             ></cds-icon
-            >{{ feed.calculatedTitle }}
+            ><span class="app--feed-title">{{ feed.calculatedTitle }}</span>
             <ng-container *appVar="feedCounts[feed.uuid] as feedCount">
-              <ng-container *ngIf="feedCount !== undefined && feedCount > 0">
-                &nbsp;({{ feedCount | number }})
-              </ng-container>
+              <span
+                *ngIf="feedCount !== undefined && feedCount > 0"
+                class="app--feed-count"
+                [title]="feedCount | number"
+              >
+                ({{ feedCount | truncateNumber: 1000 }})
+              </span>
             </ng-container>
           </a>
         </clr-vertical-nav-group-children>
@@ -54,12 +65,17 @@
           clrVerticalNavLink
           [routerLink]="['/main/feed/', feed.feedUrl]"
           routerLinkActive="active"
+          [title]="feed.calculatedTitle"
         >
-          {{ feed.calculatedTitle }}
+          <span class="app--feed-title">{{ feed.calculatedTitle }}</span>
           <ng-container *appVar="feedCounts[feed.uuid] as feedCount">
-            <ng-container *ngIf="feedCount !== undefined && feedCount > 0">
-              &nbsp;({{ feedCount | number }})
-            </ng-container>
+            <span
+              *ngIf="feedCount !== undefined && feedCount > 0"
+              class="app--feed-count"
+              [title]="feedCount | number"
+            >
+              ({{ feedCount | truncateNumber: 1000 }})
+            </span>
           </ng-container>
         </a>
       </clr-vertical-nav-group-children>

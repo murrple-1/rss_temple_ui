@@ -12,6 +12,7 @@ import { UrlValidatorDirective } from '@app/directives/url-validator.directive';
 import { VarDirective } from '@app/directives/var.directive';
 import { DateFormatPipe } from '@app/pipes/dayjs-format.pipe';
 import { SafeHtmlPipe } from '@app/pipes/safe-html.pipe';
+import { TruncatedNumberPipe } from '@app/pipes/truncated-number.pipe';
 
 @NgModule({
   imports: [CommonModule, ClarityModule],
@@ -24,6 +25,7 @@ import { SafeHtmlPipe } from '@app/pipes/safe-html.pipe';
 
     DateFormatPipe,
     SafeHtmlPipe,
+    TruncatedNumberPipe,
 
     ConfirmModalComponent,
     InfoModalComponent,
@@ -38,6 +40,7 @@ import { SafeHtmlPipe } from '@app/pipes/safe-html.pipe';
 
     DateFormatPipe,
     SafeHtmlPipe,
+    TruncatedNumberPipe,
 
     ConfirmModalComponent,
     InfoModalComponent,

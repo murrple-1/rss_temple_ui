@@ -11,7 +11,7 @@ export class DateFormatPipe implements PipeTransform {
     options?: FormatOptions,
   ) {
     if (value === null || value === undefined) {
-      return '';
+      return null;
     }
 
     return format(value, format_, options);
