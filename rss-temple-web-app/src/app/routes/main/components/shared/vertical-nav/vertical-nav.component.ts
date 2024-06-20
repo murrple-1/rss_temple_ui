@@ -305,7 +305,11 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
                 );
               });
             } else if (exposedFeeds.length == 1) {
-              this.doFeedAdd(result.feedUrl, result.customTitle);
+              const onlyExposedFeed = exposedFeeds[0];
+              if (onlyExposedFeed === undefined) {
+                throw new Error('onlyExposedFeed undefined');
+              }
+              this.doFeedAdd(onlyExposedFeed.href, result.customTitle);
             } else {
               this.modalOpenService.openModal(async () => {
                 const result_ = await openExposedFeedsModal(
