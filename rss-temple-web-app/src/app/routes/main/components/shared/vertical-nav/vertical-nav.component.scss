@@ -5,3 +5,17 @@
 .app--no-category-title {
   font-style: italic;
 }
+
+.app--category-title,
+.app--feed-title {
+  display: inline-block;
+  width: calc(140 * (1rem / var(--cds-global-base)));
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.app--feed-count {
+  font-style: italic;
+}
