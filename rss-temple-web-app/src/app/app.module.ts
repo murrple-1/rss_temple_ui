@@ -18,6 +18,7 @@ import {
   exclamationTriangleIcon,
   flaskIcon,
   folderIcon,
+  hourglassIcon,
   libraryIcon,
   lightbulbIcon,
   linkIcon,
@@ -83,6 +84,7 @@ export function clarityIconsFactory(http: HttpClient) {
       linkIcon,
       bookmarkIcon,
       lightbulbIcon,
+      hourglassIcon,
     );
 
     const myCollectionIconDownloads = await firstValueFrom(

@@ -40,7 +40,7 @@ import {
 import { stableQueryAllFn } from '@app/services/data/stablequeryall.function';
 
 export type Field = keyof FeedEntry;
-export type SortField = keyof Omit<FeedEntry, 'topImageSrc'>;
+export type SortField = keyof Omit<FeedEntry, 'topImageSrc' | 'isArchived'>;
 
 const ZLanguages = z.object({
   languages: z.array(z.string()),

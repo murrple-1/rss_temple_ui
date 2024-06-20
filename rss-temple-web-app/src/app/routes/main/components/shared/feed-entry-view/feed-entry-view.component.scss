@@ -1,4 +1,11 @@
 .card-header.app--card-header {
+  display: flex;
+  align-items: center;
+
+  cds-icon.app--archived {
+    margin-right: 0.2rem;
+  }
+
   a {
     font-size: unset;
     font-weight: unset;

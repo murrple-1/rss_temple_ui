@@ -46,6 +46,7 @@ export type FeedEntryImpl = Required<
     | 'feedUuid'
     | 'hasTopImageBeenProcessed'
     | 'topImageSrc'
+    | 'isArchived'
   >
 > & {
   possibleClassifierLabel: ClassifierLabel | null;
@@ -151,6 +152,7 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
         'feedUuid',
         'hasTopImageBeenProcessed',
         'topImageSrc',
+        'isArchived',
       ],
       returnTotalCount: false,
     };
