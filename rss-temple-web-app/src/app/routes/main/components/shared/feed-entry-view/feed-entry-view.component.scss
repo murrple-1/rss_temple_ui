@@ -39,19 +39,23 @@
   align-items: center;
 }
 
-.app--is-read .card-block {
-  &,
-  & ::ng-deep *:not(a),
-  & ::ng-deep a:not([href]) {
-    color: #b3b3b3;
+.app--is-read {
+  .card-header {
+    background-color: rgba(0, 0, 0, 0.1);
   }
 
-  & ::ng-deep a[href] {
-    color: #8fbed2;
+  .card-block {
+    background-color: rgba(0, 0, 0, 0.08);
+  }
+}
+
+:host-context(body[cds-theme='dark']) .app--is-read {
+  .card-header {
+    background-color: rgba(255, 255, 255, 0.1);
   }
 
-  & .alert-app-level * {
-    color: var(--clr-app-alert-info-font-color, hsl(198, 0%, 100%));
+  .card-block {
+    background-color: rgba(255, 255, 255, 0.08);
   }
 }
 
