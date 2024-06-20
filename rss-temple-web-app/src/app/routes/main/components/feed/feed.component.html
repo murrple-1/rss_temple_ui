@@ -92,7 +92,7 @@
                 [ngModel]="showRead"
                 (ngModelChange)="onShowReadChange($event)"
               />
-              <label>Show Previously Read Entries?</label>
+              <label>Show Previously Read and Archived Entries?</label>
             </clr-checkbox-wrapper>
           </div>
         </div>
@@ -157,6 +157,22 @@
               </ng-container>
             </ng-container>
           </span>
+        </div>
+      </div>
+      <div *ngIf="archivedCount > 0" class="clr-row">
+        <div class="clr-col-12">
+          <span>{{ archivedCount }} archived</span
+          ><clr-tooltip>
+            <cds-icon
+              clrTooltipTrigger
+              shape="info-circle"
+              size="24"
+            ></cds-icon>
+            <clr-tooltip-content [clrPosition]="'top-right'" [clrSize]="'md'">
+              Archived entries are still accessible, they just don't count
+              towards you unread count
+            </clr-tooltip-content>
+          </clr-tooltip>
         </div>
       </div>
       <div *ngIf="feed.isDead" class="clr-row">

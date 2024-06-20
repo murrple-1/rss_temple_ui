@@ -28,7 +28,7 @@ import {
 import { queryAllFn } from '@app/services/data/queryall.function';
 
 export type Field = keyof Feed;
-export type SortField = keyof Omit<Feed, 'isDead'>;
+export type SortField = keyof Omit<Feed, 'isDead' | 'archivedCount'>;
 
 const ZExposedFeed = z.object({
   title: z.string(),

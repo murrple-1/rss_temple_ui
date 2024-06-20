@@ -51,6 +51,7 @@ type FeedImpl = BaseFeedImpl &
       | 'userCategoryUuids'
       | 'calculatedTitle'
       | 'isDead'
+      | 'archivedCount'
     >
   >;
 type UserCategoryImpl = Required<Pick<UserCategory, 'text'>>;
@@ -70,6 +71,8 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
   isRenaming = false;
 
   feedSettingsOpen = false;
+
+  archivedCount = 0;
 
   get feeds() {
     if (this.feed !== null) {
@@ -206,6 +209,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
           'userCategoryUuids',
           'calculatedTitle',
           'isDead',
+          'archivedCount',
         ],
       })
       .pipe(
@@ -283,6 +287,8 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
             } else {
               this.loadingState = LoadingState.IsNotLoading;
             }
+
+            this.archivedCount = feed.archivedCount;
           });
         },
         error: error => {
