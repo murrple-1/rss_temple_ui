@@ -11,7 +11,7 @@
         *ngIf="totalCount > 0"
         class="app--feed-count"
         [title]="totalCount | number"
-        >({{ totalCount | truncateNumber: 1000 }})</span
+        >({{ totalCount | truncateNumber: 9999 }})</span
       >
     </a>
     <ng-container *ngFor="let categoryDescriptor of categorizedFeeds.category">
@@ -45,7 +45,7 @@
                 class="app--feed-count"
                 [title]="feedCount | number"
               >
-                ({{ feedCount | truncateNumber: 1000 }})
+                ({{ feedCount | truncateNumber: 9999 }})
               </span>
             </ng-container>
           </a>
@@ -74,7 +74,7 @@
               class="app--feed-count"
               [title]="feedCount | number"
             >
-              ({{ feedCount | truncateNumber: 1000 }})
+              ({{ feedCount | truncateNumber: 9999 }})
             </span>
           </ng-container>
         </a>
