@@ -1,18 +1,34 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
+import { Inject, LOCALE_ID, Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'truncateNumber',
 })
 export class TruncatedNumberPipe implements PipeTransform {
-  transform(value: number | null | undefined, max = 1000, radix = 10) {
+  private decimalPipe: DecimalPipe;
+
+  constructor(@Inject(LOCALE_ID) locale: string) {
+    this.decimalPipe = new DecimalPipe(locale);
+  }
+
+  transform(
+    value: string | number,
+    max = 1000,
+    digitsInfo?: string,
+    locale?: string,
+  ) {
     if (value === null || value === undefined) {
       return null;
     }
 
+    if (typeof value === 'string') {
+      value = window.parseFloat(value);
+    }
+
     if (value > max) {
-      return `${max.toString(radix)}+`;
+      return `${this.decimalPipe.transform(max, digitsInfo, locale)}+`;
     } else {
-      return value.toString(radix);
+      return this.decimalPipe.transform(value, digitsInfo, locale);
     }
   }
 }
