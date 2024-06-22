@@ -175,7 +175,7 @@ jobs:
             - ~/.cache/yarn
       - run:
           name: prettier web app
-          command: yarn prettier --config rss-temple-web-app/.prettierrc --ignore-path rss-temple-web-app/.prettierignore --check rss-temple-web-app/
+          command: yarn prettier --config rss-temple-web-app/.prettierrc --ignore-path rss-temple-web-app/.prettierignore --plugin @trivago/prettier-plugin-sort-imports --check rss-temple-web-app/
       - run:
           name: prettier home
           command: yarn prettier --config rss-temple-home/.prettierrc --ignore-path rss-temple-home/.prettierignore --check rss-temple-home/
