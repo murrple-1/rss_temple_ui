@@ -128,7 +128,7 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "rss-temple-web-app/yarn.lock" }}
       - run:
-          name: install-dependencies
+          name: Install dependencies
           command: yarn install --frozen-lockfile
           working_directory: rss-temple-web-app/
       - save_cache:
@@ -136,13 +136,13 @@ jobs:
           paths:
             - ~/.cache/yarn
       - run:
-          name: setup-test-environment
+          name: Setup test environment
           command: |
             yarn generate-licenses-file
             cp src/environments/environment.dev.ts src/environments/environment.ts
           working_directory: rss-temple-web-app/
       - run:
-          name: angular-test
+          name: ng test
           command: yarn cross-env TEST_TYPE=xml ng test --code-coverage --no-watch --no-progress
           working_directory: rss-temple-web-app/
       - store_test_results:
@@ -157,12 +157,20 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "yarn.lock" }}
+          key: dependency-cache-{{ checksum "yarn.lock" }}-{{ checksum "rss-temple-web-app/yarn.lock" }}-{{ checksum "rss-temple-home/yarn.lock" }}
       - run:
-          name: install-dependencies
+          name: Install dependencies (root)
           command: yarn install --frozen-lockfile
+      - run:
+          name: Install dependencies (web-app)
+          command: yarn install --frozen-lockfile
+          working_directory: rss-temple-web-app/
+      - run:
+          name: Install dependencies (home)
+          command: yarn install --frozen-lockfile
+          working_directory: rss-temple-home/
       - save_cache:
-          key: dependency-cache-{{ checksum "yarn.lock" }}
+          key: dependency-cache-{{ checksum "yarn.lock" }}-{{ checksum "rss-temple-web-app/yarn.lock" }}-{{ checksum "rss-temple-home/yarn.lock" }}
           paths:
             - ~/.cache/yarn
       - run:
