@@ -157,20 +157,12 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "yarn.lock" }}-{{ checksum "rss-temple-web-app/yarn.lock" }}-{{ checksum "rss-temple-home/yarn.lock" }}
+          key: dependency-cache-{{ checksum "yarn.lock" }}
       - run:
-          name: Install dependencies (root)
+          name: Install dependencies
           command: yarn install --frozen-lockfile
-      - run:
-          name: Install dependencies (web-app)
-          command: yarn install --frozen-lockfile
-          working_directory: rss-temple-web-app/
-      - run:
-          name: Install dependencies (home)
-          command: yarn install --frozen-lockfile
-          working_directory: rss-temple-home/
       - save_cache:
-          key: dependency-cache-{{ checksum "yarn.lock" }}-{{ checksum "rss-temple-web-app/yarn.lock" }}-{{ checksum "rss-temple-home/yarn.lock" }}
+          key: dependency-cache-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
       - run:
