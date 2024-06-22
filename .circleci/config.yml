@@ -28,6 +28,7 @@ workflows:
             tags:
               only: /.*/
       - test_web_app
+      - lint
 
 orbs:
   browser-tools: circleci/browser-tools@1.4.7
@@ -149,3 +150,24 @@ jobs:
       - store_artifacts:
           path: rss-temple-web-app/test-results/
       - codecov/upload
+
+  lint:
+    docker:
+      - image: cimg/node:20.14
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "yarn.lock" }}
+      - run:
+          name: install-dependencies
+          command: yarn install --frozen-lockfile
+      - save_cache:
+          key: dependency-cache-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+      - run:
+          name: prettier web app
+          command: yarn prettier --config rss-temple-web-app/.prettierrc --ignore-path rss-temple-web-app/.prettierignore --check rss-temple-web-app/
+      - run:
+          name: prettier home
+          command: yarn prettier --config rss-temple-home/.prettierrc --ignore-path rss-temple-home/.prettierignore --check rss-temple-home/
