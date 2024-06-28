@@ -94,6 +94,10 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
 
   private readonly unsubscribe$ = new Subject<void>();
 
+  get areCategoriesInUse() {
+    return this.categorizedFeeds.category.some(c => c.feeds.length > 0);
+  }
+
   constructor(
     private zone: NgZone,
     private router: Router,
