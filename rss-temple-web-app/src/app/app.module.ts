@@ -27,6 +27,7 @@ import {
   playIcon,
   plusIcon,
   refreshIcon,
+  scrollIcon,
   searchIcon,
   shareIcon,
   starIcon,
@@ -85,6 +86,7 @@ export function clarityIconsFactory(http: HttpClient) {
       bookmarkIcon,
       lightbulbIcon,
       hourglassIcon,
+      scrollIcon,
     );
 
     const myCollectionIconDownloads = await firstValueFrom(
