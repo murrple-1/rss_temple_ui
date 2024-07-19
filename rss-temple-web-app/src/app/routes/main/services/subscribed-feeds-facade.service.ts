@@ -1,7 +1,10 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { Observable, Subject, map, takeUntil } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Observable, map } from 'rxjs';
 
-import { cacheObservable } from '@app/libs/cache-observable.lib';
+import {
+  CachedObservable,
+  cacheObservable,
+} from '@app/libs/cache-observable.lib';
 import { Feed } from '@app/models';
 import { FeedService } from '@app/services/data';
 import { Sort } from '@app/services/data/sort.interface';
@@ -11,13 +14,12 @@ export type FeedImpl = Required<
 >;
 
 @Injectable()
-export class SubscribedFeedsFacadeService implements OnDestroy {
+export class SubscribedFeedsFacadeService {
   readonly feeds$: Observable<FeedImpl[]>;
-
-  private readonly unsubscribe$ = new Subject<void>();
+  readonly clear: () => void;
 
   constructor(private feedService: FeedService) {
-    this.feeds$ = cacheObservable(
+    const cachedObservable = cacheObservable(
       () =>
         this.feedService
           .queryAll({
@@ -27,7 +29,6 @@ export class SubscribedFeedsFacadeService implements OnDestroy {
             returnTotalCount: false,
           })
           .pipe(
-            takeUntil(this.unsubscribe$),
             map(response => {
               if (response.objects !== undefined) {
                 return response.objects as FeedImpl[];
@@ -47,10 +48,8 @@ export class SubscribedFeedsFacadeService implements OnDestroy {
           ),
       { minutes: 1 },
     );
-  }
 
-  ngOnDestroy() {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
+    this.feeds$ = cachedObservable.observable;
+    this.clear = cachedObservable.clear;
   }
 }
