@@ -12,6 +12,7 @@ import { SubscribeModalComponent } from '@app/routes/main/components/shared/vert
 import {
   FeedObservableService,
   ReadCounterService,
+  SubscribedFeedsFacadeService,
   UserCategoryObservableService,
 } from '@app/routes/main/services';
 import {
@@ -44,6 +45,12 @@ async function setup() {
     'ProgressService',
     ['checkProgress'],
   );
+  const mockSubscribedFeedsFacadeService =
+    jasmine.createSpyObj<SubscribedFeedsFacadeService>(
+      'SubscribedFeedsFacadeService',
+      {},
+      { feeds$: of([]) },
+    );
 
   await TestBed.configureTestingModule({
     imports: [
@@ -82,6 +89,10 @@ async function setup() {
         provide: ProgressService,
         useValue: mockProgressService,
       },
+      {
+        provide: SubscribedFeedsFacadeService,
+        useValue: mockSubscribedFeedsFacadeService,
+      },
     ],
   }).compileComponents();
 
@@ -89,6 +100,7 @@ async function setup() {
     mockFeedService,
     mockUserCategoryService,
     mockOPMLService,
+    mockSubscribedFeedsFacadeService,
   };
 }
 

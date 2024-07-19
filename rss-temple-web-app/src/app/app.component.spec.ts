@@ -18,6 +18,7 @@ import { ConfigService } from '@app/services';
 import { MockConfigService } from '@app/test/config.service.mock';
 
 import { AppComponent } from './app.component';
+import { CookieConsentSnackbarComponent } from './components/cookie-consent-snackbar/cookie-consent-snackbar.component';
 
 async function setup() {
   const mockConfigService = new MockConfigService({
@@ -32,6 +33,7 @@ async function setup() {
       SubNavComponent,
       ConfirmModalComponent,
       SearchModalComponent,
+      CookieConsentSnackbarComponent,
     ],
     imports: [
       FormsModule,

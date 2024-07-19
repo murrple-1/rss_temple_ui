@@ -19,6 +19,7 @@ import {
   FeedEntryVoteService,
   FeedObservableService,
   ReadCounterService,
+  SubscribedFeedsFacadeService,
   UserCategoryObservableService,
 } from '@app/routes/main/services';
 import {
@@ -67,6 +68,12 @@ async function setup() {
     'FeedEntryVoteService',
     ['shouldForceLabelVote'],
   );
+  const mockSubscribedFeedsFacadeService =
+    jasmine.createSpyObj<SubscribedFeedsFacadeService>(
+      'SubscribedFeedsFacadeService',
+      {},
+      { feeds$: of([]) },
+    );
 
   await TestBed.configureTestingModule({
     imports: [
@@ -128,33 +135,32 @@ async function setup() {
         provide: FeedEntryVoteService,
         useValue: mockFeedEntryVoteService,
       },
+      {
+        provide: SubscribedFeedsFacadeService,
+        useValue: mockSubscribedFeedsFacadeService,
+      },
     ],
   }).compileComponents();
 
   return {
     mockRoute,
 
-    mockFeedService,
     mockFeedEntryService,
+    mockFeedService,
     mockOPMLService,
     mockProgressService,
     mockUserCategoryService,
     mockClassifierLabelService,
     mockReadCounterService,
     mockFeedEntryVoteService,
+    mockSubscribedFeedsFacadeService,
   };
 }
 
 describe('FeedsComponent', () => {
   it('should create the component', waitForAsync(async () => {
-    const { mockUserCategoryService, mockFeedService } = await setup();
+    const { mockUserCategoryService } = await setup();
     mockUserCategoryService.queryAll.and.returnValue(
-      of({
-        objects: [],
-        totalCount: 0,
-      }),
-    );
-    mockFeedService.queryAll.and.returnValue(
       of({
         objects: [],
         totalCount: 0,

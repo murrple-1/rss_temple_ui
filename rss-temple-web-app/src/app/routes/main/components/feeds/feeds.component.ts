@@ -26,13 +26,10 @@ import {
   FeedEntryVoteService,
   FeedObservableService,
   ReadCounterService,
+  SubscribedFeedsFacadeService,
 } from '@app/routes/main/services';
 import { HttpErrorService, ModalOpenService } from '@app/services';
-import {
-  ClassifierLabelService,
-  FeedEntryService,
-  FeedService,
-} from '@app/services/data';
+import { ClassifierLabelService, FeedEntryService } from '@app/services/data';
 
 type FeedImpl = BaseFeedImpl &
   Required<Pick<Feed, 'homeUrl' | 'calculatedTitle' | 'feedUrl'>>;
@@ -57,8 +54,8 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private feedService: FeedService,
     private feedObservableService: FeedObservableService,
+    private subscribedFeedsFacadeService: SubscribedFeedsFacadeService,
 
     zone: NgZone,
     changeDetectorRef: ChangeDetectorRef,
@@ -148,30 +145,8 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
     this.loadingState = LoadingState.IsLoading;
 
     const count = this.count;
-    this.feedService
-      .queryAll({
-        fields: ['uuid', 'calculatedTitle', 'homeUrl', 'feedUrl'],
-        search: 'isSubscribed:"true"',
-        returnTotalCount: false,
-      })
+    this.subscribedFeedsFacadeService.feeds$
       .pipe(
-        takeUntil(this.unsubscribe$),
-        map(feeds => {
-          if (feeds.objects !== undefined) {
-            return feeds.objects as FeedImpl[];
-          }
-          throw new Error('malformed response');
-        }),
-        map(feeds => {
-          for (const feed of feeds) {
-            let calculatedTitle = feed.calculatedTitle.trim();
-            if (calculatedTitle.length < 1) {
-              calculatedTitle = '[No Title]';
-            }
-            feed.calculatedTitle = calculatedTitle;
-          }
-          return feeds;
-        }),
         tap(feeds => {
           this.feeds = feeds;
         }),

@@ -36,6 +36,7 @@ import {
   FeedEntryVoteService,
   FeedObservableService,
   ReadCounterService,
+  SubscribedFeedsFacadeService,
   UserCategoryObservableService,
 } from '@app/routes/main/services';
 
@@ -54,6 +55,7 @@ import {
   ],
   providers: [
     FeedObservableService,
+    SubscribedFeedsFacadeService,
     UserCategoryObservableService,
     ReadCounterService,
     FeedEntryVoteService,

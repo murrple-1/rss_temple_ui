@@ -20,6 +20,7 @@ import {
   FeedEntryVoteService,
   FeedObservableService,
   ReadCounterService,
+  SubscribedFeedsFacadeService,
   UserCategoryObservableService,
 } from '@app/routes/main/services';
 import {
@@ -65,6 +66,12 @@ async function setup() {
     'FeedEntryVoteService',
     ['shouldForceLabelVote'],
   );
+  const mockSubscribedFeedsFacadeService =
+    jasmine.createSpyObj<SubscribedFeedsFacadeService>(
+      'SubscribedFeedsFacadeService',
+      {},
+      { feeds$: of([]) },
+    );
 
   await TestBed.configureTestingModule({
     imports: [
@@ -122,6 +129,10 @@ async function setup() {
         provide: FeedEntryVoteService,
         useValue: mockFeedEntryVoteService,
       },
+      {
+        provide: SubscribedFeedsFacadeService,
+        useValue: mockSubscribedFeedsFacadeService,
+      },
     ],
   }).compileComponents();
 
@@ -133,6 +144,7 @@ async function setup() {
     mockProgressService,
     mockClassifierLabelService,
     mockFeedEntryVoteService,
+    mockSubscribedFeedsFacadeService,
   };
 }
 

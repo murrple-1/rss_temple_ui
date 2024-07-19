@@ -25,6 +25,7 @@ import {
 import {
   FeedObservableService,
   ReadCounterService,
+  SubscribedFeedsFacadeService,
   UserCategoryObservableService,
 } from '@app/routes/main/services';
 import {
@@ -109,6 +110,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
     private appAlertsService: AppAlertsService,
     private httpErrorService: HttpErrorService,
     private modalOpenService: ModalOpenService,
+    private subscribedFeedsFacadeService: SubscribedFeedsFacadeService,
   ) {}
 
   private static buildCategorizedFeeds(
@@ -227,31 +229,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
             throw new Error('malformed response');
           }),
         ),
-      this.feedService
-        .queryAll({
-          fields: ['uuid', 'calculatedTitle', 'feedUrl', 'homeUrl'],
-          search: 'isSubscribed:"true"',
-          sort: new Sort([['calculatedTitle', 'ASC']]),
-          returnTotalCount: false,
-        })
-        .pipe(
-          map(response => {
-            if (response.objects !== undefined) {
-              return response.objects as FeedImpl[];
-            }
-            throw new Error('malformed response');
-          }),
-          map(feeds => {
-            for (const feed of feeds) {
-              let calculatedTitle = feed.calculatedTitle.trim();
-              if (calculatedTitle.length < 1) {
-                calculatedTitle = '[No Title]';
-              }
-              feed.calculatedTitle = calculatedTitle;
-            }
-            return feeds;
-          }),
-        ),
+      this.subscribedFeedsFacadeService.feeds$,
     ])
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
