@@ -1,10 +1,8 @@
-import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Injectable, OnDestroy } from '@angular/core';
+import { NavigationStart, Router } from '@angular/router';
+import { Observable, Subject, filter, map, takeUntil } from 'rxjs';
 
-import {
-  CachedObservable,
-  cacheObservable,
-} from '@app/libs/cache-observable.lib';
+import { cacheObservable } from '@app/libs/cache-observable.lib';
 import { Feed } from '@app/models';
 import { FeedService } from '@app/services/data';
 import { Sort } from '@app/services/data/sort.interface';
@@ -14,14 +12,16 @@ export type FeedImpl = Required<
 >;
 
 @Injectable()
-export class SubscribedFeedsFacadeService {
+export class SubscribedFeedsFacadeService implements OnDestroy {
   readonly feeds$: Observable<FeedImpl[]>;
-  readonly clear: () => void;
+  private clear: () => void;
 
-  constructor(private feedService: FeedService) {
+  private unsubscribe$ = new Subject<void>();
+
+  constructor(router: Router, feedService: FeedService) {
     const cachedObservable = cacheObservable(
       () =>
-        this.feedService
+        feedService
           .queryAll({
             fields: ['uuid', 'calculatedTitle', 'feedUrl', 'homeUrl'],
             search: 'isSubscribed:"true"',
@@ -29,6 +29,7 @@ export class SubscribedFeedsFacadeService {
             returnTotalCount: false,
           })
           .pipe(
+            takeUntil(this.unsubscribe$),
             map(response => {
               if (response.objects !== undefined) {
                 return response.objects as FeedImpl[];
@@ -46,10 +47,26 @@ export class SubscribedFeedsFacadeService {
               return feeds;
             }),
           ),
-      { minutes: 1 },
+      undefined,
     );
 
     this.feeds$ = cachedObservable.observable;
     this.clear = cachedObservable.clear;
+
+    router.events
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        filter(navEvent => navEvent instanceof NavigationStart),
+      )
+      .subscribe({
+        next: () => {
+          this.clear();
+        },
+      });
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }
