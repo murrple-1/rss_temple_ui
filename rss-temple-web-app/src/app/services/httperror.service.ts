@@ -9,24 +9,11 @@ import { AuthStateService } from '@app/services/auth-state.service';
   providedIn: 'root',
 })
 export class HttpErrorService {
-  private static WINDOWS_EVENT_LISTENER: (() => void) | null = null;
-  private static APP_ALERTS_ENABLED = true;
-
   constructor(
     private router: Router,
     private appAlertsService: AppAlertsService,
     private authStateService: AuthStateService,
-  ) {
-    if (HttpErrorService.WINDOWS_EVENT_LISTENER === null) {
-      HttpErrorService.WINDOWS_EVENT_LISTENER = () => {
-        HttpErrorService.APP_ALERTS_ENABLED = false;
-      };
-      window.addEventListener(
-        'beforeunload',
-        HttpErrorService.WINDOWS_EVENT_LISTENER,
-      );
-    }
-  }
+  ) {}
 
   handleError(error: unknown) {
     let errorMessage = 'Unknown Error';
@@ -53,13 +40,11 @@ export class HttpErrorService {
 
     console.error(errorMessage, error);
 
-    if (HttpErrorService.APP_ALERTS_ENABLED) {
-      this.appAlertsService.appAlertDescriptor$.next({
-        autoCloseInterval: 5000,
-        canClose: true,
-        text: errorMessage,
-        type: 'danger',
-      });
-    }
+    this.appAlertsService.appAlertDescriptor$.next({
+      autoCloseInterval: 5000,
+      canClose: true,
+      text: errorMessage,
+      type: 'danger',
+    });
   }
 }

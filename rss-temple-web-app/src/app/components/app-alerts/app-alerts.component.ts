@@ -1,4 +1,4 @@
-import { Component, NgZone, OnDestroy } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -10,9 +10,12 @@ import { AppAlertDescriptor } from '@app/services/app-alerts.service';
   templateUrl: './app-alerts.component.html',
   styleUrls: ['./app-alerts.component.scss'],
 })
-export class AppAlertsComponent implements OnDestroy {
+export class AppAlertsComponent implements OnInit, OnDestroy {
   appAlertDescriptors: AppAlertDescriptor[] = [];
   autoCloseTimeoutHandles: [number, AppAlertDescriptor][] = [];
+
+  private windowBeforeUnloadListener: (() => void) | null = null;
+  private windowIsUnloading = false;
 
   private unsubscribe$ = new Subject<void>();
 
@@ -21,26 +24,43 @@ export class AppAlertsComponent implements OnDestroy {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: appAlertDescriptor => {
-          if (appAlertDescriptor.autoCloseInterval !== null) {
-            const handle = window.setTimeout(
-              this.removeDescriptorViaTimeout.bind(this),
-              appAlertDescriptor.autoCloseInterval,
-              appAlertDescriptor,
-            );
-            this.autoCloseTimeoutHandles.push([handle, appAlertDescriptor]);
-          }
+          if (!this.windowIsUnloading) {
+            if (appAlertDescriptor.autoCloseInterval !== null) {
+              const handle = window.setTimeout(
+                this.removeDescriptorViaTimeout.bind(this),
+                appAlertDescriptor.autoCloseInterval,
+                appAlertDescriptor,
+              );
+              this.autoCloseTimeoutHandles.push([handle, appAlertDescriptor]);
+            }
 
-          zone.run(() => {
-            this.appAlertDescriptors = [
-              ...this.appAlertDescriptors,
-              appAlertDescriptor,
-            ];
-          });
+            zone.run(() => {
+              this.appAlertDescriptors = [
+                ...this.appAlertDescriptors,
+                appAlertDescriptor,
+              ];
+            });
+          }
         },
       });
   }
 
+  ngOnInit() {
+    this.windowBeforeUnloadListener = () => {
+      this.windowIsUnloading = true;
+    };
+
+    window.addEventListener('beforeunload', this.windowBeforeUnloadListener);
+  }
+
   ngOnDestroy() {
+    if (this.windowBeforeUnloadListener !== null) {
+      window.removeEventListener(
+        'beforeunload',
+        this.windowBeforeUnloadListener,
+      );
+    }
+
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
