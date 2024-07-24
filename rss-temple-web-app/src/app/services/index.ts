@@ -7,3 +7,4 @@ export { AuthStateService } from './auth-state.service';
 export { ModalOpenService } from './modal-open.service';
 export { ConfigService } from './config.service';
 export { ThemeService } from './theme.service';
+export { WindowUnloadingService } from './window-unloading.service';

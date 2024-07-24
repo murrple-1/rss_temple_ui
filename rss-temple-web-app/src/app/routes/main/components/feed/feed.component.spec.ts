@@ -10,6 +10,8 @@ import { InfoModalComponent } from '@app/components/shared/info-modal/info-modal
 import { UserCategoriesModalComponent } from '@app/routes/main/components/feed/user-categories-modal/user-categories-modal.component';
 import { FeedsFooterComponent } from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
 import { LabelVoteModalComponent } from '@app/routes/main/components/shared/label-vote-modal/label-vote-modal.component';
+import { LemmyShareModalComponent } from '@app/routes/main/components/shared/share-modal/lemmy-share-modal/lemmy-share-modal.component';
+import { MastodonShareModalComponent } from '@app/routes/main/components/shared/share-modal/mastodon-share-modal/mastodon-share-modal.component';
 import { ShareModalComponent } from '@app/routes/main/components/shared/share-modal/share-modal.component';
 import { ExposedFeedsModalComponent } from '@app/routes/main/components/shared/vertical-nav/exposed-feeds-modal/exposed-feeds-modal.component';
 import { OPMLModalComponent } from '@app/routes/main/components/shared/vertical-nav/opml-modal/opml-modal.component';
@@ -23,6 +25,7 @@ import {
   SubscribedFeedsFacadeService,
   UserCategoryObservableService,
 } from '@app/routes/main/services';
+import { ConfigService } from '@app/services';
 import {
   ClassifierLabelService,
   FeedEntryService,
@@ -31,10 +34,13 @@ import {
   ProgressService,
   UserCategoryService,
 } from '@app/services/data';
+import { MockConfigService } from '@app/test/config.service.mock';
 
 import { FeedComponent } from './feed.component';
 
 async function setup() {
+  const mockConfigService = new MockConfigService({});
+
   const mockReadCounterService = jasmine.createSpyObj<ReadCounterService>(
     'ReadCounterService',
     ['readAll'],
@@ -93,10 +99,16 @@ async function setup() {
       FeedsFooterComponent,
       InfiniteScrollDirective,
       ShareModalComponent,
+      LemmyShareModalComponent,
+      MastodonShareModalComponent,
     ],
     providers: [
       FeedObservableService,
       UserCategoryObservableService,
+      {
+        provide: ConfigService,
+        useValue: mockConfigService,
+      },
       {
         provide: FeedService,
         useValue: mockFeedService,
@@ -137,6 +149,8 @@ async function setup() {
   }).compileComponents();
 
   return {
+    mockConfigService,
+
     mockFeedService,
     mockUserCategoryService,
     mockFeedEntryService,
