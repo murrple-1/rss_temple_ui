@@ -106,88 +106,74 @@
       </clr-accordion-content>
     </clr-accordion-panel>
   </clr-accordion>
-  <ng-container
-    *ngIf="feed !== null; then hasFeed; else hasNoFeed"
-  ></ng-container>
-  <ng-template #hasNoFeed>
+  <ng-container *ngIf="feed !== null">
     <div class="clr-row">
-      <div class="clr-col-12">No Feed</div>
+      <div class="clr-col-12">
+        <ng-container
+          *ngIf="
+            feed.customTitle !== null;
+            then hasCustomTitle;
+            else hasNoCustomTitle
+          "
+        ></ng-container>
+        <ng-template #hasCustomTitle>
+          <h2>
+            {{ feed.customTitle }}
+            <span class="app--regular-title">({{ feed.title }})</span>
+          </h2>
+        </ng-template>
+        <ng-template #hasNoCustomTitle>
+          <h2>
+            {{ feed.title }}
+          </h2>
+        </ng-template>
+      </div>
     </div>
-  </ng-template>
-  <ng-template #hasFeed>
-    <ng-container *ngIf="feed !== null">
-      <div class="clr-row">
-        <div class="clr-col-12">
-          <ng-container
-            *ngIf="
-              feed.customTitle !== null;
-              then hasCustomTitle;
-              else hasNoCustomTitle
-            "
-          ></ng-container>
-          <ng-template #hasCustomTitle>
-            <h2>
-              {{ feed.customTitle }}
-              <span class="app--regular-title">({{ feed.title }})</span>
-            </h2>
-          </ng-template>
-          <ng-template #hasNoCustomTitle>
-            <h2>
-              {{ feed.title }}
-            </h2>
-          </ng-template>
-        </div>
-      </div>
-      <div class="clr-row">
-        <div class="clr-col-12">
-          <span>
-            <ng-container *ngIf="feedCounts$ | async as feedCounts">
-              <ng-container *appVar="feedCounts[feed.uuid] as feedCount">
-                <ng-container
-                  *ngIf="
-                    feedCount !== undefined;
-                    then realUnreadCount;
-                    else fakeUnreadCount
-                  "
-                ></ng-container>
-                <ng-template #realUnreadCount>
-                  {{ feedCount }} unread
-                </ng-template>
-                <ng-template #fakeUnreadCount> 0 unread </ng-template>
-              </ng-container>
+    <div class="clr-row">
+      <div class="clr-col-12">
+        <span>
+          <ng-container *ngIf="feedCounts$ | async as feedCounts">
+            <ng-container *appVar="feedCounts[feed.uuid] as feedCount">
+              <ng-container
+                *ngIf="
+                  feedCount !== undefined;
+                  then realUnreadCount;
+                  else fakeUnreadCount
+                "
+              ></ng-container>
+              <ng-template #realUnreadCount>
+                {{ feedCount }} unread
+              </ng-template>
+              <ng-template #fakeUnreadCount> 0 unread </ng-template>
             </ng-container>
-          </span>
-        </div>
+          </ng-container>
+        </span>
       </div>
-      <div *ngIf="archivedCount !== null && archivedCount > 0" class="clr-row">
-        <div class="clr-col-12 app--archived-count">
-          <span>{{ archivedCount }} archived</span
-          ><clr-tooltip>
-            <cds-icon
-              clrTooltipTrigger
-              shape="info-circle"
-              size="24"
-            ></cds-icon>
-            <clr-tooltip-content [clrPosition]="'top-right'" [clrSize]="'md'">
-              Archived entries are still accessible, they just don't count
-              towards you unread count
-            </clr-tooltip-content>
-          </clr-tooltip>
-        </div>
+    </div>
+    <div *ngIf="archivedCount !== null && archivedCount > 0" class="clr-row">
+      <div class="clr-col-12 app--archived-count">
+        <span>{{ archivedCount }} archived</span
+        ><clr-tooltip>
+          <cds-icon clrTooltipTrigger shape="info-circle" size="24"></cds-icon>
+          <clr-tooltip-content [clrPosition]="'top-right'" [clrSize]="'md'">
+            Archived entries are still accessible, they just don't count towards
+            you unread count
+          </clr-tooltip-content>
+        </clr-tooltip>
       </div>
-      <div *ngIf="feed.isDead" class="clr-row">
-        <div class="clr-col-12">
-          <cds-icon
-            class="app--subheader-icon"
-            shape="exclamation-circle"
-            size="md"
-            status="warning"
-          ></cds-icon
-          ><span>No new content in a long time</span>
-        </div>
+    </div>
+    <div *ngIf="feed.isDead" class="clr-row">
+      <div class="clr-col-12">
+        <cds-icon
+          class="app--subheader-icon"
+          shape="exclamation-circle"
+          size="md"
+          status="warning"
+        ></cds-icon
+        ><span>No new content in a long time</span>
       </div>
-    </ng-container>
-  </ng-template>
+    </div>
+  </ng-container>
   <div *ngFor="let feedEntry of feedEntries" class="clr-col-12">
     <app-feed-entry-view
       #feedEntryView
