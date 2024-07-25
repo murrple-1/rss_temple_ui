@@ -72,7 +72,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
 
   feedSettingsOpen = false;
 
-  archivedCount = 0;
+  archivedCount: number | null = null;
 
   get feeds() {
     if (this.feed !== null) {
@@ -185,6 +185,8 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
   protected reload() {
     super.reload();
 
+    this.feed = null;
+    this.archivedCount = null;
     this.getFeed();
   }
 

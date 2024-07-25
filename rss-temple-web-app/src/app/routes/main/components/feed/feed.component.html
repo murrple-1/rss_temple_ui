@@ -159,7 +159,7 @@
           </span>
         </div>
       </div>
-      <div *ngIf="archivedCount > 0" class="clr-row">
+      <div *ngIf="archivedCount !== null && archivedCount > 0" class="clr-row">
         <div class="clr-col-12 app--archived-count">
           <span>{{ archivedCount }} archived</span
           ><clr-tooltip>
