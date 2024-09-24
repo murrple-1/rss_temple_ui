@@ -89,6 +89,7 @@ describe('HttpErrorService', () => {
       canClose: true,
       text: 'Unable to connect to server',
       type: 'danger',
+      key: 'unable-to-connect',
     });
   });
 
@@ -113,6 +114,7 @@ describe('HttpErrorService', () => {
       canClose: true,
       text: 'Session expired',
       type: 'danger',
+      key: 'expired',
     });
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
   });
