@@ -135,6 +135,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
                   canClose: true,
                   text: 'Password was determined to be too easy to guess based on internal analysis. Please try a different password',
                   type: 'danger',
+                  key: null,
                 });
                 this.zone.run(() => {
                   this.state = State.Error;

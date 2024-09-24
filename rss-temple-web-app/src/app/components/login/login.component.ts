@@ -212,6 +212,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
                   canClose: true,
                   text: 'Unable to connect to server',
                   type: 'danger',
+                  key: 'unable-to-connect',
                 });
                 this.zone.run(() => {
                   this.loginButtonState = ClrLoadingState.DEFAULT;
@@ -239,6 +240,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
                   canClose: true,
                   text: 'Request throttled: Please try again in a few minutes',
                   type: 'warning',
+                  key: 'throttled',
                 });
                 this.zone.run(() => {
                   this.loginButtonState = ClrLoadingState.DEFAULT;
@@ -256,6 +258,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
               canClose: true,
               text: 'Unknown Error',
               type: 'danger',
+              key: 'unknown-error',
             });
             this.zone.run(() => {
               this.loginButtonState = ClrLoadingState.DEFAULT;
@@ -311,6 +314,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
                   canClose: true,
                   text: 'Unable to connect to server',
                   type: 'danger',
+                  key: 'unable-to-connect',
                 });
                 errorHandled = true;
                 break;
@@ -321,6 +325,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
                   canClose: true,
                   text: "Account already exists with that email, but Google account isn't linked. To login with Google, login via another method, then link your Google account",
                   type: 'danger',
+                  key: null,
                 });
                 errorHandled = true;
                 break;
@@ -331,6 +336,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
                   canClose: true,
                   text: 'Request throttled: Please try again in a few minutes',
                   type: 'warning',
+                  key: 'throttled',
                 });
                 errorHandled = true;
                 break;
@@ -345,6 +351,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
               canClose: true,
               text: 'Unknown Error',
               type: 'danger',
+              key: 'unknown-error',
             });
           }
         },
@@ -389,6 +396,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
                   canClose: true,
                   text: 'Unable to connect to server',
                   type: 'danger',
+                  key: 'unable-to-connect',
                 });
                 errorHandled = true;
                 break;
@@ -399,6 +407,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
                   canClose: true,
                   text: "Account already exists with that email, but Facebook account isn't linked. To login with Facebook, login via another method, then link your Facebook account",
                   type: 'danger',
+                  key: null,
                 });
                 errorHandled = true;
                 break;
@@ -409,6 +418,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
                   canClose: true,
                   text: 'Request throttled: Please try again in a few minutes',
                   type: 'warning',
+                  key: 'throttled',
                 });
                 errorHandled = true;
                 break;
@@ -423,6 +433,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
               canClose: true,
               text: 'Unknown Error',
               type: 'danger',
+              key: 'unknown-error',
             });
           }
         },

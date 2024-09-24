@@ -318,6 +318,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
                   canClose: true,
                   text: 'Unlinking would make your account unaccessible. Link another account type, or setup a password first',
                   type: 'danger',
+                  key: null,
                 });
                 this.zone.run(() => {
                   this.hasGoogleLogin = true;
@@ -358,6 +359,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
                   canClose: true,
                   text: 'Unlinking would make your account unaccessible. Link another account type, or setup a password first',
                   type: 'danger',
+                  key: null,
                 });
                 this.zone.run(() => {
                   this.hasFacebookLogin = true;
@@ -390,6 +392,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         canClose: true,
         text: 'Profile Saved',
         type: 'info',
+        key: null,
       });
 
       this.state = State.SaveSuccess;
@@ -423,6 +426,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             canClose: true,
             text: 'Profile Saved',
             type: 'info',
+            key: null,
           });
 
           this.profileDetailsForm?.resetForm({
@@ -446,6 +450,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
                   canClose: true,
                   text: 'Profile failed to save',
                   type: 'danger',
+                  key: null,
                 });
                 errorHandled = true;
                 break;
@@ -456,6 +461,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
                   canClose: true,
                   text: 'Old password wrong',
                   type: 'danger',
+                  key: null,
                 });
                 errorHandled = true;
                 break;
@@ -466,6 +472,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
                   canClose: true,
                   text: 'Password was determined to be too easy to guess based on internal analysis. Please try a different password',
                   type: 'danger',
+                  key: null,
                 });
                 errorHandled = true;
                 break;

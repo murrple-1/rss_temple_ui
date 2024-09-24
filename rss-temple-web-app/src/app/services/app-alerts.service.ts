@@ -6,6 +6,7 @@ export interface AppAlertDescriptor {
   type: 'info' | 'warning' | 'danger';
   canClose: boolean;
   autoCloseInterval: number | null;
+  key: string | null;
 }
 
 @Injectable({

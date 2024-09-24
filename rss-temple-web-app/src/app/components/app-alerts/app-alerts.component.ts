@@ -12,6 +12,7 @@ import { AppAlertDescriptor } from '@app/services/app-alerts.service';
 })
 export class AppAlertsComponent implements OnDestroy {
   appAlertDescriptors: AppAlertDescriptor[] = [];
+  private uniqueAlertKeys = new Set<string>();
   autoCloseTimeoutHandles: [number, AppAlertDescriptor][] = [];
 
   private unsubscribe$ = new Subject<void>();
@@ -38,12 +39,21 @@ export class AppAlertsComponent implements OnDestroy {
             this.autoCloseTimeoutHandles.push([handle, appAlertDescriptor]);
           }
 
-          zone.run(() => {
-            this.appAlertDescriptors = [
-              ...this.appAlertDescriptors,
-              appAlertDescriptor,
-            ];
-          });
+          if (
+            appAlertDescriptor.key === null ||
+            !this.uniqueAlertKeys.has(appAlertDescriptor.key)
+          ) {
+            if (appAlertDescriptor.key !== null) {
+              this.uniqueAlertKeys.add(appAlertDescriptor.key);
+            }
+
+            zone.run(() => {
+              this.appAlertDescriptors = [
+                ...this.appAlertDescriptors,
+                appAlertDescriptor,
+              ];
+            });
+          }
         },
       });
   }
@@ -57,6 +67,10 @@ export class AppAlertsComponent implements OnDestroy {
     this.appAlertDescriptors = this.appAlertDescriptors.filter(
       descriptor_ => descriptor_ !== descriptor,
     );
+
+    if (descriptor.key !== null) {
+      this.uniqueAlertKeys.delete(descriptor.key);
+    }
 
     const autoCloseHandleTuple = this.autoCloseTimeoutHandles.find(
       ([_, descriptor_]) => descriptor_ === descriptor,
@@ -75,6 +89,10 @@ export class AppAlertsComponent implements OnDestroy {
     this.appAlertDescriptors = this.appAlertDescriptors.filter(
       descriptor_ => descriptor_ !== descriptor,
     );
+
+    if (descriptor.key !== null) {
+      this.uniqueAlertKeys.delete(descriptor.key);
+    }
 
     this.autoCloseTimeoutHandles = this.autoCloseTimeoutHandles.filter(
       ([_, descriptor_]) => descriptor !== descriptor_,

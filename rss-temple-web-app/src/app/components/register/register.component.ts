@@ -111,6 +111,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
                   canClose: true,
                   text: 'Unable to connect to server',
                   type: 'danger',
+                  key: 'unable-to-connect',
                 });
                 errorHandled = true;
                 break;
@@ -121,6 +122,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
                   canClose: true,
                   text: 'Request throttled: Please try again in a few minutes',
                   type: 'warning',
+                  key: 'throttled',
                 });
                 errorHandled = true;
                 break;
@@ -135,6 +137,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
               canClose: true,
               text: 'Unknown Error',
               type: 'danger',
+              key: 'unknown-error',
             });
           }
         },
@@ -189,18 +192,22 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   private handleRegisterError(error: unknown) {
     let errorMessage = 'Unknown Error';
+    let key: string | null = 'unknown-error';
     if (error instanceof HttpErrorResponse) {
       switch (error.status) {
         case 0: {
           errorMessage = 'Unable to connect to server';
+          key = 'unable-to-connect';
           break;
         }
         case 409: {
           errorMessage = 'Email already in use';
+          key = null;
           break;
         }
         case 404: {
           errorMessage = 'Captcha failed';
+          key = null;
           this.refreshCaptcha();
           this.zone.run(() => {
             this.captchaSecretPhrase = '';
@@ -213,6 +220,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
             const keys = Object.keys(errorRecord.data);
             if (keys.includes('captchaSecretPhrase')) {
               errorMessage = 'Captcha failed';
+              key = null;
               this.refreshCaptcha();
               this.zone.run(() => {
                 this.captchaSecretPhrase = '';
@@ -220,12 +228,14 @@ export class RegisterComponent implements OnInit, OnDestroy {
             } else if (keys.includes('password')) {
               errorMessage =
                 'Password was determined to be too easy to guess based on internal analysis. Please try a different password';
+              key = null;
             }
           }
           break;
         }
         case 429: {
           errorMessage = 'Request throttled: Please try again in a few minutes';
+          key = 'throttled';
           break;
         }
       }
@@ -236,6 +246,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
       canClose: true,
       text: errorMessage,
       type: 'danger',
+      key,
     });
 
     this.zone.run(() => {

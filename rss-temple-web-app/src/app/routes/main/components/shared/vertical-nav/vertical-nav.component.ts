@@ -383,6 +383,7 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
                 canClose: true,
                 text: 'Feed is unable to be read. Please ensure URL points to a valid RSS/Atom feed.',
                 type: 'danger',
+                key: null,
               });
               errorHandled = true;
             }
