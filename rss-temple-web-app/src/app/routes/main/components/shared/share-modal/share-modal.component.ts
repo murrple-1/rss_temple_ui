@@ -85,6 +85,20 @@ export class ShareModalComponent implements OnDestroy {
     },
     {
       customShareButton: {
+        text: 'Bluesky…',
+        onClick: () => this.blueskyShare(),
+      },
+      iconName: 'brand-bluesky',
+    },
+    {
+      customShareButton: {
+        text: 'Threads…',
+        onClick: () => this.threadsShare(),
+      },
+      iconName: 'brand-threads',
+    },
+    {
+      customShareButton: {
         text: 'Lemmy…',
         onClick: () => this.lemmyShare(),
       },
@@ -158,6 +172,20 @@ export class ShareModalComponent implements OnDestroy {
     } catch (err: unknown) {
       console.error(err);
     }
+  }
+
+  async blueskyShare() {
+    const url = `https://bsky.app/intent/compose?text=${encodeURIComponent(
+      `${this.title} ${this.url}`,
+    )}`;
+    window.open(url, '_blank');
+  }
+
+  async threadsShare() {
+    const url = `https://threads.net/intent/post?text=${encodeURIComponent(
+      `${this.title}\n${this.url}`,
+    )}`;
+    window.open(url, '_blank');
   }
 
   async lemmyShare() {

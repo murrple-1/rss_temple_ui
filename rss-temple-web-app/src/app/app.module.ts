@@ -131,6 +131,16 @@ export function clarityIconsFactory(http: HttpClient) {
             responseType: 'text',
           })
           .pipe(catchError(() => of(null))),
+        'brand-bluesky': http
+          .get('/assets/custom_cds_icon_svgs/bluesky.svg', {
+            responseType: 'text',
+          })
+          .pipe(catchError(() => of(null))),
+        'brand-threads': http
+          .get('/assets/custom_cds_icon_svgs/threads.svg', {
+            responseType: 'text',
+          })
+          .pipe(catchError(() => of(null))),
         'brand-telegram': http
           .get('/assets/custom_cds_icon_svgs/telegram.svg', {
             responseType: 'text',
