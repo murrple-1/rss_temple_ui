@@ -11,6 +11,7 @@ import {
 import { Observable, Subject, forkJoin, of } from 'rxjs';
 import { map, mergeMap, takeUntil, tap } from 'rxjs/operators';
 
+import { alterFeedEntryContent } from '@app/libs/feed-content.lib';
 import { ClassifierLabel, Feed, FeedEntry } from '@app/models';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
 import { State as FeedsFooterState } from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
@@ -252,6 +253,8 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
             authorName = null;
           }
           feedEntry.authorName = authorName;
+
+          feedEntry.content = alterFeedEntryContent(feedEntry.content);
         }
 
         return feedEntries;
