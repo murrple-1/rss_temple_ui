@@ -6,10 +6,6 @@ ENV NODE_ENV $NODE_ENV
 
 WORKDIR /build/
 
-RUN chown node:node ./
-
-USER node
-
 COPY package.json yarn.lock .
 
 RUN yarn install --frozen-lockfile \
