@@ -13,7 +13,7 @@ USER node
 COPY package.json yarn.lock .
 
 RUN yarn install --frozen-lockfile \
-  && yarn cache clear
+  && yarn cache clean
 
 COPY . .
 
