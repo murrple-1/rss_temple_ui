@@ -14,4 +14,7 @@ COPY package.json yarn.lock .
 RUN yarn install --frozen-lockfile \
   && yarn cache clean
 
+ARG NODE_ENV=production
+ENV NODE_ENV=$NODE_ENV
+
 COPY . .
