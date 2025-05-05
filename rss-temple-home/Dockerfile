@@ -9,10 +9,6 @@ ENV WEB_APP_URL="" \
 
 WORKDIR /build/
 
-RUN chown node:node ./
-
-USER node
-
 COPY package.json yarn.lock .
 
 RUN yarn install --frozen-lockfile \
