@@ -2,3 +2,7 @@ node_modules/
 dist/
 docker-compose*.yml
 *.spec.ts
+.editorconfig
+.prettierignore
+.browserslistrc
+

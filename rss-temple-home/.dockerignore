@@ -1,3 +1,6 @@
 node_modules/
 _site/
 docker-compose*.yml
+.gitignore
+.prettierignore
+eslint.config.js

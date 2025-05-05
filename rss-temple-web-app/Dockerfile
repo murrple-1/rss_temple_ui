@@ -1,14 +1,16 @@
 FROM node:20-alpine AS builder
 
-ARG APP_ENVIRONMENT=production \
-  NODE_ENV=production
-ENV NODE_ENV $NODE_ENV
+ARG APP_ENVIRONMENT=production
 
 WORKDIR /build/
 
 COPY package.json yarn.lock .
 
-RUN yarn install --frozen-lockfile
+RUN yarn install --frozen-lockfile \
+  && yarn cache clean
+
+ARG NODE_ENV=production
+ENV NODE_ENV=$NODE_ENV
 
 COPY . .
 
