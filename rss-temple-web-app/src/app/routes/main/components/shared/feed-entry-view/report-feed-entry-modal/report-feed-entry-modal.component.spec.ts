@@ -1,4 +1,6 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClarityModule } from '@clr/angular';
 
 import { ReportService } from '@app/services/data';
@@ -18,7 +20,7 @@ async function setup() {
   });
 
   await TestBed.configureTestingModule({
-    imports: [ClarityModule],
+    imports: [FormsModule, BrowserAnimationsModule, ClarityModule],
     declarations: [ReportFeedEntryModalComponent],
     providers: [
       {

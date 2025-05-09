@@ -7,7 +7,9 @@ import { ShareButtonDirective } from 'ngx-sharebuttons';
 import { of } from 'rxjs';
 
 import { InfoModalComponent } from '@app/components/shared/info-modal/info-modal.component';
+import { ReportFeedModalComponent } from '@app/routes/main/components/feed/report-feed-modal/report-feed-modal.component';
 import { UserCategoriesModalComponent } from '@app/routes/main/components/feed/user-categories-modal/user-categories-modal.component';
+import { ReportFeedEntryModalComponent } from '@app/routes/main/components/shared/feed-entry-view/report-feed-entry-modal/report-feed-entry-modal.component';
 import { FeedsFooterComponent } from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
 import { LabelVoteModalComponent } from '@app/routes/main/components/shared/label-vote-modal/label-vote-modal.component';
 import { LemmyShareModalComponent } from '@app/routes/main/components/shared/share-modal/lemmy-share-modal/lemmy-share-modal.component';
@@ -32,6 +34,7 @@ import {
   FeedService,
   OPMLService,
   ProgressService,
+  ReportService,
   UserCategoryService,
 } from '@app/services/data';
 import { MockConfigService } from '@app/test/config.service.mock';
@@ -78,6 +81,10 @@ async function setup() {
       {},
       { feeds$: of([]) },
     );
+  const mockReportService = jasmine.createSpyObj<ReportService>(
+    'ReportService',
+    ['reportFeed', 'reportFeedEntry'],
+  );
 
   await TestBed.configureTestingModule({
     imports: [
@@ -101,6 +108,8 @@ async function setup() {
       ShareModalComponent,
       LemmyShareModalComponent,
       MastodonShareModalComponent,
+      ReportFeedEntryModalComponent,
+      ReportFeedModalComponent,
     ],
     providers: [
       FeedObservableService,
@@ -144,6 +153,10 @@ async function setup() {
       {
         provide: SubscribedFeedsFacadeService,
         useValue: mockSubscribedFeedsFacadeService,
+      },
+      {
+        provide: ReportService,
+        useValue: mockReportService,
       },
     ],
   }).compileComponents();

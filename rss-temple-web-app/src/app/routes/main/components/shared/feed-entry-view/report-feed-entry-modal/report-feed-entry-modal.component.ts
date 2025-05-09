@@ -1,4 +1,6 @@
-import { Component, NgZone, OnDestroy } from '@angular/core';
+import { Component, NgZone, OnDestroy, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { ClrLoadingState } from '@clr/angular';
 import { Subject, firstValueFrom } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 
@@ -13,12 +15,16 @@ import { ReportService } from '@app/services/data';
 export class ReportFeedEntryModalComponent implements OnDestroy {
   open = false;
 
+  sendButtonState = ClrLoadingState.DEFAULT;
+  readonly ClrLoadingState = ClrLoadingState;
+
   feedEntryUuid = '';
   reason = '';
 
-  closable = true;
-
   result = new Subject<void>();
+
+  @ViewChild('reportFeedEntryForm', { static: true })
+  _reportFeedEntryForm?: NgForm;
 
   protected readonly unsubscribe$ = new Subject<void>();
 
@@ -32,6 +38,17 @@ export class ReportFeedEntryModalComponent implements OnDestroy {
     this.result.complete();
   }
 
+  reset() {
+    if (this._reportFeedEntryForm === undefined) {
+      throw new Error();
+    }
+
+    this.sendButtonState = ClrLoadingState.DEFAULT;
+    this._reportFeedEntryForm.resetForm({
+      reason: '',
+    });
+  }
+
   openChanged(open: boolean) {
     if (!open) {
       this.result.next();
@@ -40,16 +57,21 @@ export class ReportFeedEntryModalComponent implements OnDestroy {
     this.open = open;
   }
 
-  save() {
-    this.closable = false;
+  sendReport() {
+    if (this._reportFeedEntryForm?.invalid) {
+      return;
+    }
+
+    this.sendButtonState = ClrLoadingState.LOADING;
+
+    const reason = this.reason.trim();
 
     this.reportService
-      .reportFeedEntry(this.feedEntryUuid, this.reason)
+      .reportFeedEntry(this.feedEntryUuid, reason)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => {
           this.zone.run(() => {
-            this.closable = true;
             this.open = false;
           });
 
@@ -57,7 +79,7 @@ export class ReportFeedEntryModalComponent implements OnDestroy {
         },
         error: (error: unknown) => {
           this.zone.run(() => {
-            this.closable = true;
+            this.sendButtonState = ClrLoadingState.DEFAULT;
           });
           this.httpErrorService.handleError(error);
         },
@@ -70,7 +92,7 @@ export function openModal(
   modal: ReportFeedEntryModalComponent,
 ) {
   modal.feedEntryUuid = feedEntryUuid;
-  modal.reason = '';
+  modal.reset();
   modal.open = true;
 
   return firstValueFrom(modal.result.pipe(take(1)));

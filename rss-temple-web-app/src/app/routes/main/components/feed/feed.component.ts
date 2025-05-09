@@ -34,7 +34,11 @@ import {
   ReadCounterService,
   UserCategoryObservableService,
 } from '@app/routes/main/services';
-import { HttpErrorService, ModalOpenService } from '@app/services';
+import {
+  AppAlertsService,
+  HttpErrorService,
+  ModalOpenService,
+} from '@app/services';
 import {
   ClassifierLabelService,
   FeedEntryService,
@@ -108,6 +112,7 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
     private feedService: FeedService,
     private userCategoryService: UserCategoryService,
     private userCategoryObservableService: UserCategoryObservableService,
+    private appAlertService: AppAlertsService,
 
     zone: NgZone,
     changeDetectorRef: ChangeDetectorRef,
@@ -443,6 +448,14 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
 
     this.modalOpenService.openModal(async () => {
       await openReportFeedModal(feed.uuid, reportFeedModal);
+
+      this.appAlertService.appAlertDescriptor$.next({
+        type: 'info',
+        text: 'Thank you for the report!',
+        canClose: true,
+        autoCloseInterval: 5000,
+        key: 'report-thank-you',
+      });
     });
   }
 }

@@ -1,4 +1,6 @@
-import { Component, NgZone, OnDestroy } from '@angular/core';
+import { Component, NgZone, OnDestroy, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { ClrLoadingState } from '@clr/angular';
 import { Subject, firstValueFrom } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 
@@ -13,12 +15,16 @@ import { ReportService } from '@app/services/data';
 export class ReportFeedModalComponent implements OnDestroy {
   open = false;
 
+  sendButtonState = ClrLoadingState.DEFAULT;
+  readonly ClrLoadingState = ClrLoadingState;
+
   feedUuid = '';
   reason = '';
 
-  closable = true;
-
   result = new Subject<void>();
+
+  @ViewChild('reportFeedForm', { static: true })
+  _reportFeedForm?: NgForm;
 
   protected readonly unsubscribe$ = new Subject<void>();
 
@@ -32,6 +38,17 @@ export class ReportFeedModalComponent implements OnDestroy {
     this.result.complete();
   }
 
+  reset() {
+    if (this._reportFeedForm === undefined) {
+      throw new Error();
+    }
+
+    this.sendButtonState = ClrLoadingState.DEFAULT;
+    this._reportFeedForm.resetForm({
+      reason: '',
+    });
+  }
+
   openChanged(open: boolean) {
     if (!open) {
       this.result.next();
@@ -40,16 +57,21 @@ export class ReportFeedModalComponent implements OnDestroy {
     this.open = open;
   }
 
-  save() {
-    this.closable = false;
+  sendReport() {
+    if (this._reportFeedForm?.invalid) {
+      return;
+    }
+
+    this.sendButtonState = ClrLoadingState.LOADING;
+
+    const reason = this.reason.trim();
 
     this.reportService
-      .reportFeed(this.feedUuid, this.reason)
+      .reportFeed(this.feedUuid, reason)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => {
           this.zone.run(() => {
-            this.closable = true;
             this.open = false;
           });
 
@@ -57,7 +79,7 @@ export class ReportFeedModalComponent implements OnDestroy {
         },
         error: (error: unknown) => {
           this.zone.run(() => {
-            this.closable = true;
+            this.sendButtonState = ClrLoadingState.DEFAULT;
           });
           this.httpErrorService.handleError(error);
         },
@@ -67,7 +89,7 @@ export class ReportFeedModalComponent implements OnDestroy {
 
 export function openModal(feedUuid: string, modal: ReportFeedModalComponent) {
   modal.feedUuid = feedUuid;
-  modal.reason = '';
+  modal.reset();
   modal.open = true;
 
   return firstValueFrom(modal.result.pipe(take(1)));

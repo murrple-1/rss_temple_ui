@@ -21,7 +21,11 @@ import {
   FeedEntryVoteService,
   ReadCounterService,
 } from '@app/routes/main/services';
-import { HttpErrorService, ModalOpenService } from '@app/services';
+import {
+  AppAlertsService,
+  HttpErrorService,
+  ModalOpenService,
+} from '@app/services';
 import { ClassifierLabelService, FeedEntryService } from '@app/services/data';
 
 type FeedImpl = Required<Pick<Feed, 'calculatedTitle' | 'homeUrl' | 'feedUrl'>>;
@@ -70,6 +74,7 @@ export class FeedEntryViewComponent implements OnDestroy {
     private httpErrorService: HttpErrorService,
     private feedEntryVoteService: FeedEntryVoteService,
     private modalOpenService: ModalOpenService,
+    private appAlertService: AppAlertsService,
   ) {}
 
   ngOnDestroy() {
@@ -278,6 +283,14 @@ export class FeedEntryViewComponent implements OnDestroy {
         feedEntry.uuid,
         reportFeedEntryModalComponent,
       );
+
+      this.appAlertService.appAlertDescriptor$.next({
+        type: 'info',
+        text: 'Thank you for the report!',
+        canClose: true,
+        autoCloseInterval: 5000,
+        key: 'report-thank-you',
+      });
     });
   }
 
