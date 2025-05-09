@@ -1,0 +1,21 @@
+<clr-modal
+  [clrModalOpen]="open"
+  (clrModalOpenChange)="openChanged($event)"
+  [clrModalClosable]="closable"
+>
+  <h4 class="modal-title">Labels</h4>
+  <div class="modal-body">
+    <!-- TODO finish -->
+    Report!
+  </div>
+  <div class="modal-footer">
+    <button
+      class="btn btn-primary"
+      type="button"
+      [disabled]="!closable"
+      (click)="save()"
+    >
+      Save
+    </button>
+  </div>
+</clr-modal>

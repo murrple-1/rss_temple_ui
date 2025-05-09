@@ -6,6 +6,10 @@ import { compare } from '@app/libs/compare.lib';
 import { ClassifierLabel, Feed } from '@app/models';
 import { FeedEntryImpl } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 import {
+  ReportFeedEntryModalComponent,
+  openModal as openReportFeedEntryModal,
+} from '@app/routes/main/components/shared/feed-entry-view/report-feed-entry-modal/report-feed-entry-modal.component';
+import {
   LabelVoteModalComponent,
   openModal as openLabelVoteModal,
 } from '@app/routes/main/components/shared/label-vote-modal/label-vote-modal.component';
@@ -45,6 +49,9 @@ export class FeedEntryViewComponent implements OnDestroy {
 
   @Input()
   labelVoteModalComponent?: LabelVoteModalComponent;
+
+  @Input()
+  reportFeedEntryModalComponent?: ReportFeedEntryModalComponent;
 
   flashing = false;
 
@@ -253,6 +260,25 @@ export class FeedEntryViewComponent implements OnDestroy {
           this.httpErrorService.handleError(error);
         },
       });
+  }
+
+  report() {
+    const reportFeedEntryModalComponent = this.reportFeedEntryModalComponent;
+    if (reportFeedEntryModalComponent === undefined) {
+      throw new Error('reportFeedEntryModalComponent undefined');
+    }
+
+    const feedEntry = this.feedEntry;
+    if (feedEntry === undefined) {
+      return;
+    }
+
+    this.modalOpenService.openModal(async () => {
+      await openReportFeedEntryModal(
+        feedEntry.uuid,
+        reportFeedEntryModalComponent,
+      );
+    });
   }
 
   onClick(event: MouseEvent) {

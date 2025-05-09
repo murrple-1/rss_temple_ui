@@ -103,6 +103,11 @@
             </button>
           </div>
         </div>
+        <div class="clr-row">
+          <div class="clr-col-12">
+            <button class="btn btn-sm" (click)="report()">Report…</button>
+          </div>
+        </div>
       </clr-accordion-content>
     </clr-accordion-panel>
   </clr-accordion>
@@ -185,6 +190,7 @@
       [appInViewportOffset]="{ 'bottom': -64 }"
       [shareModalComponent]="shareModalComponent"
       [labelVoteModalComponent]="labelVoteModalComponent"
+      [reportFeedEntryModalComponent]="reportFeedEntryModalComponent"
       (appInViewportWatch)="onEntryEnteredViewport($event, feedEntryView)"
       (click)="onEntryClicked($event, feedEntryView)"
     ></app-feed-entry-view>
@@ -203,3 +209,7 @@
 <app-user-categories-modal></app-user-categories-modal>
 <app-share-modal #shareModalComponent></app-share-modal>
 <app-label-vote-modal #labelVoteModalComponent></app-label-vote-modal>
+<app-report-feed-entry-modal
+  #reportFeedEntryModalComponent
+></app-report-feed-entry-modal>
+<app-report-feed-modal></app-report-feed-modal>

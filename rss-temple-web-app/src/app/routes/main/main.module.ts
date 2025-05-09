@@ -8,6 +8,7 @@ import { ShareButtonDirective } from 'ngx-sharebuttons';
 import { AppSharedModule } from '@app/app-shared.module';
 import { ExploreComponent } from '@app/routes/main/components/explore/explore.component';
 import { FeedComponent } from '@app/routes/main/components/feed/feed.component';
+import { ReportFeedModalComponent } from '@app/routes/main/components/feed/report-feed-modal/report-feed-modal.component';
 import { UserCategoriesModalComponent } from '@app/routes/main/components/feed/user-categories-modal/user-categories-modal.component';
 import { FeedsComponent } from '@app/routes/main/components/feeds/feeds.component';
 import { OnboardingModalComponent } from '@app/routes/main/components/onboarding-modal/onboarding-modal.component';
@@ -18,6 +19,7 @@ import { ProfileComponent } from '@app/routes/main/components/profile/profile.co
 import { SearchEntriesComponent } from '@app/routes/main/components/search/search-entries/search-entries.component';
 import { SearchFeedsComponent } from '@app/routes/main/components/search/search-feeds/search-feeds.component';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
+import { ReportFeedEntryModalComponent } from '@app/routes/main/components/shared/feed-entry-view/report-feed-entry-modal/report-feed-entry-modal.component';
 import { FeedsFooterComponent } from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
 import { LabelVoteModalComponent } from '@app/routes/main/components/shared/label-vote-modal/label-vote-modal.component';
 import { LemmyShareModalComponent } from '@app/routes/main/components/shared/share-modal/lemmy-share-modal/lemmy-share-modal.component';
@@ -69,6 +71,7 @@ import {
     OnboardingModalComponent,
     FeedsComponent,
     FeedComponent,
+    ReportFeedModalComponent,
     FeedsFooterComponent,
     UserCategoriesModalComponent,
     ExploreComponent,
@@ -80,6 +83,7 @@ import {
     DeleteUserConfirm2ModalComponent,
     VerticalNavComponent,
     FeedEntryViewComponent,
+    ReportFeedEntryModalComponent,
     ShareModalComponent,
     LemmyShareModalComponent,
     MastodonShareModalComponent,

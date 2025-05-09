@@ -14,6 +14,10 @@ import { map, mergeMap, startWith, takeUntil, tap } from 'rxjs/operators';
 
 import { Feed, UserCategory } from '@app/models';
 import {
+  ReportFeedModalComponent,
+  openModal as openReportFeedModal,
+} from '@app/routes/main/components/feed/report-feed-modal/report-feed-modal.component';
+import {
   UserCategoriesModalComponent,
   openModal as openUserCategoriesModal,
 } from '@app/routes/main/components/feed/user-categories-modal/user-categories-modal.component';
@@ -94,6 +98,9 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
 
   @ViewChild(UserCategoriesModalComponent, { static: true })
   private userCategoriesModal?: UserCategoriesModalComponent;
+
+  @ViewChild(ReportFeedModalComponent, { static: true })
+  private reportFeedModal?: ReportFeedModalComponent;
 
   constructor(
     private router: Router,
@@ -421,5 +428,21 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
     } catch (reason) {
       this.httpErrorService.handleError(reason);
     }
+  }
+
+  report() {
+    const reportFeedModal = this.reportFeedModal;
+    if (reportFeedModal === undefined) {
+      throw new Error('reportFeedModal undefined');
+    }
+
+    const feed = this.feed;
+    if (feed === null) {
+      throw new Error('feed null');
+    }
+
+    this.modalOpenService.openModal(async () => {
+      await openReportFeedModal(feed.uuid, reportFeedModal);
+    });
   }
 }

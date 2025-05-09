@@ -128,6 +128,10 @@
       <cds-icon shape="flask"></cds-icon
       ><span class="app--button-label">ML Labeling</span>
     </button>
+    <button class="btn btn-icon btn-sm" (click)="report()" title="Report…">
+      <cds-icon shape="warning-standard"></cds-icon
+      ><span class="app--button-label">Report…</span>
+    </button>
     <a
       *ngIf="isGoToVisible && feed !== undefined"
       class="btn btn-link btn-sm"

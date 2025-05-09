@@ -34,6 +34,7 @@ import {
   stopIcon,
   talkBubblesIcon,
   uploadIcon,
+  warningStandardIcon,
   windowCloseIcon,
 } from '@cds/core/icon';
 import { IconShapeTuple } from '@cds/core/icon/interfaces/icon.interfaces';
@@ -87,6 +88,7 @@ export function clarityIconsFactory(http: HttpClient) {
       lightbulbIcon,
       hourglassIcon,
       scrollIcon,
+      warningStandardIcon,
     );
 
     const myCollectionIconDownloads = await firstValueFrom(

@@ -48,6 +48,7 @@
       (appInViewportWatch)="onEntryEnteredViewport($event, feedEntryView)"
       [shareModalComponent]="shareModalComponent"
       [labelVoteModalComponent]="labelVoteModalComponent"
+      [reportFeedEntryModalComponent]="reportFeedEntryModalComponent"
       (click)="onEntryClicked($event, feedEntryView)"
     ></app-feed-entry-view>
   </div>
@@ -64,3 +65,6 @@
 
 <app-share-modal #shareModalComponent></app-share-modal>
 <app-label-vote-modal #labelVoteModalComponent></app-label-vote-modal>
+<app-report-feed-entry-modal
+  #reportFeedEntryModalComponent
+></app-report-feed-entry-modal>
