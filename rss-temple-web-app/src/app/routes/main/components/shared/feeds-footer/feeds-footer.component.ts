@@ -12,6 +12,7 @@ export enum State {
   selector: 'app-feeds-footer',
   templateUrl: './feeds-footer.component.html',
   styleUrls: ['./feeds-footer.component.scss'],
+  standalone: false,
 })
 export class FeedsFooterComponent {
   @Input()

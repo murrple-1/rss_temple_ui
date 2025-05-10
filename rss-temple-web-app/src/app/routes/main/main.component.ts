@@ -12,6 +12,7 @@ import { AuthService } from '@app/services/data';
 @Component({
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss'],
+  standalone: false,
 })
 export class MainComponent implements OnInit, OnDestroy {
   @ViewChild(OnboardingModalComponent, { static: true })

@@ -20,7 +20,9 @@ import { MockActivatedRoute } from '@app/test/activatedroute.mock';
 
 import { RegisterComponent } from './register.component';
 
-@Component({})
+@Component({
+  standalone: false,
+})
 class MockComponent {}
 
 let imageBlob: Blob | null = null;

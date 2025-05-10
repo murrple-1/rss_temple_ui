@@ -68,6 +68,7 @@ function languageSelectCompare(a: LanguageSelect, b: LanguageSelect): number {
 @Component({
   templateUrl: './search-entries.component.html',
   styleUrls: ['./search-entries.component.scss'],
+  standalone: false,
 })
 export class SearchEntriesComponent
   extends AbstractSearchComponent

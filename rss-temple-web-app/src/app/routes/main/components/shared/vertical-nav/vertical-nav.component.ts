@@ -67,6 +67,7 @@ interface CategorizedFeeds {
   selector: 'app-vertical-nav',
   templateUrl: './vertical-nav.component.html',
   styleUrls: ['./vertical-nav.component.scss'],
+  standalone: false,
 })
 export class VerticalNavComponent implements OnInit, OnDestroy {
   categorizedFeeds: CategorizedFeeds = {

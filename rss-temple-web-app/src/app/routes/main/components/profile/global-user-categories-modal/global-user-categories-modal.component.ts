@@ -19,6 +19,7 @@ interface CategoryDescriptor {
   selector: 'app-global-user-categories-modal',
   templateUrl: './global-user-categories-modal.component.html',
   styleUrls: ['./global-user-categories-modal.component.scss'],
+  standalone: false,
 })
 export class GlobalUserCategoriesModalComponent implements OnDestroy {
   open = false;

@@ -14,6 +14,7 @@ const debouncer = interval(100);
 
 @Directive({
   selector: '[appInfiniteScroll]',
+  standalone: false,
 })
 export class InfiniteScrollDirective implements OnInit, OnDestroy {
   @Input('appInfiniteScroll')

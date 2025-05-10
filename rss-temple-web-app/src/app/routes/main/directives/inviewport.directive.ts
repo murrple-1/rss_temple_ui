@@ -76,6 +76,7 @@ function getContainerScrollObservable(scrollParentNativeElement: HTMLElement) {
 
 @Directive({
   selector: '[appInViewport]',
+  standalone: false,
 })
 export class InViewportDirective implements OnInit, OnDestroy {
   private _disabled = false;

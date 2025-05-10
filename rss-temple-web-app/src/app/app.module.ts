@@ -3,7 +3,7 @@
   provideHttpClient,
   withInterceptorsFromDi,
 } from '@angular/common/http';
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { NgModule, inject, provideAppInitializer } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -220,19 +220,15 @@ export function configFactory(configService: ConfigService) {
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
-    {
-      provide: APP_INITIALIZER,
-      useFactory: clarityIconsFactory,
-      multi: true,
-      deps: [HttpClient],
-    },
+    provideAppInitializer(() => {
+      const initializerFn = clarityIconsFactory(inject(HttpClient));
+      return initializerFn();
+    }),
     CookieService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: configFactory,
-      multi: true,
-      deps: [ConfigService],
-    },
+    provideAppInitializer(() => {
+      const initializerFn = configFactory(inject(ConfigService));
+      return initializerFn();
+    }),
   ],
 })
 export class AppModule {}

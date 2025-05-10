@@ -16,6 +16,7 @@ import { ConfigService } from '@app/services';
   selector: 'app-mastodon-share-modal',
   templateUrl: './mastodon-share-modal.component.html',
   styleUrls: ['./mastodon-share-modal.component.scss'],
+  standalone: false,
 })
 export class MastodonShareModalComponent implements OnDestroy {
   open = false;

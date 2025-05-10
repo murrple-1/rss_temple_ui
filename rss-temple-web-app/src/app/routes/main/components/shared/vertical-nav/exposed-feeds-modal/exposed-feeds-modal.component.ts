@@ -11,6 +11,7 @@ interface ExposedFeed {
   selector: 'app-exposed-feeds-modal',
   templateUrl: './exposed-feeds-modal.component.html',
   styleUrls: ['./exposed-feeds-modal.component.scss'],
+  standalone: false,
 })
 export class ExposedFeedsModalComponent implements OnDestroy {
   open = false;

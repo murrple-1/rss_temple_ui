@@ -3,6 +3,7 @@ import { FormatOptions, format } from 'date-fns';
 
 @Pipe({
   name: 'dateFormat',
+  standalone: false,
 })
 export class DateFormatPipe implements PipeTransform {
   transform(

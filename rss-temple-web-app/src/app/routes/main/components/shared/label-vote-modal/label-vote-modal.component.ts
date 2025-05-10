@@ -10,6 +10,7 @@ import { ClassifierLabelService } from '@app/services/data';
   selector: 'app-label-vote-modal',
   templateUrl: './label-vote-modal.component.html',
   styleUrls: ['./label-vote-modal.component.scss'],
+  standalone: false,
 })
 export class LabelVoteModalComponent implements OnDestroy {
   open = false;

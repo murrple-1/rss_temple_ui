@@ -31,6 +31,7 @@ const Z422Error = z.record(z.unknown());
 @Component({
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
+  standalone: false,
 })
 export class RegisterComponent implements OnInit, OnDestroy {
   readonly passwordHelperTextHtml = passwordRequirementsTextHtml('en');

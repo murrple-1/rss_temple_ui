@@ -48,6 +48,7 @@ type ShareButtonDescriptor =
   selector: 'app-share-modal',
   templateUrl: './share-modal.component.html',
   styleUrls: ['./share-modal.component.scss'],
+  standalone: false,
 })
 export class ShareModalComponent implements OnDestroy {
   open = false;

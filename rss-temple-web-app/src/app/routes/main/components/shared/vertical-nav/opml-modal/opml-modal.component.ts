@@ -20,6 +20,7 @@ interface ProgressStatus {
   selector: 'app-opml-modal',
   templateUrl: './opml-modal.component.html',
   styleUrls: ['./opml-modal.component.scss'],
+  standalone: false,
 })
 export class OPMLModalComponent implements OnDestroy {
   open = false;

@@ -6,6 +6,7 @@ import { take } from 'rxjs/operators';
   selector: 'app-confirm-modal',
   templateUrl: './confirm-modal.component.html',
   styleUrls: ['./confirm-modal.component.scss'],
+  standalone: false,
 })
 export class ConfirmModalComponent implements OnDestroy {
   open = false;

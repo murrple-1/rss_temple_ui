@@ -9,6 +9,7 @@ import { ConfigService } from '@app/services';
   selector: 'app-onboarding-modal',
   templateUrl: './onboarding-modal.component.html',
   styleUrls: ['./onboarding-modal.component.scss'],
+  standalone: false,
 })
 export class OnboardingModalComponent implements OnDestroy {
   open = false;

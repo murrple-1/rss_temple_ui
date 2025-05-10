@@ -22,6 +22,7 @@ interface TagEntry {
 @Component({
   templateUrl: './explore.component.html',
   styleUrls: ['./explore.component.scss'],
+  standalone: false,
 })
 export class ExploreComponent implements OnInit, OnDestroy {
   tagEntries: TagEntry[] = [];

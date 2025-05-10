@@ -12,6 +12,7 @@ import { validatePassword } from '@app/libs/password.lib';
       multi: true,
     },
   ],
+  standalone: false,
 })
 export class PasswordValidatorDirective implements Validator {
   validate(control: AbstractControl) {

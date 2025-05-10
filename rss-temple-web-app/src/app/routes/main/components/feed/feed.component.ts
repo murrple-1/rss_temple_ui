@@ -67,6 +67,7 @@ type UserCategoryImpl = Required<Pick<UserCategory, 'text'>>;
 @Component({
   templateUrl: './feed.component.html',
   styleUrls: ['./feed.component.scss'],
+  standalone: false,
 })
 export class FeedComponent extends AbstractFeedsComponent implements OnInit {
   feed: FeedImpl | null = null;

@@ -12,6 +12,7 @@ export interface SubscriptionDetails {
   selector: 'app-subscribe-modal',
   templateUrl: './subscribe-modal.component.html',
   styleUrls: ['./subscribe-modal.component.scss'],
+  standalone: false,
 })
 export class SubscribeModalComponent implements OnDestroy {
   open = false;

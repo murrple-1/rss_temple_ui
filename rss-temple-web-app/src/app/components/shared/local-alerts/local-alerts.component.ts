@@ -10,6 +10,7 @@ export interface AlertEntry {
   selector: 'app-local-alerts',
   templateUrl: './local-alerts.component.html',
   styleUrls: ['./local-alerts.component.scss'],
+  standalone: false,
 })
 export class LocalAlertsComponent {
   @Input()

@@ -8,6 +8,7 @@ import { SubNavLink } from '@app/services/subnav-links.service';
   selector: 'app-subnav',
   templateUrl: './subnav.component.html',
   styleUrls: ['./subnav.component.scss'],
+  standalone: false,
 })
 export class SubNavComponent {
   subNavLinks$: Observable<SubNavLink[]>;

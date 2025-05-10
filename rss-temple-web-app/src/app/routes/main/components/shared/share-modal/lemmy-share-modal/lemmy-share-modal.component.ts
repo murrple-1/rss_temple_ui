@@ -16,6 +16,7 @@ import { ConfigService } from '@app/services';
   selector: 'app-lemmy-share-modal',
   templateUrl: './lemmy-share-modal.component.html',
   styleUrls: ['./lemmy-share-modal.component.scss'],
+  standalone: false,
 })
 export class LemmyShareModalComponent implements OnDestroy {
   open = false;

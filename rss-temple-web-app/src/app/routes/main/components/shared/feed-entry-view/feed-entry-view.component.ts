@@ -34,6 +34,7 @@ type FeedImpl = Required<Pick<Feed, 'calculatedTitle' | 'homeUrl' | 'feedUrl'>>;
   selector: 'app-feed-entry-view',
   templateUrl: './feed-entry-view.component.html',
   styleUrls: ['./feed-entry-view.component.scss'],
+  standalone: false,
 })
 export class FeedEntryViewComponent implements OnDestroy {
   @Input()

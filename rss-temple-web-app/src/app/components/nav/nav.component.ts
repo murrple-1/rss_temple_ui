@@ -56,6 +56,7 @@ interface NavAction {
   selector: 'app-nav',
   templateUrl: './nav.component.html',
   styleUrls: ['./nav.component.scss'],
+  standalone: false,
 })
 export class NavComponent implements OnInit, OnDestroy {
   private readonly navEnd$ = this.router.events.pipe(

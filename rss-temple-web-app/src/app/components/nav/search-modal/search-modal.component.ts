@@ -12,6 +12,7 @@ import { take } from 'rxjs/operators';
   selector: 'app-search-modal',
   templateUrl: './search-modal.component.html',
   styleUrls: ['./search-modal.component.scss'],
+  standalone: false,
 })
 export class SearchModalComponent implements OnDestroy {
   open = false;

@@ -11,6 +11,7 @@ import { AuthService } from '@app/services/data';
   selector: 'app-request-password-reset-modal',
   templateUrl: './request-password-reset-modal.component.html',
   styleUrls: ['./request-password-reset-modal.component.scss'],
+  standalone: false,
 })
 export class RequestPasswordResetModalComponent implements OnDestroy {
   open = false;

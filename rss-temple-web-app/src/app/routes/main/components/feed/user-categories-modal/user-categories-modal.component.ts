@@ -24,6 +24,7 @@ export interface Result {
   selector: 'app-user-categories-modal',
   templateUrl: './user-categories-modal.component.html',
   styleUrls: ['./user-categories-modal.component.scss'],
+  standalone: false,
 })
 export class UserCategoriesModalComponent implements OnDestroy {
   open = false;

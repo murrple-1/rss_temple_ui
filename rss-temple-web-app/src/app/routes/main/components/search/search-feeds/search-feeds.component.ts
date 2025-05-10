@@ -29,6 +29,7 @@ const Count = 10;
 @Component({
   templateUrl: './search-feeds.component.html',
   styleUrls: ['./search-feeds.component.scss'],
+  standalone: false,
 })
 export class SearchFeedsComponent
   extends AbstractSearchComponent

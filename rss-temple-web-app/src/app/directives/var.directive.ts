@@ -7,6 +7,7 @@ interface Context<T> {
 
 @Directive({
   selector: '[appVar]',
+  standalone: false,
 })
 export class VarDirective<T> {
   private context: Context<T> = {};

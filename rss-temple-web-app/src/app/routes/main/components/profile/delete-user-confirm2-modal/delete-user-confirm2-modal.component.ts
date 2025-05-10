@@ -13,6 +13,7 @@ import { AuthService } from '@app/services/data';
   selector: 'app-delete-user-confirm2-modal',
   templateUrl: './delete-user-confirm2-modal.component.html',
   styleUrls: ['./delete-user-confirm2-modal.component.scss'],
+  standalone: false,
 })
 export class DeleteUserConfirm2ModalComponent implements OnDestroy {
   open = false;

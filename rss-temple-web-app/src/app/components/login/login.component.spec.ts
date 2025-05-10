@@ -22,7 +22,9 @@ import { MockGAuthService } from '@app/test/gauth.service.mock';
 
 import { LoginComponent } from './login.component';
 
-@Component({})
+@Component({
+  standalone: false,
+})
 class MockComponent {}
 
 async function setup() {

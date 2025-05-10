@@ -6,6 +6,7 @@ import { take } from 'rxjs/operators';
   selector: 'app-delete-user-confirm1-modal',
   templateUrl: './delete-user-confirm1-modal.component.html',
   styleUrls: ['./delete-user-confirm1-modal.component.scss'],
+  standalone: false,
 })
 export class DeleteUserConfirm1ModalComponent implements OnDestroy {
   open = false;

@@ -8,6 +8,7 @@ export type InfoType = 'info' | 'success' | 'warning' | 'danger' | 'none';
   selector: 'app-info-modal',
   templateUrl: './info-modal.component.html',
   styleUrls: ['./info-modal.component.scss'],
+  standalone: false,
 })
 export class InfoModalComponent implements OnDestroy {
   open = false;

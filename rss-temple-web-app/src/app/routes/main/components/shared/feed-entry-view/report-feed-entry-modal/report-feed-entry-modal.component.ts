@@ -11,6 +11,7 @@ import { ReportService } from '@app/services/data';
   selector: 'app-report-feed-entry-modal',
   templateUrl: './report-feed-entry-modal.component.html',
   styleUrls: ['./report-feed-entry-modal.component.scss'],
+  standalone: false,
 })
 export class ReportFeedEntryModalComponent implements OnDestroy {
   open = false;

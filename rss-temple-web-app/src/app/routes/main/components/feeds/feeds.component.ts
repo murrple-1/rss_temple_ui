@@ -38,6 +38,7 @@ type FeedEntryImpl = BaseFeedEntryImpl;
 @Component({
   templateUrl: './feeds.component.html',
   styleUrls: ['./feeds.component.scss'],
+  standalone: false,
 })
 export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
   feeds: FeedImpl[] = [];

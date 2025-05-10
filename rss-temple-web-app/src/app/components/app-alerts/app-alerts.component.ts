@@ -9,6 +9,7 @@ import { AppAlertDescriptor } from '@app/services/app-alerts.service';
   selector: 'app-alerts',
   templateUrl: './app-alerts.component.html',
   styleUrls: ['./app-alerts.component.scss'],
+  standalone: false,
 })
 export class AppAlertsComponent implements OnDestroy {
   appAlertDescriptors: AppAlertDescriptor[] = [];

@@ -11,6 +11,7 @@ import { validate as validateEmail } from 'email-validator';
       multi: true,
     },
   ],
+  standalone: false,
 })
 export class EmailValidatorDirective implements Validator {
   validate(control: AbstractControl) {

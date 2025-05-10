@@ -6,6 +6,7 @@ import { ConfigService } from '@app/services';
   selector: 'app-cookie-consent-snackbar',
   templateUrl: './cookie-consent-snackbar.component.html',
   styleUrls: ['./cookie-consent-snackbar.component.scss'],
+  standalone: false,
 })
 export class CookieConsentSnackbarComponent {
   privacyPolicyUrl: string | null;
