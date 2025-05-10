@@ -4,6 +4,11 @@ import { ClrLoadingState } from '@clr/angular';
 import { Subject, firstValueFrom } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 
+import {
+  CommonReasonOptions,
+  OtherReason,
+  ReasonOption,
+} from '@app/routes/main/libs/report.lib';
 import { HttpErrorService } from '@app/services';
 import { ReportService } from '@app/services/data';
 
@@ -19,7 +24,12 @@ export class ReportFeedModalComponent implements OnDestroy {
   sendButtonState = ClrLoadingState.DEFAULT;
   readonly ClrLoadingState = ClrLoadingState;
 
+  readonly reasonOptions: ReasonOption[] = [
+    ...CommonReasonOptions,
+    OtherReason,
+  ];
   feedUuid = '';
+  reasonOption = CommonReasonOptions[0]?.value ?? OtherReason.value;
   reason = '';
 
   result = new Subject<void>();
@@ -46,6 +56,7 @@ export class ReportFeedModalComponent implements OnDestroy {
 
     this.sendButtonState = ClrLoadingState.DEFAULT;
     this._reportFeedForm.resetForm({
+      reasonOption: CommonReasonOptions[0]?.value ?? OtherReason.value,
       reason: '',
     });
   }
@@ -65,7 +76,12 @@ export class ReportFeedModalComponent implements OnDestroy {
 
     this.sendButtonState = ClrLoadingState.LOADING;
 
-    const reason = this.reason.trim();
+    let reason: string;
+    if (this.reasonOption !== OtherReason.value) {
+      reason = this.reasonOption;
+    } else {
+      reason = this.reason.trim();
+    }
 
     this.reportService
       .reportFeed(this.feedUuid, reason)

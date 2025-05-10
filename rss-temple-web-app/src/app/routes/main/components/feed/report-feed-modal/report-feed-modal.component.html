@@ -4,24 +4,41 @@
     (clrModalOpenChange)="openChanged($event)"
     [clrModalClosable]="sendButtonState === ClrLoadingState.DEFAULT"
   >
-    <h4 class="modal-title">Labels</h4>
+    <h4 class="modal-title">Report Feed</h4>
     <div class="modal-body">
-      <!-- TODO this would be great as, like, a multiselect of 'Abuse', 'Spam', etc, with an 'Other' option -->
       <fieldset [disabled]="sendButtonState !== ClrLoadingState.DEFAULT">
-        <clr-input-container>
-          <label>Reason</label>
-          <input
-            clrInput
+        <clr-radio-container>
+          <label>Reason for Report?</label>
+          <clr-radio-wrapper *ngFor="let reasonOption_ of reasonOptions">
+            <input
+              type="radio"
+              clrRadio
+              name="reasonOption"
+              [value]="reasonOption_.value"
+              [(ngModel)]="reasonOption"
+            />
+            <label>{{ reasonOption_.label }}</label>
+          </clr-radio-wrapper>
+        </clr-radio-container>
+        <clr-textarea-container *ngIf="reasonOption === ''">
+          <label>Other Reason</label>
+          <textarea
+            clrTextarea
+            class="app--other-reason"
             type="text"
             name="reason"
-            placeholder="Reason..."
+            placeholder="Reason…"
             [(ngModel)]="reason"
             required
-          />
+            pattern="^.*\S.*$"
+          ></textarea>
           <clr-control-error *clrIfError="'required'"
             >Reason required</clr-control-error
           >
-        </clr-input-container>
+          <clr-control-error *clrIfError="'pattern'"
+            >Reason required</clr-control-error
+          >
+        </clr-textarea-container>
       </fieldset>
     </div>
     <div class="modal-footer">
