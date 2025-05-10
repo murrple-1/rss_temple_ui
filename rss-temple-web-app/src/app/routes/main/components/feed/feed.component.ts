@@ -448,15 +448,19 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
     }
 
     this.modalOpenService.openModal(async () => {
-      await openReportFeedModal(feed.uuid, reportFeedModal);
-
-      this.appAlertService.appAlertDescriptor$.next({
-        type: 'info',
-        text: 'Thank you for the report!',
-        canClose: true,
-        autoCloseInterval: 5000,
-        key: 'report-thank-you',
-      });
+      const reportWasSent = await openReportFeedModal(
+        feed.uuid,
+        reportFeedModal,
+      );
+      if (reportWasSent) {
+        this.appAlertService.appAlertDescriptor$.next({
+          type: 'info',
+          text: 'Thank you for the report!',
+          canClose: true,
+          autoCloseInterval: 5000,
+          key: 'report-thank-you',
+        });
+      }
     });
   }
 }

@@ -280,18 +280,20 @@ export class FeedEntryViewComponent implements OnDestroy {
     }
 
     this.modalOpenService.openModal(async () => {
-      await openReportFeedEntryModal(
+      const reportWasSent = await openReportFeedEntryModal(
         feedEntry.uuid,
         reportFeedEntryModalComponent,
       );
 
-      this.appAlertService.appAlertDescriptor$.next({
-        type: 'info',
-        text: 'Thank you for the report!',
-        canClose: true,
-        autoCloseInterval: 5000,
-        key: 'report-thank-you',
-      });
+      if (reportWasSent) {
+        this.appAlertService.appAlertDescriptor$.next({
+          type: 'info',
+          text: 'Thank you for the report!',
+          canClose: true,
+          autoCloseInterval: 5000,
+          key: 'report-thank-you',
+        });
+      }
     });
   }
 

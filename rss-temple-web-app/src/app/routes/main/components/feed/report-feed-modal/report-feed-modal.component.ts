@@ -32,7 +32,7 @@ export class ReportFeedModalComponent implements OnDestroy {
   reasonOption = CommonReasonOptions[0]?.value ?? OtherReason.value;
   reason = '';
 
-  result = new Subject<void>();
+  result = new Subject<boolean>();
 
   @ViewChild('reportFeedForm', { static: true })
   _reportFeedForm?: NgForm;
@@ -63,7 +63,7 @@ export class ReportFeedModalComponent implements OnDestroy {
 
   openChanged(open: boolean) {
     if (!open) {
-      this.result.next();
+      this.result.next(false);
     }
 
     this.open = open;
@@ -92,7 +92,7 @@ export class ReportFeedModalComponent implements OnDestroy {
             this.open = false;
           });
 
-          this.result.next();
+          this.result.next(true);
         },
         error: (error: unknown) => {
           this.zone.run(() => {
