@@ -3,6 +3,7 @@ export interface ReasonOption {
   value: string;
 }
 
+// list stolen from reddit.com's report modal
 export const CommonReasonOptions: ReasonOption[] = [
   {
     label: 'Harassment',
