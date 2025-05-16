@@ -1,14 +1,14 @@
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
 
-const { EleventyHtmlBasePlugin } = require("@11ty/eleventy");
-const esbuild = require("esbuild");
-const sass = require("sass");
+import { EleventyHtmlBasePlugin } from "@11ty/eleventy";
+import * as esbuild from "esbuild";
+import * as sass from "sass";
 
 const customHtmlDir = process.env.CUSTOM_HTML_DIR;
 const generateSourceMaps = process.env.GENERATE_SOURCE_MAPS === "true";
 
-module.exports = function (eleventyConfig) {
+export default function (eleventyConfig) {
   eleventyConfig.addTemplateFormats(["scss", "js"]);
 
   eleventyConfig.addPlugin(EleventyHtmlBasePlugin);
@@ -107,4 +107,4 @@ module.exports = function (eleventyConfig) {
       output: "_site"
     }
   };
-};
+}

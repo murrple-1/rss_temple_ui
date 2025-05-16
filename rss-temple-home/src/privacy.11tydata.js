@@ -1,9 +1,10 @@
-const fs = require("fs");
+import fs from "fs";
+
 const f = fs.openSync("default_content/privacy.html", "r");
 const defaultContent = fs.readFileSync(f, "utf8");
 fs.closeSync(f);
 
-module.exports = function () {
+export default function () {
   return {
     layout: "standard.liquid",
     page_name: "Privacy Policy",
@@ -17,4 +18,4 @@ module.exports = function () {
       }
     ]
   };
-};
+}
