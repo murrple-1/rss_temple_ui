@@ -44,9 +44,8 @@ const containerScrollObservables = new Map<
 function getContainerScrollObservable(scrollParentNativeElement: HTMLElement) {
   let hash = scrollParentNativeElement.dataset['appInViewportHash'];
   if (hash === undefined) {
-    hash = scrollParentNativeElement.dataset[
-      'appInViewportHash'
-    ] = `id-${appInViewportHashStepper++}`;
+    hash = scrollParentNativeElement.dataset['appInViewportHash'] =
+      `id-${appInViewportHashStepper++}`;
   }
 
   let observable = containerScrollObservables.get(hash);
