@@ -57,8 +57,11 @@ function generateNotifierForBufferByCountAndDebouce(
 
 @Injectable()
 export class ReadCounterService implements OnDestroy {
-  private _feedCounts$ = new BehaviorSubject<Record<string, number>>({});
-  readonly feedCounts$: Observable<Record<string, number>> = this._feedCounts$;
+  private _feedCounts$ = new BehaviorSubject<Record<string, number> | null>(
+    null,
+  );
+  readonly feedCounts$: Observable<Record<string, number> | null> =
+    this._feedCounts$;
 
   private readUuids = new Set<string>();
   private unreadUuids = new Set<string>();
@@ -160,7 +163,7 @@ export class ReadCounterService implements OnDestroy {
               this.taskQueue.stopProcessing();
             }
           } else {
-            this._feedCounts$.next({});
+            this._feedCounts$.next(null);
 
             if (
               this.refreshTimeoutId !== null &&

@@ -27,7 +27,11 @@
               <div class="clr-row">
                 <label class="clr-control-label">Email</label>
                 <div class="clr-col-12 clr-col-md-10 p4 app--email">
-                  {{ email }}
+                  @if (email !== null) {
+                    {{ email }}
+                  } @else {
+                    <clr-spinner [clrInline]="true"></clr-spinner>
+                  }
                 </div>
               </div>
               <clr-input-container>
@@ -119,33 +123,28 @@
                 ></clr-accordion-content>
               </clr-accordion-panel>
             </clr-accordion>
-            <ng-container
-              *ngIf="
-                profileDetailsForm &&
-                (profileDetailsForm.touched || profileDetailsForm.dirty)
-              "
-            >
-              <div
-                *ngIf="profileDetailsForm.errors"
-                class="alert alert-warning"
-                role="alert"
-              >
-                <div class="alert-items">
-                  <div
-                    *ngIf="profileDetailsForm.errors?.passwordsdonotmatch"
-                    class="alert-item static"
-                  >
-                    <div class="alert-icon-wrapper">
-                      <cds-icon
-                        class="alert-icon"
-                        shape="exclamation-triangle"
-                      ></cds-icon>
-                    </div>
-                    <span class="alert-text">Passwords don't match</span>
+            @if (
+              profileDetailsForm &&
+              (profileDetailsForm.touched || profileDetailsForm.dirty)
+            ) {
+              @if (profileDetailsForm.errors) {
+                <div class="alert alert-warning" role="alert">
+                  <div class="alert-items">
+                    @if (profileDetailsForm.errors?.passwordsdonotmatch) {
+                      <div class="alert-item static">
+                        <div class="alert-icon-wrapper">
+                          <cds-icon
+                            class="alert-icon"
+                            shape="exclamation-triangle"
+                          ></cds-icon>
+                        </div>
+                        <span class="alert-text">Passwords don't match</span>
+                      </div>
+                    }
                   </div>
                 </div>
-              </div>
-            </ng-container>
+              }
+            }
           </div>
           <div class="card-footer">
             <button
@@ -168,14 +167,39 @@
         <div class="card-header">Profile Stats</div>
         <div class="card-block">
           <div class="card-text">
-            Number of Feeds subscribed to: {{ numberOfFeeds | number }}
+            Number of Feeds subscribed to:
+            <span>
+              @if (numberOfFeeds !== null) {
+                {{ numberOfFeeds | number }}
+              } @else {
+                <clr-spinner [clrInline]="true"></clr-spinner>
+              }
+            </span>
           </div>
           <div class="card-text">
-            Number of Read Articles: {{ numberOfReadFeedEntries | number }}
+            Number of Read Articles:
+            <span>
+              @if (numberOfReadFeedEntries !== null) {
+                {{ numberOfReadFeedEntries | number }}
+              } @else {
+                <clr-spinner [clrInline]="true"></clr-spinner>
+              }
+            </span>
           </div>
           <div class="card-text">
             Number of Unread Articles:
-            {{ numberOfUnreadFeedEntries$ | async | number }}
+            <span>
+              @let numberOfUnreadFeedEntries =
+                numberOfUnreadFeedEntries$ | async;
+              @if (
+                numberOfUnreadFeedEntries !== undefined &&
+                numberOfUnreadFeedEntries !== null
+              ) {
+                {{ numberOfUnreadFeedEntries | number }}
+              } @else {
+                <clr-spinner [clrInline]="true"></clr-spinner>
+              }
+            </span>
           </div>
         </div>
       </div>
@@ -224,10 +248,7 @@
           <cds-icon shape="brand-google" size="xl"></cds-icon>
         </div>
         <div class="card-footer">
-          <ng-container
-            *ngIf="hasGoogleLogin; then unlinkGButton; else linkGButton"
-          ></ng-container>
-          <ng-template #unlinkGButton>
+          @if (hasGoogleLogin) {
             <button
               type="button"
               class="btn btn-outline-warning"
@@ -241,8 +262,7 @@
             >
               Unlink
             </button>
-          </ng-template>
-          <ng-template #linkGButton>
+          } @else {
             <button
               type="button"
               class="btn btn-outline-primary"
@@ -256,7 +276,7 @@
             >
               Link
             </button>
-          </ng-template>
+          }
         </div>
       </div>
     </div>
@@ -266,10 +286,7 @@
           <cds-icon shape="brand-facebook" size="xl"></cds-icon>
         </div>
         <div class="card-footer">
-          <ng-container
-            *ngIf="hasFacebookLogin; then unlinkFBButton; else linkFBButton"
-          ></ng-container>
-          <ng-template #unlinkFBButton>
+          @if (hasFacebookLogin) {
             <button
               type="button"
               class="btn btn-outline-warning"
@@ -283,8 +300,7 @@
             >
               Unlink
             </button>
-          </ng-template>
-          <ng-template #linkFBButton>
+          } @else {
             <button
               type="button"
               class="btn btn-outline-primary"
@@ -298,7 +314,7 @@
             >
               Link
             </button>
-          </ng-template>
+          }
         </div>
       </div>
     </div>

@@ -58,7 +58,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   state = State.IsLoading;
   readonly State = State;
 
-  email = '';
+  email: string | null = null;
   oldPassword = '';
   newPassword = '';
   newPasswordCheck = '';
@@ -66,15 +66,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
   hasGoogleLogin = false;
   hasFacebookLogin = false;
 
-  numberOfFeeds = 0;
-  numberOfReadFeedEntries = 0;
+  numberOfFeeds: number | null = null;
+  numberOfReadFeedEntries: number | null = null;
   numberOfUnreadFeedEntries$ = this.readCounterService.feedCounts$.pipe(
-    map(feedCounts =>
-      Object.values(feedCounts).reduce(
-        (previousValue, currentValue) => previousValue + currentValue,
-        0,
-      ),
-    ),
+    map(feedCounts => {
+      if (feedCounts === null) {
+        return null;
+      } else {
+        return Object.values(feedCounts).reduce(
+          (previousValue, currentValue) => previousValue + currentValue,
+          0,
+        );
+      }
+    }),
   );
 
   gLoaded = false;
