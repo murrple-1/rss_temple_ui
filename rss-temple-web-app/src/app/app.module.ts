@@ -37,7 +37,6 @@ import {
   warningStandardIcon,
   windowCloseIcon,
 } from '@cds/core/icon';
-import { IconShapeTuple } from '@cds/core/icon/interfaces/icon.interfaces';
 import '@cds/core/icon/register.js';
 import { ClarityModule } from '@clr/angular';
 import { CookieService } from 'ngx-cookie-service';
@@ -180,7 +179,7 @@ export function clarityIconsFactory(http: HttpClient) {
           .pipe(catchError(() => of(null))),
       }),
     );
-    const myCollectionIcons: IconShapeTuple[] = [];
+    const myCollectionIcons: [string, string][] = [];
     for (const [key, value] of Object.entries(myCollectionIconDownloads)) {
       if (value !== null) {
         myCollectionIcons.push([key, value]);
