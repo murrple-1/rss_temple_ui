@@ -116,29 +116,25 @@
               captchaAudio === null
             "
           >
-            <ng-container
-              *ngIf="captchaImageSrc !== null && captchaAudio !== null"
-            >
+            @if (captchaImageSrc !== null && captchaAudio !== null) {
               <img [src]="captchaImageSrc" alt="" title="Captcha" />
-              <ng-container
-                *ngIf="captchaAudio.paused; then playButton; else stopButton"
-              ></ng-container>
-              <ng-template #playButton
-                ><button
+              @if (captchaAudio.paused) {
+                <button
                   type="button"
                   class="btn btn-icon"
                   (click)="onCaptchaAudioPlay()"
                 >
-                  <cds-icon shape="play"></cds-icon></button
-              ></ng-template>
-              <ng-template #stopButton
-                ><button
+                  <cds-icon shape="play"></cds-icon>
+                </button>
+              } @else {
+                <button
                   type="button"
                   class="btn btn-icon"
                   (click)="onCaptchaAudioStop()"
                 >
-                  <cds-icon shape="stop"></cds-icon></button
-              ></ng-template>
+                  <cds-icon shape="stop"></cds-icon>
+                </button>
+              }
               <button
                 type="button"
                 class="btn btn-icon"
@@ -146,7 +142,7 @@
               >
                 <cds-icon shape="refresh"></cds-icon>
               </button>
-            </ng-container>
+            }
             <clr-input-container>
               <label>Secret Phrase</label>
               <input
@@ -163,26 +159,25 @@
         </div>
       </div>
     </div>
-    <ng-container
-      *ngIf="registerForm && (registerForm.touched || registerForm.dirty)"
-    >
-      <div *ngIf="registerForm.errors" class="alert alert-warning" role="alert">
-        <div class="alert-items">
-          <div
-            *ngIf="registerForm.errors?.passwordsdonotmatch"
-            class="alert-item static"
-          >
-            <div class="alert-icon-wrapper">
-              <cds-icon
-                class="alert-icon"
-                shape="exclamation-triangle"
-              ></cds-icon>
-            </div>
-            <span class="alert-text">Passwords don't match</span>
+    @if (registerForm && (registerForm.touched || registerForm.dirty)) {
+      @if (registerForm.errors) {
+        <div class="alert alert-warning" role="alert">
+          <div class="alert-items">
+            @if (registerForm.errors.passwordsdonotmatch) {
+              <div class="alert-item static">
+                <div class="alert-icon-wrapper">
+                  <cds-icon
+                    class="alert-icon"
+                    shape="exclamation-triangle"
+                  ></cds-icon>
+                </div>
+                <span class="alert-text">Passwords don't match</span>
+              </div>
+            }
           </div>
         </div>
-      </div>
-    </ng-container>
+      }
+    }
     <button
       type="submit"
       class="btn btn-primary"

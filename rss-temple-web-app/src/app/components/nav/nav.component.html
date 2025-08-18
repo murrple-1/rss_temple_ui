@@ -1,54 +1,51 @@
 <div class="header-nav" [clr-nav-level]="1">
-  <ng-container *ngFor="let navLink of navLinks">
-    <ng-container
-      *ngIf="
-        navLink.href !== undefined;
-        then hrefNavLink;
-        else routerLinkNavLink
-      "
-    ></ng-container>
-    <ng-template #hrefNavLink>
-      <a
-        [href]="navLink.href"
-        [target]="navLink.target"
-        class="nav-link nav-text"
-        >{{ navLink.name }}</a
-      >
-    </ng-template>
-    <ng-template #routerLinkNavLink>
-      <a
-        *ngIf="!navLink.routerLinkIsHref"
-        [routerLink]="navLink.routerLink"
-        [ngClass]="{
-          'app--active': navLink.routerLinkActiveAlt$ | async,
-        }"
-        class="nav-link nav-text"
-        >{{ navLink.name }}</a
-      >
-    </ng-template>
-  </ng-container>
+  @for (navLink of navLinks; track $index) {
+    @switch (navLink.type) {
+      @case ('href') {
+        <a
+          [href]="navLink.href"
+          [target]="navLink.target"
+          class="nav-link nav-text"
+          >{{ navLink.name }}</a
+        >
+      }
+      @case ('routerLink') {
+        <a
+          [routerLink]="navLink.routerLink"
+          [ngClass]="{
+            'app--active': navLink.routerLinkActiveAlt$ | async,
+          }"
+          class="nav-link nav-text"
+          >{{ navLink.name }}</a
+        >
+      }
+    }
+  }
 </div>
-<form *ngIf="isSearchVisible" clrForm class="search" (ngSubmit)="onSearch()">
-  <label for="search-input">
-    <input
-      id="search-input"
-      name="searchText"
-      [(ngModel)]="searchText"
-      type="text"
-      placeholder="Search feeds…"
-    />
-  </label>
-</form>
+@if (isSearchVisible) {
+  <form clrForm class="search" (ngSubmit)="onSearch()">
+    <label for="search-input">
+      <input
+        id="search-input"
+        name="searchText"
+        [(ngModel)]="searchText"
+        type="text"
+        placeholder="Search feeds…"
+      />
+    </label>
+  </form>
+}
 <div class="header-actions">
-  <a
-    *ngFor="let navAction of navActions"
-    href="javascript:;"
-    [ngClass]="navAction.classes"
-    class="nav-link nav-icon"
-    (click)="navAction.onClick()"
-  >
-    <cds-icon [attr.shape]="navAction.clrIconShape"></cds-icon>
-  </a>
+  @for (navAction of navActions; track $index) {
+    <a
+      href="javascript:;"
+      [ngClass]="navAction.classes"
+      class="nav-link nav-icon"
+      (click)="navAction.onClick()"
+    >
+      <cds-icon [attr.shape]="navAction.clrIconShape"></cds-icon>
+    </a>
+  }
 </div>
 
 <app-confirm-modal></app-confirm-modal>

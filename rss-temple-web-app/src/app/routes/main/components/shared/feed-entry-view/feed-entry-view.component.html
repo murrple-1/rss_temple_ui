@@ -1,143 +1,139 @@
-<div
-  *ngIf="feed !== undefined && feedEntry !== undefined"
-  class="card"
-  [ngClass]="{
-    'app--flash': flashing,
-    'app--is-read': feedEntry.isRead,
-    'app--has-focus': hasFocus,
-  }"
-  (click)="onClick($event)"
-  role="presentation"
->
-  <div class="card-header app--card-header">
-    <cds-icon
-      *ngIf="feedEntry.isArchived"
-      class="app--archived"
-      shape="hourglass"
-      title="This entry is archived"
-    ></cds-icon>
-    <a [attr.href]="feedEntry.url" target="_blank">{{ feedEntry.title }}</a>
-  </div>
-  <div class="card-block">
-    <div class="card-text">
-      <p class="p4 app--creator">
-        From <a [attr.href]="feed.homeUrl">{{ feed.calculatedTitle }}</a>
-        <ng-container *ngIf="feedEntry.authorName !== null"
-          >&nbsp;by {{ feedEntry.authorName }}</ng-container
-        >
-      </p>
-      <p class="p7 app--date">{{ feedEntry.publishedAt | dateFormat }}</p>
+@if (feed !== undefined && feedEntry !== undefined) {
+  <div
+    class="card"
+    [ngClass]="{
+      'app--flash': flashing,
+      'app--is-read': feedEntry.isRead,
+      'app--has-focus': hasFocus,
+    }"
+    (click)="onClick($event)"
+    role="presentation"
+  >
+    <div class="card-header app--card-header">
+      @if (feedEntry.isArchived) {
+        <cds-icon
+          class="app--archived"
+          shape="hourglass"
+          title="This entry is archived"
+        ></cds-icon>
+      }
+      <a [attr.href]="feedEntry.url" target="_blank">{{ feedEntry.title }}</a>
     </div>
-    <div
-      *ngIf="
+    <div class="card-block">
+      <div class="card-text">
+        <p class="p4 app--creator">
+          From <a [attr.href]="feed.homeUrl">{{ feed.calculatedTitle }}</a>
+          @if (feedEntry.authorName !== null) {
+            &nbsp;by {{ feedEntry.authorName }}
+          }
+        </p>
+        <p class="p7 app--date">{{ feedEntry.publishedAt | dateFormat }}</p>
+      </div>
+      @if (
         !isClassifierLabelDismissed &&
         feedEntry.possibleClassifierLabel !== null
-      "
-      class="alert alert-app-level alert-info"
-      role="alert"
-    >
-      <div class="alert-items">
-        <div class="alert-item static">
-          <div class="alert-icon-wrapper">
-            <cds-icon class="alert-icon" shape="info-circle"></cds-icon>
-          </div>
-          <div class="alert-text">
-            Is this article about "{{
-              feedEntry.possibleClassifierLabel.text
-            }}"?
-          </div>
-          <div class="alert-actions">
-            <button
-              class="btn alert-action app--yes-action"
-              (click)="voteYes()"
-            >
-              Yes
-            </button>
-            <button class="btn alert-action" (click)="voteNo()">No</button>
+      ) {
+        <div class="alert alert-app-level alert-info" role="alert">
+          <div class="alert-items">
+            <div class="alert-item static">
+              <div class="alert-icon-wrapper">
+                <cds-icon class="alert-icon" shape="info-circle"></cds-icon>
+              </div>
+              <div class="alert-text">
+                Is this article about "{{
+                  feedEntry.possibleClassifierLabel.text
+                }}"?
+              </div>
+              <div class="alert-actions">
+                <button
+                  class="btn alert-action app--yes-action"
+                  (click)="voteYes()"
+                >
+                  Yes
+                </button>
+                <button class="btn alert-action" (click)="voteNo()">No</button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      }
+      @if (feedEntry.hasTopImageBeenProcessed && feedEntry.topImageSrc !== '') {
+        <div class="card-text app--content app--top-image">
+          <img
+            [src]="feedEntry.topImageSrc"
+            alt=""
+            referrerpolicy="no-referrer"
+          />
+        </div>
+      }
+      <div
+        class="card-text app--content"
+        [innerHtml]="feedEntry.content | safeHtml"
+      ></div>
     </div>
-    <div
-      *ngIf="feedEntry.hasTopImageBeenProcessed && feedEntry.topImageSrc !== ''"
-      class="card-text app--content app--top-image"
-    >
-      <img [src]="feedEntry.topImageSrc" alt="" referrerpolicy="no-referrer" />
+    <div class="card-footer app--footer">
+      @if (feedEntry.isRead) {
+        <button
+          class="btn btn-primary btn-icon btn-sm"
+          (click)="unread()"
+          title="Unread"
+        >
+          <cds-icon shape="book"></cds-icon
+          ><span class="app--button-label">Unread</span>
+        </button>
+      } @else {
+        <button
+          class="btn btn-primary btn-icon btn-sm"
+          (click)="read()"
+          title="Read"
+        >
+          <cds-icon shape="book-strikethrough"></cds-icon
+          ><span class="app--button-label">Read</span>
+        </button>
+      }
+      @if (feedEntry.isFavorite) {
+        <button
+          class="btn btn-success btn-icon btn-sm"
+          (click)="unfavorite()"
+          title="Unfavorite"
+        >
+          <cds-icon shape="star-filled"></cds-icon
+          ><span class="app--button-label">Unfavorite</span>
+        </button>
+      } @else {
+        <button
+          class="btn btn-success btn-icon btn-sm"
+          (click)="favorite()"
+          title="Favorite"
+        >
+          <cds-icon shape="star"></cds-icon
+          ><span class="app--button-label">Favorite</span>
+        </button>
+      }
+      <button class="btn btn-icon btn-sm" (click)="share()" title="Share">
+        <cds-icon shape="share"></cds-icon
+        ><span class="app--button-label">Share</span>
+      </button>
+      <button
+        class="btn btn-icon btn-sm"
+        (click)="voteLabels()"
+        title="ML Labeling"
+      >
+        <cds-icon shape="flask"></cds-icon
+        ><span class="app--button-label">ML Labeling</span>
+      </button>
+      <button class="btn btn-icon btn-sm" (click)="report()" title="Report…">
+        <cds-icon shape="warning-standard"></cds-icon
+        ><span class="app--button-label">Report…</span>
+      </button>
+      @if (isGoToVisible && feed !== undefined) {
+        <a
+          class="btn btn-link btn-sm"
+          [routerLink]="['/main/feed/', feed.feedUrl]"
+          ><cds-icon shape="link"></cds-icon
+          ><span class="app--button-label">Go to Feed</span></a
+        >
+      }
     </div>
-    <div
-      class="card-text app--content"
-      [innerHtml]="feedEntry.content | safeHtml"
-    ></div>
   </div>
-  <div class="card-footer app--footer">
-    <ng-container
-      *ngIf="feedEntry.isRead; then unreadButton; else readButton"
-    ></ng-container>
-    <ng-template #unreadButton>
-      <button
-        class="btn btn-primary btn-icon btn-sm"
-        (click)="unread()"
-        title="Unread"
-      >
-        <cds-icon shape="book"></cds-icon
-        ><span class="app--button-label">Unread</span>
-      </button>
-    </ng-template>
-    <ng-template #readButton>
-      <button
-        class="btn btn-primary btn-icon btn-sm"
-        (click)="read()"
-        title="Read"
-      >
-        <cds-icon shape="book-strikethrough"></cds-icon
-        ><span class="app--button-label">Read</span>
-      </button>
-    </ng-template>
-    <ng-container
-      *ngIf="feedEntry.isFavorite; then unfavoriteButton; else favoriteButton"
-    ></ng-container>
-    <ng-template #unfavoriteButton>
-      <button
-        class="btn btn-success btn-icon btn-sm"
-        (click)="unfavorite()"
-        title="Unfavorite"
-      >
-        <cds-icon shape="star-filled"></cds-icon
-        ><span class="app--button-label">Unfavorite</span>
-      </button>
-    </ng-template>
-    <ng-template #favoriteButton>
-      <button
-        class="btn btn-success btn-icon btn-sm"
-        (click)="favorite()"
-        title="Favorite"
-      >
-        <cds-icon shape="star"></cds-icon
-        ><span class="app--button-label">Favorite</span>
-      </button>
-    </ng-template>
-    <button class="btn btn-icon btn-sm" (click)="share()" title="Share">
-      <cds-icon shape="share"></cds-icon
-      ><span class="app--button-label">Share</span>
-    </button>
-    <button
-      class="btn btn-icon btn-sm"
-      (click)="voteLabels()"
-      title="ML Labeling"
-    >
-      <cds-icon shape="flask"></cds-icon
-      ><span class="app--button-label">ML Labeling</span>
-    </button>
-    <button class="btn btn-icon btn-sm" (click)="report()" title="Report…">
-      <cds-icon shape="warning-standard"></cds-icon
-      ><span class="app--button-label">Report…</span>
-    </button>
-    <a
-      *ngIf="isGoToVisible && feed !== undefined"
-      class="btn btn-link btn-sm"
-      [routerLink]="['/main/feed/', feed.feedUrl]"
-      ><cds-icon shape="link"></cds-icon
-      ><span class="app--button-label">Go to Feed</span></a
-    >
-  </div>
-</div>
+}

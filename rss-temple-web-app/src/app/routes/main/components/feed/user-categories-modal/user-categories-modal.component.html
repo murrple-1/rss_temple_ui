@@ -13,10 +13,9 @@
         [disabled]="isLoading"
       />
       <datalist>
-        <option
-          *ngFor="let categoryDescriptor of categoryDescriptors"
-          [value]="categoryDescriptor.text"
-        ></option>
+        @for (categoryDescriptor of categoryDescriptors; track $index) {
+          <option [value]="categoryDescriptor.text"></option>
+        }
       </datalist>
     </clr-datalist-container>
     <button

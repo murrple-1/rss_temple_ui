@@ -26,84 +26,69 @@
       <h1>Explore</h1>
     </div>
   </div>
-  <ng-container *ngFor="let tagEntry of tagEntries">
+  @for (tagEntry of tagEntries; track $index) {
     <div class="clr-row">
       <div class="clr-col-12">
         <h3>{{ tagEntry.name }}</h3>
       </div>
     </div>
     <div class="clr-row">
-      <div
-        *ngFor="let feed of tagEntry.feeds"
-        class="clr-col-12 clr-col-md-6 clr-col-xl-4"
-      >
-        <div class="card">
-          <div class="card-header app--card-header">
-            <ng-container
-              *ngIf="
-                feed.homeUrl !== null;
-                then feedNameLink;
-                else feedNameText
-              "
-            ></ng-container>
-            <ng-template #feedNameLink>
-              <a *ngIf="feed.homeUrl !== null" [href]="feed.homeUrl">{{
-                feed.name
-              }}</a>
-            </ng-template>
-            <ng-template #feedNameText>
-              {{ feed.name }}
-            </ng-template>
-          </div>
-          <div *ngIf="feed.imageSrc !== null" class="card-img app--feed-image">
-            <img [src]="feed.imageSrc" alt="{{ feed.name }} image" />
-          </div>
-          <div class="card-block">
-            <p>Example Articles</p>
-            <ul class="list">
-              <li *ngFor="let exampleTitle of feed.exampleTitles">
-                {{ exampleTitle }}
-              </li>
-              <li>And More…</li>
-            </ul>
-          </div>
-          <div class="card-footer app--footer">
-            <ng-container
-              *ngIf="
-                feed.isSubscribed;
-                then unsubscribeButton;
-                else subscribeButton
-              "
-            ></ng-container>
-            <ng-template #unsubscribeButton>
-              <button
-                class="btn btn-warning btn-sm btn-icon"
-                (click)="unsubscribe(feed)"
-                title="Unsubscribe"
+      @for (feed of tagEntry.feeds; track $index) {
+        <div class="clr-col-12 clr-col-md-6 clr-col-xl-4">
+          <div class="card">
+            <div class="card-header app--card-header">
+              @if (feed.homeUrl !== null) {
+                <a [href]="feed.homeUrl">{{ feed.name }}</a>
+              } @else {
+                {{ feed.name }}
+              }
+            </div>
+            @if (feed.imageSrc !== null) {
+              <div class="card-img app--feed-image">
+                <img [src]="feed.imageSrc" alt="{{ feed.name }} image" />
+              </div>
+            }
+            <div class="card-block">
+              <p>Example Articles</p>
+              <ul class="list">
+                @for (exampleTitle of feed.exampleTitles; track $index) {
+                  <li>
+                    {{ exampleTitle }}
+                  </li>
+                }
+                <li>And More…</li>
+              </ul>
+            </div>
+            <div class="card-footer app--footer">
+              @if (feed.isSubscribed) {
+                <button
+                  class="btn btn-warning btn-sm btn-icon"
+                  (click)="unsubscribe(feed)"
+                  title="Unsubscribe"
+                >
+                  <cds-icon shape="bookmark"></cds-icon
+                  ><span class="app--button-label">Unsubscribe</span>
+                </button>
+              } @else {
+                <button
+                  class="btn btn-success btn-sm btn-icon"
+                  (click)="subscribe(feed)"
+                  title="Subscribe"
+                >
+                  <cds-icon shape="bookmark"></cds-icon
+                  ><span class="app--button-label">Subscribe</span>
+                </button>
+              }
+              <a
+                class="btn btn-link btn-sm"
+                [routerLink]="['/main/feed/', feed.feedUrl]"
+                ><cds-icon shape="link"></cds-icon
+                ><span class="app--button-label">Go to Feed</span></a
               >
-                <cds-icon shape="bookmark"></cds-icon
-                ><span class="app--button-label">Unsubscribe</span>
-              </button>
-            </ng-template>
-            <ng-template #subscribeButton>
-              <button
-                class="btn btn-success btn-sm btn-icon"
-                (click)="subscribe(feed)"
-                title="Subscribe"
-              >
-                <cds-icon shape="bookmark"></cds-icon
-                ><span class="app--button-label">Subscribe</span>
-              </button>
-            </ng-template>
-            <a
-              class="btn btn-link btn-sm"
-              [routerLink]="['/main/feed/', feed.feedUrl]"
-              ><cds-icon shape="link"></cds-icon
-              ><span class="app--button-label">Go to Feed</span></a
-            >
+            </div>
           </div>
         </div>
-      </div>
+      }
     </div>
-  </ng-container>
+  }
 </div>

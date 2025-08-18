@@ -9,7 +9,6 @@ import { EmailValidatorDirective } from '@app/directives/email-validator.directi
 import { PasswordValidatorDirective } from '@app/directives/password-validator.directive';
 import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-match-validator.directive';
 import { UrlValidatorDirective } from '@app/directives/url-validator.directive';
-import { VarDirective } from '@app/directives/var.directive';
 import { DateFormatPipe } from '@app/pipes/dayjs-format.pipe';
 import { SafeHtmlPipe } from '@app/pipes/safe-html.pipe';
 import { TruncatedNumberPipe } from '@app/pipes/truncated-number.pipe';
@@ -21,7 +20,6 @@ import { TruncatedNumberPipe } from '@app/pipes/truncated-number.pipe';
     PasswordsMatchValidatorDirective,
     EmailValidatorDirective,
     UrlValidatorDirective,
-    VarDirective,
 
     DateFormatPipe,
     SafeHtmlPipe,
@@ -36,7 +34,6 @@ import { TruncatedNumberPipe } from '@app/pipes/truncated-number.pipe';
     PasswordsMatchValidatorDirective,
     EmailValidatorDirective,
     UrlValidatorDirective,
-    VarDirective,
 
     DateFormatPipe,
     SafeHtmlPipe,

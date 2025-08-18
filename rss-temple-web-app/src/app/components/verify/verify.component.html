@@ -7,18 +7,28 @@
           <cds-icon class="alert-icon" [attr.shape]="iconShape"></cds-icon>
         </div>
         <span class="alert-text">
-          <ng-container [ngSwitch]="state">
-            <ng-container *ngSwitchCase="State.NotStarted"
-              >Not Started</ng-container
-            >
-            <ng-container *ngSwitchCase="State.Sending">Sending…</ng-container>
-            <ng-container *ngSwitchCase="State.Success">Success</ng-container>
-            <ng-container *ngSwitchCase="State.Error">Error</ng-container>
-            <ng-container *ngSwitchCase="State.NoToken">No Token</ng-container>
-          </ng-container>
+          @switch (state) {
+            @case (State.NotStarted) {
+              Not Started
+            }
+            @case (State.Sending) {
+              Sending…
+            }
+            @case (State.Success) {
+              Success
+            }
+            @case (State.Error) {
+              Error
+            }
+            @case (State.NoToken) {
+              No Token
+            }
+          }
         </span>
       </div>
     </div>
   </div>
-  <a *ngIf="isLoginPageAnchorVisible" routerLink="/login">Back to Login page</a>
+  @if (isLoginPageAnchorVisible) {
+    <a routerLink="/login">Back to Login page</a>
+  }
 </div>

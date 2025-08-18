@@ -1,23 +1,26 @@
-<div
-  *ngFor="let alertEntry of alertEntries"
-  class="alert"
-  [ngClass]="{
-    'alert-danger': alertEntry.type === 'danger',
-    'alert-warning': alertEntry.type === 'warning',
-    'alert-success': alertEntry.type === 'success',
-    'alert-info': alertEntry.type === 'info',
-  }"
-  role="alert"
->
-  <div class="alert-items">
-    <div class="alert-item static">
-      <div *ngIf="alertEntry.iconShape !== null" class="alert-icon-wrapper">
-        <cds-icon
-          class="alert-icon"
-          [attr.shape]="alertEntry.iconShape"
-        ></cds-icon>
+@for (alertEntry of alertEntries; track $index) {
+  <div
+    class="alert"
+    [ngClass]="{
+      'alert-danger': alertEntry.type === 'danger',
+      'alert-warning': alertEntry.type === 'warning',
+      'alert-success': alertEntry.type === 'success',
+      'alert-info': alertEntry.type === 'info',
+    }"
+    role="alert"
+  >
+    <div class="alert-items">
+      <div class="alert-item static">
+        @if (alertEntry.iconShape !== null) {
+          <div class="alert-icon-wrapper">
+            <cds-icon
+              class="alert-icon"
+              [attr.shape]="alertEntry.iconShape"
+            ></cds-icon>
+          </div>
+        }
+        <span class="alert-text">{{ alertEntry.text }}</span>
       </div>
-      <span class="alert-text">{{ alertEntry.text }}</span>
     </div>
   </div>
-</div>
+}

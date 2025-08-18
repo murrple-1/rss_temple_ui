@@ -31,6 +31,7 @@ interface _ShareButtonDescriptor {
 
 interface _NgxShareButtonsShareButtonDescriptor extends _ShareButtonDescriptor {
   shareButton: IShareButton;
+  type: 'ngx-sharebuttons';
 }
 
 interface _CustomShareButtonDescriptor extends _ShareButtonDescriptor {
@@ -38,6 +39,7 @@ interface _CustomShareButtonDescriptor extends _ShareButtonDescriptor {
     text: string;
     onClick: () => void;
   };
+  type: 'custom';
 }
 
 type ShareButtonDescriptor =
@@ -63,26 +65,32 @@ export class ShareModalComponent implements OnDestroy {
     {
       shareButton: facebookParams,
       iconName: 'brand-facebook',
+      type: 'ngx-sharebuttons',
     },
     {
       shareButton: xParams,
       iconName: 'brand-twitter-x',
+      type: 'ngx-sharebuttons',
     },
     {
       shareButton: linkedInParams,
       iconName: 'brand-linkedin',
+      type: 'ngx-sharebuttons',
     },
     {
       shareButton: pinterestParams,
       iconName: 'brand-pinterest',
+      type: 'ngx-sharebuttons',
     },
     {
       shareButton: redditParams,
       iconName: 'brand-reddit',
+      type: 'ngx-sharebuttons',
     },
     {
       shareButton: tumblrParams,
       iconName: 'brand-tumblr',
+      type: 'ngx-sharebuttons',
     },
     {
       customShareButton: {
@@ -90,6 +98,7 @@ export class ShareModalComponent implements OnDestroy {
         onClick: () => this.blueskyShare(),
       },
       iconName: 'brand-bluesky',
+      type: 'custom',
     },
     {
       customShareButton: {
@@ -97,6 +106,7 @@ export class ShareModalComponent implements OnDestroy {
         onClick: () => this.threadsShare(),
       },
       iconName: 'brand-threads',
+      type: 'custom',
     },
     {
       customShareButton: {
@@ -104,6 +114,7 @@ export class ShareModalComponent implements OnDestroy {
         onClick: () => this.lemmyShare(),
       },
       iconName: 'brand-lemmy',
+      type: 'custom',
     },
     {
       customShareButton: {
@@ -111,32 +122,38 @@ export class ShareModalComponent implements OnDestroy {
         onClick: () => this.mastodonShare(),
       },
       iconName: 'brand-mastodon',
+      type: 'custom',
     },
     {
       shareButton: telegramParams,
       iconName: 'brand-telegram',
+      type: 'ngx-sharebuttons',
     },
     // TODO to implement, see https://github.com/MurhafSousli/ngx-sharebuttons/wiki/Using-Messenger-on-Desktop
     // {
-    //   kind: 'ngx-sharebuttons',
     //   shareButton: messengerParams,
     //   iconName: 'brand-facebook-messenger',
+    //   type: 'ngx-sharebuttons',
     // },
     {
       shareButton: whatsappParams,
       iconName: 'brand-whatsapp',
+      type: 'ngx-sharebuttons',
     },
     {
       shareButton: smsParams,
       iconName: 'talk-bubbles',
+      type: 'ngx-sharebuttons',
     },
     {
       shareButton: emailParams,
       iconName: 'envelope',
+      type: 'ngx-sharebuttons',
     },
     {
       shareButton: copyParams,
       iconName: 'clipboard',
+      type: 'ngx-sharebuttons',
     },
   ];
 

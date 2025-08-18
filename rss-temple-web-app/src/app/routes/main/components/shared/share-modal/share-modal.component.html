@@ -1,38 +1,47 @@
 <clr-modal [clrModalOpen]="open" (clrModalOpenChange)="openChanged($event)">
   <h4 class="modal-title">Share</h4>
   <div class="modal-body">
-    <button
-      *ngIf="isWebShareAPIAvailable"
-      class="btn btn-success-outline app--share-button"
-      (click)="webShare()"
-    >
-      <cds-icon shape="share"></cds-icon>
-      <span class="app--share-title">Share via Browser…</span>
-    </button>
-    <ng-container *ngFor="let shareButtonDescriptor of shareButtonDescriptors">
+    @if (isWebShareAPIAvailable) {
       <button
-        *ngIf="shareButtonDescriptor.shareButton !== undefined"
-        class="btn btn-outline app--share-button"
-        [shareButton]="shareButtonDescriptor.shareButton.type"
-        [url]="url"
-        [title]="title"
+        class="btn btn-success-outline app--share-button"
+        (click)="webShare()"
       >
-        <cds-icon [attr.shape]="shareButtonDescriptor.iconName"></cds-icon>
-        <span class="app--share-title">{{
-          shareButtonDescriptor.shareButton.text
-        }}</span>
+        <cds-icon shape="share"></cds-icon>
+        <span class="app--share-title">Share via Browser…</span>
       </button>
-      <button
-        *ngIf="shareButtonDescriptor.customShareButton !== undefined"
-        class="btn btn-outline app--share-button"
-        (click)="shareButtonDescriptor.customShareButton.onClick()"
-      >
-        <cds-icon [attr.shape]="shareButtonDescriptor.iconName"></cds-icon>
-        <span class="app--share-title">{{
-          shareButtonDescriptor.customShareButton.text
-        }}</span>
-      </button>
-    </ng-container>
+    }
+    @for (shareButtonDescriptor of shareButtonDescriptors; track $index) {
+      @switch (shareButtonDescriptor.type) {
+        @case ('ngx-sharebuttons') {
+          @if (shareButtonDescriptor.shareButton.type !== undefined) {
+            <button
+              class="btn btn-outline app--share-button"
+              [shareButton]="shareButtonDescriptor.shareButton.type"
+              [url]="url"
+              [title]="title"
+            >
+              <cds-icon
+                [attr.shape]="shareButtonDescriptor.iconName"
+              ></cds-icon>
+              <span class="app--share-title">{{
+                shareButtonDescriptor.shareButton.text
+              }}</span>
+            </button>
+          }
+        }
+        @case ('custom') {
+          <button
+            class="btn btn-outline app--share-button"
+            (click)="shareButtonDescriptor.customShareButton.onClick()"
+          >
+            <cds-icon [attr.shape]="shareButtonDescriptor.iconName"></cds-icon>
+            <span class="app--share-title">{{
+              shareButtonDescriptor.customShareButton.text
+            }}</span>
+          </button>
+        }
+      }
+    }
   </div>
   <div class="modal-footer">
     <button class="btn btn-primary" type="button" (click)="close()">

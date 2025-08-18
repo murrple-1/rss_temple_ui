@@ -4,9 +4,11 @@
     <div class="card-text">
       We only use strictly necessary cookies to manage login state and showing
       this banner.
-      <div *ngIf="privacyPolicyUrl !== null" class="card-text">
-        <a [href]="privacyPolicyUrl" target="_blank">Privacy Policy</a>
-      </div>
+      @if (privacyPolicyUrl !== null) {
+        <div class="card-text">
+          <a [href]="privacyPolicyUrl" target="_blank">Privacy Policy</a>
+        </div>
+      }
     </div>
   </div>
   <div class="card-footer">

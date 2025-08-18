@@ -14,10 +14,9 @@
           (ngModelChange)="_instanceChanged($event)"
         />
         <datalist>
-          <option
-            *ngFor="let instanceSuggestion of instanceSuggestions"
-            [value]="instanceSuggestion"
-          ></option>
+          @for (instanceSuggestion of instanceSuggestions; track $index) {
+            <option [value]="instanceSuggestion"></option>
+          }
         </datalist>
         <clr-control-helper
           >Enter the domain of a Mastodon instance</clr-control-helper

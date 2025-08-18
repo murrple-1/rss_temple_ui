@@ -19,21 +19,20 @@
             <p>
               <a [href]="serverRepoUrl">Server Git Repo</a>
             </p>
-            <ng-container *ngIf="donationBadges.length > 0">
+            @if (donationBadges.length > 0) {
               <h4>Donate to the Project</h4>
-              <div
-                *ngFor="let donationBadge of donationBadges"
-                class="app--donation-container"
-              >
-                <a [href]="donationBadge.href" target="_blank"
-                  ><img
-                    [src]="donationBadge.imageSrc"
-                    [height]="donationBadge.height"
-                    alt=""
-                    title="Donate"
-                /></a>
-              </div>
-            </ng-container>
+              @for (donationBadge of donationBadges; track $index) {
+                <div class="app--donation-container">
+                  <a [href]="donationBadge.href" target="_blank"
+                    ><img
+                      [src]="donationBadge.imageSrc"
+                      [height]="donationBadge.height"
+                      alt=""
+                      title="Donate"
+                  /></a>
+                </div>
+              }
+            }
           </clr-accordion-content>
         </clr-accordion-panel>
         <clr-accordion-panel>
@@ -164,19 +163,23 @@
             <pre>{{ licensesText }}</pre>
           </clr-accordion-content>
         </clr-accordion-panel>
-        <clr-accordion-panel
-          *ngIf="tosUrl !== null || privacyPolicyUrl !== null"
-        >
-          <clr-accordion-title>Legal</clr-accordion-title>
-          <clr-accordion-content *clrIfExpanded>
-            <p *ngIf="tosUrl !== null">
-              <a [href]="tosUrl">Terms of Service</a>
-            </p>
-            <p *ngIf="privacyPolicyUrl !== null">
-              <a [href]="privacyPolicyUrl">Privacy Policy</a>
-            </p>
-          </clr-accordion-content>
-        </clr-accordion-panel>
+        @if (tosUrl !== null || privacyPolicyUrl !== null) {
+          <clr-accordion-panel>
+            <clr-accordion-title>Legal</clr-accordion-title>
+            <clr-accordion-content *clrIfExpanded>
+              @if (tosUrl !== null) {
+                <p>
+                  <a [href]="tosUrl">Terms of Service</a>
+                </p>
+              }
+              @if (privacyPolicyUrl !== null) {
+                <p>
+                  <a [href]="privacyPolicyUrl">Privacy Policy</a>
+                </p>
+              }
+            </clr-accordion-content>
+          </clr-accordion-panel>
+        }
       </clr-accordion>
     </div>
   </div>

@@ -12,43 +12,40 @@
     <clr-accordion-panel [(clrAccordionPanelOpen)]="feedSettingsOpen">
       <clr-accordion-title>Feed Settings</clr-accordion-title>
       <clr-accordion-content *clrIfExpanded>
-        <div *ngIf="feed !== null" class="clr-row">
-          <div class="clr-col-12">
-            <ng-container
-              *ngIf="
-                feed.isSubscribed;
-                then unsubscribeOptions;
-                else subscribeOptions
-              "
-            ></ng-container>
-            <ng-template #unsubscribeOptions>
-              <button class="btn btn-warning btn-sm" (click)="onUnsubscribe()">
-                Unsubscribe
-              </button>
-              <clr-input-container>
-                <label>Custom Name</label>
-                <input
-                  clrInput
-                  [placeholder]="feed.title"
-                  [(ngModel)]="customNameInput"
+        @if (feed !== null) {
+          <div class="clr-row">
+            <div class="clr-col-12">
+              @if (feed.isSubscribed) {
+                <button
+                  class="btn btn-warning btn-sm"
+                  (click)="onUnsubscribe()"
+                >
+                  Unsubscribe
+                </button>
+                <clr-input-container>
+                  <label>Custom Name</label>
+                  <input
+                    clrInput
+                    [placeholder]="feed.title"
+                    [(ngModel)]="customNameInput"
+                    [disabled]="isRenaming"
+                  />
+                </clr-input-container>
+                <button
+                  class="btn btn-secondary btn-sm"
+                  (click)="onFeedRename()"
                   [disabled]="isRenaming"
-                />
-              </clr-input-container>
-              <button
-                class="btn btn-secondary btn-sm"
-                (click)="onFeedRename()"
-                [disabled]="isRenaming"
-              >
-                Rename Feed
-              </button>
-            </ng-template>
-            <ng-template #subscribeOptions>
-              <button class="btn btn-primary btn-sm" (click)="onSubscribe()">
-                Subscribe
-              </button>
-            </ng-template>
+                >
+                  Rename Feed
+                </button>
+              } @else {
+                <button class="btn btn-primary btn-sm" (click)="onSubscribe()">
+                  Subscribe
+                </button>
+              }
+            </div>
           </div>
-        </div>
+        }
         <hr />
         <div class="clr-row">
           <div class="clr-col-12">
@@ -56,21 +53,13 @@
               <li>
                 <h5 class="app--categories-header">Categories</h5>
               </li>
-              <ng-container
-                *ngIf="
-                  userCategories.length > 0;
-                  then userCategoryEntries;
-                  else noUserCategoriesEntry
-                "
-              ></ng-container>
-              <ng-template #userCategoryEntries>
-                <li *ngFor="let userCategory of userCategories">
+              @for (userCategory of userCategories; track $index) {
+                <li>
                   {{ userCategory.text }}
                 </li>
-              </ng-template>
-              <ng-template #noUserCategoriesEntry>
+              } @empty {
                 <li class="app--no-user-categories">Not Categorized</li>
-              </ng-template>
+              }
               <li>
                 <button
                   class="btn btn-primary btn-sm"
@@ -113,90 +102,88 @@
       </clr-accordion-content>
     </clr-accordion-panel>
   </clr-accordion>
-  <ng-container *ngIf="feed !== null">
+  @if (feed !== null) {
     <div class="clr-row">
       <div class="clr-col-12">
-        <ng-container
-          *ngIf="
-            feed.customTitle !== null;
-            then hasCustomTitle;
-            else hasNoCustomTitle
-          "
-        ></ng-container>
-        <ng-template #hasCustomTitle>
+        @if (feed.customTitle !== null) {
           <h2>
             {{ feed.customTitle }}
             <span class="app--regular-title">({{ feed.title }})</span>
           </h2>
-        </ng-template>
-        <ng-template #hasNoCustomTitle>
+        } @else {
           <h2>
             {{ feed.title }}
           </h2>
-        </ng-template>
+        }
       </div>
     </div>
     <div class="clr-row">
       <div class="clr-col-12">
         <span>
-          <ng-container *ngIf="feedCounts$ | async as feedCounts">
-            <ng-container *appVar="feedCounts[feed.uuid] as feedCount">
-              <ng-container
-                *ngIf="
-                  feedCount !== undefined;
-                  then realUnreadCount;
-                  else fakeUnreadCount
-                "
-              ></ng-container>
-              <ng-template #realUnreadCount>
-                {{ feedCount }} unread
-              </ng-template>
-              <ng-template #fakeUnreadCount> 0 unread </ng-template>
-            </ng-container>
-          </ng-container>
+          @let feedCounts = feedCounts$ | async;
+          @if (feedCounts) {
+            @let feedCount = feedCounts[feed.uuid];
+            @if (feedCount !== undefined) {
+              {{ feedCount }} unread
+            } @else {
+              0 unread
+            }
+          }
         </span>
       </div>
     </div>
-    <div *ngIf="archivedCount !== null && archivedCount > 0" class="clr-row">
-      <div class="clr-col-12 app--archived-count">
-        <span>{{ archivedCount }} archived</span
-        ><clr-tooltip>
-          <cds-icon clrTooltipTrigger shape="info-circle" size="24"></cds-icon>
-          <clr-tooltip-content [clrPosition]="'top-right'" [clrSize]="'md'">
-            Archived entries are still accessible, they just don't count towards
-            your unread count
-          </clr-tooltip-content>
-        </clr-tooltip>
+    @if (archivedCount !== null && archivedCount > 0) {
+      <div class="clr-row">
+        <div class="clr-col-12 app--archived-count">
+          <span>{{ archivedCount }} archived</span
+          ><clr-tooltip>
+            <cds-icon
+              clrTooltipTrigger
+              shape="info-circle"
+              size="24"
+            ></cds-icon>
+            <clr-tooltip-content [clrPosition]="'top-right'" [clrSize]="'md'">
+              Archived entries are still accessible, they just don't count
+              towards your unread count
+            </clr-tooltip-content>
+          </clr-tooltip>
+        </div>
       </div>
-    </div>
-    <div *ngIf="feed.isDead" class="clr-row">
+    }
+    @if (feed.isDead) {
+      <div class="clr-row">
+        <div class="clr-col-12">
+          <cds-icon
+            class="app--subheader-icon"
+            shape="exclamation-circle"
+            size="md"
+            status="warning"
+          ></cds-icon
+          ><span>No new content in a long time</span>
+        </div>
+      </div>
+    }
+  }
+  @if (feed !== null) {
+    @for (feedEntry of feedEntries; track $index) {
       <div class="clr-col-12">
-        <cds-icon
-          class="app--subheader-icon"
-          shape="exclamation-circle"
-          size="md"
-          status="warning"
-        ></cds-icon
-        ><span>No new content in a long time</span>
+        <app-feed-entry-view
+          #feedEntryView
+          [feed]="feed"
+          [feedEntry]="feedEntry"
+          [hasFocus]="feedEntryView === focusedFeedEntryView"
+          [appInViewport]="feedEntry.isRead"
+          [appInViewportScrollParent]="scrollContainer"
+          [appInViewportOffset]="{ 'bottom': -64 }"
+          [shareModalComponent]="shareModalComponent"
+          [labelVoteModalComponent]="labelVoteModalComponent"
+          [reportFeedEntryModalComponent]="reportFeedEntryModalComponent"
+          (appInViewportWatch)="onEntryEnteredViewport($event, feedEntryView)"
+          (click)="onEntryClicked($event, feedEntryView)"
+        ></app-feed-entry-view>
       </div>
-    </div>
-  </ng-container>
-  <div *ngFor="let feedEntry of feedEntries" class="clr-col-12">
-    <app-feed-entry-view
-      #feedEntryView
-      [feed]="feed"
-      [feedEntry]="feedEntry"
-      [hasFocus]="feedEntryView === focusedFeedEntryView"
-      [appInViewport]="feedEntry.isRead"
-      [appInViewportScrollParent]="scrollContainer"
-      [appInViewportOffset]="{ 'bottom': -64 }"
-      [shareModalComponent]="shareModalComponent"
-      [labelVoteModalComponent]="labelVoteModalComponent"
-      [reportFeedEntryModalComponent]="reportFeedEntryModalComponent"
-      (appInViewportWatch)="onEntryEnteredViewport($event, feedEntryView)"
-      (click)="onEntryClicked($event, feedEntryView)"
-    ></app-feed-entry-view>
-  </div>
+    }
+  }
   <div class="clr-row">
     <div class="clr-col-12">
       <app-feeds-footer

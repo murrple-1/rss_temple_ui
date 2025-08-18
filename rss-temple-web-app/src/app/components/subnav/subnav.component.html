@@ -1,12 +1,19 @@
-<nav *ngIf="(subNavLinks$ | async)?.length > 0" class="subnav">
-  <ul class="nav">
-    <li *ngFor="let subNavLink of subNavLinks$ | async" class="nav-item">
-      <a
-        [routerLink]="subNavLink.routerLink"
-        routerLinkActive="active"
-        class="nav-link"
-        >{{ subNavLink.text }}</a
-      >
-    </li>
-  </ul>
-</nav>
+@let subNavLinks = subNavLinks$ | async;
+@if (
+  subNavLinks !== undefined && subNavLinks !== null && subNavLinks.length > 0
+) {
+  <nav class="subnav">
+    <ul class="nav">
+      @for (subNavLink of subNavLinks$ | async; track $index) {
+        <li class="nav-item">
+          <a
+            [routerLink]="subNavLink.routerLink"
+            routerLinkActive="active"
+            class="nav-link"
+            >{{ subNavLink.text }}</a
+          >
+        </li>
+      }
+    </ul>
+  </nav>
+}

@@ -37,11 +37,13 @@ interface _NavLink {
 interface _NavLinkHref extends _NavLink {
   href: string;
   target?: string;
+  type: 'href';
 }
 
 interface _NavLinkRouterLink extends _NavLink {
   routerLink: string;
   routerLinkActiveAlt$: Observable<boolean>;
+  type: 'routerLink';
 }
 
 type NavLink = _NavLinkHref | _NavLinkRouterLink;
@@ -71,6 +73,7 @@ export class NavComponent implements OnInit, OnDestroy {
     routerLinkActiveAlt$: this.navEnd$.pipe(
       map(navEnd => /^\/login/.test(navEnd.urlAfterRedirects)),
     ),
+    type: 'routerLink',
   };
   private readonly homeLink: NavLink = {
     name: 'Home',
@@ -78,6 +81,7 @@ export class NavComponent implements OnInit, OnDestroy {
     routerLinkActiveAlt$: this.navEnd$.pipe(
       map(navEnd => /^\/main\/feeds/.test(navEnd.urlAfterRedirects)),
     ),
+    type: 'routerLink',
   };
   private readonly exploreLink: NavLink = {
     name: 'Explore',
@@ -85,6 +89,7 @@ export class NavComponent implements OnInit, OnDestroy {
     routerLinkActiveAlt$: this.navEnd$.pipe(
       map(navEnd => /^\/main\/explore/.test(navEnd.urlAfterRedirects)),
     ),
+    type: 'routerLink',
   };
   private readonly profileLink: NavLink = {
     name: 'Profile',
@@ -92,6 +97,7 @@ export class NavComponent implements OnInit, OnDestroy {
     routerLinkActiveAlt$: this.navEnd$.pipe(
       map(navEnd => /^\/main\/profile/.test(navEnd.urlAfterRedirects)),
     ),
+    type: 'routerLink',
   };
   private readonly supportLink: NavLink = {
     name: 'Support',
@@ -99,6 +105,7 @@ export class NavComponent implements OnInit, OnDestroy {
     routerLinkActiveAlt$: this.navEnd$.pipe(
       map(navEnd => /^\/support/.test(navEnd.urlAfterRedirects)),
     ),
+    type: 'routerLink',
   };
   private readonly searchAction: NavAction = {
     clrIconShape: 'search',
@@ -157,6 +164,7 @@ export class NavComponent implements OnInit, OnDestroy {
         name: enl.title,
         href: enl.href,
         target: '_blank',
+        type: 'href',
       }));
     } else {
       extraNavLinks = [];

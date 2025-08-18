@@ -37,58 +37,82 @@
                   </clr-input-container>
                   <clr-date-container>
                     <label>Published between…</label>
-                    <input
-                      clrDate
-                      type="date"
-                      placeholder="Start Date"
-                      name="publishedAtStartDate"
-                      [max]="searchPublishedAtMaxDate"
-                      ngModel
-                      [(clrDate)]="searchPublishedAtStartDate"
-                    />
+                    @if (searchPublishedAtMaxDate !== undefined) {
+                      <input
+                        clrDate
+                        type="date"
+                        placeholder="Start Date"
+                        name="publishedAtStartDate"
+                        [max]="searchPublishedAtMaxDate"
+                        ngModel
+                        [(clrDate)]="searchPublishedAtStartDate"
+                      />
+                    } @else {
+                      <input
+                        clrDate
+                        type="date"
+                        placeholder="Start Date"
+                        name="publishedAtStartDate"
+                        ngModel
+                        [(clrDate)]="searchPublishedAtStartDate"
+                      />
+                    }
                   </clr-date-container>
                   <clr-date-container>
-                    <input
-                      clrDate
-                      type="date"
-                      placeholder="End Date"
-                      name="publishedAtEndDate"
-                      [min]="searchPublishedAtMinDate"
-                      ngModel
-                      [(clrDate)]="searchPublishedAtEndDate"
-                    />
+                    @if (searchPublishedAtMinDate !== undefined) {
+                      <input
+                        clrDate
+                        type="date"
+                        placeholder="End Date"
+                        name="publishedAtEndDate"
+                        [min]="searchPublishedAtMinDate"
+                        ngModel
+                        [(clrDate)]="searchPublishedAtEndDate"
+                      />
+                    } @else {
+                      <input
+                        clrDate
+                        type="date"
+                        placeholder="End Date"
+                        name="publishedAtEndDate"
+                        ngModel
+                        [(clrDate)]="searchPublishedAtEndDate"
+                      />
+                    }
                   </clr-date-container>
-                  <clr-combobox-container *ngIf="availableLanguages !== null">
-                    <label>Languages</label>
-                    <clr-combobox
-                      [(ngModel)]="searchLanguages"
-                      name="languages"
-                      clrMulti="true"
-                    >
-                      <ng-container *clrOptionSelected="let selected">
-                        <img
-                          class="app--flag"
-                          [src]="selected.imgSrc"
-                          alt=""
-                        />{{ selected.name }}
-                      </ng-container>
-                      <clr-options>
-                        <clr-option
-                          *clrOptionItems="
-                            let state of availableLanguages;
-                            field: 'name'
-                          "
-                          [clrValue]="state"
-                        >
+                  @if (availableLanguages !== null) {
+                    <clr-combobox-container>
+                      <label>Languages</label>
+                      <clr-combobox
+                        [(ngModel)]="searchLanguages"
+                        name="languages"
+                        clrMulti="true"
+                      >
+                        <ng-container *clrOptionSelected="let selected">
                           <img
                             class="app--flag"
-                            [src]="state.imgSrc"
+                            [src]="selected.imgSrc"
                             alt=""
-                          />{{ state.name }}
-                        </clr-option>
-                      </clr-options>
-                    </clr-combobox>
-                  </clr-combobox-container>
+                          />{{ selected.name }}
+                        </ng-container>
+                        <clr-options>
+                          <clr-option
+                            *clrOptionItems="
+                              let state of availableLanguages;
+                              field: 'name'
+                            "
+                            [clrValue]="state"
+                          >
+                            <img
+                              class="app--flag"
+                              [src]="state.imgSrc"
+                              alt=""
+                            />{{ state.name }}
+                          </clr-option>
+                        </clr-options>
+                      </clr-combobox>
+                    </clr-combobox-container>
+                  }
                   <button
                     type="submit"
                     class="btn btn-primary"
@@ -106,68 +130,67 @@
   </div>
   <div class="clr-row">
     <div class="clr-col-12">
-      <ng-container
-        *ngIf="feedEntryDescriptors.length > 0; then entries; else noEntries"
-      ></ng-container>
-      <ng-template #entries>
+      @if (feedEntryDescriptors.length > 0) {
         <div class="clr-row">
-          <div
-            *ngFor="let feedEntryDescriptor of feedEntryDescriptors"
-            class="clr-col-12"
-          >
-            <div class="card">
-              <div class="card-header app--card-header">
-                <a [attr.href]="feedEntryDescriptor.url" target="_blank">{{
-                  feedEntryDescriptor.title
-                }}</a>
-              </div>
-              <div class="card-block">
-                <div class="card-text">
-                  <p class="p4 app--creator">
-                    From
-                    <a
-                      [attr.href]="feedEntryDescriptor.feedHomeUrl"
-                      target="_blank"
-                      >{{ feedEntryDescriptor.feedTitle }}</a
-                    ><ng-container
-                      *ngIf="feedEntryDescriptor.authorName !== null"
-                      >&nbsp;by
-                      {{ feedEntryDescriptor.authorName }}</ng-container
-                    >
-                  </p>
-                  <p class="p7 app--date">
-                    {{ feedEntryDescriptor.publishedAt | dateFormat }}
-                  </p>
+          @for (feedEntryDescriptor of feedEntryDescriptors; track $index) {
+            <div class="clr-col-12">
+              <div class="card">
+                <div class="card-header app--card-header">
+                  <a [attr.href]="feedEntryDescriptor.url" target="_blank">{{
+                    feedEntryDescriptor.title
+                  }}</a>
+                </div>
+                <div class="card-block">
+                  <div class="card-text">
+                    <p class="p4 app--creator">
+                      From
+                      <a
+                        [attr.href]="feedEntryDescriptor.feedHomeUrl"
+                        target="_blank"
+                        >{{ feedEntryDescriptor.feedTitle }}</a
+                      >
+                      @if (feedEntryDescriptor.authorName !== null) {
+                        &nbsp;by
+                        {{ feedEntryDescriptor.authorName }}
+                      }
+                    </p>
+                    <p class="p7 app--date">
+                      {{ feedEntryDescriptor.publishedAt | dateFormat }}
+                    </p>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <a
+                    class="btn btn-outline-success btn-sm"
+                    [routerLink]="['/main/feed', feedEntryDescriptor.feedUrl]"
+                  >
+                    Go To Feed
+                  </a>
                 </div>
               </div>
-              <div class="card-footer">
-                <a
-                  class="btn btn-outline-success btn-sm"
-                  [routerLink]="['/main/feed', feedEntryDescriptor.feedUrl]"
-                >
-                  Go To Feed
-                </a>
-              </div>
+            </div>
+          }
+        </div>
+        @if (loadingState === LoadingState.IsNotLoading) {
+          <div class="clr-row">
+            <div class="clr-col-12">
+              <button class="btn btn-sm" (click)="loadMore()">See More…</button>
             </div>
           </div>
-        </div>
-        <div *ngIf="loadingState === LoadingState.IsNotLoading" class="clr-row">
-          <div class="clr-col-12">
-            <button class="btn btn-sm" (click)="loadMore()">See More…</button>
-          </div>
-        </div>
-      </ng-template>
-      <ng-template #noEntries>
+        }
+      } @else {
         <div class="clr-row">
           <div class="clr-col-12">No Entries Found</div>
         </div>
-      </ng-template>
-      <div *ngIf="loadingState === LoadingState.IsLoading" class="clr-row">
-        <div class="clr-col-12">
-          <clr-spinner [clrInline]="true"></clr-spinner>
-          <span class="app--loading-text">Loading…</span>
+      }
+      @if (loadingState === LoadingState.IsLoading) {
+        <div class="clr-row">
+          <div class="clr-col-12">
+            <clr-spinner [clrInline]="true"></clr-spinner>
+            <span class="app--loading-text">Loading…</span>
+          </div>
         </div>
-      </div>
+      }
     </div>
   </div>
 </div>

@@ -28,10 +28,9 @@
           >Password required</clr-control-error
         >
       </clr-password-container>
-      <app-local-alerts
-        *ngIf="alertEntries !== null"
-        [alertEntries]="alertEntries"
-      ></app-local-alerts>
+      @if (alertEntries !== null) {
+        <app-local-alerts [alertEntries]="alertEntries"></app-local-alerts>
+      }
     </div>
     <div class="modal-footer">
       <button class="btn btn-outline" (click)="onCancel()" type="button">

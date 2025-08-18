@@ -8,50 +8,54 @@
   [appInfiniteScrollOffset]="1024"
   (appInfiniteScrollApproachingBottom)="onApproachingBottom()"
 >
-  <clr-accordion *ngIf="!favoritesOnly">
-    <clr-accordion-panel>
-      <clr-accordion-title>Feed Settings</clr-accordion-title>
-      <clr-accordion-content *clrIfExpanded>
-        <div class="clr-row">
-          <div class="clr-col-12">
-            <clr-checkbox-wrapper>
-              <input
-                type="checkbox"
-                clrCheckbox
-                [ngModel]="showRead"
-                (ngModelChange)="onShowReadChange($event)"
-              />
-              <label>Show Previously Read and Archived Entries?</label>
-            </clr-checkbox-wrapper>
+  @if (!favoritesOnly) {
+    <clr-accordion>
+      <clr-accordion-panel>
+        <clr-accordion-title>Feed Settings</clr-accordion-title>
+        <clr-accordion-content *clrIfExpanded>
+          <div class="clr-row">
+            <div class="clr-col-12">
+              <clr-checkbox-wrapper>
+                <input
+                  type="checkbox"
+                  clrCheckbox
+                  [ngModel]="showRead"
+                  (ngModelChange)="onShowReadChange($event)"
+                />
+                <label>Show Previously Read and Archived Entries?</label>
+              </clr-checkbox-wrapper>
+            </div>
           </div>
-        </div>
-        <div class="clr-row">
-          <div class="clr-col-12">
-            <button class="btn btn-primary btn-sm" (click)="readAll()">
-              Read All
-            </button>
+          <div class="clr-row">
+            <div class="clr-col-12">
+              <button class="btn btn-primary btn-sm" (click)="readAll()">
+                Read All
+              </button>
+            </div>
           </div>
-        </div>
-      </clr-accordion-content>
-    </clr-accordion-panel>
-  </clr-accordion>
-  <div *ngFor="let feedEntry of feedEntries" class="clr-col-12">
-    <app-feed-entry-view
-      #feedEntryView
-      [feed]="findFeed(feedEntry)"
-      [feedEntry]="feedEntry"
-      [hasFocus]="feedEntryView === focusedFeedEntryView"
-      [isGoToVisible]="true"
-      [appInViewport]="feedEntry.isRead"
-      [appInViewportScrollParent]="scrollContainer"
-      [appInViewportOffset]="{ 'bottom': -64 }"
-      (appInViewportWatch)="onEntryEnteredViewport($event, feedEntryView)"
-      [shareModalComponent]="shareModalComponent"
-      [labelVoteModalComponent]="labelVoteModalComponent"
-      [reportFeedEntryModalComponent]="reportFeedEntryModalComponent"
-      (click)="onEntryClicked($event, feedEntryView)"
-    ></app-feed-entry-view>
-  </div>
+        </clr-accordion-content>
+      </clr-accordion-panel>
+    </clr-accordion>
+  }
+  @for (feedEntry of feedEntries; track $index) {
+    <div class="clr-col-12">
+      <app-feed-entry-view
+        #feedEntryView
+        [feed]="findFeed(feedEntry)"
+        [feedEntry]="feedEntry"
+        [hasFocus]="feedEntryView === focusedFeedEntryView"
+        [isGoToVisible]="true"
+        [appInViewport]="feedEntry.isRead"
+        [appInViewportScrollParent]="scrollContainer"
+        [appInViewportOffset]="{ 'bottom': -64 }"
+        (appInViewportWatch)="onEntryEnteredViewport($event, feedEntryView)"
+        [shareModalComponent]="shareModalComponent"
+        [labelVoteModalComponent]="labelVoteModalComponent"
+        [reportFeedEntryModalComponent]="reportFeedEntryModalComponent"
+        (click)="onEntryClicked($event, feedEntryView)"
+      ></app-feed-entry-view>
+    </div>
+  }
   <div class="clr-row">
     <div class="clr-col-12">
       <app-feeds-footer

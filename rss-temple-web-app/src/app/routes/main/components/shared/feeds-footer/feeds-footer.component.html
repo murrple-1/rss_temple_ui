@@ -1,14 +1,12 @@
-<ng-container [ngSwitch]="state">
-  <ng-container *ngSwitchCase="State.IsNotLoading"
-    ><button class="btn btn-sm" (click)="onLoadMoreClick()">
-      Load More
-    </button></ng-container
-  >
-  <ng-container *ngSwitchCase="State.IsLoading"
-    ><clr-spinner [clrInline]="true"></clr-spinner
-    ><span class="app--loading-text">Loading…</span></ng-container
-  >
-  <ng-container *ngSwitchCase="State.IsEmpty">
+@switch (state) {
+  @case (State.IsNotLoading) {
+    <button class="btn btn-sm" (click)="onLoadMoreClick()">Load More</button>
+  }
+  @case (State.IsLoading) {
+    <clr-spinner [clrInline]="true"></clr-spinner
+    ><span class="app--loading-text">Loading…</span>
+  }
+  @case (State.IsEmpty) {
     <div class="app--no-entries">
       <img
         src="/assets/images/no_entries.png"
@@ -16,10 +14,8 @@
         alt="No Entries"
       />
     </div>
-  </ng-container>
-  <ng-container *ngSwitchCase="State.HasNoMoreToLoad"
-    ><button class="btn btn-sm" (click)="onReloadClick()">
-      Reload
-    </button></ng-container
-  >
-</ng-container>
+  }
+  @case (State.HasNoMoreToLoad) {
+    <button class="btn btn-sm" (click)="onReloadClick()">Reload</button>
+  }
+}

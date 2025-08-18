@@ -29,7 +29,7 @@ export class PasswordsMatchValidatorDirective implements Validator {
     return this._validatorEnabled;
   }
 
-  set validatorEnabled(value: boolean) {
+  set validatorEnabled(value: boolean | string) {
     if (typeof value === 'boolean') {
       this._validatorEnabled = value;
     }

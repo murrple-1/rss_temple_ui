@@ -15,7 +15,8 @@
   </div>
 </clr-main-container>
 
-<app-cookie-consent-snackbar
-  *ngIf="shouldShowCookieConsent"
-  (cookieConsentAcknowledged)="onCookieConsentAckowledged()"
-></app-cookie-consent-snackbar>
+@if (shouldShowCookieConsent) {
+  <app-cookie-consent-snackbar
+    (cookieConsentAcknowledged)="onCookieConsentAckowledged()"
+  ></app-cookie-consent-snackbar>
+}

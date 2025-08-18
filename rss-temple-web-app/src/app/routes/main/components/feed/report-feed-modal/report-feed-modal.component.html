@@ -9,36 +9,40 @@
       <fieldset [disabled]="sendButtonState !== ClrLoadingState.DEFAULT">
         <clr-radio-container>
           <label>Reason for Report?</label>
-          <clr-radio-wrapper *ngFor="let reasonOption_ of reasonOptions">
-            <input
-              type="radio"
-              clrRadio
-              name="reasonOption"
-              [value]="reasonOption_.value"
-              [(ngModel)]="reasonOption"
-            />
-            <label>{{ reasonOption_.label }}</label>
-          </clr-radio-wrapper>
+          @for (reasonOption_ of reasonOptions; track $index) {
+            <clr-radio-wrapper>
+              <input
+                type="radio"
+                clrRadio
+                name="reasonOption"
+                [value]="reasonOption_.value"
+                [(ngModel)]="reasonOption"
+              />
+              <label>{{ reasonOption_.label }}</label>
+            </clr-radio-wrapper>
+          }
         </clr-radio-container>
-        <clr-textarea-container *ngIf="reasonOption === ''">
-          <label>Other Reason</label>
-          <textarea
-            clrTextarea
-            class="app--other-reason"
-            type="text"
-            name="reason"
-            placeholder="Reason…"
-            [(ngModel)]="reason"
-            required
-            pattern="^.*\S.*$"
-          ></textarea>
-          <clr-control-error *clrIfError="'required'"
-            >Reason required</clr-control-error
-          >
-          <clr-control-error *clrIfError="'pattern'"
-            >Reason required</clr-control-error
-          >
-        </clr-textarea-container>
+        @if (reasonOption === '') {
+          <clr-textarea-container>
+            <label>Other Reason</label>
+            <textarea
+              clrTextarea
+              class="app--other-reason"
+              type="text"
+              name="reason"
+              placeholder="Reason…"
+              [(ngModel)]="reason"
+              required
+              pattern="^.*\S.*$"
+            ></textarea>
+            <clr-control-error *clrIfError="'required'"
+              >Reason required</clr-control-error
+            >
+            <clr-control-error *clrIfError="'pattern'"
+              >Reason required</clr-control-error
+            >
+          </clr-textarea-container>
+        }
       </fieldset>
     </div>
     <div class="modal-footer">

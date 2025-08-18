@@ -17,24 +17,34 @@
         [disabled]="uploading"
       />
     </clr-input-container>
-    <div *ngIf="uploading">
-      <span *ngIf="progressStatus"
-        >Loading new feeds ({{ progressStatus.finishedCount | number }}/{{
-          progressStatus.totalCount
-        }})…</span
-      >
-      <span *ngIf="!progressStatus">Loading new feeds…</span>
-    </div>
-    <div *ngIf="errorString !== null" class="alert alert-danger" role="alert">
-      <div class="alert-items">
-        <div class="alert-item static">
-          <div class="alert-icon-wrapper">
-            <cds-icon class="alert-icon" shape="exclamation-circle"></cds-icon>
+    @if (uploading) {
+      <div>
+        @if (progressStatus) {
+          <span
+            >Loading new feeds ({{ progressStatus.finishedCount | number }}/{{
+              progressStatus.totalCount
+            }})…</span
+          >
+        } @else {
+          <span>Loading new feeds…</span>
+        }
+      </div>
+    }
+    @if (errorString !== null) {
+      <div class="alert alert-danger" role="alert">
+        <div class="alert-items">
+          <div class="alert-item static">
+            <div class="alert-icon-wrapper">
+              <cds-icon
+                class="alert-icon"
+                shape="exclamation-circle"
+              ></cds-icon>
+            </div>
+            <span class="alert-text">{{ errorString }}</span>
           </div>
-          <span class="alert-text">{{ errorString }}</span>
         </div>
       </div>
-    </div>
+    }
   </div>
   <div class="modal-footer">
     <button class="btn btn-primary" (click)="finish()" [disabled]="uploading">
