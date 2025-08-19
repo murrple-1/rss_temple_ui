@@ -20,10 +20,10 @@ const ZSocialItem = z
   .object({
     id: z.number(),
     date_joined: z
-      .union([z.string().datetime({ offset: true }), z.date()])
+      .union([z.iso.datetime({ offset: true }), z.date()])
       .transform(arg => new Date(arg)),
     last_login: z
-      .union([z.string().datetime({ offset: true }), z.date()])
+      .union([z.iso.datetime({ offset: true }), z.date()])
       .transform(arg => new Date(arg)),
     provider: z.string(),
     uid: z.string(),

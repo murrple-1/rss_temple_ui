@@ -13,8 +13,8 @@ import { createCSRFTokenFnWithService } from '@app/services/data/csrftoken.lib';
 
 const ZFeedDescriptor = z.object({
   name: z.string(),
-  feedUrl: z.string().url(),
-  homeUrl: z.string().url().nullable(),
+  feedUrl: z.url(),
+  homeUrl: z.url().nullable(),
   imageSrc: z.string().nullable(),
   entryTitles: z.array(z.string()),
   isSubscribed: z.boolean(),

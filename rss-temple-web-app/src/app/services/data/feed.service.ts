@@ -32,7 +32,7 @@ export type SortField = keyof Omit<Feed, 'isDead' | 'archivedCount'>;
 
 const ZExposedFeed = z.object({
   title: z.string(),
-  href: z.string().url(),
+  href: z.url(),
 });
 
 @Injectable({

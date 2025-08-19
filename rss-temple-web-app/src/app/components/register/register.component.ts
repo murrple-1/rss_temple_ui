@@ -26,7 +26,7 @@ import {
 import { AppAlertsService, ModalOpenService } from '@app/services';
 import { CaptchaService, RegistrationService } from '@app/services/data';
 
-const Z422Error = z.record(z.unknown());
+const Z422Error = z.record(z.string(), z.unknown());
 
 @Component({
   templateUrl: './register.component.html',

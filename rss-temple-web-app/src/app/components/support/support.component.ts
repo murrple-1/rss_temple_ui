@@ -31,7 +31,7 @@ const licensesText = Object.entries(osLicenses)
   .join('\n\n');
 
 const ZDonationBadge = z.object({
-  href: z.string().url(),
+  href: z.url(),
   imageSrc: z.string(),
   height: z.number(),
 });

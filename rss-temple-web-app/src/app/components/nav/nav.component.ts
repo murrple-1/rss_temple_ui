@@ -27,7 +27,7 @@ import { AuthService } from '@app/services/data';
 
 const ZExtraNavLink = z.object({
   title: z.string(),
-  href: z.string().url(),
+  href: z.url(),
 });
 
 interface _NavLink {

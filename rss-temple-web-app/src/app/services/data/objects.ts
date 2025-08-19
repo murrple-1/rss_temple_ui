@@ -5,10 +5,10 @@ export interface Objects<T> {
   objects?: T[];
 }
 
-export function toObjects<T, Def extends z.ZodTypeDef = z.ZodTypeDef>(
+export function toObjects<Output>(
   value: unknown,
-  zObjectType: z.ZodType<T, Def, unknown>,
-): Objects<T> {
+  zObjectType: z.ZodType<Output>,
+): Objects<Output> {
   const ZObjects = z
     .object({
       totalCount: z.number(),

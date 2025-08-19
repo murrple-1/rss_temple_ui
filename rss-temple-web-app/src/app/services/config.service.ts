@@ -14,7 +14,7 @@ export class ConfigService {
   async load() {
     await firstValueFrom(this.http.get<unknown>('/assets/config.json')).then(
       retVal => {
-        const config = z.record(z.unknown()).parse(retVal);
+        const config = z.record(z.string(), z.unknown()).parse(retVal);
         this.config = config;
       },
     );

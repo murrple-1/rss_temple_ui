@@ -13,7 +13,7 @@ import {
 import { createCSRFTokenFnWithService } from '@app/services/data/csrftoken.lib';
 
 const ZMultiClassifierLabels = z.object({
-  classifierLabels: z.record(z.array(ZClassifierLabel)),
+  classifierLabels: z.record(z.string(), z.array(ZClassifierLabel)),
 });
 
 @Injectable({
