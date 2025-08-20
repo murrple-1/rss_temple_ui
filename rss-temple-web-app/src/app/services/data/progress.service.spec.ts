@@ -100,11 +100,14 @@ describe('ProgressService', () => {
 
     httpClientSpy.get.and.returnValue(of([1]));
 
+    const p = firstValueFrom(
+      progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
+    );
+
+    await expectAsync(p).toBeRejected();
     await expectAsync(
-      firstValueFrom(
-        progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
-      ),
-    ).toBeRejectedWithError(z.ZodError);
+      p.catch(reason => reason.constructor.name),
+    ).toBeResolvedTo(z.ZodError.name);
   }));
 
   it('should fail `state` missing', fakeAsync(async () => {
@@ -117,11 +120,14 @@ describe('ProgressService', () => {
       }),
     );
 
+    const p = firstValueFrom(
+      progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
+    );
+
+    await expectAsync(p).toBeRejected();
     await expectAsync(
-      firstValueFrom(
-        progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
-      ),
-    ).toBeRejectedWithError(z.ZodError);
+      p.catch(reason => reason.constructor.name),
+    ).toBeResolvedTo(z.ZodError.name);
   }));
 
   it('should fail `state` type error', fakeAsync(async () => {
@@ -135,11 +141,14 @@ describe('ProgressService', () => {
       }),
     );
 
+    const p = firstValueFrom(
+      progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
+    );
+
+    await expectAsync(p).toBeRejected();
     await expectAsync(
-      firstValueFrom(
-        progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
-      ),
-    ).toBeRejectedWithError(z.ZodError);
+      p.catch(reason => reason.constructor.name),
+    ).toBeResolvedTo(z.ZodError.name);
   }));
 
   it('should fail `state` malformed', fakeAsync(async () => {
@@ -153,11 +162,14 @@ describe('ProgressService', () => {
       }),
     );
 
+    const p = firstValueFrom(
+      progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
+    );
+
+    await expectAsync(p).toBeRejected();
     await expectAsync(
-      firstValueFrom(
-        progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
-      ),
-    ).toBeRejectedWithError(z.ZodError);
+      p.catch(reason => reason.constructor.name),
+    ).toBeResolvedTo(z.ZodError.name);
   }));
 
   it('should fail `totalCount` missing', fakeAsync(async () => {
@@ -170,11 +182,14 @@ describe('ProgressService', () => {
       }),
     );
 
+    const p = firstValueFrom(
+      progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
+    );
+
+    await expectAsync(p).toBeRejected();
     await expectAsync(
-      firstValueFrom(
-        progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
-      ),
-    ).toBeRejectedWithError(z.ZodError);
+      p.catch(reason => reason.constructor.name),
+    ).toBeResolvedTo(z.ZodError.name);
   }));
 
   it('should fail `totalCount` type error', fakeAsync(async () => {
@@ -188,11 +203,14 @@ describe('ProgressService', () => {
       }),
     );
 
+    const p = firstValueFrom(
+      progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
+    );
+
+    await expectAsync(p).toBeRejected();
     await expectAsync(
-      firstValueFrom(
-        progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
-      ),
-    ).toBeRejectedWithError(z.ZodError);
+      p.catch(reason => reason.constructor.name),
+    ).toBeResolvedTo(z.ZodError.name);
   }));
 
   it('should fail `finishedCount` missing', fakeAsync(async () => {
@@ -205,11 +223,14 @@ describe('ProgressService', () => {
       }),
     );
 
+    const p = firstValueFrom(
+      progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
+    );
+
+    await expectAsync(p).toBeRejected();
     await expectAsync(
-      firstValueFrom(
-        progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
-      ),
-    ).toBeRejectedWithError(z.ZodError);
+      p.catch(reason => reason.constructor.name),
+    ).toBeResolvedTo(z.ZodError.name);
   }));
 
   it('should fail `finishedCount` type error', fakeAsync(async () => {
@@ -223,10 +244,13 @@ describe('ProgressService', () => {
       }),
     );
 
+    const p = firstValueFrom(
+      progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
+    );
+
+    await expectAsync(p).toBeRejected();
     await expectAsync(
-      firstValueFrom(
-        progressService.checkProgress('123e4567-e89b-12d3-a456-426614174000'),
-      ),
-    ).toBeRejectedWithError(z.ZodError);
+      p.catch(reason => reason.constructor.name),
+    ).toBeResolvedTo(z.ZodError.name);
   }));
 });

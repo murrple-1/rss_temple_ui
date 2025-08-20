@@ -59,20 +59,8 @@ module.exports = function (config) {
       FirefoxUbuntu: {
         base: 'Firefox',
         flags: ['-headless'],
-        profile: require('path').join(__dirname, '.firefox_profile'),
+        profile: path.join(__dirname, '.firefox_profile'),
       },
-    },
-    files: [
-      {
-        pattern: './src/test_files/**',
-        watched: false,
-        included: false,
-        nocache: false,
-        served: true,
-      },
-    ],
-    proxies: {
-      '/test_files/': '/base/src/test_files/',
     },
   });
 };

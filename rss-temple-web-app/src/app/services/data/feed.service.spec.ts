@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { fakeAsync } from '@angular/core/testing';
-import { format as formatDate, parse as parseDate } from 'date-fns';
+import { formatISO as formatDateISO, parse as parseDate } from 'date-fns';
 import { firstValueFrom, of } from 'rxjs';
 import { z } from 'zod';
 
@@ -122,9 +122,12 @@ describe('FeedService', () => {
 
     httpClientSpy.get.and.returnValue(of(4));
 
+    const p = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    await expectAsync(p).toBeRejected();
     await expectAsync(
-      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
-    ).toBeRejectedWithError(z.ZodError);
+      p.catch(reason => reason.constructor.name),
+    ).toBeResolvedTo(z.ZodError.name);
   }));
 
   it('should `uuid`', fakeAsync(async () => {
@@ -154,9 +157,12 @@ describe('FeedService', () => {
       }),
     );
 
+    const p = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    await expectAsync(p).toBeRejected();
     await expectAsync(
-      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
-    ).toBeRejectedWithError(z.ZodError);
+      p.catch(reason => reason.constructor.name),
+    ).toBeResolvedTo(z.ZodError.name);
   }));
 
   it('should `title`', fakeAsync(async () => {
@@ -186,9 +192,12 @@ describe('FeedService', () => {
       }),
     );
 
+    const p = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    await expectAsync(p).toBeRejected();
     await expectAsync(
-      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
-    ).toBeRejectedWithError(z.ZodError);
+      p.catch(reason => reason.constructor.name),
+    ).toBeResolvedTo(z.ZodError.name);
   }));
 
   it('should `feedUrl`', fakeAsync(async () => {
@@ -218,9 +227,12 @@ describe('FeedService', () => {
       }),
     );
 
+    const p = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    await expectAsync(p).toBeRejected();
     await expectAsync(
-      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
-    ).toBeRejectedWithError(z.ZodError);
+      p.catch(reason => reason.constructor.name),
+    ).toBeResolvedTo(z.ZodError.name);
   }));
 
   it('should `homeUrl`', fakeAsync(async () => {
@@ -250,9 +262,12 @@ describe('FeedService', () => {
       }),
     );
 
+    const p = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    await expectAsync(p).toBeRejected();
     await expectAsync(
-      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
-    ).toBeRejectedWithError(z.ZodError);
+      p.catch(reason => reason.constructor.name),
+    ).toBeResolvedTo(z.ZodError.name);
   }));
 
   it('should `publishedAt`', fakeAsync(async () => {
@@ -266,7 +281,7 @@ describe('FeedService', () => {
 
     httpClientSpy.get.and.returnValue(
       of({
-        publishedAt: formatDate(publishedAt, "yyyy-MM-dd'T'HH:mm:ssXXXX"),
+        publishedAt: formatDateISO(publishedAt),
       }),
     );
 
@@ -286,9 +301,12 @@ describe('FeedService', () => {
       }),
     );
 
+    const p = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    await expectAsync(p).toBeRejected();
     await expectAsync(
-      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
-    ).toBeRejectedWithError(z.ZodError);
+      p.catch(reason => reason.constructor.name),
+    ).toBeResolvedTo(z.ZodError.name);
   }));
 
   it('should `publishedAt` malformed', fakeAsync(async () => {
@@ -300,9 +318,12 @@ describe('FeedService', () => {
       }),
     );
 
+    const p = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    await expectAsync(p).toBeRejected();
     await expectAsync(
-      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
-    ).toBeRejectedWithError(z.ZodError);
+      p.catch(reason => reason.constructor.name),
+    ).toBeResolvedTo(z.ZodError.name);
   }));
 
   it('should `updatedAt`', fakeAsync(async () => {
@@ -316,7 +337,7 @@ describe('FeedService', () => {
 
     httpClientSpy.get.and.returnValue(
       of({
-        updatedAt: formatDate(updatedAt, "yyyy-MM-dd'T'HH:mm:ssXXXX"),
+        updatedAt: formatDateISO(updatedAt),
       }),
     );
 
@@ -346,9 +367,12 @@ describe('FeedService', () => {
       }),
     );
 
+    const p = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    await expectAsync(p).toBeRejected();
     await expectAsync(
-      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
-    ).toBeRejectedWithError(z.ZodError);
+      p.catch(reason => reason.constructor.name),
+    ).toBeResolvedTo(z.ZodError.name);
   }));
 
   it('should `updatedAt` malformed', fakeAsync(async () => {
@@ -360,9 +384,12 @@ describe('FeedService', () => {
       }),
     );
 
+    const p = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    await expectAsync(p).toBeRejected();
     await expectAsync(
-      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
-    ).toBeRejectedWithError(z.ZodError);
+      p.catch(reason => reason.constructor.name),
+    ).toBeResolvedTo(z.ZodError.name);
   }));
 
   it('should `isSubscribed`', fakeAsync(async () => {
@@ -392,9 +419,12 @@ describe('FeedService', () => {
       }),
     );
 
+    const p = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    await expectAsync(p).toBeRejected();
     await expectAsync(
-      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
-    ).toBeRejectedWithError(z.ZodError);
+      p.catch(reason => reason.constructor.name),
+    ).toBeResolvedTo(z.ZodError.name);
   }));
 
   it('should `customTitle`', fakeAsync(async () => {
@@ -434,9 +464,12 @@ describe('FeedService', () => {
       }),
     );
 
+    const p = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    await expectAsync(p).toBeRejected();
     await expectAsync(
-      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
-    ).toBeRejectedWithError(z.ZodError);
+      p.catch(reason => reason.constructor.name),
+    ).toBeResolvedTo(z.ZodError.name);
   }));
 
   it('should `calculatedTitle`', fakeAsync(async () => {
@@ -466,9 +499,12 @@ describe('FeedService', () => {
       }),
     );
 
+    const p = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    await expectAsync(p).toBeRejected();
     await expectAsync(
-      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
-    ).toBeRejectedWithError(z.ZodError);
+      p.catch(reason => reason.constructor.name),
+    ).toBeResolvedTo(z.ZodError.name);
   }));
 
   it('should `userCategoryUuids`', fakeAsync(async () => {
@@ -498,9 +534,12 @@ describe('FeedService', () => {
       }),
     );
 
+    const p1 = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    await expectAsync(p1).toBeRejected();
     await expectAsync(
-      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
-    ).toBeRejectedWithError(z.ZodError);
+      p1.catch(reason => reason.constructor.name),
+    ).toBeResolvedTo(z.ZodError.name);
 
     httpClientSpy.get.and.returnValue(
       of({
@@ -508,8 +547,11 @@ describe('FeedService', () => {
       }),
     );
 
+    const p2 = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    await expectAsync(p2).toBeRejected();
     await expectAsync(
-      firstValueFrom(feedService.get('http://www.fake.com/rss.xml')),
-    ).toBeRejectedWithError(z.ZodError);
+      p2.catch(reason => reason.constructor.name),
+    ).toBeResolvedTo(z.ZodError.name);
   }));
 });

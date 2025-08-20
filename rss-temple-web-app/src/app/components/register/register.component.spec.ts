@@ -102,10 +102,10 @@ describe('RegisterComponent', () => {
       fetch('/test_files/sample.wav'),
     ]);
     if (!imageResponse.ok) {
-      throw new Error(imageResponse.statusText);
+      throw new Error(`imageResponse: ${imageResponse.statusText}`);
     }
     if (!audioResponse.ok) {
-      throw new Error(imageResponse.statusText);
+      throw new Error(`audioResponse: ${audioResponse.statusText}`);
     }
 
     imageBlob = await imageResponse.blob();

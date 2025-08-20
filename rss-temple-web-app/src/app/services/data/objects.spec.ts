@@ -29,7 +29,9 @@ describe('objects', () => {
   });
 
   it('should error malformed', () => {
-    expect(() => toObjects([], ZType)).toThrowError(z.ZodError);
+    expect(() => toObjects([], ZType)).toThrowMatching(
+      err => err instanceof z.ZodError,
+    );
   });
 
   it('should error `totalCount` type error', () => {
@@ -40,7 +42,7 @@ describe('objects', () => {
         },
         ZType,
       ),
-    ).toThrowError(z.ZodError);
+    ).toThrowMatching(err => err instanceof z.ZodError);
   });
 
   it('should error `objects` type error', () => {
@@ -51,6 +53,6 @@ describe('objects', () => {
         },
         ZType,
       ),
-    ).toThrowError(z.ZodError);
+    ).toThrowMatching(err => err instanceof z.ZodError);
   });
 });
