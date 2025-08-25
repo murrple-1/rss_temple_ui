@@ -1,5 +1,5 @@
-import { Component, NgZone, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
+import { NavigationEnd } from '@angular/router';
 import { ClrLoadingState } from '@clr/angular';
 import { format as formatDate } from 'date-fns';
 import { where as langsWhere } from 'langs';
@@ -8,7 +8,7 @@ import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 import { compare } from '@app/libs/compare.lib';
 import { Feed, FeedEntry } from '@app/models';
-import { HttpErrorService, SubNavLinksService } from '@app/services';
+import { HttpErrorService } from '@app/services';
 import { FeedEntryService, FeedService } from '@app/services/data';
 import { Sort } from '@app/services/data/sort.interface';
 
@@ -74,6 +74,10 @@ export class SearchEntriesComponent
   extends AbstractSearchComponent
   implements OnInit
 {
+  private feedService = inject(FeedService);
+  private feedEntryService = inject(FeedEntryService);
+  private httpErrorService = inject(HttpErrorService);
+
   searchTitle = '';
   searchContent = '';
   searchAuthorName = '';
@@ -99,18 +103,6 @@ export class SearchEntriesComponent
     } else {
       return formatDate(this.searchPublishedAtEndDate, 'yyyy-MM-dd');
     }
-  }
-
-  constructor(
-    zone: NgZone,
-    router: Router,
-    route: ActivatedRoute,
-    subnavLinksService: SubNavLinksService,
-    private feedService: FeedService,
-    private feedEntryService: FeedEntryService,
-    private httpErrorService: HttpErrorService,
-  ) {
-    super(zone, router, route, subnavLinksService);
   }
 
   ngOnInit() {

@@ -1,46 +1,66 @@
 import { HttpClient } from '@angular/common/http';
-import { fakeAsync } from '@angular/core/testing';
+import { TestBed, fakeAsync } from '@angular/core/testing';
+import { CookieService } from 'ngx-cookie-service';
 import { firstValueFrom, of } from 'rxjs';
 
-import { MockConfigService } from '@app/test/config.service.mock';
-import { MockCookieService } from '@app/test/cookie.service.mock';
+import { ConfigService } from '@app/services';
+import {
+  MOCK_CONFIG_SERVICE_CONFIG,
+  MockConfigService,
+} from '@app/test/config.service.mock';
+import {
+  MOCK_COOKIE_SERVICE_CONFIG,
+  MockCookieService,
+} from '@app/test/cookie.service.mock';
 
 import { ExploreService } from './explore.service';
 
-function setup() {
-  const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', [
-    'get',
-    'post',
-    'put',
-    'delete',
-  ]);
-  const mockCookieService = new MockCookieService({});
-  const mockConfigService = new MockConfigService({
-    apiHost: '',
+describe('ExploreService', () => {
+  beforeAll(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: HttpClient,
+          useValue: jasmine.createSpyObj<HttpClient>('HttpClient', [
+            'get',
+            'post',
+            'put',
+            'delete',
+          ]),
+        },
+        {
+          provide: MOCK_CONFIG_SERVICE_CONFIG,
+          useValue: {
+            apiHost: '',
+          },
+        },
+        {
+          provide: MOCK_COOKIE_SERVICE_CONFIG,
+          useValue: {},
+        },
+        {
+          provide: CookieService,
+          useClass: MockCookieService,
+        },
+        {
+          provide: ConfigService,
+          useClass: MockConfigService,
+        },
+      ],
+    });
   });
 
-  const exploreService = new ExploreService(
-    httpClientSpy,
-    mockCookieService,
-    mockConfigService,
-  );
-
-  return {
-    httpClientSpy,
-    mockCookieService,
-    mockConfigService,
-
-    exploreService,
-  };
-}
-
-describe('ExploreService', () => {
   it('should explore', fakeAsync(async () => {
-    const { httpClientSpy, exploreService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const exploreService = TestBed.inject(ExploreService);
 
-    httpClientSpy.get.and.returnValue(of([]));
+      httpClientSpy.get.and.returnValue(of([]));
 
-    const tagDescriptors = await firstValueFrom(exploreService.explore());
-    expect(tagDescriptors.length).toBeGreaterThanOrEqual(0);
+      const tagDescriptors = await firstValueFrom(exploreService.explore());
+      expect(tagDescriptors.length).toBeGreaterThanOrEqual(0);
+    });
   }));
 });

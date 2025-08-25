@@ -1,55 +1,93 @@
 import { HttpClient } from '@angular/common/http';
-import { fakeAsync } from '@angular/core/testing';
+import { TestBed, fakeAsync } from '@angular/core/testing';
+import { CookieService } from 'ngx-cookie-service';
 
-import { MockConfigService } from '@app/test/config.service.mock';
-import { MockCookieService } from '@app/test/cookie.service.mock';
+import { ConfigService } from '@app/services';
+import {
+  MOCK_CONFIG_SERVICE_CONFIG,
+  MockConfigService,
+} from '@app/test/config.service.mock';
+import {
+  MOCK_COOKIE_SERVICE_CONFIG,
+  MockCookieService,
+} from '@app/test/cookie.service.mock';
 
 import { SocialService } from './social.service';
 
-function setup() {
-  const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', [
-    'post',
-    'delete',
-  ]);
-
-  const mockCookieService = new MockCookieService({});
-  const mockConfigService = new MockConfigService({
-    apiHost: '',
+describe('SocialService', () => {
+  beforeAll(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: HttpClient,
+          useValue: jasmine.createSpyObj<HttpClient>('HttpClient', [
+            'post',
+            'delete',
+          ]),
+        },
+        {
+          provide: MOCK_CONFIG_SERVICE_CONFIG,
+          useValue: {
+            apiHost: '',
+          },
+        },
+        {
+          provide: MOCK_COOKIE_SERVICE_CONFIG,
+          useValue: {},
+        },
+        {
+          provide: CookieService,
+          useClass: MockCookieService,
+        },
+        {
+          provide: ConfigService,
+          useClass: MockConfigService,
+        },
+      ],
+    });
   });
 
-  const socialService = new SocialService(
-    httpClientSpy,
-    mockCookieService,
-    mockConfigService,
-  );
-
-  return {
-    httpClientSpy,
-    mockCookieService,
-    mockConfigService,
-
-    socialService,
-  };
-}
-
-describe('SocialService', () => {
   it('should create "google" login', fakeAsync(async () => {
-    const { httpClientSpy, socialService } = setup();
-    // TODO implement
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const socialService = TestBed.inject(SocialService);
+
+      // TODO implement
+    });
   }));
 
   it('should create "facebook" login', fakeAsync(async () => {
-    const { httpClientSpy, socialService } = setup();
-    // TODO implement
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const socialService = TestBed.inject(SocialService);
+
+      // TODO implement
+    });
   }));
 
   it('should create "google" session', fakeAsync(async () => {
-    const { httpClientSpy, socialService } = setup();
-    // TODO implement
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const socialService = TestBed.inject(SocialService);
+
+      // TODO implement
+    });
   }));
 
   it('should create "google" session', fakeAsync(async () => {
-    const { httpClientSpy, socialService } = setup();
-    // TODO implement
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const socialService = TestBed.inject(SocialService);
+
+      // TODO implement
+    });
   }));
 });

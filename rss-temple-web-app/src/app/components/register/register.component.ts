@@ -6,6 +6,7 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
+  inject,
 } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -34,6 +35,14 @@ const Z422Error = z.record(z.string(), z.unknown());
   standalone: false,
 })
 export class RegisterComponent implements OnInit, OnDestroy {
+  private router = inject(Router);
+  private zone = inject(NgZone);
+  private changeDetectorRef = inject(ChangeDetectorRef);
+  private registrationService = inject(RegistrationService);
+  private captchaService = inject(CaptchaService);
+  private appAlertsService = inject(AppAlertsService);
+  private modalOpenService = inject(ModalOpenService);
+
   readonly passwordHelperTextHtml = passwordRequirementsTextHtml('en');
   readonly passwordMinLength = PasswordMinLength;
   readonly passwordSpecialCharacters = PasswordSpecialCharacters.join('');
@@ -57,16 +66,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
   infoModal?: InfoModalComponent;
 
   private readonly unsubscribe$ = new Subject<void>();
-
-  constructor(
-    private router: Router,
-    private zone: NgZone,
-    private changeDetectorRef: ChangeDetectorRef,
-    private registrationService: RegistrationService,
-    private captchaService: CaptchaService,
-    private appAlertsService: AppAlertsService,
-    private modalOpenService: ModalOpenService,
-  ) {}
 
   ngOnInit() {
     this.loadCaptcha();

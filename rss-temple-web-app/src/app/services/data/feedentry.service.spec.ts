@@ -1,894 +1,1134 @@
 import { HttpClient } from '@angular/common/http';
-import { fakeAsync } from '@angular/core/testing';
+import { TestBed, fakeAsync } from '@angular/core/testing';
 import { formatISO as formatDateISO, parse as parseDate } from 'date-fns';
+import { CookieService } from 'ngx-cookie-service';
 import { firstValueFrom, of } from 'rxjs';
 import { z } from 'zod';
 
 import { ZFeedEntry } from '@app/models/feedentry';
-import { MockConfigService } from '@app/test/config.service.mock';
-import { MockCookieService } from '@app/test/cookie.service.mock';
+import { ConfigService } from '@app/services';
+import {
+  MOCK_CONFIG_SERVICE_CONFIG,
+  MockConfigService,
+} from '@app/test/config.service.mock';
+import {
+  MOCK_COOKIE_SERVICE_CONFIG,
+  MockCookieService,
+} from '@app/test/cookie.service.mock';
 
 import { FeedEntryService } from './feedentry.service';
 
-function setup() {
-  const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', [
-    'get',
-    'post',
-    'delete',
-    'request',
-  ]);
-  const mockCookieService = new MockCookieService({});
-  const mockConfigService = new MockConfigService({
-    apiHost: '',
+describe('FeedEntryService', () => {
+  beforeAll(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: HttpClient,
+          useValue: jasmine.createSpyObj<HttpClient>('HttpClient', [
+            'get',
+            'post',
+            'delete',
+            'request',
+          ]),
+        },
+        {
+          provide: MOCK_CONFIG_SERVICE_CONFIG,
+          useValue: {
+            apiHost: '',
+          },
+        },
+        {
+          provide: MOCK_COOKIE_SERVICE_CONFIG,
+          useValue: {},
+        },
+        {
+          provide: CookieService,
+          useClass: MockCookieService,
+        },
+        {
+          provide: ConfigService,
+          useClass: MockConfigService,
+        },
+      ],
+    });
   });
 
-  const feedEntryService = new FeedEntryService(
-    httpClientSpy,
-    mockCookieService,
-    mockConfigService,
-  );
-
-  return {
-    httpClientSpy,
-    mockCookieService,
-    mockConfigService,
-
-    feedEntryService,
-  };
-}
-
-describe('FeedEntryService', () => {
   it('should get', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.get.and.returnValue(of({}));
+      httpClientSpy.get.and.returnValue(of({}));
 
-    const feed = await firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      const feed = await firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    expect(ZFeedEntry.safeParse(feed).success).toBeTrue();
+      expect(ZFeedEntry.safeParse(feed).success).toBeTrue();
+    });
   }));
 
   it('should query', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.post.and.returnValue(
-      of({
-        totalCount: 0,
-        objects: [],
-      }),
-    );
+      httpClientSpy.post.and.returnValue(
+        of({
+          totalCount: 0,
+          objects: [],
+        }),
+      );
 
-    const feeds = await firstValueFrom(feedEntryService.query());
+      const feeds = await firstValueFrom(feedEntryService.query());
 
-    expect(feeds.objects).toBeDefined();
+      expect(feeds.objects).toBeDefined();
+    });
   }));
 
   it('should queryAll', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.post.and.returnValue(
-      of({
-        totalCount: 0,
-        objects: [],
-      }),
-    );
+      httpClientSpy.post.and.returnValue(
+        of({
+          totalCount: 0,
+          objects: [],
+        }),
+      );
 
-    const feeds = await firstValueFrom(feedEntryService.queryAll());
+      const feeds = await firstValueFrom(feedEntryService.queryAll());
 
-    expect(feeds.objects).toBeDefined();
+      expect(feeds.objects).toBeDefined();
+    });
   }));
 
   it('should read', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.post.and.returnValue(of());
+      httpClientSpy.post.and.returnValue(of());
 
-    await firstValueFrom(
-      feedEntryService.read('123e4567-e89b-12d3-a456-426614174000'),
-      { defaultValue: undefined },
-    );
+      await firstValueFrom(
+        feedEntryService.read('123e4567-e89b-12d3-a456-426614174000'),
+        { defaultValue: undefined },
+      );
 
-    expect().nothing();
+      expect().nothing();
+    });
   }));
 
   it('should unread', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.delete.and.returnValue(of());
+      httpClientSpy.delete.and.returnValue(of());
 
-    await firstValueFrom(
-      feedEntryService.unread('123e4567-e89b-12d3-a456-426614174000'),
-      { defaultValue: undefined },
-    );
+      await firstValueFrom(
+        feedEntryService.unread('123e4567-e89b-12d3-a456-426614174000'),
+        { defaultValue: undefined },
+      );
 
-    expect().nothing();
+      expect().nothing();
+    });
   }));
 
   it('should readSome', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.post.and.returnValue(of());
+      httpClientSpy.post.and.returnValue(of());
 
-    await firstValueFrom(
-      feedEntryService.readSome(
-        [
-          '123e4567-e89b-12d3-a456-426614174000',
-          '123e4567-e89b-12d3-a456-426614174001',
-        ],
-        [
-          '123e4567-e89b-12d3-a456-426614174002',
-          '123e4567-e89b-12d3-a456-426614174003',
-        ],
-      ),
-      { defaultValue: undefined },
-    );
+      await firstValueFrom(
+        feedEntryService.readSome(
+          [
+            '123e4567-e89b-12d3-a456-426614174000',
+            '123e4567-e89b-12d3-a456-426614174001',
+          ],
+          [
+            '123e4567-e89b-12d3-a456-426614174002',
+            '123e4567-e89b-12d3-a456-426614174003',
+          ],
+        ),
+        { defaultValue: undefined },
+      );
 
-    expect().nothing();
+      expect().nothing();
+    });
   }));
 
   it('should unreadSome', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.request.and.returnValue(of());
+      httpClientSpy.request.and.returnValue(of());
 
-    await firstValueFrom(
-      feedEntryService.unreadSome([
-        '123e4567-e89b-12d3-a456-426614174000',
-        '123e4567-e89b-12d3-a456-426614174001',
-      ]),
-      { defaultValue: undefined },
-    );
+      await firstValueFrom(
+        feedEntryService.unreadSome([
+          '123e4567-e89b-12d3-a456-426614174000',
+          '123e4567-e89b-12d3-a456-426614174001',
+        ]),
+        { defaultValue: undefined },
+      );
 
-    expect().nothing();
+      expect().nothing();
+    });
   }));
 
   it('should favorite', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.post.and.returnValue(of());
+      httpClientSpy.post.and.returnValue(of());
 
-    await firstValueFrom(
-      feedEntryService.favorite('123e4567-e89b-12d3-a456-426614174000'),
-      { defaultValue: undefined },
-    );
+      await firstValueFrom(
+        feedEntryService.favorite('123e4567-e89b-12d3-a456-426614174000'),
+        { defaultValue: undefined },
+      );
 
-    expect().nothing();
+      expect().nothing();
+    });
   }));
 
   it('should unfavorite', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.delete.and.returnValue(of());
+      httpClientSpy.delete.and.returnValue(of());
 
-    await firstValueFrom(
-      feedEntryService.unfavorite('123e4567-e89b-12d3-a456-426614174000'),
-      { defaultValue: undefined },
-    );
+      await firstValueFrom(
+        feedEntryService.unfavorite('123e4567-e89b-12d3-a456-426614174000'),
+        { defaultValue: undefined },
+      );
 
-    expect().nothing();
+      expect().nothing();
+    });
   }));
 
   it('should favoriteSome', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.post.and.returnValue(of());
+      httpClientSpy.post.and.returnValue(of());
 
-    await firstValueFrom(
-      feedEntryService.favoriteSome([
-        '123e4567-e89b-12d3-a456-426614174000',
-        '123e4567-e89b-12d3-a456-426614174001',
-      ]),
-      { defaultValue: undefined },
-    );
+      await firstValueFrom(
+        feedEntryService.favoriteSome([
+          '123e4567-e89b-12d3-a456-426614174000',
+          '123e4567-e89b-12d3-a456-426614174001',
+        ]),
+        { defaultValue: undefined },
+      );
 
-    expect().nothing();
+      expect().nothing();
+    });
   }));
 
   it('should unfavoriteSome', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.request.and.returnValue(of());
+      httpClientSpy.request.and.returnValue(of());
 
-    await firstValueFrom(
-      feedEntryService.unfavoriteSome([
-        '123e4567-e89b-12d3-a456-426614174000',
-        '123e4567-e89b-12d3-a456-426614174001',
-      ]),
-      { defaultValue: undefined },
-    );
+      await firstValueFrom(
+        feedEntryService.unfavoriteSome([
+          '123e4567-e89b-12d3-a456-426614174000',
+          '123e4567-e89b-12d3-a456-426614174001',
+        ]),
+        { defaultValue: undefined },
+      );
 
-    expect().nothing();
+      expect().nothing();
+    });
   }));
 
   it('should fail get when response is not JSON object', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.get.and.returnValue(of(4));
+      httpClientSpy.get.and.returnValue(of(4));
 
-    const p = firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      const p = firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
+      await expectAsync(p).toBeRejected();
+      await expectAsync(
+        p.catch(reason => reason.constructor.name),
+      ).toBeResolvedTo(z.ZodError.name);
+    });
   }));
 
   it('should `uuid`', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    const uuid = '123e4567-e89b-12d3-a456-426614174000';
+      const uuid = '123e4567-e89b-12d3-a456-426614174000';
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        uuid,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          uuid,
+        }),
+      );
 
-    const feedEntry = await firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      const feedEntry = await firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    expect(feedEntry.uuid).toBe(uuid);
+      expect(feedEntry.uuid).toBe(uuid);
+    });
   }));
 
   it('should `uuid` type error', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        uuid: 0,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          uuid: 0,
+        }),
+      );
 
-    const p = firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      const p = firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
+      await expectAsync(p).toBeRejected();
+      await expectAsync(
+        p.catch(reason => reason.constructor.name),
+      ).toBeResolvedTo(z.ZodError.name);
+    });
   }));
 
   it('should `id`', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    const id = 'some-id';
+      const id = 'some-id';
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        id,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          id,
+        }),
+      );
 
-    let feedEntry = await firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      let feedEntry = await firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    expect(feedEntry.id).toBe(id);
+      expect(feedEntry.id).toBe(id);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        id: null,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          id: null,
+        }),
+      );
 
-    feedEntry = await firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      feedEntry = await firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    expect(feedEntry.id).toBeNull();
+      expect(feedEntry.id).toBeNull();
+    });
   }));
 
   it('should `id` type error', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        id: 0,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          id: 0,
+        }),
+      );
 
-    const p = firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      const p = firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
+      await expectAsync(p).toBeRejected();
+      await expectAsync(
+        p.catch(reason => reason.constructor.name),
+      ).toBeResolvedTo(z.ZodError.name);
+    });
   }));
 
   it('should `createdAt`', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    const createdAt = parseDate(
-      '2020-01-01 00:00:00',
-      'yyyy-MM-dd HH:mm:ss',
-      new Date(),
-    );
+      const createdAt = parseDate(
+        '2020-01-01 00:00:00',
+        'yyyy-MM-dd HH:mm:ss',
+        new Date(),
+      );
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        createdAt: formatDateISO(createdAt),
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          createdAt: formatDateISO(createdAt),
+        }),
+      );
 
-    let feedEntry = await firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      let feedEntry = await firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    expect(feedEntry.createdAt).toEqual(createdAt);
+      expect(feedEntry.createdAt).toEqual(createdAt);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        createdAt: null,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          createdAt: null,
+        }),
+      );
 
-    feedEntry = await firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      feedEntry = await firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    expect(feedEntry.createdAt).toBeNull();
+      expect(feedEntry.createdAt).toBeNull();
+    });
   }));
 
   it('should `createdAt` type error', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        createdAt: 0,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          createdAt: 0,
+        }),
+      );
 
-    const p = firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      const p = firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
+      await expectAsync(p).toBeRejected();
+      await expectAsync(
+        p.catch(reason => reason.constructor.name),
+      ).toBeResolvedTo(z.ZodError.name);
+    });
   }));
 
   it('should `createdAt` malformed', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        createdAt: 'bad datetime',
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          createdAt: 'bad datetime',
+        }),
+      );
 
-    const p = firstValueFrom(
-      feedEntryService.get('http://www.fake.com/rss.xml'),
-    );
+      const p = firstValueFrom(
+        feedEntryService.get('http://www.fake.com/rss.xml'),
+      );
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
+      await expectAsync(p).toBeRejected();
+      await expectAsync(
+        p.catch(reason => reason.constructor.name),
+      ).toBeResolvedTo(z.ZodError.name);
+    });
   }));
 
   it('should `publishedAt`', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    const publishedAt = parseDate(
-      '2020-01-01 00:00:00',
-      'yyyy-MM-dd HH:mm:ss',
-      new Date(),
-    );
+      const publishedAt = parseDate(
+        '2020-01-01 00:00:00',
+        'yyyy-MM-dd HH:mm:ss',
+        new Date(),
+      );
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        publishedAt: formatDateISO(publishedAt),
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          publishedAt: formatDateISO(publishedAt),
+        }),
+      );
 
-    const feedEntry = await firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      const feedEntry = await firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    expect(feedEntry.publishedAt).toEqual(publishedAt);
+      expect(feedEntry.publishedAt).toEqual(publishedAt);
+    });
   }));
 
   it('should `publishedAt` type error', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        publishedAt: 0,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          publishedAt: 0,
+        }),
+      );
 
-    const p = firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      const p = firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
+      await expectAsync(p).toBeRejected();
+      await expectAsync(
+        p.catch(reason => reason.constructor.name),
+      ).toBeResolvedTo(z.ZodError.name);
+    });
   }));
 
   it('should `publishedAt` malformed', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        publishedAt: 'bad datetime',
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          publishedAt: 'bad datetime',
+        }),
+      );
 
-    const p = firstValueFrom(
-      feedEntryService.get('http://www.fake.com/rss.xml'),
-    );
+      const p = firstValueFrom(
+        feedEntryService.get('http://www.fake.com/rss.xml'),
+      );
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
+      await expectAsync(p).toBeRejected();
+      await expectAsync(
+        p.catch(reason => reason.constructor.name),
+      ).toBeResolvedTo(z.ZodError.name);
+    });
   }));
 
   it('should `updatedAt`', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    const updatedAt = parseDate(
-      '2020-01-01 00:00:00',
-      'yyyy-MM-dd HH:mm:ss',
-      new Date(),
-    );
+      const updatedAt = parseDate(
+        '2020-01-01 00:00:00',
+        'yyyy-MM-dd HH:mm:ss',
+        new Date(),
+      );
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        updatedAt: formatDateISO(updatedAt),
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          updatedAt: formatDateISO(updatedAt),
+        }),
+      );
 
-    let feedEntry = await firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      let feedEntry = await firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    expect(feedEntry.updatedAt).toEqual(updatedAt);
+      expect(feedEntry.updatedAt).toEqual(updatedAt);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        updatedAt: null,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          updatedAt: null,
+        }),
+      );
 
-    feedEntry = await firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      feedEntry = await firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    expect(feedEntry.updatedAt).toBeNull();
+      expect(feedEntry.updatedAt).toBeNull();
+    });
   }));
 
   it('should `updatedAt` type error', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        updatedAt: 0,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          updatedAt: 0,
+        }),
+      );
 
-    const p = firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      const p = firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
+      await expectAsync(p).toBeRejected();
+      await expectAsync(
+        p.catch(reason => reason.constructor.name),
+      ).toBeResolvedTo(z.ZodError.name);
+    });
   }));
 
   it('should `updatedAt` malformed', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        updatedAt: 'bad datetime',
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          updatedAt: 'bad datetime',
+        }),
+      );
 
-    const p = firstValueFrom(
-      feedEntryService.get('http://www.fake.com/rss.xml'),
-    );
+      const p = firstValueFrom(
+        feedEntryService.get('http://www.fake.com/rss.xml'),
+      );
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
+      await expectAsync(p).toBeRejected();
+      await expectAsync(
+        p.catch(reason => reason.constructor.name),
+      ).toBeResolvedTo(z.ZodError.name);
+    });
   }));
 
   it('should `title`', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    const title = 'A Title';
+      const title = 'A Title';
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        title,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          title,
+        }),
+      );
 
-    const feedEntry = await firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      const feedEntry = await firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    expect(feedEntry.title).toBe(title);
+      expect(feedEntry.title).toBe(title);
+    });
   }));
 
   it('should `title` type error', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        title: 0,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          title: 0,
+        }),
+      );
 
-    const p = firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      const p = firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
+      await expectAsync(p).toBeRejected();
+      await expectAsync(
+        p.catch(reason => reason.constructor.name),
+      ).toBeResolvedTo(z.ZodError.name);
+    });
   }));
 
   it('should `url`', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    const url = 'http://www.fake.com/entry/1';
+      const url = 'http://www.fake.com/entry/1';
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        url,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          url,
+        }),
+      );
 
-    const feedEntry = await firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      const feedEntry = await firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    expect(feedEntry.url).toBe(url);
+      expect(feedEntry.url).toBe(url);
+    });
   }));
 
   it('should `url` type error', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        url: 0,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          url: 0,
+        }),
+      );
 
-    const p = firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      const p = firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
+      await expectAsync(p).toBeRejected();
+      await expectAsync(
+        p.catch(reason => reason.constructor.name),
+      ).toBeResolvedTo(z.ZodError.name);
+    });
   }));
 
   it('should `content`', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    const content = '<div>Some Content</div>';
+      const content = '<div>Some Content</div>';
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        content,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          content,
+        }),
+      );
 
-    const feedEntry = await firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      const feedEntry = await firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    expect(feedEntry.content).toBe(content);
+      expect(feedEntry.content).toBe(content);
+    });
   }));
 
   it('should `content` type error', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        content: 0,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          content: 0,
+        }),
+      );
 
-    const p1 = firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      const p1 = firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    await expectAsync(p1).toBeRejected();
-    await expectAsync(
-      p1.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
+      await expectAsync(p1).toBeRejected();
+      await expectAsync(
+        p1.catch(reason => reason.constructor.name),
+      ).toBeResolvedTo(z.ZodError.name);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        content: null,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          content: null,
+        }),
+      );
 
-    const p2 = firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      const p2 = firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    await expectAsync(p2).toBeRejected();
-    await expectAsync(
-      p2.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
+      await expectAsync(p2).toBeRejected();
+      await expectAsync(
+        p2.catch(reason => reason.constructor.name),
+      ).toBeResolvedTo(z.ZodError.name);
+    });
   }));
 
   it('should `authorName`', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    const authorName = 'John Doe';
+      const authorName = 'John Doe';
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        authorName,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          authorName,
+        }),
+      );
 
-    let feedEntry = await firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      let feedEntry = await firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    expect(feedEntry.authorName).toBe(authorName);
+      expect(feedEntry.authorName).toBe(authorName);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        authorName: null,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          authorName: null,
+        }),
+      );
 
-    feedEntry = await firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      feedEntry = await firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    expect(feedEntry.authorName).toBeNull();
+      expect(feedEntry.authorName).toBeNull();
+    });
   }));
 
   it('should `authorName` type error', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        authorName: 0,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          authorName: 0,
+        }),
+      );
 
-    const p = firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      const p = firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
+      await expectAsync(p).toBeRejected();
+      await expectAsync(
+        p.catch(reason => reason.constructor.name),
+      ).toBeResolvedTo(z.ZodError.name);
+    });
   }));
 
   it('should `isFromSubscription`', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    const isFromSubscription = true;
+      const isFromSubscription = true;
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        isFromSubscription,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          isFromSubscription,
+        }),
+      );
 
-    const feedEntry = await firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      const feedEntry = await firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    expect(feedEntry.isFromSubscription).toBe(isFromSubscription);
+      expect(feedEntry.isFromSubscription).toBe(isFromSubscription);
+    });
   }));
 
   it('should `isFromSubscription` type error', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        isFromSubscription: 0,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          isFromSubscription: 0,
+        }),
+      );
 
-    const p = firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      const p = firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
+      await expectAsync(p).toBeRejected();
+      await expectAsync(
+        p.catch(reason => reason.constructor.name),
+      ).toBeResolvedTo(z.ZodError.name);
+    });
   }));
 
   it('should `isRead`', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    const isRead = true;
+      const isRead = true;
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        isRead,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          isRead,
+        }),
+      );
 
-    const feedEntry = await firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      const feedEntry = await firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    expect(feedEntry.isRead).toBe(isRead);
+      expect(feedEntry.isRead).toBe(isRead);
+    });
   }));
 
   it('should `isRead` type error', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        isRead: 0,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          isRead: 0,
+        }),
+      );
 
-    const p = firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      const p = firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
+      await expectAsync(p).toBeRejected();
+      await expectAsync(
+        p.catch(reason => reason.constructor.name),
+      ).toBeResolvedTo(z.ZodError.name);
+    });
   }));
 
   it('should `isFavorite`', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    const isFavorite = true;
+      const isFavorite = true;
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        isFavorite,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          isFavorite,
+        }),
+      );
 
-    const feedEntry = await firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      const feedEntry = await firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    expect(feedEntry.isFavorite).toBe(isFavorite);
+      expect(feedEntry.isFavorite).toBe(isFavorite);
+    });
   }));
 
   it('should `isFavorite` type error', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        isFavorite: 0,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          isFavorite: 0,
+        }),
+      );
 
-    const p = firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      const p = firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
+      await expectAsync(p).toBeRejected();
+      await expectAsync(
+        p.catch(reason => reason.constructor.name),
+      ).toBeResolvedTo(z.ZodError.name);
+    });
   }));
 
   it('should `feedUuid`', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    const feedUuid = '123e4567-e89b-12d3-a456-426614174000';
+      const feedUuid = '123e4567-e89b-12d3-a456-426614174000';
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        feedUuid,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          feedUuid,
+        }),
+      );
 
-    const feedEntry = await firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      const feedEntry = await firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    expect(feedEntry.feedUuid).toBe(feedUuid);
+      expect(feedEntry.feedUuid).toBe(feedUuid);
+    });
   }));
 
   it('should `feedUuid` type error', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        feedUuid: 0,
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          feedUuid: 0,
+        }),
+      );
 
-    const p = firstValueFrom(
-      feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
+      const p = firstValueFrom(
+        feedEntryService.get('123e4567-e89b-12d3-a456-426614174000'),
+      );
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
+      await expectAsync(p).toBeRejected();
+      await expectAsync(
+        p.catch(reason => reason.constructor.name),
+      ).toBeResolvedTo(z.ZodError.name);
+    });
   }));
 
   it('should get languages', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        languages: ['ENG', 'JPN'],
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          languages: ['ENG', 'JPN'],
+        }),
+      );
 
-    const languages = await firstValueFrom(feedEntryService.getLanguages());
+      const languages = await firstValueFrom(feedEntryService.getLanguages());
 
-    expect(languages).toEqual(['ENG', 'JPN']);
+      expect(languages).toEqual(['ENG', 'JPN']);
+    });
   }));
 
   it('should get languages of ISO636-3 kind', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        languages: ['ENG', 'JPN'],
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          languages: ['ENG', 'JPN'],
+        }),
+      );
 
-    const languages = await firstValueFrom(
-      feedEntryService.getLanguages('iso639_3'),
-    );
+      const languages = await firstValueFrom(
+        feedEntryService.getLanguages('iso639_3'),
+      );
 
-    expect(languages).toEqual(['ENG', 'JPN']);
+      expect(languages).toEqual(['ENG', 'JPN']);
+    });
   }));
 
   it('should get languages of ISO636-1 kind', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        languages: ['EN', 'JA'],
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          languages: ['EN', 'JA'],
+        }),
+      );
 
-    const languages = await firstValueFrom(
-      feedEntryService.getLanguages('iso639_1'),
-    );
+      const languages = await firstValueFrom(
+        feedEntryService.getLanguages('iso639_1'),
+      );
 
-    expect(languages).toEqual(['EN', 'JA']);
+      expect(languages).toEqual(['EN', 'JA']);
+    });
   }));
 
   it('should get languages of name kind', fakeAsync(async () => {
-    const { httpClientSpy, feedEntryService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const feedEntryService = TestBed.inject(FeedEntryService);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        languages: ['ENGLISH', 'JAPANESE'],
-      }),
-    );
+      httpClientSpy.get.and.returnValue(
+        of({
+          languages: ['ENGLISH', 'JAPANESE'],
+        }),
+      );
 
-    const languages = await firstValueFrom(
-      feedEntryService.getLanguages('name'),
-    );
+      const languages = await firstValueFrom(
+        feedEntryService.getLanguages('name'),
+      );
 
-    expect(languages).toEqual(['ENGLISH', 'JAPANESE']);
+      expect(languages).toEqual(['ENGLISH', 'JAPANESE']);
+    });
   }));
 });

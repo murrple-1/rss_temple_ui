@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Subject, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -18,7 +18,10 @@ export class OnboardingModalComponent implements OnDestroy {
 
   result = new Subject<void>();
 
-  constructor(sanitizer: DomSanitizer, configService: ConfigService) {
+  constructor() {
+    const sanitizer = inject(DomSanitizer);
+    const configService = inject(ConfigService);
+
     const youtubeSrc = configService.get<string>('onboardingYoutubeEmbededUrl');
     if (typeof youtubeSrc !== 'string') {
       throw new Error('onboardingYoutubeEmbededUrl malformed');

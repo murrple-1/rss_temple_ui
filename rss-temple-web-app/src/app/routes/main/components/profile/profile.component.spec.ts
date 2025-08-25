@@ -20,122 +20,106 @@ import {
   UserCategoryService,
   UserMetaService,
 } from '@app/services/data';
-import { MockConfigService } from '@app/test/config.service.mock';
+import {
+  MOCK_CONFIG_SERVICE_CONFIG,
+  MockConfigService,
+} from '@app/test/config.service.mock';
 import { MockFBAuthService } from '@app/test/fbauth.service.mock';
 import { MockGAuthService } from '@app/test/gauth.service.mock';
 
 import { ProfileComponent } from './profile.component';
 
-async function setup() {
-  const mockReadCounterService = jasmine.createSpyObj<ReadCounterService>(
-    'ReadCounterService',
-    ['readAll'],
-  );
-  (mockReadCounterService as any).feedCounts$ = of({});
+describe('ProfileComponent', () => {
+  beforeAll(async () => {
+    const mockReadCounterService = jasmine.createSpyObj<ReadCounterService>(
+      'ReadCounterService',
+      ['readAll'],
+    );
+    (mockReadCounterService as any).feedCounts$ = of({});
 
-  const mockFeedService = jasmine.createSpyObj<FeedService>('FeedService', [
-    'query',
-  ]);
-  const mockUserMetaService = jasmine.createSpyObj<UserMetaService>(
-    'UserMetaService',
-    ['getReadCount'],
-  );
-  const mockAuthService = jasmine.createSpyObj<AuthService>('AuthService', [
-    'resetPassword',
-    'getUser',
-  ]);
-  const mockSocialService = jasmine.createSpyObj<SocialService>(
-    'SocialService',
-    [
-      'socialList',
-      'googleConnect',
-      'googleDisconnect',
-      'facebookConnect',
-      'facebookDisconnect',
-    ],
-  );
-  const mockOPMLService = jasmine.createSpyObj<OPMLService>('OPMLService', [
-    'download',
-  ]);
-  const mockUserCategoryService = jasmine.createSpyObj<UserCategoryService>(
-    'UserCategoryService',
-    ['queryAll'],
-  );
-  const mockConfigService = new MockConfigService({
-    apiHost: '',
-    googleClientId: '',
-    facebookAppId: '',
+    await TestBed.configureTestingModule({
+      imports: [
+        FormsModule,
+        BrowserAnimationsModule,
+        ClarityModule,
+        RouterModule.forRoot([]),
+      ],
+      declarations: [
+        ProfileComponent,
+        GlobalUserCategoriesModalComponent,
+        DeleteUserConfirm1ModalComponent,
+        DeleteUserConfirm2ModalComponent,
+        PasswordsMatchValidatorDirective,
+      ],
+      providers: [
+        {
+          provide: ReadCounterService,
+          useValue: mockReadCounterService,
+        },
+        {
+          provide: GAuthService,
+          useClass: MockGAuthService,
+        },
+        {
+          provide: FBAuthService,
+          useClass: MockFBAuthService,
+        },
+        {
+          provide: AuthService,
+          useValue: jasmine.createSpyObj<AuthService>('AuthService', [
+            'resetPassword',
+            'getUser',
+          ]),
+        },
+        {
+          provide: SocialService,
+          useValue: jasmine.createSpyObj<SocialService>('SocialService', [
+            'socialList',
+            'googleConnect',
+            'googleDisconnect',
+            'facebookConnect',
+            'facebookDisconnect',
+          ]),
+        },
+        {
+          provide: FeedService,
+          useValue: jasmine.createSpyObj<FeedService>('FeedService', ['query']),
+        },
+        {
+          provide: UserMetaService,
+          useValue: jasmine.createSpyObj<UserMetaService>('UserMetaService', [
+            'getReadCount',
+          ]),
+        },
+        {
+          provide: OPMLService,
+          useValue: jasmine.createSpyObj<OPMLService>('OPMLService', [
+            'download',
+          ]),
+        },
+        {
+          provide: UserCategoryService,
+          useValue: jasmine.createSpyObj<UserCategoryService>(
+            'UserCategoryService',
+            ['queryAll'],
+          ),
+        },
+        {
+          provide: MOCK_CONFIG_SERVICE_CONFIG,
+          useValue: {
+            apiHost: '',
+            googleClientId: '',
+            facebookAppId: '',
+          },
+        },
+        {
+          provide: ConfigService,
+          useValue: MockConfigService,
+        },
+      ],
+    }).compileComponents();
   });
 
-  await TestBed.configureTestingModule({
-    imports: [
-      FormsModule,
-      BrowserAnimationsModule,
-      ClarityModule,
-      RouterModule.forRoot([]),
-    ],
-    declarations: [
-      ProfileComponent,
-      GlobalUserCategoriesModalComponent,
-      DeleteUserConfirm1ModalComponent,
-      DeleteUserConfirm2ModalComponent,
-      PasswordsMatchValidatorDirective,
-    ],
-    providers: [
-      {
-        provide: ReadCounterService,
-        useValue: mockReadCounterService,
-      },
-      {
-        provide: GAuthService,
-        useClass: MockGAuthService,
-      },
-      {
-        provide: FBAuthService,
-        useClass: MockFBAuthService,
-      },
-      {
-        provide: AuthService,
-        useValue: mockAuthService,
-      },
-      {
-        provide: SocialService,
-        useValue: mockSocialService,
-      },
-      {
-        provide: FeedService,
-        useValue: mockFeedService,
-      },
-      {
-        provide: UserMetaService,
-        useValue: mockUserMetaService,
-      },
-      {
-        provide: OPMLService,
-        useValue: mockOPMLService,
-      },
-      {
-        provide: UserCategoryService,
-        useValue: mockUserCategoryService,
-      },
-      {
-        provide: ConfigService,
-        useValue: mockConfigService,
-      },
-    ],
-  }).compileComponents();
-
-  return {
-    mockReadCounterService,
-    mockFeedService,
-    mockUserMetaService,
-    mockAuthService,
-    mockSocialService,
-    mockConfigService,
-  };
-}
-
-describe('ProfileComponent', () => {
   it('should create the component', waitForAsync(async () => {
     const {
       mockAuthService,

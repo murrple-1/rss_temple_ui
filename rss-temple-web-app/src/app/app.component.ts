@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { CookieService } from 'ngx-cookie-service';
 
@@ -11,13 +11,11 @@ import { ThemeService } from '@app/services';
   standalone: false,
 })
 export class AppComponent implements OnInit {
-  shouldShowCookieConsent = false;
+  private title = inject(Title);
+  private cookieService = inject(CookieService);
+  private themeService = inject(ThemeService);
 
-  constructor(
-    private title: Title,
-    private cookieService: CookieService,
-    private themeService: ThemeService,
-  ) {}
+  shouldShowCookieConsent = false;
 
   ngOnInit() {
     this.title.setTitle('RSS Temple');

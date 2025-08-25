@@ -1,4 +1,4 @@
-import { Component, NgZone, OnDestroy } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Subject, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 
@@ -22,8 +22,6 @@ export class ExposedFeedsModalComponent implements OnDestroy {
   result = new Subject<string | null>();
 
   private readonly unsubscribe$ = new Subject<void>();
-
-  constructor(private zone: NgZone) {}
 
   ngOnDestroy() {
     this.result.complete();

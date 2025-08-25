@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, NgZone, OnDestroy, ViewChild } from '@angular/core';
+import { Component, NgZone, OnDestroy, ViewChild, inject } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ClrLoadingState } from '@clr/angular';
 import { Subject, firstValueFrom } from 'rxjs';
@@ -16,6 +16,10 @@ import { AuthService } from '@app/services/data';
   standalone: false,
 })
 export class DeleteUserConfirm2ModalComponent implements OnDestroy {
+  private zone = inject(NgZone);
+  private authService = inject(AuthService);
+  private httpErrorService = inject(HttpErrorService);
+
   open = false;
 
   requestButtonState = ClrLoadingState.DEFAULT;
@@ -31,12 +35,6 @@ export class DeleteUserConfirm2ModalComponent implements OnDestroy {
   _deleteUserForm?: NgForm;
 
   private readonly unsubscribe$ = new Subject<void>();
-
-  constructor(
-    private zone: NgZone,
-    private authService: AuthService,
-    private httpErrorService: HttpErrorService,
-  ) {}
 
   ngOnDestroy() {
     this.result.complete();

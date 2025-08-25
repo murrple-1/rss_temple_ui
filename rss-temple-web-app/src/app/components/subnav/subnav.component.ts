@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { SubNavLinksService } from '@app/services';
@@ -13,7 +13,9 @@ import { SubNavLink } from '@app/services/subnav-links.service';
 export class SubNavComponent {
   subNavLinks$: Observable<SubNavLink[]>;
 
-  constructor(subNavLinksService: SubNavLinksService) {
+  constructor() {
+    const subNavLinksService = inject(SubNavLinksService);
+
     this.subNavLinks$ = subNavLinksService.subNavLinks$;
   }
 }

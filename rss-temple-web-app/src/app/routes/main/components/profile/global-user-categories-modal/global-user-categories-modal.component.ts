@@ -1,4 +1,4 @@
-import { Component, NgZone, OnDestroy } from '@angular/core';
+import { Component, NgZone, OnDestroy, inject } from '@angular/core';
 import { Observable, Subject, firstValueFrom, forkJoin } from 'rxjs';
 import { map, take, takeUntil } from 'rxjs/operators';
 
@@ -22,6 +22,10 @@ interface CategoryDescriptor {
   standalone: false,
 })
 export class GlobalUserCategoriesModalComponent implements OnDestroy {
+  private zone = inject(NgZone);
+  private userCategoryService = inject(UserCategoryService);
+  private httpErrorService = inject(HttpErrorService);
+
   open = false;
 
   isLoading = false;
@@ -34,12 +38,6 @@ export class GlobalUserCategoriesModalComponent implements OnDestroy {
   result = new Subject<void>();
 
   private readonly unsubscribe$ = new Subject<void>();
-
-  constructor(
-    private zone: NgZone,
-    private userCategoryService: UserCategoryService,
-    private httpErrorService: HttpErrorService,
-  ) {}
 
   ngOnDestroy() {
     this.unsubscribe$.next();

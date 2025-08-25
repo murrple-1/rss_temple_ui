@@ -7,6 +7,7 @@ import {
   NgZone,
   OnDestroy,
   QueryList,
+  inject,
 } from '@angular/core';
 import { Observable, Subject, forkJoin, of } from 'rxjs';
 import { map, mergeMap, takeUntil, tap } from 'rxjs/operators';
@@ -63,6 +64,15 @@ export class NoLoadError extends Error {}
 
 @Directive()
 export abstract class AbstractFeedsComponent implements OnDestroy {
+  protected zone = inject(NgZone);
+  protected changeDetectorRef = inject(ChangeDetectorRef);
+  protected feedEntryService = inject(FeedEntryService);
+  protected readCounterService = inject(ReadCounterService);
+  protected classifierLabelService = inject(ClassifierLabelService);
+  protected httpErrorService = inject(HttpErrorService);
+  protected modalOpenService = inject(ModalOpenService);
+  protected feedEntryVoteService = inject(FeedEntryVoteService);
+
   feedEntries: FeedEntryImpl[] = [];
 
   loadingState = LoadingState.IsNotLoading;
@@ -106,17 +116,6 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
   }
 
   protected readonly unsubscribe$ = new Subject<void>();
-
-  constructor(
-    protected zone: NgZone,
-    protected changeDetectorRef: ChangeDetectorRef,
-    protected feedEntryService: FeedEntryService,
-    protected readCounterService: ReadCounterService,
-    protected classifierLabelService: ClassifierLabelService,
-    protected httpErrorService: HttpErrorService,
-    protected modalOpenService: ModalOpenService,
-    protected feedEntryVoteService: FeedEntryVoteService,
-  ) {}
 
   ngOnDestroy() {
     this.unsubscribe$.next();

@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy, inject } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { Observable, Subject, filter, map, takeUntil } from 'rxjs';
 
@@ -18,7 +18,10 @@ export class SubscribedFeedsFacadeService implements OnDestroy {
 
   private unsubscribe$ = new Subject<void>();
 
-  constructor(router: Router, feedService: FeedService) {
+  constructor() {
+    const router = inject(Router);
+    const feedService = inject(FeedService);
+
     const cachedObservable = cacheObservable(
       () =>
         feedService

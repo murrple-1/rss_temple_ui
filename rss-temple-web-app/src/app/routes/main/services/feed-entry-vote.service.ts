@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 import { ConfigService } from '@app/services';
 
@@ -9,7 +9,9 @@ export class FeedEntryVoteService {
 
   private forceLabelThreshold: number;
 
-  constructor(configService: ConfigService) {
+  constructor() {
+    const configService = inject(ConfigService);
+
     const forceLabelThreshold =
       configService.get<number>('forceLabelThreshold') ?? 0.5;
     if (typeof forceLabelThreshold !== 'number') {

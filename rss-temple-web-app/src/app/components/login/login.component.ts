@@ -8,6 +8,7 @@ import {
   OnInit,
   Renderer2,
   ViewChild,
+  inject,
 } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -48,6 +49,19 @@ function removeCachedEmailFromStorage() {
   standalone: false,
 })
 export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
+  private zone = inject(NgZone);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private elementRef = inject<ElementRef<Element>>(ElementRef);
+  private renderer = inject(Renderer2);
+  private gAuthService = inject(GAuthService);
+  private fbAuthService = inject(FBAuthService);
+  private authService = inject(AuthService);
+  private socialService = inject(SocialService);
+  private appAlertsService = inject(AppAlertsService);
+  private authStateService = inject(AuthStateService);
+  private modalOpenService = inject(ModalOpenService);
+
   email = '';
   password = '';
   rememberMe = false;
@@ -70,21 +84,6 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
   _requestPasswordResetModal?: RequestPasswordResetModalComponent;
 
   private readonly unsubscribe$ = new Subject<void>();
-
-  constructor(
-    private zone: NgZone,
-    private router: Router,
-    private route: ActivatedRoute,
-    private elementRef: ElementRef<Element>,
-    private renderer: Renderer2,
-    private gAuthService: GAuthService,
-    private fbAuthService: FBAuthService,
-    private authService: AuthService,
-    private socialService: SocialService,
-    private appAlertsService: AppAlertsService,
-    private authStateService: AuthStateService,
-    private modalOpenService: ModalOpenService,
-  ) {}
 
   ngOnInit() {
     const email = getCachedEmail();

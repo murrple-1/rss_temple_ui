@@ -1,14 +1,23 @@
-import { Injectable } from '@angular/core';
+import { Injectable, InjectionToken, inject } from '@angular/core';
 import { CookieOptions, CookieService, SameSite } from 'ngx-cookie-service';
+
+export const MOCK_COOKIE_SERVICE_CONFIG = new InjectionToken<
+  Record<string, string>
+>('MOCK_COOKIE_SERVICE_CONFIG', {
+  providedIn: 'root',
+  factory: () => ({}),
+});
 
 @Injectable()
 export class MockCookieService extends CookieService {
-  constructor(public _cookieConfig: Record<string, string>) {
+  mockConfig = inject(MOCK_COOKIE_SERVICE_CONFIG);
+
+  constructor() {
     super(document, {});
   }
 
   check(name: string) {
-    return this._cookieConfig[name] !== undefined;
+    return this.mockConfig[name] !== undefined;
   }
 
   delete(
@@ -18,11 +27,11 @@ export class MockCookieService extends CookieService {
     secure?: boolean | undefined,
     sameSite?: SameSite | undefined,
   ): void {
-    delete this._cookieConfig[name];
+    delete this.mockConfig[name];
   }
 
   get(name: string): string {
-    const v = this._cookieConfig[name];
+    const v = this.mockConfig[name];
     if (v === undefined) {
       return '';
     } else {
@@ -31,7 +40,7 @@ export class MockCookieService extends CookieService {
   }
 
   getAll(): { [key: string]: string } {
-    return this._cookieConfig;
+    return this.mockConfig;
   }
 
   set(
@@ -68,7 +77,7 @@ export class MockCookieService extends CookieService {
     } else {
       value_ = value;
     }
-    this._cookieConfig[name_] = value_;
+    this.mockConfig[name_] = value_;
   }
 
   deleteAll(
@@ -77,6 +86,6 @@ export class MockCookieService extends CookieService {
     secure?: boolean | undefined,
     sameSite?: SameSite | undefined,
   ): void {
-    this._cookieConfig = {};
+    this.mockConfig = {};
   }
 }

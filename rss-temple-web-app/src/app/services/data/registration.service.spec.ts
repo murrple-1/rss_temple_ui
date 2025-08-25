@@ -1,55 +1,66 @@
 import { HttpClient } from '@angular/common/http';
-import { fakeAsync } from '@angular/core/testing';
+import { TestBed, fakeAsync } from '@angular/core/testing';
 import { firstValueFrom, of } from 'rxjs';
 
-import { MockConfigService } from '@app/test/config.service.mock';
+import { ConfigService } from '@app/services';
+import {
+  MOCK_CONFIG_SERVICE_CONFIG,
+  MockConfigService,
+} from '@app/test/config.service.mock';
 
 import { RegistrationService } from './registration.service';
 
-function setup() {
-  const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', [
-    'post',
-    'delete',
-  ]);
-
-  const mockConfigService = new MockConfigService({
-    apiHost: '',
-  });
-  const registrationService = new RegistrationService(
-    httpClientSpy,
-    mockConfigService,
-  );
-
-  return {
-    httpClientSpy,
-    mockConfigService,
-
-    registrationService,
-  };
-}
-
 describe('RegistrationService', () => {
+  beforeAll(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: HttpClient,
+          useValue: jasmine.createSpyObj<HttpClient>('HttpClient', [
+            'post',
+            'delete',
+          ]),
+        },
+        {
+          provide: MOCK_CONFIG_SERVICE_CONFIG,
+          useValue: {
+            apiHost: '',
+          },
+        },
+        {
+          provide: ConfigService,
+          useClass: MockConfigService,
+        },
+      ],
+    });
+  });
+
   it('should register', fakeAsync(async () => {
-    const { httpClientSpy, registrationService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const registrationService = TestBed.inject(RegistrationService);
 
-    httpClientSpy.post.and.returnValue(of<void>());
+      httpClientSpy.post.and.returnValue(of<void>());
 
-    await firstValueFrom(
-      registrationService.register(
-        'test@test.com',
-        'password',
-        'captchaKey',
-        'captchaSecretPhrase',
-      ),
-      { defaultValue: undefined },
-    );
-    expect(httpClientSpy.post).toHaveBeenCalledTimes(1);
-    expect(httpClientSpy.post).toHaveBeenCalledWith(
-      jasmine.stringMatching(/\/api\/registration$/),
-      jasmine.objectContaining({
-        email: jasmine.any(String),
-        password: jasmine.any(String),
-      }),
-    );
+      await firstValueFrom(
+        registrationService.register(
+          'test@test.com',
+          'password',
+          'captchaKey',
+          'captchaSecretPhrase',
+        ),
+        { defaultValue: undefined },
+      );
+      expect(httpClientSpy.post).toHaveBeenCalledTimes(1);
+      expect(httpClientSpy.post).toHaveBeenCalledWith(
+        jasmine.stringMatching(/\/api\/registration$/),
+        jasmine.objectContaining({
+          email: jasmine.any(String),
+          password: jasmine.any(String),
+        }),
+      );
+    });
   }));
 });

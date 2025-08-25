@@ -1,13 +1,17 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, InjectionToken, inject } from '@angular/core';
 
 import { ConfigService } from '@app/services/config.service';
 
+export const MOCK_CONFIG_SERVICE_CONFIG = new InjectionToken<
+  Record<string, unknown>
+>('MOCK_CONFIG_SERVICE_CONFIG', {
+  providedIn: 'root',
+  factory: () => ({}),
+});
+
 @Injectable()
 export class MockConfigService extends ConfigService {
-  constructor(private mockConfig: Record<string, unknown>) {
-    super(undefined as unknown as HttpClient);
-  }
+  private mockConfig = inject(MOCK_CONFIG_SERVICE_CONFIG);
 
   async load() {
     // do nothing

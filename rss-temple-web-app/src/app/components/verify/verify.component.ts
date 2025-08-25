@@ -1,4 +1,4 @@
-﻿import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+﻿import { Component, NgZone, OnDestroy, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -20,6 +20,11 @@ enum State {
   standalone: false,
 })
 export class VerifyComponent implements OnInit, OnDestroy {
+  private zone = inject(NgZone);
+  private activatedRoute = inject(ActivatedRoute);
+  private registrationService = inject(RegistrationService);
+  private httpErrorService = inject(HttpErrorService);
+
   readonly State = State;
   state = State.NotStarted;
 
@@ -74,13 +79,6 @@ export class VerifyComponent implements OnInit, OnDestroy {
   }
 
   private readonly unsubscribe$ = new Subject<void>();
-
-  constructor(
-    private zone: NgZone,
-    private activatedRoute: ActivatedRoute,
-    private registrationService: RegistrationService,
-    private httpErrorService: HttpErrorService,
-  ) {}
 
   ngOnInit() {
     const token = this.activatedRoute.snapshot.queryParamMap.get('token');

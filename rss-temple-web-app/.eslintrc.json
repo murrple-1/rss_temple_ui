@@ -19,14 +19,6 @@
             "accessibility": "explicit"
           }
         ],
-        "@typescript-eslint/quotes": [
-          "error",
-          "single",
-          {
-            "avoidEscape": true,
-            "allowTemplateLiterals": true
-          }
-        ],
         "@typescript-eslint/naming-convention": "off",
         "@typescript-eslint/member-ordering": "off",
         "@typescript-eslint/no-shadow": ["error"],

@@ -5,6 +5,7 @@ import {
   OnDestroy,
   Output,
   ViewChild,
+  inject,
 } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Subject, firstValueFrom } from 'rxjs';
@@ -37,7 +38,9 @@ export class MastodonShareModalComponent implements OnDestroy {
 
   result = new Subject<string | null>();
 
-  constructor(configService: ConfigService) {
+  constructor() {
+    const configService = inject(ConfigService);
+
     const configInstanceSuggestions = configService.get(
       'mastodonInstanceSuggestions',
     );

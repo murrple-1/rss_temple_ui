@@ -1,77 +1,109 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { fakeAsync } from '@angular/core/testing';
+import { TestBed, fakeAsync } from '@angular/core/testing';
+import { CookieService } from 'ngx-cookie-service';
 import { firstValueFrom, of } from 'rxjs';
 
-import { MockConfigService } from '@app/test/config.service.mock';
-import { MockCookieService } from '@app/test/cookie.service.mock';
+import { ConfigService } from '@app/services';
+import {
+  MOCK_CONFIG_SERVICE_CONFIG,
+  MockConfigService,
+} from '@app/test/config.service.mock';
+import {
+  MOCK_COOKIE_SERVICE_CONFIG,
+  MockCookieService,
+} from '@app/test/cookie.service.mock';
 
 import { OPMLService } from './opml.service';
 
-function setup() {
-  const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', [
-    'get',
-    'post',
-  ]);
-  const mockCookieService = new MockCookieService({});
-  const mockConfigService = new MockConfigService({
-    apiHost: '',
+describe('OPMLService', () => {
+  beforeAll(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: HttpClient,
+          useValue: jasmine.createSpyObj<HttpClient>('HttpClient', [
+            'get',
+            'post',
+          ]),
+        },
+        {
+          provide: MOCK_CONFIG_SERVICE_CONFIG,
+          useValue: {
+            apiHost: '',
+          },
+        },
+        {
+          provide: MOCK_COOKIE_SERVICE_CONFIG,
+          useValue: {},
+        },
+        {
+          provide: CookieService,
+          useClass: MockCookieService,
+        },
+        {
+          provide: ConfigService,
+          useClass: MockConfigService,
+        },
+      ],
+    });
   });
 
-  const opmlService = new OPMLService(
-    httpClientSpy,
-    mockCookieService,
-    mockConfigService,
-  );
-
-  return {
-    httpClientSpy,
-    mockCookieService,
-    mockConfigService,
-
-    opmlService,
-  };
-}
-
-describe('OPMLService', () => {
   it('should download', fakeAsync(async () => {
-    const { httpClientSpy, opmlService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const opmlService = TestBed.inject(OPMLService);
 
-    const downloadText = '<opml></opml>'; // not real OPML
+      const downloadText = '<opml></opml>'; // not real OPML
 
-    httpClientSpy.get.and.returnValue(of(downloadText));
+      httpClientSpy.get.and.returnValue(of(downloadText));
 
-    const xmlText = await firstValueFrom(opmlService.download());
+      const xmlText = await firstValueFrom(opmlService.download());
 
-    expect(xmlText).toBe(downloadText);
+      expect(xmlText).toBe(downloadText);
+    });
   }));
 
   it('should upload text', fakeAsync(async () => {
-    const { httpClientSpy, opmlService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const opmlService = TestBed.inject(OPMLService);
 
-    const response = new HttpResponse({
-      status: 200,
+      const response = new HttpResponse({
+        status: 200,
+      });
+
+      httpClientSpy.post.and.returnValue(of(response));
+
+      const response_ = await firstValueFrom(
+        opmlService.upload('<opml></opml>'),
+      );
+
+      expect(response_.status).toBe(200);
     });
-
-    httpClientSpy.post.and.returnValue(of(response));
-
-    const response_ = await firstValueFrom(opmlService.upload('<opml></opml>'));
-
-    expect(response_.status).toBe(200);
   }));
 
   it('should upload buffer', fakeAsync(async () => {
-    const { httpClientSpy, opmlService } = setup();
+    await TestBed.runInInjectionContext(async () => {
+      const httpClientSpy = TestBed.inject(
+        HttpClient,
+      ) as jasmine.SpyObj<HttpClient>;
+      const opmlService = TestBed.inject(OPMLService);
 
-    const response = new HttpResponse({
-      status: 200,
+      const response = new HttpResponse({
+        status: 200,
+      });
+
+      httpClientSpy.post.and.returnValue(of(response));
+
+      const response_ = await firstValueFrom(
+        opmlService.upload(new ArrayBuffer(100)),
+      );
+
+      expect(response_.status).toBe(200);
     });
-
-    httpClientSpy.post.and.returnValue(of(response));
-
-    const response_ = await firstValueFrom(
-      opmlService.upload(new ArrayBuffer(100)),
-    );
-
-    expect(response_.status).toBe(200);
   }));
 });

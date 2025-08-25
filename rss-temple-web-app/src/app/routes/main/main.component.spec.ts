@@ -8,53 +8,56 @@ import { LocalAlertsComponent } from '@app/components/shared/local-alerts/local-
 import { OnboardingModalComponent } from '@app/routes/main/components/onboarding-modal/onboarding-modal.component';
 import { ConfigService } from '@app/services';
 import { AuthService } from '@app/services/data';
-import { MockConfigService } from '@app/test/config.service.mock';
+import {
+  MOCK_CONFIG_SERVICE_CONFIG,
+  MockConfigService,
+} from '@app/test/config.service.mock';
 
 import { MainComponent } from './main.component';
 
-async function setup() {
-  const mockAuthService = jasmine.createSpyObj<AuthService>('AuthService', [
-    'getUser',
-  ]);
-  const mockConfigService = new MockConfigService({
-    apiHost: '',
-    onboardingYoutubeEmbededUrl: '',
+describe('MainComponent', () => {
+  beforeAll(async () => {
+    const mockAuthService = jasmine.createSpyObj<AuthService>('AuthService', [
+      'getUser',
+    ]);
+
+    await TestBed.configureTestingModule({
+      imports: [
+        BrowserAnimationsModule,
+        ClarityModule,
+        RouterModule.forRoot([]),
+      ],
+      declarations: [
+        MainComponent,
+        OnboardingModalComponent,
+        LocalAlertsComponent,
+      ],
+      providers: [
+        {
+          provide: APP_BASE_HREF,
+          useValue: '/',
+        },
+
+        {
+          provide: AuthService,
+          useValue: mockAuthService,
+        },
+        {
+          provide: MOCK_CONFIG_SERVICE_CONFIG,
+          useValue: {
+            apiHost: '',
+            onboardingYoutubeEmbededUrl: '',
+          },
+        },
+        {
+          provide: ConfigService,
+          useClass: MockConfigService,
+        },
+      ],
+    }).compileComponents();
   });
 
-  await TestBed.configureTestingModule({
-    imports: [BrowserAnimationsModule, ClarityModule, RouterModule.forRoot([])],
-    declarations: [
-      MainComponent,
-      OnboardingModalComponent,
-      LocalAlertsComponent,
-    ],
-    providers: [
-      {
-        provide: APP_BASE_HREF,
-        useValue: '/',
-      },
-
-      {
-        provide: AuthService,
-        useValue: mockAuthService,
-      },
-      {
-        provide: ConfigService,
-        useValue: mockConfigService,
-      },
-    ],
-  }).compileComponents();
-
-  return {
-    mockAuthService,
-    mockConfigService,
-  };
-}
-
-describe('MainComponent', () => {
   it('should create the app', async () => {
-    await setup();
-
     const componentFixture = TestBed.createComponent(MainComponent);
     const component = componentFixture.componentInstance;
     expect(component).toBeTruthy();

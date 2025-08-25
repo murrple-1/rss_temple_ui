@@ -6,6 +6,7 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  inject,
 } from '@angular/core';
 import { Observable, Subscription, fromEvent, interval, merge } from 'rxjs';
 import { debounce, map, mapTo, share } from 'rxjs/operators';
@@ -78,6 +79,8 @@ function getContainerScrollObservable(scrollParentNativeElement: HTMLElement) {
   standalone: false,
 })
 export class InViewportDirective implements OnInit, OnDestroy {
+  private elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
+
   private _disabled = false;
 
   @Input('appInViewport')
@@ -125,8 +128,6 @@ export class InViewportDirective implements OnInit, OnDestroy {
   watch = new EventEmitter<InViewportEvent>();
 
   private subscription: Subscription | null = null;
-
-  constructor(private elementRef: ElementRef<HTMLElement>) {}
 
   private static rectIntersects(r1: Rect, r2: Rect) {
     return !(
