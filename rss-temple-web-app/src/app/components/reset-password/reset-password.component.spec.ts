@@ -9,36 +9,28 @@ import { AuthService } from '@app/services/data';
 
 import { ResetPasswordComponent } from './reset-password.component';
 
-async function setup() {
-  const mockAuthService = jasmine.createSpyObj<AuthService>('AuthService', [
-    'resetPassword',
-  ]);
-
-  await TestBed.configureTestingModule({
-    imports: [
-      FormsModule,
-      BrowserAnimationsModule,
-      ClarityModule,
-      RouterModule.forRoot([]),
-    ],
-    declarations: [ResetPasswordComponent, PasswordsMatchValidatorDirective],
-    providers: [
-      {
-        provide: AuthService,
-        useValue: mockAuthService,
-      },
-    ],
-  }).compileComponents();
-
-  return {
-    mockAuthService,
-  };
-}
-
 describe('ResetPasswordComponent', () => {
-  it('should create the component', waitForAsync(async () => {
-    await setup();
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [
+        FormsModule,
+        BrowserAnimationsModule,
+        ClarityModule,
+        RouterModule.forRoot([]),
+      ],
+      declarations: [ResetPasswordComponent, PasswordsMatchValidatorDirective],
+      providers: [
+        {
+          provide: AuthService,
+          useValue: jasmine.createSpyObj<AuthService>('AuthService', [
+            'resetPassword',
+          ]),
+        },
+      ],
+    }).compileComponents();
+  });
 
+  it('should create the component', waitForAsync(async () => {
     const componentFixture = TestBed.createComponent(ResetPasswordComponent);
     const component = componentFixture.componentInstance;
     expect(component).toBeTruthy();

@@ -15,54 +15,53 @@ import { SearchModalComponent } from '@app/components/nav/search-modal/search-mo
 import { ConfirmModalComponent } from '@app/components/shared/confirm-modal/confirm-modal.component';
 import { SubNavComponent } from '@app/components/subnav/subnav.component';
 import { ConfigService } from '@app/services';
-import { MockConfigService } from '@app/test/config.service.mock';
+import {
+  MOCK_CONFIG_SERVICE_CONFIG,
+  MockConfigService,
+} from '@app/test/config.service.mock';
 
 import { AppComponent } from './app.component';
 import { CookieConsentSnackbarComponent } from './components/cookie-consent-snackbar/cookie-consent-snackbar.component';
 
-async function setup() {
-  const mockConfigService = new MockConfigService({
-    apiHost: '',
+describe('AppComponent', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [
+        AppComponent,
+        AppAlertsComponent,
+        NavComponent,
+        SubNavComponent,
+        ConfirmModalComponent,
+        SearchModalComponent,
+        CookieConsentSnackbarComponent,
+      ],
+      imports: [
+        FormsModule,
+        BrowserAnimationsModule,
+        ClarityModule,
+        RouterModule.forRoot([]),
+      ],
+      providers: [
+        {
+          provide: APP_BASE_HREF,
+          useValue: '/',
+        },
+        {
+          provide: MOCK_CONFIG_SERVICE_CONFIG,
+          useValue: {
+            apiHost: '',
+          },
+        },
+        {
+          provide: ConfigService,
+          useClass: MockConfigService,
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+      ],
+    }).compileComponents();
   });
 
-  await TestBed.configureTestingModule({
-    declarations: [
-      AppComponent,
-      AppAlertsComponent,
-      NavComponent,
-      SubNavComponent,
-      ConfirmModalComponent,
-      SearchModalComponent,
-      CookieConsentSnackbarComponent,
-    ],
-    imports: [
-      FormsModule,
-      BrowserAnimationsModule,
-      ClarityModule,
-      RouterModule.forRoot([]),
-    ],
-    providers: [
-      {
-        provide: APP_BASE_HREF,
-        useValue: '/',
-      },
-      {
-        provide: ConfigService,
-        useValue: mockConfigService,
-      },
-      provideHttpClient(withInterceptorsFromDi()),
-    ],
-  }).compileComponents();
-
-  return {
-    mockConfigService,
-  };
-}
-
-describe('AppComponent', () => {
   it('should create the app', waitForAsync(async () => {
-    await setup();
-
     const componentFixture = TestBed.createComponent(AppComponent);
     const component = componentFixture.componentInstance;
     expect(component).toBeTruthy();

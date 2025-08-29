@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { z } from 'zod';
 
@@ -7,9 +7,9 @@ import { z } from 'zod';
   providedIn: 'root',
 })
 export class ConfigService {
-  private config?: Record<string, unknown>;
+  private http = inject(HttpClient);
 
-  constructor(private http: HttpClient) {}
+  private config?: Record<string, unknown>;
 
   async load() {
     await firstValueFrom(this.http.get<unknown>('/assets/config.json')).then(

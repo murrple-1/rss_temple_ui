@@ -1,4 +1,11 @@
-import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,
@@ -61,6 +68,15 @@ interface NavAction {
   standalone: false,
 })
 export class NavComponent implements OnInit, OnDestroy {
+  private zone = inject(NgZone);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private themeService = inject(ThemeService);
+  private authStateService = inject(AuthStateService);
+  private modalOpenService = inject(ModalOpenService);
+  private authService = inject(AuthService);
+  private configService = inject(ConfigService);
+
   private readonly navEnd$ = this.router.events.pipe(
     filter(navEvent => navEvent instanceof NavigationEnd),
     map(navEvent => navEvent as NavigationEnd),
@@ -141,17 +157,6 @@ export class NavComponent implements OnInit, OnDestroy {
   private searchModal?: SearchModalComponent;
 
   private unsubscribe$ = new Subject<void>();
-
-  constructor(
-    private zone: NgZone,
-    private router: Router,
-    private route: ActivatedRoute,
-    private themeService: ThemeService,
-    private authStateService: AuthStateService,
-    private modalOpenService: ModalOpenService,
-    private authService: AuthService,
-    private configService: ConfigService,
-  ) {}
 
   ngOnInit() {
     const extraNavLinkSafeParse = z

@@ -1,16 +1,18 @@
+import { TestBed } from '@angular/core/testing';
+
 import { UserCategoryObservableService } from './user-category-observable.service';
 
-function setup() {
-  const userCategoryObservableService = new UserCategoryObservableService();
-
-  return {
-    userCategoryObservableService,
-  };
-}
-
 describe('UserCategoryObservableService', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [UserCategoryObservableService],
+    });
+  });
+
   it('should fire userCategoriesChanged$', () => {
-    const { userCategoryObservableService } = setup();
+    const userCategoryObservableService = TestBed.inject(
+      UserCategoryObservableService,
+    );
 
     const fn = jasmine.createSpy();
 

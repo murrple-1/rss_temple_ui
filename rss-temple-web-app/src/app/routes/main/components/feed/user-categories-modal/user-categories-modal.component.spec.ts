@@ -8,37 +8,29 @@ import { UserCategoryService } from '@app/services/data';
 
 import { UserCategoriesModalComponent } from './user-categories-modal.component';
 
-async function setup() {
-  const mockUserCategoryService = jasmine.createSpyObj<UserCategoryService>(
-    'UserCategoryService',
-    ['queryAll', 'create'],
-  );
-
-  await TestBed.configureTestingModule({
-    imports: [
-      FormsModule,
-      BrowserAnimationsModule,
-      ClarityModule,
-      RouterModule.forRoot([]),
-    ],
-    declarations: [UserCategoriesModalComponent],
-    providers: [
-      {
-        provide: UserCategoryService,
-        useValue: mockUserCategoryService,
-      },
-    ],
-  }).compileComponents();
-
-  return {
-    mockUserCategoryService,
-  };
-}
-
 describe('UserCategoriesModalComponent', () => {
-  it('should create the component', waitForAsync(async () => {
-    await setup();
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [
+        FormsModule,
+        BrowserAnimationsModule,
+        ClarityModule,
+        RouterModule.forRoot([]),
+      ],
+      declarations: [UserCategoriesModalComponent],
+      providers: [
+        {
+          provide: UserCategoryService,
+          useValue: jasmine.createSpyObj<UserCategoryService>(
+            'UserCategoryService',
+            ['queryAll', 'create'],
+          ),
+        },
+      ],
+    }).compileComponents();
+  });
 
+  it('should create the component', waitForAsync(async () => {
     const componentFixture = TestBed.createComponent(
       UserCategoriesModalComponent,
     );

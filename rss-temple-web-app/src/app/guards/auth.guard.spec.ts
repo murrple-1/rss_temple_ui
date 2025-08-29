@@ -1,3 +1,4 @@
+import { TestBed } from '@angular/core/testing';
 import {
   ActivatedRouteSnapshot,
   PRIMARY_OUTLET,
@@ -7,38 +8,48 @@ import {
   UrlSegmentGroup,
   UrlTree,
 } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
 
 import { AuthStateService } from '@app/services';
-import { MockCookieService } from '@app/test/cookie.service.mock';
+import {
+  MOCK_COOKIE_SERVICE_CONFIG,
+  MockCookieService,
+} from '@app/test/cookie.service.mock';
 
 import { AuthGuard, NoAuthGuard } from './auth.guard';
 
-function setup_auth() {
-  const routerSpy = jasmine.createSpyObj<Router>('Router', ['createUrlTree']);
-  const mockCookieService = new MockCookieService({});
-  const authStateService = new AuthStateService(mockCookieService);
-
-  const authGuard = new AuthGuard(routerSpy, authStateService);
-
-  return {
-    routerSpy,
-    mockCookieService,
-    authStateService,
-
-    authGuard,
-  };
-}
-
 describe('AuthGuard', () => {
   beforeEach(() => {
-    const mockCookieService = new MockCookieService({});
-    const authStateService = new AuthStateService(mockCookieService);
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: Router,
+          useValue: jasmine.createSpyObj<Router>('Router', ['createUrlTree']),
+        },
+        {
+          provide: MOCK_COOKIE_SERVICE_CONFIG,
+          useValue: {},
+        },
+        {
+          provide: CookieService,
+          useClass: MockCookieService,
+        },
+        AuthStateService,
+        AuthGuard,
+      ],
+    });
+  });
+
+  beforeEach(() => {
+    const authStateService = TestBed.inject(AuthStateService);
     authStateService.removeLoggedInFlagFromCookieStorage();
     authStateService.removeLoggedInFlagFromLocalStorage();
   });
 
   it('can activate', () => {
-    const { routerSpy, authStateService, authGuard } = setup_auth();
+    const routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    const authStateService = TestBed.inject(AuthStateService);
+    const authGuard = TestBed.inject(AuthGuard);
 
     authStateService.isLoggedIn$.next(true);
 
@@ -52,7 +63,8 @@ describe('AuthGuard', () => {
   });
 
   it('can not activate', () => {
-    const { routerSpy, authGuard } = setup_auth();
+    const routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    const authGuard = TestBed.inject(AuthGuard);
 
     const fakeUrlTree = {
       root: {
@@ -81,7 +93,8 @@ describe('AuthGuard', () => {
   });
 
   it('will not renavigate to the same place', () => {
-    const { routerSpy, authGuard } = setup_auth();
+    const routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    const authGuard = TestBed.inject(AuthGuard);
 
     const fakeUrlTree = {
       root: {
@@ -108,32 +121,37 @@ describe('AuthGuard', () => {
   });
 });
 
-function setup_noauth() {
-  const routerSpy = jasmine.createSpyObj<Router>('Router', ['createUrlTree']);
-  const mockCookieService = new MockCookieService({});
-  const authStateService = new AuthStateService(mockCookieService);
-
-  const noAuthGuard = new NoAuthGuard(routerSpy, authStateService);
-
-  return {
-    routerSpy,
-    mockCookieService,
-    authStateService,
-
-    noAuthGuard,
-  };
-}
-
 describe('NoAuthGuard', () => {
   beforeEach(() => {
-    const mockCookieService = new MockCookieService({});
-    const authStateService = new AuthStateService(mockCookieService);
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: Router,
+          useValue: jasmine.createSpyObj<Router>('Router', ['createUrlTree']),
+        },
+        {
+          provide: MOCK_COOKIE_SERVICE_CONFIG,
+          useValue: {},
+        },
+        {
+          provide: CookieService,
+          useClass: MockCookieService,
+        },
+        AuthStateService,
+        NoAuthGuard,
+      ],
+    });
+  });
+
+  beforeEach(() => {
+    const authStateService = TestBed.inject(AuthStateService);
     authStateService.removeLoggedInFlagFromCookieStorage();
     authStateService.removeLoggedInFlagFromLocalStorage();
   });
 
   it('can activate', () => {
-    const { routerSpy, noAuthGuard } = setup_noauth();
+    const routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    const noAuthGuard = TestBed.inject(NoAuthGuard);
 
     const activatedRouteSnapshot = {} as ActivatedRouteSnapshot;
     const state = {
@@ -145,7 +163,9 @@ describe('NoAuthGuard', () => {
   });
 
   it('can not activate', () => {
-    const { routerSpy, authStateService, noAuthGuard } = setup_noauth();
+    const routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    const authStateService = TestBed.inject(AuthStateService);
+    const noAuthGuard = TestBed.inject(NoAuthGuard);
 
     const fakeUrlTree = {
       root: {
@@ -176,7 +196,9 @@ describe('NoAuthGuard', () => {
   });
 
   it('will not renavigate to the same place', () => {
-    const { routerSpy, authStateService, noAuthGuard } = setup_noauth();
+    const routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    const authStateService = TestBed.inject(AuthStateService);
+    const noAuthGuard = TestBed.inject(NoAuthGuard);
 
     const fakeUrlTree = {
       root: {

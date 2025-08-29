@@ -1,5 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import { Inject, LOCALE_ID, Pipe, PipeTransform } from '@angular/core';
+import { LOCALE_ID, Pipe, PipeTransform, inject } from '@angular/core';
 
 @Pipe({
   name: 'truncateNumber',
@@ -8,7 +8,9 @@ import { Inject, LOCALE_ID, Pipe, PipeTransform } from '@angular/core';
 export class TruncatedNumberPipe implements PipeTransform {
   private decimalPipe: DecimalPipe;
 
-  constructor(@Inject(LOCALE_ID) locale: string) {
+  constructor() {
+    const locale = inject(LOCALE_ID);
+
     this.decimalPipe = new DecimalPipe(locale);
   }
 

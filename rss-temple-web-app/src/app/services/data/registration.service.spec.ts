@@ -1,40 +1,49 @@
-import { HttpClient } from '@angular/common/http';
-import { fakeAsync } from '@angular/core/testing';
-import { firstValueFrom, of } from 'rxjs';
+import { provideHttpClient } from '@angular/common/http';
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+} from '@angular/common/http/testing';
+import { TestBed, fakeAsync } from '@angular/core/testing';
+import { firstValueFrom } from 'rxjs';
 
-import { MockConfigService } from '@app/test/config.service.mock';
+import { ConfigService } from '@app/services';
+import {
+  MOCK_CONFIG_SERVICE_CONFIG,
+  MockConfigService,
+} from '@app/test/config.service.mock';
 
 import { RegistrationService } from './registration.service';
 
-function setup() {
-  const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', [
-    'post',
-    'delete',
-  ]);
-
-  const mockConfigService = new MockConfigService({
-    apiHost: '',
-  });
-  const registrationService = new RegistrationService(
-    httpClientSpy,
-    mockConfigService,
-  );
-
-  return {
-    httpClientSpy,
-    mockConfigService,
-
-    registrationService,
-  };
-}
-
 describe('RegistrationService', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        {
+          provide: MOCK_CONFIG_SERVICE_CONFIG,
+          useValue: {
+            apiHost: '',
+          },
+        },
+        {
+          provide: ConfigService,
+          useClass: MockConfigService,
+        },
+      ],
+    });
+  });
+
+  afterEach(() => {
+    const httpTesting = TestBed.inject(HttpTestingController);
+    httpTesting.verify();
+  });
+
   it('should register', fakeAsync(async () => {
-    const { httpClientSpy, registrationService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const registrationService = TestBed.inject(RegistrationService);
 
-    httpClientSpy.post.and.returnValue(of<void>());
-
-    await firstValueFrom(
+    const registerPromise = firstValueFrom(
       registrationService.register(
         'test@test.com',
         'password',
@@ -43,13 +52,19 @@ describe('RegistrationService', () => {
       ),
       { defaultValue: undefined },
     );
-    expect(httpClientSpy.post).toHaveBeenCalledTimes(1);
-    expect(httpClientSpy.post).toHaveBeenCalledWith(
-      jasmine.stringMatching(/\/api\/registration$/),
+
+    const req = httpTesting.expectOne({
+      url: '/api/registration',
+      method: 'POST',
+    });
+    expect(req.request.body).toEqual(
       jasmine.objectContaining({
         email: jasmine.any(String),
         password: jasmine.any(String),
       }),
     );
+    req.flush(null);
+
+    await expectAsync(registerPromise).toBeResolved();
   }));
 });

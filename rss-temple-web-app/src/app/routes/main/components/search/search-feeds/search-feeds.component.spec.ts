@@ -9,44 +9,36 @@ import { FeedEntryService, FeedService } from '@app/services/data';
 
 import { SearchFeedsComponent } from './search-feeds.component';
 
-async function setup() {
-  const mockFeedService = jasmine.createSpyObj<FeedService>('FeedService', [
-    'query',
-  ]);
-  const mockFeedEntryService = jasmine.createSpyObj<FeedEntryService>(
-    'FeedEntryService',
-    ['query', 'getLanguages'],
-  );
-
-  await TestBed.configureTestingModule({
-    imports: [
-      FormsModule,
-      BrowserAnimationsModule,
-      ClarityModule,
-      RouterModule.forRoot([]),
-    ],
-    declarations: [SearchFeedsComponent],
-    providers: [
-      {
-        provide: FeedService,
-        useValue: mockFeedService,
-      },
-      {
-        provide: FeedEntryService,
-        useValue: mockFeedEntryService,
-      },
-    ],
-  }).compileComponents();
-
-  return {
-    mockFeedService,
-    mockFeedEntryService,
-  };
-}
-
 describe('SearchComponent', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [
+        FormsModule,
+        BrowserAnimationsModule,
+        ClarityModule,
+        RouterModule.forRoot([]),
+      ],
+      declarations: [SearchFeedsComponent],
+      providers: [
+        {
+          provide: FeedService,
+          useValue: jasmine.createSpyObj<FeedService>('FeedService', ['query']),
+        },
+        {
+          provide: FeedEntryService,
+          useValue: jasmine.createSpyObj<FeedEntryService>('FeedEntryService', [
+            'query',
+            'getLanguages',
+          ]),
+        },
+      ],
+    }).compileComponents();
+  });
+
   it('should create the component', waitForAsync(async () => {
-    const { mockFeedEntryService } = await setup();
+    const mockFeedEntryService = TestBed.inject(
+      FeedEntryService,
+    ) as jasmine.SpyObj<FeedEntryService>;
     mockFeedEntryService.query.and.returnValue(
       of({
         objects: [],

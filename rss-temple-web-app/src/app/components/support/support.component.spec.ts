@@ -1,40 +1,41 @@
+import { provideHttpClient } from '@angular/common/http';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClarityModule } from '@clr/angular';
 
 import { ConfigService } from '@app/services';
-import { MockConfigService } from '@app/test/config.service.mock';
+import {
+  MOCK_CONFIG_SERVICE_CONFIG,
+  MockConfigService,
+} from '@app/test/config.service.mock';
 
 import { SupportComponent } from './support.component';
 
-async function setup() {
-  const mockConfigService = new MockConfigService({
-    apiHost: '',
-    issueTrackerUrl: '',
-    clientRepoUrl: '',
-    serverRepoUrl: '',
+describe('SupportComponent', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [BrowserAnimationsModule, ClarityModule],
+      declarations: [SupportComponent],
+      providers: [
+        provideHttpClient(),
+        {
+          provide: MOCK_CONFIG_SERVICE_CONFIG,
+          useValue: {
+            apiHost: '',
+            issueTrackerUrl: '',
+            clientRepoUrl: '',
+            serverRepoUrl: '',
+          },
+        },
+        {
+          provide: ConfigService,
+          useClass: MockConfigService,
+        },
+      ],
+    }).compileComponents();
   });
 
-  await TestBed.configureTestingModule({
-    imports: [BrowserAnimationsModule, ClarityModule],
-    declarations: [SupportComponent],
-    providers: [
-      {
-        provide: ConfigService,
-        useValue: mockConfigService,
-      },
-    ],
-  }).compileComponents();
-
-  return {
-    mockConfigService,
-  };
-}
-
-describe('SupportComponent', () => {
   it('should create the component', waitForAsync(async () => {
-    await setup();
-
     const componentFixture = TestBed.createComponent(SupportComponent);
     const component = componentFixture.componentInstance;
     expect(component).toBeTruthy();

@@ -1,16 +1,16 @@
+import { TestBed } from '@angular/core/testing';
+
 import { FeedImpl, FeedObservableService } from './feed-observable.service';
 
-function setup() {
-  const feedObservableService = new FeedObservableService();
-
-  return {
-    feedObservableService,
-  };
-}
-
 describe('FeedObservableService', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [FeedObservableService],
+    });
+  });
+
   it('should fire feedAdded', () => {
-    const { feedObservableService } = setup();
+    const feedObservableService = TestBed.inject(FeedObservableService);
 
     const fn = jasmine.createSpy();
 
@@ -28,7 +28,7 @@ describe('FeedObservableService', () => {
   });
 
   it('should fire feedRemoved', () => {
-    const { feedObservableService } = setup();
+    const feedObservableService = TestBed.inject(FeedObservableService);
 
     const fn = jasmine.createSpy();
 
@@ -46,7 +46,7 @@ describe('FeedObservableService', () => {
   });
 
   it('should fire feedsChanged', () => {
-    const { feedObservableService } = setup();
+    const feedObservableService = TestBed.inject(FeedObservableService);
 
     const fn = jasmine.createSpy();
 

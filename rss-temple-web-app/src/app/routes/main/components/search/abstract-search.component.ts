@@ -1,4 +1,4 @@
-import { Directive, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { Directive, NgZone, OnDestroy, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Subject, combineLatest, startWith, takeUntil } from 'rxjs';
 
@@ -12,17 +12,15 @@ enum LoadingState {
 
 @Directive()
 export abstract class AbstractSearchComponent implements OnInit, OnDestroy {
+  protected zone = inject(NgZone);
+  protected router = inject(Router);
+  protected route = inject(ActivatedRoute);
+  protected subnavLinksService = inject(SubNavLinksService);
+
   readonly LoadingState = LoadingState;
   loadingState = LoadingState.IsNotLoading;
 
   protected readonly unsubscribe$ = new Subject<void>();
-
-  constructor(
-    protected zone: NgZone,
-    protected router: Router,
-    protected route: ActivatedRoute,
-    protected subnavLinksService: SubNavLinksService,
-  ) {}
 
   ngOnInit() {
     combineLatest([

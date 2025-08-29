@@ -4,6 +4,7 @@ import {
   NgZone,
   OnDestroy,
   ViewChild,
+  inject,
 } from '@angular/core';
 import { Subject, firstValueFrom } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
@@ -23,6 +24,11 @@ interface ProgressStatus {
   standalone: false,
 })
 export class OPMLModalComponent implements OnDestroy {
+  private zone = inject(NgZone);
+  private opmlService = inject(OPMLService);
+  private progressService = inject(ProgressService);
+  private httpErrorService = inject(HttpErrorService);
+
   open = false;
 
   @ViewChild('opmlFileInput', { static: false })
@@ -39,13 +45,6 @@ export class OPMLModalComponent implements OnDestroy {
   private readonly progressCheckInterval = 2000;
 
   private readonly unsubscribe$ = new Subject<void>();
-
-  constructor(
-    private zone: NgZone,
-    private opmlService: OPMLService,
-    private progressService: ProgressService,
-    private httpErrorService: HttpErrorService,
-  ) {}
 
   ngOnDestroy() {
     this.result.complete();

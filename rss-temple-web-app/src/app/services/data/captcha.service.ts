@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { z } from 'zod';
 
@@ -9,12 +9,13 @@ import { ConfigService } from '@app/services/config.service';
   providedIn: 'root',
 })
 export class CaptchaService {
+  private http = inject(HttpClient);
+
   private readonly apiHost: string;
 
-  constructor(
-    private http: HttpClient,
-    configService: ConfigService,
-  ) {
+  constructor() {
+    const configService = inject(ConfigService);
+
     const apiHost = configService.get<string>('apiHost');
     if (typeof apiHost !== 'string') {
       throw new Error('apiHost malformed');

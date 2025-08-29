@@ -1,77 +1,113 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { fakeAsync } from '@angular/core/testing';
-import { firstValueFrom, of } from 'rxjs';
+import { provideHttpClient } from '@angular/common/http';
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+} from '@angular/common/http/testing';
+import { TestBed, fakeAsync } from '@angular/core/testing';
+import { CookieService } from 'ngx-cookie-service';
+import { firstValueFrom } from 'rxjs';
 
-import { MockConfigService } from '@app/test/config.service.mock';
-import { MockCookieService } from '@app/test/cookie.service.mock';
+import { ConfigService } from '@app/services';
+import {
+  MOCK_CONFIG_SERVICE_CONFIG,
+  MockConfigService,
+} from '@app/test/config.service.mock';
+import {
+  MOCK_COOKIE_SERVICE_CONFIG,
+  MockCookieService,
+} from '@app/test/cookie.service.mock';
 
 import { OPMLService } from './opml.service';
 
-function setup() {
-  const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', [
-    'get',
-    'post',
-  ]);
-  const mockCookieService = new MockCookieService({});
-  const mockConfigService = new MockConfigService({
-    apiHost: '',
+describe('OPMLService', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        {
+          provide: MOCK_CONFIG_SERVICE_CONFIG,
+          useValue: {
+            apiHost: '',
+          },
+        },
+        {
+          provide: MOCK_COOKIE_SERVICE_CONFIG,
+          useValue: {},
+        },
+        {
+          provide: CookieService,
+          useClass: MockCookieService,
+        },
+        {
+          provide: ConfigService,
+          useClass: MockConfigService,
+        },
+      ],
+    });
   });
 
-  const opmlService = new OPMLService(
-    httpClientSpy,
-    mockCookieService,
-    mockConfigService,
-  );
+  afterEach(() => {
+    const httpTesting = TestBed.inject(HttpTestingController);
+    httpTesting.verify();
+  });
 
-  return {
-    httpClientSpy,
-    mockCookieService,
-    mockConfigService,
-
-    opmlService,
-  };
-}
-
-describe('OPMLService', () => {
   it('should download', fakeAsync(async () => {
-    const { httpClientSpy, opmlService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const opmlService = TestBed.inject(OPMLService);
 
     const downloadText = '<opml></opml>'; // not real OPML
 
-    httpClientSpy.get.and.returnValue(of(downloadText));
+    const xmlTextPromise = firstValueFrom(opmlService.download());
 
-    const xmlText = await firstValueFrom(opmlService.download());
+    const req = httpTesting.expectOne({
+      url: '/api/opml',
+      method: 'GET',
+    });
+    req.flush(downloadText);
 
-    expect(xmlText).toBe(downloadText);
+    await expectAsync(xmlTextPromise).toBeResolvedTo(downloadText);
   }));
 
   it('should upload text', fakeAsync(async () => {
-    const { httpClientSpy, opmlService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const opmlService = TestBed.inject(OPMLService);
 
-    const response = new HttpResponse({
+    const uploadPromise = firstValueFrom(opmlService.upload('<opml></opml>'));
+
+    const req = httpTesting.expectOne({
+      url: '/api/opml',
+      method: 'POST',
+    });
+    req.flush(null, {
+      statusText: 'OK',
       status: 200,
     });
 
-    httpClientSpy.post.and.returnValue(of(response));
+    const upload = await uploadPromise;
 
-    const response_ = await firstValueFrom(opmlService.upload('<opml></opml>'));
-
-    expect(response_.status).toBe(200);
+    expect(upload.status).toBe(200);
   }));
 
   it('should upload buffer', fakeAsync(async () => {
-    const { httpClientSpy, opmlService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const opmlService = TestBed.inject(OPMLService);
 
-    const response = new HttpResponse({
-      status: 200,
-    });
-
-    httpClientSpy.post.and.returnValue(of(response));
-
-    const response_ = await firstValueFrom(
+    const uploadPromise = firstValueFrom(
       opmlService.upload(new ArrayBuffer(100)),
     );
 
-    expect(response_.status).toBe(200);
+    const req = httpTesting.expectOne({
+      url: '/api/opml',
+      method: 'POST',
+    });
+    req.flush(null, {
+      statusText: 'OK',
+      status: 200,
+    });
+
+    const upload = await uploadPromise;
+
+    expect(upload.status).toBe(200);
   }));
 });

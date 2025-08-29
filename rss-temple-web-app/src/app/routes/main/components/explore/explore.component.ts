@@ -1,9 +1,9 @@
-import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, inject } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { AppAlertsService, HttpErrorService } from '@app/services';
-import { ExploreService, FeedService } from '@app/services/data';
+import { HttpErrorService } from '@app/services';
+import { ExploreService } from '@app/services/data';
 
 interface FeedDescriptor {
   name: string;
@@ -25,17 +25,13 @@ interface TagEntry {
   standalone: false,
 })
 export class ExploreComponent implements OnInit, OnDestroy {
+  private zone = inject(NgZone);
+  private exploreService = inject(ExploreService);
+  private httpErrorService = inject(HttpErrorService);
+
   tagEntries: TagEntry[] = [];
 
   private readonly unsubscribe$ = new Subject<void>();
-
-  constructor(
-    private zone: NgZone,
-    private feedService: FeedService,
-    private exploreService: ExploreService,
-    private httpErrorService: HttpErrorService,
-    private appAlertsService: AppAlertsService,
-  ) {}
 
   ngOnInit() {
     this.exploreService

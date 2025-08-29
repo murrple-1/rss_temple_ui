@@ -5,19 +5,15 @@ import { ClarityModule } from '@clr/angular';
 
 import { SubscribeModalComponent } from './subscribe-modal.component';
 
-async function setup() {
-  await TestBed.configureTestingModule({
-    imports: [FormsModule, BrowserAnimationsModule, ClarityModule],
-    declarations: [SubscribeModalComponent],
-  }).compileComponents();
-
-  return {};
-}
-
 describe('SubscribeModalComponent', () => {
-  it('should create the component', waitForAsync(async () => {
-    await setup();
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [FormsModule, BrowserAnimationsModule, ClarityModule],
+      declarations: [SubscribeModalComponent],
+    }).compileComponents();
+  });
 
+  it('should create the component', waitForAsync(async () => {
     const componentFixture = TestBed.createComponent(SubscribeModalComponent);
     const component = componentFixture.componentInstance;
     expect(component).toBeTruthy();

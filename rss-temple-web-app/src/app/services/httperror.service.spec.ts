@@ -1,5 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
+import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
 import { take } from 'rxjs/operators';
 
 import {
@@ -7,44 +9,45 @@ import {
   AppAlertsService,
 } from '@app/services/app-alerts.service';
 import { AuthStateService } from '@app/services/auth-state.service';
-import { MockCookieService } from '@app/test/cookie.service.mock';
+import {
+  MOCK_COOKIE_SERVICE_CONFIG,
+  MockCookieService,
+} from '@app/test/cookie.service.mock';
 
 import { HttpErrorService } from './httperror.service';
 
-function setup() {
-  spyOn(console, 'error');
-
-  const routerSpy = jasmine.createSpyObj<Router>('Router', ['navigate']);
-  const mockCookieService = new MockCookieService({});
-  const authStateService = new AuthStateService(mockCookieService);
-  const appAlertService = new AppAlertsService();
-
-  const httpErrorService = new HttpErrorService(
-    routerSpy,
-    appAlertService,
-    authStateService,
-  );
-
-  return {
-    routerSpy,
-    mockCookieService,
-    authStateService,
-    appAlertService,
-
-    httpErrorService,
-  };
-}
-
 describe('HttpErrorService', () => {
   beforeEach(() => {
-    const mockCookieService = new MockCookieService({});
-    const authStateService = new AuthStateService(mockCookieService);
+    spyOn(console, 'error');
+
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: Router,
+          useValue: jasmine.createSpyObj('Router', ['navigate']),
+        },
+        {
+          provide: MOCK_COOKIE_SERVICE_CONFIG,
+          useValue: {},
+        },
+        {
+          provide: CookieService,
+          useClass: MockCookieService,
+        },
+      ],
+    });
+  });
+
+  beforeEach(() => {
+    const authStateService = TestBed.inject(AuthStateService);
+
     authStateService.removeLoggedInFlagFromCookieStorage();
     authStateService.removeLoggedInFlagFromLocalStorage();
   });
 
   it('should handle HttpErrorResponses', async () => {
-    const { httpErrorService, appAlertService } = setup();
+    const httpErrorService = TestBed.inject(HttpErrorService);
+    const appAlertService = TestBed.inject(AppAlertsService);
 
     const emitPromise = new Promise<AppAlertDescriptor>(resolve => {
       appAlertService.appAlertDescriptor$.pipe(take(1)).subscribe({
@@ -70,7 +73,9 @@ describe('HttpErrorService', () => {
   });
 
   it('should handle "no response" HttpErrorResponses', async () => {
-    const { httpErrorService, appAlertService } = setup();
+    const httpErrorService = TestBed.inject(HttpErrorService);
+    const appAlertService = TestBed.inject(AppAlertsService);
+
     const response = new HttpErrorResponse({
       status: 0,
     });
@@ -94,7 +99,10 @@ describe('HttpErrorService', () => {
   });
 
   it('should handle "session expired" HttpErrorResponses', async () => {
-    const { httpErrorService, appAlertService, routerSpy } = setup();
+    const httpErrorService = TestBed.inject(HttpErrorService);
+    const appAlertService = TestBed.inject(AppAlertsService);
+    const routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+
     const response = new HttpErrorResponse({
       status: 401,
     });
@@ -120,7 +128,8 @@ describe('HttpErrorService', () => {
   });
 
   it('should handle arbitrary errors', async () => {
-    const { httpErrorService, appAlertService } = setup();
+    const httpErrorService = TestBed.inject(HttpErrorService);
+    const appAlertService = TestBed.inject(AppAlertsService);
 
     const emitPromise = new Promise<AppAlertDescriptor>(resolve => {
       appAlertService.appAlertDescriptor$.pipe(take(1)).subscribe({

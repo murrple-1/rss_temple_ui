@@ -6,6 +6,7 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  inject,
 } from '@angular/core';
 import { Subscription, fromEvent, interval } from 'rxjs';
 import { debounce } from 'rxjs/operators';
@@ -17,6 +18,8 @@ const debouncer = interval(100);
   standalone: false,
 })
 export class InfiniteScrollDirective implements OnInit, OnDestroy {
+  private elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
+
   @Input('appInfiniteScroll')
   disabled = false;
 
@@ -27,8 +30,6 @@ export class InfiniteScrollDirective implements OnInit, OnDestroy {
   approachingBottom = new EventEmitter<void>();
 
   private subscription: Subscription | null = null;
-
-  constructor(private elementRef: ElementRef<HTMLElement>) {}
 
   ngOnInit() {
     this.subscription = fromEvent(this.elementRef.nativeElement, 'scroll')

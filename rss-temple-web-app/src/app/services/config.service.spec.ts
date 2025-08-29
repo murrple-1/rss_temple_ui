@@ -1,20 +1,18 @@
-import { HttpClient } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 
 import { ConfigService } from './config.service';
 
-function setup() {
-  const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', ['get']);
-
-  const configService = new ConfigService(httpClientSpy);
-
-  return {
-    configService,
-  };
-}
-
 describe('ConfigService', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    });
+  });
+
   it('should construct', () => {
-    const { configService } = setup();
+    const configService = TestBed.inject(ConfigService);
 
     expect(configService).not.toBeNull();
   });

@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy, inject } from '@angular/core';
 import {
   BehaviorSubject,
   Observable,
@@ -57,6 +57,11 @@ function generateNotifierForBufferByCountAndDebouce(
 
 @Injectable()
 export class ReadCounterService implements OnDestroy {
+  private authStateService = inject(AuthStateService);
+  private feedEntryService = inject(FeedEntryService);
+  private feedService = inject(FeedService);
+  private httpErrorService = inject(HttpErrorService);
+
   private _feedCounts$ = new BehaviorSubject<Record<string, number> | null>(
     null,
   );
@@ -73,12 +78,7 @@ export class ReadCounterService implements OnDestroy {
 
   private unsubscribe$ = new Subject<void>();
 
-  constructor(
-    private authStateService: AuthStateService,
-    private feedEntryService: FeedEntryService,
-    private feedService: FeedService,
-    private httpErrorService: HttpErrorService,
-  ) {
+  constructor() {
     this.change$
       .pipe(
         buffer(

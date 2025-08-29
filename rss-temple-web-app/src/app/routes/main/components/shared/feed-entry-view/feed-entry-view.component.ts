@@ -1,4 +1,11 @@
-import { Component, ElementRef, Input, NgZone, OnDestroy } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  NgZone,
+  OnDestroy,
+  inject,
+} from '@angular/core';
 import { Subject, forkJoin } from 'rxjs';
 import { mergeMap, takeUntil } from 'rxjs/operators';
 
@@ -37,6 +44,16 @@ type FeedImpl = Required<Pick<Feed, 'calculatedTitle' | 'homeUrl' | 'feedUrl'>>;
   standalone: false,
 })
 export class FeedEntryViewComponent implements OnDestroy {
+  private zone = inject(NgZone);
+  elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
+  private feedEntryService = inject(FeedEntryService);
+  private readCounterService = inject(ReadCounterService);
+  private classifierLabelService = inject(ClassifierLabelService);
+  private httpErrorService = inject(HttpErrorService);
+  private feedEntryVoteService = inject(FeedEntryVoteService);
+  private modalOpenService = inject(ModalOpenService);
+  private appAlertService = inject(AppAlertsService);
+
   @Input()
   feed?: FeedImpl;
 
@@ -65,18 +82,6 @@ export class FeedEntryViewComponent implements OnDestroy {
   private hasAutoRead = false;
 
   private readonly unsubscribe$ = new Subject<void>();
-
-  constructor(
-    private zone: NgZone,
-    public elementRef: ElementRef<HTMLElement>,
-    private feedEntryService: FeedEntryService,
-    private readCounterService: ReadCounterService,
-    private classifierLabelService: ClassifierLabelService,
-    private httpErrorService: HttpErrorService,
-    private feedEntryVoteService: FeedEntryVoteService,
-    private modalOpenService: ModalOpenService,
-    private appAlertService: AppAlertsService,
-  ) {}
 
   ngOnDestroy() {
     this.unsubscribe$.next();

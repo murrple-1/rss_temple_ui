@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { ConfigService } from './config.service';
@@ -25,7 +25,9 @@ export class GAuthService {
     return this._isLoaded$.getValue();
   }
 
-  constructor(configService: ConfigService) {
+  constructor() {
+    const configService = inject(ConfigService);
+
     this.user$ = this._user$.asObservable();
     this.isLoaded$ = this._isLoaded$.asObservable();
 

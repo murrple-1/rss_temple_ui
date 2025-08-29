@@ -1,11 +1,11 @@
-import { Component, NgZone, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
+import { NavigationEnd } from '@angular/router';
 import { ClrLoadingState } from '@clr/angular';
 import { combineLatest, of } from 'rxjs';
 import { map, startWith, takeUntil } from 'rxjs/operators';
 
 import { Feed } from '@app/models';
-import { HttpErrorService, SubNavLinksService } from '@app/services';
+import { HttpErrorService } from '@app/services';
 import { FeedService } from '@app/services/data';
 
 import { AbstractSearchComponent } from '../abstract-search.component';
@@ -35,21 +35,13 @@ export class SearchFeedsComponent
   extends AbstractSearchComponent
   implements OnInit
 {
+  private feedService = inject(FeedService);
+  private httpErrorService = inject(HttpErrorService);
+
   searchTitle = '';
   searchButtonState = ClrLoadingState.DEFAULT;
 
   feedDescriptors: FeedDescriptor[] = [];
-
-  constructor(
-    zone: NgZone,
-    router: Router,
-    route: ActivatedRoute,
-    subnavLinksService: SubNavLinksService,
-    private feedService: FeedService,
-    private httpErrorService: HttpErrorService,
-  ) {
-    super(zone, router, route, subnavLinksService);
-  }
 
   ngOnInit() {
     super.ngOnInit();

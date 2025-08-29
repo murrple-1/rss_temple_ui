@@ -1,4 +1,4 @@
-import { Component, NgZone, OnDestroy, ViewChild } from '@angular/core';
+import { Component, NgZone, OnDestroy, ViewChild, inject } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ClrLoadingState } from '@clr/angular';
 import { Subject, firstValueFrom } from 'rxjs';
@@ -14,6 +14,10 @@ import { AuthService } from '@app/services/data';
   standalone: false,
 })
 export class RequestPasswordResetModalComponent implements OnDestroy {
+  private zone = inject(NgZone);
+  private authService = inject(AuthService);
+  private httpErrorService = inject(HttpErrorService);
+
   open = false;
 
   requestButtonState = ClrLoadingState.DEFAULT;
@@ -27,12 +31,6 @@ export class RequestPasswordResetModalComponent implements OnDestroy {
   _passwordResetRequestForm?: NgForm;
 
   private readonly unsubscribe$ = new Subject<void>();
-
-  constructor(
-    private zone: NgZone,
-    private authService: AuthService,
-    private httpErrorService: HttpErrorService,
-  ) {}
 
   ngOnDestroy() {
     this.result.complete();

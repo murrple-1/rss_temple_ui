@@ -1,4 +1,4 @@
-﻿import { Injectable } from '@angular/core';
+﻿import { Injectable, inject } from '@angular/core';
 import {
   ActivatedRouteSnapshot,
   Router,
@@ -12,10 +12,8 @@ import { AuthStateService } from '@app/services';
   providedIn: 'root',
 })
 export class AuthGuard {
-  constructor(
-    private router: Router,
-    private authStateService: AuthStateService,
-  ) {}
+  private router = inject(Router);
+  private authStateService = inject(AuthStateService);
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     if (this.authStateService.isLoggedIn$.getValue()) {
@@ -38,10 +36,8 @@ export class AuthGuard {
   providedIn: 'root',
 })
 export class NoAuthGuard {
-  constructor(
-    private router: Router,
-    private authStateService: AuthStateService,
-  ) {}
+  private router = inject(Router);
+  private authStateService = inject(AuthStateService);
 
   canActivate(route: ActivatedRouteSnapshot, _state: RouterStateSnapshot) {
     if (!this.authStateService.isLoggedIn$.getValue()) {

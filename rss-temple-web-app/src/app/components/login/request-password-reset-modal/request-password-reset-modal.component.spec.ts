@@ -12,36 +12,31 @@ import { AuthService } from '@app/services/data';
 
 import { RequestPasswordResetModalComponent } from './request-password-reset-modal.component';
 
-async function setup() {
-  const mockAuthService = jasmine.createSpyObj<AuthService>('AuthService', [
-    'requestPasswordReset',
-  ]);
-
-  await TestBed.configureTestingModule({
-    imports: [
-      FormsModule,
-      BrowserAnimationsModule,
-      ClarityModule,
-      RouterModule.forRoot([]),
-    ],
-    declarations: [RequestPasswordResetModalComponent, EmailValidatorDirective],
-    providers: [
-      {
-        provide: AuthService,
-        useValue: mockAuthService,
-      },
-    ],
-  }).compileComponents();
-
-  return {
-    mockAuthService,
-  };
-}
-
 describe('RequestPasswordResetModalComponent', () => {
-  it('should create the component', waitForAsync(async () => {
-    await setup();
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [
+        FormsModule,
+        BrowserAnimationsModule,
+        ClarityModule,
+        RouterModule.forRoot([]),
+      ],
+      declarations: [
+        RequestPasswordResetModalComponent,
+        EmailValidatorDirective,
+      ],
+      providers: [
+        {
+          provide: AuthService,
+          useValue: jasmine.createSpyObj<AuthService>('AuthService', [
+            'requestPasswordReset',
+          ]),
+        },
+      ],
+    }).compileComponents();
+  });
 
+  it('should create the component', waitForAsync(async () => {
     const componentFixture = TestBed.createComponent(
       RequestPasswordResetModalComponent,
     );
@@ -52,8 +47,6 @@ describe('RequestPasswordResetModalComponent', () => {
   }));
 
   it('should handle missing email', waitForAsync(async () => {
-    await setup();
-
     const componentFixture = TestBed.createComponent(
       RequestPasswordResetModalComponent,
     );
@@ -86,8 +79,6 @@ describe('RequestPasswordResetModalComponent', () => {
   }));
 
   it('should handle malformed email', waitForAsync(async () => {
-    await setup();
-
     const componentFixture = TestBed.createComponent(
       RequestPasswordResetModalComponent,
     );
@@ -121,7 +112,9 @@ describe('RequestPasswordResetModalComponent', () => {
   }));
 
   it('should request a password reset', waitForAsync(async () => {
-    const { mockAuthService } = await setup();
+    const mockAuthService = TestBed.inject(
+      AuthService,
+    ) as jasmine.SpyObj<AuthService>;
     mockAuthService.requestPasswordReset.and.returnValue(of(undefined));
 
     const componentFixture = TestBed.createComponent(
@@ -154,7 +147,9 @@ describe('RequestPasswordResetModalComponent', () => {
   }));
 
   it('should handle failed requests', waitForAsync(async () => {
-    const { mockAuthService } = await setup();
+    const mockAuthService = TestBed.inject(
+      AuthService,
+    ) as jasmine.SpyObj<AuthService>;
     mockAuthService.requestPasswordReset.and.returnValue(
       throwError(
         () =>

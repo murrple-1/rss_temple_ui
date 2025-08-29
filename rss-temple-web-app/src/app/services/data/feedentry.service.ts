@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { parse as parseDate } from 'date-fns';
 import { CookieService } from 'ngx-cookie-service';
 import { map } from 'rxjs/operators';
@@ -50,13 +50,14 @@ const ZLanguages = z.object({
   providedIn: 'root',
 })
 export class FeedEntryService {
+  private http = inject(HttpClient);
+  private cookieService = inject(CookieService);
+
   private readonly apiHost: string;
 
-  constructor(
-    private http: HttpClient,
-    private cookieService: CookieService,
-    configService: ConfigService,
-  ) {
+  constructor() {
+    const configService = inject(ConfigService);
+
     const apiHost = configService.get<string>('apiHost');
     if (typeof apiHost !== 'string') {
       throw new Error('apiHost malformed');

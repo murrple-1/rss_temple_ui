@@ -1,26 +1,37 @@
-import { MockCookieService } from '@app/test/cookie.service.mock';
+import { TestBed } from '@angular/core/testing';
+import { CookieService } from 'ngx-cookie-service';
+
+import {
+  MOCK_COOKIE_SERVICE_CONFIG,
+  MockCookieService,
+} from '@app/test/cookie.service.mock';
 
 import { AuthStateService } from './auth-state.service';
 
-function setup() {
-  const mockCookieService = new MockCookieService({});
-  const authStateService = new AuthStateService(mockCookieService);
-
-  return {
-    authStateService,
-  };
-}
-
 describe('AuthStateService', () => {
   beforeEach(() => {
-    const mockCookieService = new MockCookieService({});
-    const authStateService = new AuthStateService(mockCookieService);
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: MOCK_COOKIE_SERVICE_CONFIG,
+          useValue: {},
+        },
+        {
+          provide: CookieService,
+          useClass: MockCookieService,
+        },
+      ],
+    });
+  });
+
+  beforeEach(() => {
+    const authStateService = TestBed.inject(AuthStateService);
     authStateService.removeLoggedInFlagFromCookieStorage();
     authStateService.removeLoggedInFlagFromLocalStorage();
   });
 
   it('should construct', () => {
-    const { authStateService } = setup();
+    const authStateService = TestBed.inject(AuthStateService);
 
     expect(authStateService).not.toBeNull();
   });

@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AppAlertsService } from '@app/services/app-alerts.service';
@@ -9,11 +9,9 @@ import { AuthStateService } from '@app/services/auth-state.service';
   providedIn: 'root',
 })
 export class HttpErrorService {
-  constructor(
-    private router: Router,
-    private appAlertsService: AppAlertsService,
-    private authStateService: AuthStateService,
-  ) {}
+  private router = inject(Router);
+  private appAlertsService = inject(AppAlertsService);
+  private authStateService = inject(AuthStateService);
 
   handleError(error: unknown) {
     let errorMessage = 'Unknown Error';

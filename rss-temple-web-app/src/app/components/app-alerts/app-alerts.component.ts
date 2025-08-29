@@ -1,4 +1,4 @@
-import { Component, NgZone, OnDestroy } from '@angular/core';
+import { Component, NgZone, OnDestroy, inject } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -18,11 +18,11 @@ export class AppAlertsComponent implements OnDestroy {
 
   private unsubscribe$ = new Subject<void>();
 
-  constructor(
-    zone: NgZone,
-    appAlertsService: AppAlertsService,
-    windowUnloadingService: WindowUnloadingService,
-  ) {
+  constructor() {
+    const zone = inject(NgZone);
+    const appAlertsService = inject(AppAlertsService);
+    const windowUnloadingService = inject(WindowUnloadingService);
+
     appAlertsService.appAlertDescriptor$
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({

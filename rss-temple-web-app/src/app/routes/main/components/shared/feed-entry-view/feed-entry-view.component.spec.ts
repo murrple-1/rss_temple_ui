@@ -10,62 +10,49 @@ import { ClassifierLabelService, FeedEntryService } from '@app/services/data';
 
 import { FeedEntryViewComponent } from './feed-entry-view.component';
 
-async function setup() {
-  const routerSpy = jasmine.createSpyObj<Router>('Router', ['navigate']);
-
-  const mockFeedEntryService = jasmine.createSpyObj<FeedEntryService>(
-    'FeedEntryService',
-    ['query', 'readSome', 'unreadSome'],
-  );
-  const mockReadCounterService = jasmine.createSpyObj<ReadCounterService>(
-    'ReadCounterService',
-    ['readAll'],
-  );
-  const mockClassifierLabelService =
-    jasmine.createSpyObj<ClassifierLabelService>('ClassifierLabelService', [
-      'getAll',
-    ]);
-  const mockFeedEntryVoteService = jasmine.createSpyObj<FeedEntryVoteService>(
-    'FeedEntryVoteService',
-    ['shouldForceLabelVote'],
-  );
-
-  await TestBed.configureTestingModule({
-    declarations: [FeedEntryViewComponent, DateFormatPipe],
-    providers: [
-      {
-        provide: FeedEntryService,
-        useValue: mockFeedEntryService,
-      },
-      {
-        provide: ClassifierLabelService,
-        useValue: mockClassifierLabelService,
-      },
-      {
-        provide: ReadCounterService,
-        useValue: mockReadCounterService,
-      },
-      {
-        provide: FeedEntryVoteService,
-        useValue: mockFeedEntryVoteService,
-      },
-    ],
-  }).compileComponents();
-
-  return {
-    routerSpy,
-
-    mockFeedEntryService,
-    mockClassifierLabelService,
-    mockReadCounterService,
-    mockFeedEntryVoteService,
-  };
-}
-
 describe('FeedEntryViewComponent', () => {
-  it('should create the component', waitForAsync(async () => {
-    await setup();
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [FeedEntryViewComponent, DateFormatPipe],
+      providers: [
+        {
+          provide: Router,
+          useValue: jasmine.createSpyObj<Router>('Router', ['navigate']),
+        },
+        {
+          provide: FeedEntryService,
+          useValue: jasmine.createSpyObj<FeedEntryService>('FeedEntryService', [
+            'query',
+            'readSome',
+            'unreadSome',
+          ]),
+        },
+        {
+          provide: ClassifierLabelService,
+          useValue: jasmine.createSpyObj<ClassifierLabelService>(
+            'ClassifierLabelService',
+            ['getAll'],
+          ),
+        },
+        {
+          provide: ReadCounterService,
+          useValue: jasmine.createSpyObj<ReadCounterService>(
+            'ReadCounterService',
+            ['readAll'],
+          ),
+        },
+        {
+          provide: FeedEntryVoteService,
+          useValue: jasmine.createSpyObj<FeedEntryVoteService>(
+            'FeedEntryVoteService',
+            ['shouldForceLabelVote'],
+          ),
+        },
+      ],
+    }).compileComponents();
+  });
 
+  it('should create the component', waitForAsync(async () => {
     const componentFixture = TestBed.createComponent(FeedEntryViewComponent);
     const component = componentFixture.componentInstance;
     expect(component).toBeTruthy();

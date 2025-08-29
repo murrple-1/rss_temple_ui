@@ -1,30 +1,38 @@
-import { fakeAsync } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { TestBed, fakeAsync } from '@angular/core/testing';
 
-import { MockConfigService } from '@app/test/config.service.mock';
+import { ConfigService } from '@app/services';
+import {
+  MOCK_CONFIG_SERVICE_CONFIG,
+  MockConfigService,
+} from '@app/test/config.service.mock';
 
 import { GAuthService } from './gauth.service';
 
-function setup() {
-  const mockConfigService = new MockConfigService({
-    googleClientId: '',
+describe('GAuthService', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        {
+          provide: MOCK_CONFIG_SERVICE_CONFIG,
+          useValue: {
+            googleClientId: '',
+          },
+        },
+        {
+          provide: ConfigService,
+          useClass: MockConfigService,
+        },
+      ],
+    });
   });
 
-  const gAuthService = new GAuthService(mockConfigService);
-
-  return {
-    mockConfigService,
-    gAuthService,
-  };
-}
-
-describe('GAuthService', () => {
   afterAll(() => {
     (window as any).gapi = undefined;
   });
 
   it('should load', () => {
-    const { gAuthService } = setup();
-
     (window as any).gapi = {
       load: jasmine
         .createSpy('gapi.load')
@@ -52,14 +60,13 @@ describe('GAuthService', () => {
       },
     };
 
+    const gAuthService = TestBed.inject(GAuthService);
     gAuthService.load();
 
     expect(gAuthService.isLoaded).toBeTrue();
   });
 
   it('should be possible to sign in and succeed', fakeAsync(async () => {
-    const { gAuthService } = setup();
-
     let isSignedInListener: ((isSignedIn: boolean) => void) | null = null;
     let currentUserListener:
       | ((isSignedIn: gapi.auth2.GoogleUser) => void)
@@ -107,6 +114,7 @@ describe('GAuthService', () => {
       },
     };
 
+    const gAuthService = TestBed.inject(GAuthService);
     await expectAsync(gAuthService.load()).toBeResolved();
     await expectAsync(gAuthService.signIn()).toBeResolved();
 
@@ -114,8 +122,6 @@ describe('GAuthService', () => {
   }));
 
   it('should be possible to sign out', fakeAsync(async () => {
-    const { gAuthService } = setup();
-
     let isSignedInListener: ((isSignedIn: boolean) => void) | null = null;
     (window as any).gapi = {
       load: jasmine
@@ -151,6 +157,7 @@ describe('GAuthService', () => {
       },
     };
 
+    const gAuthService = TestBed.inject(GAuthService);
     await expectAsync(gAuthService.load()).toBeResolved();
     await expectAsync(gAuthService.signOut()).toBeResolved();
 
@@ -158,13 +165,13 @@ describe('GAuthService', () => {
   }));
 
   it('should be possible to call sign in without loading', () => {
-    const { gAuthService } = setup();
+    const gAuthService = TestBed.inject(GAuthService);
 
     expect(() => gAuthService.signIn()).toThrowError();
   });
 
   it('should be possible to call sign out without loading', () => {
-    const { gAuthService } = setup();
+    const gAuthService = TestBed.inject(GAuthService);
 
     expect(() => gAuthService.signOut()).toThrowError();
   });

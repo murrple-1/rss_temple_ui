@@ -1,4 +1,4 @@
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -16,7 +16,10 @@ import { ConfigService } from '@app/services';
 import { AppAlertDescriptor } from '@app/services/app-alerts.service';
 import { AuthService, SocialService } from '@app/services/data';
 import { MockActivatedRoute } from '@app/test/activatedroute.mock';
-import { MockConfigService } from '@app/test/config.service.mock';
+import {
+  MOCK_CONFIG_SERVICE_CONFIG,
+  MockConfigService,
+} from '@app/test/config.service.mock';
 import { MockFBAuthService } from '@app/test/fbauth.service.mock';
 import { MockGAuthService } from '@app/test/gauth.service.mock';
 
@@ -27,87 +30,74 @@ import { LoginComponent } from './login.component';
 })
 class MockComponent {}
 
-async function setup() {
-  const mockRoute = new MockActivatedRoute();
+describe('LoginComponent', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [
+        BrowserAnimationsModule,
+        FormsModule,
 
-  const mockAuthService = jasmine.createSpyObj<AuthService>('AuthService', [
-    'login',
-  ]);
-  const mockSocialService = jasmine.createSpyObj<SocialService>(
-    'SocialService',
-    ['googleLogin', 'facebookLogin'],
-  );
-  const mockConfigService = new MockConfigService({
-    apiHost: '',
-    googleClientId: '',
-    facebookAppId: '',
+        ClarityModule,
+
+        RouterModule.forRoot([
+          {
+            path: 'main',
+            component: MockComponent,
+          },
+          {
+            path: 'register',
+            component: MockComponent,
+          },
+        ]),
+      ],
+      declarations: [
+        LoginComponent,
+        MockComponent,
+        RequestPasswordResetModalComponent,
+        LocalAlertsComponent,
+      ],
+      providers: [
+        provideHttpClient(),
+        {
+          provide: ActivatedRoute,
+          useClass: MockActivatedRoute,
+        },
+        {
+          provide: AuthService,
+          useValue: jasmine.createSpyObj<AuthService>('AuthService', ['login']),
+        },
+        {
+          provide: SocialService,
+          useValue: jasmine.createSpyObj<SocialService>('SocialService', [
+            'googleLogin',
+            'facebookLogin',
+          ]),
+        },
+        {
+          provide: GAuthService,
+          useClass: MockGAuthService,
+        },
+        {
+          provide: FBAuthService,
+          useClass: MockFBAuthService,
+        },
+        {
+          provide: MOCK_CONFIG_SERVICE_CONFIG,
+          useValue: {
+            apiHost: '',
+            googleClientId: '',
+            facebookAppId: '',
+          },
+        },
+        {
+          provide: ConfigService,
+          useClass: MockConfigService,
+        },
+      ],
+    }).compileComponents();
   });
 
-  await TestBed.configureTestingModule({
-    imports: [
-      BrowserAnimationsModule,
-      FormsModule,
-
-      ClarityModule,
-
-      RouterModule.forRoot([
-        {
-          path: 'main',
-          component: MockComponent,
-        },
-        {
-          path: 'register',
-          component: MockComponent,
-        },
-      ]),
-    ],
-    declarations: [
-      LoginComponent,
-      MockComponent,
-      RequestPasswordResetModalComponent,
-      LocalAlertsComponent,
-    ],
-    providers: [
-      {
-        provide: ActivatedRoute,
-        useValue: mockRoute,
-      },
-      {
-        provide: GAuthService,
-        useClass: MockGAuthService,
-      },
-      {
-        provide: FBAuthService,
-        useClass: MockFBAuthService,
-      },
-      {
-        provide: AuthService,
-        useValue: mockAuthService,
-      },
-      {
-        provide: SocialService,
-        useValue: mockSocialService,
-      },
-      {
-        provide: ConfigService,
-        useValue: mockConfigService,
-      },
-    ],
-  }).compileComponents();
-
-  return {
-    mockRoute,
-
-    mockAuthService,
-    mockSocialService,
-    mockConfigService,
-  };
-}
-
-describe('LoginComponent', () => {
   it('should create the component', waitForAsync(async () => {
-    await setup();
-
     const componentFixture = TestBed.createComponent(LoginComponent);
     const component = componentFixture.componentInstance;
     expect(component).toBeTruthy();
@@ -116,7 +106,7 @@ describe('LoginComponent', () => {
   }));
 
   it('should create component with returnUrl', waitForAsync(async () => {
-    const { mockRoute } = await setup();
+    const mockRoute = TestBed.inject(ActivatedRoute) as MockActivatedRoute;
 
     const returnUrl = 'http://test.com';
     mockRoute.snapshot._paramMap._map.set('returnUrl', returnUrl);
@@ -130,7 +120,9 @@ describe('LoginComponent', () => {
   }));
 
   it('should handle Google login', waitForAsync(async () => {
-    const { mockSocialService } = await setup();
+    const mockSocialService = TestBed.inject(
+      SocialService,
+    ) as jasmine.SpyObj<SocialService>;
     mockSocialService.googleLogin.and.returnValue(
       of({
         key: 'atoken',
@@ -150,7 +142,9 @@ describe('LoginComponent', () => {
   }));
 
   it('should handle Facebook login', waitForAsync(async () => {
-    const { mockSocialService } = await setup();
+    const mockSocialService = TestBed.inject(
+      SocialService,
+    ) as jasmine.SpyObj<SocialService>;
     mockSocialService.facebookLogin.and.returnValue(
       of({
         key: 'atoken',
@@ -171,8 +165,6 @@ describe('LoginComponent', () => {
   }));
 
   it('should logout Google if already logged in', waitForAsync(async () => {
-    await setup();
-
     const componentFixture = TestBed.createComponent(LoginComponent);
     const component = componentFixture.componentInstance;
 
@@ -186,8 +178,6 @@ describe('LoginComponent', () => {
   }));
 
   it('should logout Facebook if already logged in', waitForAsync(async () => {
-    await setup();
-
     const componentFixture = TestBed.createComponent(LoginComponent);
     const component = componentFixture.componentInstance;
 
@@ -201,8 +191,6 @@ describe('LoginComponent', () => {
   }));
 
   it('should handle missing email', waitForAsync(async () => {
-    await setup();
-
     const componentFixture = TestBed.createComponent(LoginComponent);
     const component = componentFixture.componentInstance;
     const debugElement = componentFixture.debugElement;
@@ -237,8 +225,6 @@ describe('LoginComponent', () => {
   }));
 
   it('should handle missing password', waitForAsync(async () => {
-    await setup();
-
     const componentFixture = TestBed.createComponent(LoginComponent);
     const component = componentFixture.componentInstance;
     const debugElement = componentFixture.debugElement;
@@ -273,7 +259,9 @@ describe('LoginComponent', () => {
   }));
 
   it('should be able to log in', waitForAsync(async () => {
-    const { mockAuthService } = await setup();
+    const mockAuthService = TestBed.inject(
+      AuthService,
+    ) as jasmine.SpyObj<AuthService>;
     mockAuthService.login.and.returnValue(
       of({
         key: 'b75a903f398823a74e5f8e7ec231705bac3c6161',
@@ -315,7 +303,9 @@ describe('LoginComponent', () => {
   }));
 
   it('should be able to login with Google', waitForAsync(async () => {
-    const { mockSocialService } = await setup();
+    const mockSocialService = TestBed.inject(
+      SocialService,
+    ) as jasmine.SpyObj<SocialService>;
     mockSocialService.googleLogin.and.returnValue(
       of({
         key: 'atoken',
@@ -340,7 +330,9 @@ describe('LoginComponent', () => {
   }));
 
   it('should be able to login with Facebook', waitForAsync(async () => {
-    const { mockSocialService } = await setup();
+    const mockSocialService = TestBed.inject(
+      SocialService,
+    ) as jasmine.SpyObj<SocialService>;
     mockSocialService.facebookLogin.and.returnValue(
       of({
         key: 'atoken',
@@ -365,8 +357,6 @@ describe('LoginComponent', () => {
   }));
 
   it('should be possible to forget your password', waitForAsync(async () => {
-    await setup();
-
     const componentFixture = TestBed.createComponent(LoginComponent);
     const component = componentFixture.componentInstance;
     const debugElement = componentFixture.debugElement;
@@ -385,7 +375,9 @@ describe('LoginComponent', () => {
   }));
 
   it('should handle Google logout', waitForAsync(async () => {
-    const { mockSocialService } = await setup();
+    const mockSocialService = TestBed.inject(
+      SocialService,
+    ) as jasmine.SpyObj<SocialService>;
     const router = TestBed.inject(Router);
     spyOn(router, 'navigate');
     const gAuthService = TestBed.inject(GAuthService) as MockGAuthService;
@@ -401,7 +393,9 @@ describe('LoginComponent', () => {
   }));
 
   it('should handle Facebook logout', waitForAsync(async () => {
-    const { mockSocialService } = await setup();
+    const mockSocialService = TestBed.inject(
+      SocialService,
+    ) as jasmine.SpyObj<SocialService>;
     const router = TestBed.inject(Router);
     spyOn(router, 'navigate');
     const fbAuthService = TestBed.inject(FBAuthService) as MockFBAuthService;
@@ -417,7 +411,9 @@ describe('LoginComponent', () => {
   }));
 
   it('should handle login errors: cannot connect', waitForAsync(async () => {
-    const { mockAuthService } = await setup();
+    const mockAuthService = TestBed.inject(
+      AuthService,
+    ) as jasmine.SpyObj<AuthService>;
     mockAuthService.login.and.returnValue(
       throwError(
         () =>
@@ -469,7 +465,9 @@ describe('LoginComponent', () => {
   }));
 
   it('should handle login errors: bad credentials', waitForAsync(async () => {
-    const { mockAuthService } = await setup();
+    const mockAuthService = TestBed.inject(
+      AuthService,
+    ) as jasmine.SpyObj<AuthService>;
     mockAuthService.login.and.returnValue(
       throwError(
         () =>
@@ -513,7 +511,9 @@ describe('LoginComponent', () => {
   }));
 
   it('should handle login errors: unknown error', waitForAsync(async () => {
-    const { mockAuthService } = await setup();
+    const mockAuthService = TestBed.inject(
+      AuthService,
+    ) as jasmine.SpyObj<AuthService>;
     mockAuthService.login.and.returnValue(
       throwError(() => new Error('unknown error')),
     );
@@ -560,7 +560,9 @@ describe('LoginComponent', () => {
   }));
 
   it('should handle Google login errors: cannot connect', waitForAsync(async () => {
-    const { mockSocialService } = await setup();
+    const mockSocialService = TestBed.inject(
+      SocialService,
+    ) as jasmine.SpyObj<SocialService>;
     mockSocialService.googleLogin.and.returnValue(
       throwError(
         () =>
@@ -597,7 +599,9 @@ describe('LoginComponent', () => {
   }));
 
   it('should handle Google login errors: new credentials', waitForAsync(async () => {
-    const { mockSocialService } = await setup();
+    const mockSocialService = TestBed.inject(
+      SocialService,
+    ) as jasmine.SpyObj<SocialService>;
     mockSocialService.googleLogin.and.returnValue(
       throwError(
         () =>
@@ -620,7 +624,9 @@ describe('LoginComponent', () => {
   }));
 
   it('should handle Google login errors: unknown error', waitForAsync(async () => {
-    const { mockSocialService } = await setup();
+    const mockSocialService = TestBed.inject(
+      SocialService,
+    ) as jasmine.SpyObj<SocialService>;
     mockSocialService.googleLogin.and.returnValue(
       throwError(() => new Error('unknown error')),
     );
@@ -652,7 +658,9 @@ describe('LoginComponent', () => {
   }));
 
   it('should handle Facebook login errors: cannot connect', waitForAsync(async () => {
-    const { mockSocialService } = await setup();
+    const mockSocialService = TestBed.inject(
+      SocialService,
+    ) as jasmine.SpyObj<SocialService>;
     mockSocialService.facebookLogin.and.returnValue(
       throwError(
         () =>
@@ -689,7 +697,9 @@ describe('LoginComponent', () => {
   }));
 
   it('should handle Facebook login errors: new credentials', waitForAsync(async () => {
-    const { mockSocialService } = await setup();
+    const mockSocialService = TestBed.inject(
+      SocialService,
+    ) as jasmine.SpyObj<SocialService>;
     mockSocialService.facebookLogin.and.returnValue(
       throwError(
         () =>
@@ -712,7 +722,9 @@ describe('LoginComponent', () => {
   }));
 
   it('should handle Facebook login errors: unknown error', waitForAsync(async () => {
-    const { mockSocialService } = await setup();
+    const mockSocialService = TestBed.inject(
+      SocialService,
+    ) as jasmine.SpyObj<SocialService>;
     mockSocialService.facebookLogin.and.returnValue(
       throwError(() => new Error('unknown error')),
     );

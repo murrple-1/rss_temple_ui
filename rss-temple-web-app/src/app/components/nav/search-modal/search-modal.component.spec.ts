@@ -5,19 +5,15 @@ import { ClarityModule } from '@clr/angular';
 
 import { SearchModalComponent } from './search-modal.component';
 
-async function setup() {
-  await TestBed.configureTestingModule({
-    imports: [BrowserAnimationsModule, FormsModule, ClarityModule],
-    declarations: [SearchModalComponent],
-  }).compileComponents();
-
-  return {};
-}
-
 describe('SearchModalComponent', () => {
-  it('should create the component', waitForAsync(async () => {
-    await setup();
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [BrowserAnimationsModule, FormsModule, ClarityModule],
+      declarations: [SearchModalComponent],
+    }).compileComponents();
+  });
 
+  it('should create the component', waitForAsync(async () => {
     const componentFixture = TestBed.createComponent(SearchModalComponent);
     const component = componentFixture.componentInstance;
     expect(component).toBeTruthy();

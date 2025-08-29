@@ -25,77 +25,10 @@ import { RegisterComponent } from './register.component';
 })
 class MockComponent {}
 
-let imageBlob: Blob | null = null;
-let audioBlob: Blob | null = null;
-
-async function setup() {
-  if (imageBlob === null) {
-    throw new Error('Image blob not loaded');
-  }
-  if (audioBlob === null) {
-    throw new Error('Audio blob not loaded');
-  }
-
-  const mockRoute = new MockActivatedRoute();
-
-  const mockCaptchService = jasmine.createSpyObj<CaptchaService>(
-    'CaptchaService',
-    ['getKey', 'getImage', 'getAudio'],
-  );
-  mockCaptchService.getKey.and.returnValue(of('key'));
-  mockCaptchService.getImage.and.returnValue(of(imageBlob));
-  mockCaptchService.getAudio.and.returnValue(of(audioBlob));
-  const mockRegistrationService = jasmine.createSpyObj<RegistrationService>(
-    'RegistrationService',
-    ['register'],
-  );
-
-  await TestBed.configureTestingModule({
-    imports: [
-      FormsModule,
-      BrowserAnimationsModule,
-
-      ClarityModule,
-
-      RouterModule.forRoot([
-        {
-          path: 'login',
-          component: MockComponent,
-        },
-      ]),
-    ],
-    declarations: [
-      RegisterComponent,
-      EmailValidatorDirective,
-      PasswordValidatorDirective,
-      PasswordsMatchValidatorDirective,
-      InfoModalComponent,
-    ],
-    providers: [
-      {
-        provide: ActivatedRoute,
-        useValue: mockRoute,
-      },
-      {
-        provide: CaptchaService,
-        useValue: mockCaptchService,
-      },
-      {
-        provide: RegistrationService,
-        useValue: mockRegistrationService,
-      },
-    ],
-  }).compileComponents();
-
-  return {
-    mockRoute,
-
-    mockCaptchService,
-    mockRegistrationService,
-  };
-}
-
 describe('RegisterComponent', () => {
+  let imageBlob: Blob | null = null;
+  let audioBlob: Blob | null = null;
+
   beforeAll(async () => {
     const [imageResponse, audioResponse] = await Promise.all([
       fetch('/test_files/sample.png'),
@@ -112,9 +45,64 @@ describe('RegisterComponent', () => {
     audioBlob = await audioResponse.blob();
   });
 
-  it('should create the component', waitForAsync(async () => {
-    await setup();
+  beforeEach(async () => {
+    if (imageBlob === null) {
+      throw new Error('Image blob not loaded');
+    }
+    if (audioBlob === null) {
+      throw new Error('Audio blob not loaded');
+    }
 
+    const mockCaptchService = jasmine.createSpyObj<CaptchaService>(
+      'CaptchaService',
+      ['getKey', 'getImage', 'getAudio'],
+    );
+    mockCaptchService.getKey.and.returnValue(of('key'));
+    mockCaptchService.getImage.and.returnValue(of(imageBlob));
+    mockCaptchService.getAudio.and.returnValue(of(audioBlob));
+
+    await TestBed.configureTestingModule({
+      imports: [
+        FormsModule,
+        BrowserAnimationsModule,
+
+        ClarityModule,
+
+        RouterModule.forRoot([
+          {
+            path: 'login',
+            component: MockComponent,
+          },
+        ]),
+      ],
+      declarations: [
+        RegisterComponent,
+        EmailValidatorDirective,
+        PasswordValidatorDirective,
+        PasswordsMatchValidatorDirective,
+        InfoModalComponent,
+      ],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useClass: MockActivatedRoute,
+        },
+        {
+          provide: CaptchaService,
+          useValue: mockCaptchService,
+        },
+        {
+          provide: RegistrationService,
+          useValue: jasmine.createSpyObj<RegistrationService>(
+            'RegistrationService',
+            ['register'],
+          ),
+        },
+      ],
+    }).compileComponents();
+  });
+
+  it('should create the component', waitForAsync(async () => {
     const componentFixture = TestBed.createComponent(RegisterComponent);
     const component = componentFixture.componentInstance;
     expect(component).toBeTruthy();
@@ -123,8 +111,6 @@ describe('RegisterComponent', () => {
   }));
 
   it('should handle missing email', waitForAsync(async () => {
-    await setup();
-
     const componentFixture = TestBed.createComponent(RegisterComponent);
     const component = componentFixture.componentInstance;
     const debugElement = componentFixture.debugElement;
@@ -167,8 +153,6 @@ describe('RegisterComponent', () => {
   }));
 
   it('should handle malformed email', waitForAsync(async () => {
-    await setup();
-
     const componentFixture = TestBed.createComponent(RegisterComponent);
     const component = componentFixture.componentInstance;
     const debugElement = componentFixture.debugElement;
@@ -213,8 +197,6 @@ describe('RegisterComponent', () => {
   }));
 
   it('should handle mismatched passwords', waitForAsync(async () => {
-    await setup();
-
     const componentFixture = TestBed.createComponent(RegisterComponent);
     const component = componentFixture.componentInstance;
     const debugElement = componentFixture.debugElement;
@@ -258,8 +240,6 @@ describe('RegisterComponent', () => {
   }));
 
   it('should handle missing password', waitForAsync(async () => {
-    await setup();
-
     const componentFixture = TestBed.createComponent(RegisterComponent);
     const component = componentFixture.componentInstance;
     const debugElement = componentFixture.debugElement;
@@ -310,8 +290,6 @@ describe('RegisterComponent', () => {
   }));
 
   it('should handle malformed password', waitForAsync(async () => {
-    await setup();
-
     const componentFixture = TestBed.createComponent(RegisterComponent);
     const component = componentFixture.componentInstance;
     const debugElement = componentFixture.debugElement;
@@ -369,7 +347,9 @@ describe('RegisterComponent', () => {
   }));
 
   it('should register', waitForAsync(async () => {
-    const { mockRegistrationService } = await setup();
+    const mockRegistrationService = TestBed.inject(
+      RegistrationService,
+    ) as jasmine.SpyObj<RegistrationService>;
     mockRegistrationService.register.and.returnValue(of(undefined));
 
     const componentFixture = TestBed.createComponent(RegisterComponent);
@@ -419,7 +399,9 @@ describe('RegisterComponent', () => {
   }));
 
   it('should handle registration errors: cannot connect', waitForAsync(async () => {
-    const { mockRegistrationService } = await setup();
+    const mockRegistrationService = TestBed.inject(
+      RegistrationService,
+    ) as jasmine.SpyObj<RegistrationService>;
     mockRegistrationService.register.and.returnValue(
       throwError(
         () =>
@@ -480,7 +462,9 @@ describe('RegisterComponent', () => {
   }));
 
   it('should handle registration errors: email already in use', waitForAsync(async () => {
-    const { mockRegistrationService } = await setup();
+    const mockRegistrationService = TestBed.inject(
+      RegistrationService,
+    ) as jasmine.SpyObj<RegistrationService>;
     mockRegistrationService.register.and.returnValue(
       throwError(
         () =>

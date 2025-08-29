@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { BehaviorSubject } from 'rxjs';
 
@@ -6,9 +6,11 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthStateService {
+  private cookieService = inject(CookieService);
+
   isLoggedIn$: BehaviorSubject<boolean>;
 
-  constructor(private cookieService: CookieService) {
+  constructor() {
     this.isLoggedIn$ = new BehaviorSubject(this.getLoggedInFlag());
   }
 

@@ -1,70 +1,67 @@
+import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
 import { of } from 'rxjs';
 
-import {
-  AppAlertsService,
-  AuthStateService,
-  HttpErrorService,
-} from '@app/services';
+import { AuthStateService } from '@app/services';
 import { FeedEntryService, FeedService } from '@app/services/data';
-import { MockCookieService } from '@app/test/cookie.service.mock';
+import {
+  MOCK_COOKIE_SERVICE_CONFIG,
+  MockCookieService,
+} from '@app/test/cookie.service.mock';
 
 import { ReadCounterService } from './read-counter.service';
 
-function setup() {
-  const routerSpy = jasmine.createSpyObj<Router>('Router', ['navigate']);
-
-  const appAlertService = new AppAlertsService();
-  const mockCookieService = new MockCookieService({});
-  const authStateService = new AuthStateService(mockCookieService);
-  const httpErrorService = new HttpErrorService(
-    routerSpy,
-    appAlertService,
-    authStateService,
-  );
-
-  const mockFeedService = jasmine.createSpyObj<FeedService>('FeedService', [
-    'queryAll',
-  ]);
-  mockFeedService.queryAll.and.returnValue(
-    of({
-      objects: [],
-      totalCount: 0,
-    }),
-  );
-
-  const mockFeedEntryService = jasmine.createSpyObj<FeedEntryService>(
-    'FeedEntryService',
-    ['query'],
-  );
-
-  const readCounterService = new ReadCounterService(
-    authStateService,
-    mockFeedEntryService,
-    mockFeedService,
-    httpErrorService,
-  );
-
-  return {
-    routerSpy,
-    appAlertService,
-    authStateService,
-    httpErrorService,
-
-    readCounterService,
-  };
-}
-
-describe('UserCategoryObservableService', () => {
+describe('ReadCounterService', () => {
   beforeEach(() => {
-    const mockCookieService = new MockCookieService({});
-    const authStateService = new AuthStateService(mockCookieService);
+    const mockFeedService = jasmine.createSpyObj<FeedService>('FeedService', [
+      'queryAll',
+    ]);
+    mockFeedService.queryAll.and.returnValue(
+      of({
+        objects: [],
+        totalCount: 0,
+      }),
+    );
+
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: Router,
+          useValue: jasmine.createSpyObj<Router>('Router', ['navigate']),
+        },
+        {
+          provide: MOCK_COOKIE_SERVICE_CONFIG,
+          useValue: {},
+        },
+        {
+          provide: CookieService,
+          useClass: MockCookieService,
+        },
+        {
+          provide: FeedService,
+          useValue: mockFeedService,
+        },
+        {
+          provide: FeedEntryService,
+          useValue: jasmine.createSpyObj<FeedEntryService>('FeedEntryService', [
+            'query',
+          ]),
+        },
+        ReadCounterService,
+      ],
+    });
+  });
+
+  beforeEach(() => {
+    const authStateService = TestBed.inject(AuthStateService);
     authStateService.removeLoggedInFlagFromCookieStorage();
     authStateService.removeLoggedInFlagFromLocalStorage();
   });
 
   it('should initialize', () => {
-    const { readCounterService } = setup();
+    const readCounterService = TestBed.inject(ReadCounterService);
+
     expect(readCounterService).toBeTruthy();
   });
 

@@ -1,4 +1,4 @@
-import { Component, NgZone, OnDestroy, ViewChild } from '@angular/core';
+import { Component, NgZone, OnDestroy, ViewChild, inject } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ClrLoadingState } from '@clr/angular';
 import { Subject, firstValueFrom } from 'rxjs';
@@ -19,6 +19,10 @@ import { ReportService } from '@app/services/data';
   standalone: false,
 })
 export class ReportFeedEntryModalComponent implements OnDestroy {
+  private zone = inject(NgZone);
+  private reportService = inject(ReportService);
+  private httpErrorService = inject(HttpErrorService);
+
   open = false;
 
   sendButtonState = ClrLoadingState.DEFAULT;
@@ -38,12 +42,6 @@ export class ReportFeedEntryModalComponent implements OnDestroy {
   _reportFeedEntryForm?: NgForm;
 
   protected readonly unsubscribe$ = new Subject<void>();
-
-  constructor(
-    private zone: NgZone,
-    private reportService: ReportService,
-    private httpErrorService: HttpErrorService,
-  ) {}
 
   ngOnDestroy() {
     this.result.complete();

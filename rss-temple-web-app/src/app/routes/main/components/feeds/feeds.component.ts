@@ -1,12 +1,11 @@
 import {
-  ChangeDetectorRef,
   Component,
   ElementRef,
-  NgZone,
   OnInit,
   QueryList,
   ViewChild,
   ViewChildren,
+  inject,
 } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { combineLatest } from 'rxjs';
@@ -23,13 +22,9 @@ import {
 } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
 import {
-  FeedEntryVoteService,
   FeedObservableService,
-  ReadCounterService,
   SubscribedFeedsFacadeService,
 } from '@app/routes/main/services';
-import { HttpErrorService, ModalOpenService } from '@app/services';
-import { ClassifierLabelService, FeedEntryService } from '@app/services/data';
 
 type FeedImpl = BaseFeedImpl &
   Required<Pick<Feed, 'homeUrl' | 'calculatedTitle' | 'feedUrl'>>;
@@ -41,6 +36,11 @@ type FeedEntryImpl = BaseFeedEntryImpl;
   standalone: false,
 })
 export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private feedObservableService = inject(FeedObservableService);
+  private subscribedFeedsFacadeService = inject(SubscribedFeedsFacadeService);
+
   feeds: FeedImpl[] = [];
 
   favoritesOnly = false;
@@ -51,33 +51,6 @@ export class FeedsComponent extends AbstractFeedsComponent implements OnInit {
 
   @ViewChild('scrollContainer', { static: true })
   protected feedEntryViewsScollContainer: ElementRef<HTMLElement> | undefined;
-
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private feedObservableService: FeedObservableService,
-    private subscribedFeedsFacadeService: SubscribedFeedsFacadeService,
-
-    zone: NgZone,
-    changeDetectorRef: ChangeDetectorRef,
-    feedEntryService: FeedEntryService,
-    readCounterService: ReadCounterService,
-    classifierLabelService: ClassifierLabelService,
-    httpErrorService: HttpErrorService,
-    modalOpenService: ModalOpenService,
-    feedEntryVoteService: FeedEntryVoteService,
-  ) {
-    super(
-      zone,
-      changeDetectorRef,
-      feedEntryService,
-      readCounterService,
-      classifierLabelService,
-      httpErrorService,
-      modalOpenService,
-      feedEntryVoteService,
-    );
-  }
 
   ngOnInit() {
     combineLatest([

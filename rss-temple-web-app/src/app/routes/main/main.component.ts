@@ -1,4 +1,11 @@
-import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -15,17 +22,15 @@ import { AuthService } from '@app/services/data';
   standalone: false,
 })
 export class MainComponent implements OnInit, OnDestroy {
+  private zone = inject(NgZone);
+  private authService = inject(AuthService);
+  private authStateService = inject(AuthStateService);
+  private modalOpenService = inject(ModalOpenService);
+
   @ViewChild(OnboardingModalComponent, { static: true })
   private onboardingModal?: OnboardingModalComponent;
 
   private readonly unsubscribe$ = new Subject<void>();
-
-  constructor(
-    private zone: NgZone,
-    private authService: AuthService,
-    private authStateService: AuthStateService,
-    private modalOpenService: ModalOpenService,
-  ) {}
 
   ngOnInit() {
     this.authStateService.isLoggedIn$

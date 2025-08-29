@@ -1,37 +1,57 @@
-import { HttpClient } from '@angular/common/http';
-import { fakeAsync } from '@angular/core/testing';
-import { firstValueFrom, of } from 'rxjs';
+import { provideHttpClient } from '@angular/common/http';
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+} from '@angular/common/http/testing';
+import { TestBed, fakeAsync } from '@angular/core/testing';
+import { firstValueFrom } from 'rxjs';
 
-import { MockConfigService } from '@app/test/config.service.mock';
+import { ConfigService } from '@app/services';
+import {
+  MOCK_CONFIG_SERVICE_CONFIG,
+  MockConfigService,
+} from '@app/test/config.service.mock';
 
 import { CaptchaService } from './captcha.service';
 
-function setup() {
-  const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', [
-    'post',
-  ]);
-
-  const mockConfigService = new MockConfigService({
-    apiHost: '',
-  });
-  const captchaService = new CaptchaService(httpClientSpy, mockConfigService);
-
-  return {
-    httpClientSpy,
-    mockConfigService,
-
-    captchaService,
-  };
-}
-
 describe('CaptchaService', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        {
+          provide: MOCK_CONFIG_SERVICE_CONFIG,
+          useValue: {
+            apiHost: '',
+          },
+        },
+        {
+          provide: ConfigService,
+          useClass: MockConfigService,
+        },
+      ],
+    });
+  });
+
+  afterEach(() => {
+    const httpTesting = TestBed.inject(HttpTestingController);
+    httpTesting.verify();
+  });
+
   it('should get new key', fakeAsync(async () => {
-    const { httpClientSpy, captchaService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const captchaService = TestBed.inject(CaptchaService);
 
-    httpClientSpy.post.and.returnValue(of('newkey'));
+    const keyPromise = firstValueFrom(captchaService.getKey());
 
-    await firstValueFrom(captchaService.getKey());
-    expect(httpClientSpy.post).toHaveBeenCalledTimes(1);
+    const req = httpTesting.expectOne({
+      url: '/api/captcha',
+      method: 'POST',
+    });
+    req.flush('newkey');
+
+    await expectAsync(keyPromise).toBeResolved();
   }));
 
   // TODO more tests

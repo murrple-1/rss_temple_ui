@@ -1,3 +1,4 @@
+import { provideHttpClient } from '@angular/common/http';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -37,153 +38,140 @@ import {
   ReportService,
   UserCategoryService,
 } from '@app/services/data';
-import { MockConfigService } from '@app/test/config.service.mock';
+import {
+  MOCK_CONFIG_SERVICE_CONFIG,
+  MockConfigService,
+} from '@app/test/config.service.mock';
 
 import { FeedComponent } from './feed.component';
 
-async function setup() {
-  const mockConfigService = new MockConfigService({});
-
-  const mockReadCounterService = jasmine.createSpyObj<ReadCounterService>(
-    'ReadCounterService',
-    ['readAll'],
-  );
-  const mockFeedEntryService = jasmine.createSpyObj<FeedEntryService>(
-    'FeedEntryService',
-    ['query', 'readSome', 'unreadSome'],
-  );
-  const mockFeedService = jasmine.createSpyObj<FeedService>('FeedService', [
-    'queryAll',
-  ]);
-
-  const mockUserCategoryService = jasmine.createSpyObj<UserCategoryService>(
-    'UserCategoryService',
-    ['queryAll', 'apply'],
-  );
-  const mockOPMLService = jasmine.createSpyObj<OPMLService>('OPMLService', [
-    'upload',
-  ]);
-  const mockProgressService = jasmine.createSpyObj<ProgressService>(
-    'ProgressService',
-    ['checkProgress'],
-  );
-  const mockClassifierLabelService =
-    jasmine.createSpyObj<ClassifierLabelService>('ClassifierLabelService', [
-      'getAll',
-    ]);
-  const mockFeedEntryVoteService = jasmine.createSpyObj<FeedEntryVoteService>(
-    'FeedEntryVoteService',
-    ['shouldForceLabelVote'],
-  );
-  const mockSubscribedFeedsFacadeService =
-    jasmine.createSpyObj<SubscribedFeedsFacadeService>(
-      'SubscribedFeedsFacadeService',
-      {},
-      { feeds$: of([]) },
-    );
-  const mockReportService = jasmine.createSpyObj<ReportService>(
-    'ReportService',
-    ['reportFeed', 'reportFeedEntry'],
-  );
-
-  await TestBed.configureTestingModule({
-    imports: [
-      FormsModule,
-      BrowserAnimationsModule,
-      ClarityModule,
-      ShareButtonDirective,
-      RouterModule.forRoot([]),
-    ],
-    declarations: [
-      FeedComponent,
-      VerticalNavComponent,
-      SubscribeModalComponent,
-      OPMLModalComponent,
-      ExposedFeedsModalComponent,
-      LabelVoteModalComponent,
-      InfoModalComponent,
-      UserCategoriesModalComponent,
-      FeedsFooterComponent,
-      InfiniteScrollDirective,
-      ShareModalComponent,
-      LemmyShareModalComponent,
-      MastodonShareModalComponent,
-      ReportFeedEntryModalComponent,
-      ReportFeedModalComponent,
-    ],
-    providers: [
-      FeedObservableService,
-      UserCategoryObservableService,
-      {
-        provide: ConfigService,
-        useValue: mockConfigService,
-      },
-      {
-        provide: FeedService,
-        useValue: mockFeedService,
-      },
-      {
-        provide: UserCategoryService,
-        useValue: mockUserCategoryService,
-      },
-      {
-        provide: FeedEntryService,
-        useValue: mockFeedEntryService,
-      },
-      {
-        provide: OPMLService,
-        useValue: mockOPMLService,
-      },
-      {
-        provide: ProgressService,
-        useValue: mockProgressService,
-      },
-      {
-        provide: ReadCounterService,
-        useValue: mockReadCounterService,
-      },
-      {
-        provide: ClassifierLabelService,
-        useValue: mockClassifierLabelService,
-      },
-      {
-        provide: FeedEntryVoteService,
-        useValue: mockFeedEntryVoteService,
-      },
-      {
-        provide: SubscribedFeedsFacadeService,
-        useValue: mockSubscribedFeedsFacadeService,
-      },
-      {
-        provide: ReportService,
-        useValue: mockReportService,
-      },
-    ],
-  }).compileComponents();
-
-  return {
-    mockConfigService,
-
-    mockFeedService,
-    mockUserCategoryService,
-    mockFeedEntryService,
-    mockOPMLService,
-    mockProgressService,
-    mockClassifierLabelService,
-    mockFeedEntryVoteService,
-    mockSubscribedFeedsFacadeService,
-  };
-}
-
 describe('FeedComponent', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [
+        FormsModule,
+        BrowserAnimationsModule,
+        ClarityModule,
+        ShareButtonDirective,
+        RouterModule.forRoot([]),
+      ],
+      declarations: [
+        FeedComponent,
+        VerticalNavComponent,
+        SubscribeModalComponent,
+        OPMLModalComponent,
+        ExposedFeedsModalComponent,
+        LabelVoteModalComponent,
+        InfoModalComponent,
+        UserCategoriesModalComponent,
+        FeedsFooterComponent,
+        InfiniteScrollDirective,
+        ShareModalComponent,
+        LemmyShareModalComponent,
+        MastodonShareModalComponent,
+        ReportFeedEntryModalComponent,
+        ReportFeedModalComponent,
+      ],
+      providers: [
+        provideHttpClient(),
+        FeedObservableService,
+        UserCategoryObservableService,
+        {
+          provide: MOCK_CONFIG_SERVICE_CONFIG,
+          useValue: {
+            apiHost: '',
+          },
+        },
+        {
+          provide: ConfigService,
+          useClass: MockConfigService,
+        },
+        {
+          provide: FeedService,
+          useValue: jasmine.createSpyObj<FeedService>('FeedService', [
+            'queryAll',
+          ]),
+        },
+        {
+          provide: UserCategoryService,
+          useValue: jasmine.createSpyObj<UserCategoryService>(
+            'UserCategoryService',
+            ['queryAll', 'apply'],
+          ),
+        },
+        {
+          provide: ReadCounterService,
+          useValue: jasmine.createSpyObj<ReadCounterService>(
+            'ReadCounterService',
+            ['readAll'],
+          ),
+        },
+        {
+          provide: FeedEntryService,
+          useValue: jasmine.createSpyObj<FeedEntryService>('FeedEntryService', [
+            'query',
+            'readSome',
+            'unreadSome',
+          ]),
+        },
+        {
+          provide: OPMLService,
+          useValue: jasmine.createSpyObj<OPMLService>('OPMLService', [
+            'upload',
+          ]),
+        },
+        {
+          provide: ProgressService,
+          useValue: jasmine.createSpyObj<ProgressService>('ProgressService', [
+            'checkProgress',
+          ]),
+        },
+        {
+          provide: ClassifierLabelService,
+          useValue: jasmine.createSpyObj<ClassifierLabelService>(
+            'ClassifierLabelService',
+            ['getAll'],
+          ),
+        },
+        {
+          provide: FeedEntryVoteService,
+          useValue: jasmine.createSpyObj<FeedEntryVoteService>(
+            'FeedEntryVoteService',
+            ['shouldForceLabelVote'],
+          ),
+        },
+        {
+          provide: SubscribedFeedsFacadeService,
+          useValue: jasmine.createSpyObj<SubscribedFeedsFacadeService>(
+            'SubscribedFeedsFacadeService',
+            {},
+            { feeds$: of([]) },
+          ),
+        },
+        {
+          provide: ReportService,
+          useValue: jasmine.createSpyObj<ReportService>('ReportService', [
+            'reportFeed',
+            'reportFeedEntry',
+          ]),
+        },
+      ],
+    }).compileComponents();
+  });
+
   it('should create the component', waitForAsync(async () => {
-    const { mockUserCategoryService, mockFeedService } = await setup();
+    const mockUserCategoryService = TestBed.inject(
+      UserCategoryService,
+    ) as jasmine.SpyObj<UserCategoryService>;
     mockUserCategoryService.queryAll.and.returnValue(
       of({
         objects: [],
         totalCount: 0,
       }),
     );
+    const mockFeedService = TestBed.inject(
+      FeedService,
+    ) as jasmine.SpyObj<FeedService>;
     mockFeedService.queryAll.and.returnValue(
       of({
         objects: [],

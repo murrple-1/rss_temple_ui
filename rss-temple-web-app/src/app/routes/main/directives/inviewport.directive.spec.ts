@@ -1,47 +1,54 @@
 import { ElementRef } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { take } from 'rxjs/operators';
 
 import { InViewportDirective, InViewportEvent } from './inviewport.directive';
 
-function setup() {
-  const elementSpy = jasmine.createSpyObj<HTMLElement>('HTMLElement', [
-    'getBoundingClientRect',
-  ]);
-
-  const elementRefSpy = jasmine.createSpyObj<ElementRef<HTMLElement>>(
-    'ElementRef',
-    [],
-    {
-      nativeElement: elementSpy,
-    },
-  );
-
-  const inViewportDirective = new InViewportDirective(elementRefSpy);
-
-  return {
-    elementSpy,
-    elementRefSpy,
-
-    inViewportDirective,
-  };
-}
-
 describe('InViewportDirective', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: ElementRef,
+          useValue: jasmine.createSpyObj<ElementRef<HTMLElement>>(
+            'ElementRef',
+            [],
+            {
+              nativeElement: jasmine.createSpyObj<HTMLElement>('HTMLElement', [
+                'getBoundingClientRect',
+              ]),
+            },
+          ),
+        },
+        InViewportDirective,
+      ],
+    });
+  });
+
   it('should init and destroy', () => {
-    const { inViewportDirective } = setup();
+    const inViewportDirective = TestBed.inject(InViewportDirective);
+
     inViewportDirective.ngOnInit();
     inViewportDirective.ngOnDestroy();
     expect().nothing();
   });
 
   it('should destroy', () => {
-    const { inViewportDirective } = setup();
+    const inViewportDirective = TestBed.inject(InViewportDirective);
+
     inViewportDirective.ngOnDestroy();
     expect().nothing();
   });
 
   it('should check inside', async () => {
-    const { elementSpy, inViewportDirective } = setup();
+    const elementRefSpy = TestBed.inject(ElementRef) as jasmine.SpyObj<
+      ElementRef<HTMLElement>
+    >;
+    const inViewportDirective = TestBed.inject(InViewportDirective);
+
+    const elementSpy =
+      elementRefSpy.nativeElement as jasmine.SpyObj<HTMLElement>;
+
     inViewportDirective.ngOnInit();
 
     const scrollParentNativeElement =
@@ -71,7 +78,14 @@ describe('InViewportDirective', () => {
   });
 
   it('should check outside', async () => {
-    const { elementSpy, inViewportDirective } = setup();
+    const elementRefSpy = TestBed.inject(ElementRef) as jasmine.SpyObj<
+      ElementRef<HTMLElement>
+    >;
+    const inViewportDirective = TestBed.inject(InViewportDirective);
+
+    const elementSpy =
+      elementRefSpy.nativeElement as jasmine.SpyObj<HTMLElement>;
+
     inViewportDirective.ngOnInit();
 
     const scrollParentNativeElement =

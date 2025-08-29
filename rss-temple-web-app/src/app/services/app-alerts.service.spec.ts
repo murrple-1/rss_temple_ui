@@ -1,16 +1,16 @@
+import { TestBed } from '@angular/core/testing';
+
 import { AppAlertsService } from './app-alerts.service';
 
-function setup() {
-  const appAlertsService = new AppAlertsService();
-
-  return {
-    appAlertsService,
-  };
-}
-
 describe('AppAlertsService', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [AppAlertsService],
+    });
+  });
+
   it('should construct', () => {
-    const { appAlertsService } = setup();
+    const appAlertsService = TestBed.inject(AppAlertsService);
 
     expect(appAlertsService).not.toBeNull();
   });

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, inject } from '@angular/core';
 
 import { ConfigService } from '@app/services';
 
@@ -14,7 +14,9 @@ export class CookieConsentSnackbarComponent {
   @Output()
   cookieConsentAcknowledged = new EventEmitter<void>();
 
-  constructor(configService: ConfigService) {
+  constructor() {
+    const configService = inject(ConfigService);
+
     const privacyPolicyUrl = configService.get('privacyPolicyUrl');
     this.privacyPolicyUrl =
       typeof privacyPolicyUrl === 'string' ? privacyPolicyUrl : null;

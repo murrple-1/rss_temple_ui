@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { z } from 'zod';
 
 import osLicenses from '@app/os-licenses.json';
@@ -57,7 +57,9 @@ export class SupportComponent {
 
   readonly licensesText = licensesText;
 
-  constructor(configService: ConfigService) {
+  constructor() {
+    const configService = inject(ConfigService);
+
     const [
       issueTrackerUrl,
       clientRepoUrl,

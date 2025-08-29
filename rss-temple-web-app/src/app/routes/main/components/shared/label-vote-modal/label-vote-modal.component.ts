@@ -1,4 +1,4 @@
-import { Component, NgZone, OnDestroy } from '@angular/core';
+import { Component, NgZone, OnDestroy, inject } from '@angular/core';
 import { Subject, firstValueFrom } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 
@@ -13,6 +13,10 @@ import { ClassifierLabelService } from '@app/services/data';
   standalone: false,
 })
 export class LabelVoteModalComponent implements OnDestroy {
+  private zone = inject(NgZone);
+  private classifierLabelService = inject(ClassifierLabelService);
+  private httpErrorService = inject(HttpErrorService);
+
   open = false;
 
   feedEntryUuid = '';
@@ -24,12 +28,6 @@ export class LabelVoteModalComponent implements OnDestroy {
   result = new Subject<void>();
 
   protected readonly unsubscribe$ = new Subject<void>();
-
-  constructor(
-    private zone: NgZone,
-    private classifierLabelService: ClassifierLabelService,
-    private httpErrorService: HttpErrorService,
-  ) {}
 
   ngOnDestroy() {
     this.result.complete();

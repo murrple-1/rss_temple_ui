@@ -1,5 +1,12 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Observable, Subject, forkJoin, of } from 'rxjs';
 import { filter, map, mergeMap, startWith, takeUntil } from 'rxjs/operators';
@@ -70,6 +77,18 @@ interface CategorizedFeeds {
   standalone: false,
 })
 export class VerticalNavComponent implements OnInit, OnDestroy {
+  private zone = inject(NgZone);
+  private router = inject(Router);
+  private feedService = inject(FeedService);
+  private userCategoryService = inject(UserCategoryService);
+  private feedObservableService = inject(FeedObservableService);
+  private readCounterService = inject(ReadCounterService);
+  private userCategoryObservableService = inject(UserCategoryObservableService);
+  private appAlertsService = inject(AppAlertsService);
+  private httpErrorService = inject(HttpErrorService);
+  private modalOpenService = inject(ModalOpenService);
+  private subscribedFeedsFacadeService = inject(SubscribedFeedsFacadeService);
+
   categorizedFeeds: CategorizedFeeds = {
     noCategory: {
       isExpanded: false,
@@ -99,20 +118,6 @@ export class VerticalNavComponent implements OnInit, OnDestroy {
   get areCategoriesInUse() {
     return this.categorizedFeeds.category.some(c => c.feeds.length > 0);
   }
-
-  constructor(
-    private zone: NgZone,
-    private router: Router,
-    private feedService: FeedService,
-    private userCategoryService: UserCategoryService,
-    private feedObservableService: FeedObservableService,
-    private readCounterService: ReadCounterService,
-    private userCategoryObservableService: UserCategoryObservableService,
-    private appAlertsService: AppAlertsService,
-    private httpErrorService: HttpErrorService,
-    private modalOpenService: ModalOpenService,
-    private subscribedFeedsFacadeService: SubscribedFeedsFacadeService,
-  ) {}
 
   private static buildCategorizedFeeds(
     currentUrl: string,

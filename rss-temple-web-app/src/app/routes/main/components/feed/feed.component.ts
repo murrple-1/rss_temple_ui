@@ -7,6 +7,7 @@ import {
   QueryList,
   ViewChild,
   ViewChildren,
+  inject,
 } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Observable, combineLatest, forkJoin, of } from 'rxjs';
@@ -29,22 +30,9 @@ import {
   NoLoadError,
 } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
-import {
-  FeedEntryVoteService,
-  ReadCounterService,
-  UserCategoryObservableService,
-} from '@app/routes/main/services';
-import {
-  AppAlertsService,
-  HttpErrorService,
-  ModalOpenService,
-} from '@app/services';
-import {
-  ClassifierLabelService,
-  FeedEntryService,
-  FeedService,
-  UserCategoryService,
-} from '@app/services/data';
+import { UserCategoryObservableService } from '@app/routes/main/services';
+import { AppAlertsService } from '@app/services';
+import { FeedService, UserCategoryService } from '@app/services/data';
 import { Sort } from '@app/services/data/sort.interface';
 
 type FeedImpl = BaseFeedImpl &
@@ -70,6 +58,13 @@ type UserCategoryImpl = Required<Pick<UserCategory, 'text'>>;
   standalone: false,
 })
 export class FeedComponent extends AbstractFeedsComponent implements OnInit {
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private feedService = inject(FeedService);
+  private userCategoryService = inject(UserCategoryService);
+  private userCategoryObservableService = inject(UserCategoryObservableService);
+  private appAlertService = inject(AppAlertsService);
+
   feed: FeedImpl | null = null;
   feedUrl: string | null = null;
   userCategories: UserCategoryImpl[] = [];
@@ -106,35 +101,6 @@ export class FeedComponent extends AbstractFeedsComponent implements OnInit {
 
   @ViewChild(ReportFeedModalComponent, { static: true })
   private reportFeedModal?: ReportFeedModalComponent;
-
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private feedService: FeedService,
-    private userCategoryService: UserCategoryService,
-    private userCategoryObservableService: UserCategoryObservableService,
-    private appAlertService: AppAlertsService,
-
-    zone: NgZone,
-    changeDetectorRef: ChangeDetectorRef,
-    feedEntryService: FeedEntryService,
-    readCounterService: ReadCounterService,
-    classifierLabelService: ClassifierLabelService,
-    httpErrorService: HttpErrorService,
-    modalOpenService: ModalOpenService,
-    feedEntryVoteService: FeedEntryVoteService,
-  ) {
-    super(
-      zone,
-      changeDetectorRef,
-      feedEntryService,
-      readCounterService,
-      classifierLabelService,
-      httpErrorService,
-      modalOpenService,
-      feedEntryVoteService,
-    );
-  }
 
   ngOnInit() {
     combineLatest([

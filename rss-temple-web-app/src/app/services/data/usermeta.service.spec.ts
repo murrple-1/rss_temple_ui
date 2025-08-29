@@ -1,42 +1,69 @@
-import { HttpClient } from '@angular/common/http';
-import { fakeAsync } from '@angular/core/testing';
-import { firstValueFrom, of } from 'rxjs';
+import { provideHttpClient } from '@angular/common/http';
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+} from '@angular/common/http/testing';
+import { TestBed, fakeAsync } from '@angular/core/testing';
+import { CookieService } from 'ngx-cookie-service';
+import { firstValueFrom } from 'rxjs';
 
-import { MockConfigService } from '@app/test/config.service.mock';
-import { MockCookieService } from '@app/test/cookie.service.mock';
+import { ConfigService } from '@app/services';
+import {
+  MOCK_CONFIG_SERVICE_CONFIG,
+  MockConfigService,
+} from '@app/test/config.service.mock';
+import {
+  MOCK_COOKIE_SERVICE_CONFIG,
+  MockCookieService,
+} from '@app/test/cookie.service.mock';
 
 import { UserMetaService } from './usermeta.service';
 
-function setup() {
-  const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', ['get']);
-  const mockCookieService = new MockCookieService({});
-  const mockConfigService = new MockConfigService({
-    apiHost: '',
+describe('UserMetaService', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        {
+          provide: MOCK_COOKIE_SERVICE_CONFIG,
+          useValue: {},
+        },
+        {
+          provide: MOCK_CONFIG_SERVICE_CONFIG,
+          useValue: {
+            apiHost: '',
+          },
+        },
+        {
+          provide: CookieService,
+          useClass: MockCookieService,
+        },
+        {
+          provide: ConfigService,
+          useClass: MockConfigService,
+        },
+      ],
+    });
   });
 
-  const userMetaService = new UserMetaService(
-    httpClientSpy,
-    mockCookieService,
-    mockConfigService,
-  );
+  afterEach(() => {
+    const httpTesting = TestBed.inject(HttpTestingController);
+    httpTesting.verify();
+  });
 
-  return {
-    httpClientSpy,
-    mockCookieService,
-    mockConfigService,
-
-    userMetaService,
-  };
-}
-
-describe('UserMetaService', () => {
   it('should get read count', fakeAsync(async () => {
-    const { httpClientSpy, userMetaService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const userMetaService = TestBed.inject(UserMetaService);
 
-    httpClientSpy.get.and.returnValue(of(1000));
+    const readCountPromise = firstValueFrom(userMetaService.getReadCount());
 
-    const readCount = await firstValueFrom(userMetaService.getReadCount());
+    const req = httpTesting.expectOne({
+      url: '/api/user/meta/readcount',
+      method: 'GET',
+    });
+    req.flush(1000);
 
-    expect(readCount).toEqual(1000);
+    await expectAsync(readCountPromise).toBeResolvedTo(1000);
   }));
 });

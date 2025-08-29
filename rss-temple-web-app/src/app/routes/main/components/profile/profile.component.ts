@@ -1,5 +1,12 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { saveAs } from 'file-saver';
@@ -55,6 +62,21 @@ enum State {
   standalone: false,
 })
 export class ProfileComponent implements OnInit, OnDestroy {
+  private zone = inject(NgZone);
+  private router = inject(Router);
+  private authStateService = inject(AuthStateService);
+  private feedService = inject(FeedService);
+  private userMetaService = inject(UserMetaService);
+  private opmlService = inject(OPMLService);
+  private authService = inject(AuthService);
+  private socialService = inject(SocialService);
+  private readCounterService = inject(ReadCounterService);
+  private httpErrorService = inject(HttpErrorService);
+  private gAuthService = inject(GAuthService);
+  private fbAuthService = inject(FBAuthService);
+  private appAlertsService = inject(AppAlertsService);
+  private modalOpenService = inject(ModalOpenService);
+
   state = State.IsLoading;
   readonly State = State;
 
@@ -114,22 +136,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   private readonly unsubscribe$ = new Subject<void>();
 
-  constructor(
-    private zone: NgZone,
-    private router: Router,
-    private authStateService: AuthStateService,
-    private feedService: FeedService,
-    private userMetaService: UserMetaService,
-    private opmlService: OPMLService,
-    private authService: AuthService,
-    private socialService: SocialService,
-    private readCounterService: ReadCounterService,
-    private httpErrorService: HttpErrorService,
-    private gAuthService: GAuthService,
-    private fbAuthService: FBAuthService,
-    private appAlertsService: AppAlertsService,
-    private modalOpenService: ModalOpenService,
-  ) {
+  constructor() {
     this.isDownloadOPMLButtonDisabled = window.Blob === undefined;
   }
 

@@ -1,40 +1,61 @@
-import { HttpClient } from '@angular/common/http';
-import { fakeAsync } from '@angular/core/testing';
-import { firstValueFrom, of } from 'rxjs';
+import { provideHttpClient } from '@angular/common/http';
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+} from '@angular/common/http/testing';
+import { TestBed, fakeAsync } from '@angular/core/testing';
+import { CookieService } from 'ngx-cookie-service';
+import { firstValueFrom } from 'rxjs';
 
-import { MockConfigService } from '@app/test/config.service.mock';
-import { MockCookieService } from '@app/test/cookie.service.mock';
+import { ConfigService } from '@app/services';
+import {
+  MOCK_CONFIG_SERVICE_CONFIG,
+  MockConfigService,
+} from '@app/test/config.service.mock';
+import {
+  MOCK_COOKIE_SERVICE_CONFIG,
+  MockCookieService,
+} from '@app/test/cookie.service.mock';
 
 import { ClassifierLabelService } from './classifierlabel.service';
 
-function setup() {
-  const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', [
-    'get',
-    'post',
-  ]);
-  const mockCookieService = new MockCookieService({});
-  const mockConfigService = new MockConfigService({
-    apiHost: '',
+describe('ClassifierLabelService', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        {
+          provide: MOCK_CONFIG_SERVICE_CONFIG,
+          useValue: {
+            apiHost: '',
+          },
+        },
+        {
+          provide: MOCK_COOKIE_SERVICE_CONFIG,
+          useValue: {},
+        },
+        {
+          provide: CookieService,
+          useClass: MockCookieService,
+        },
+        {
+          provide: ConfigService,
+          useClass: MockConfigService,
+        },
+        ClassifierLabelService,
+      ],
+    });
   });
 
-  const classifierLabelService = new ClassifierLabelService(
-    httpClientSpy,
-    mockCookieService,
-    mockConfigService,
-  );
+  afterEach(() => {
+    const httpTesting = TestBed.inject(HttpTestingController);
+    httpTesting.verify();
+  });
 
-  return {
-    httpClientSpy,
-    mockCookieService,
-    mockConfigService,
-
-    classifierLabelService,
-  };
-}
-
-describe('ClassifierLabelService', () => {
   it('should getAll without feed entry', fakeAsync(async () => {
-    const { httpClientSpy, classifierLabelService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const classifierLabelService = TestBed.inject(ClassifierLabelService);
 
     const exampleClassifierLabels = [
       {
@@ -47,13 +68,19 @@ describe('ClassifierLabelService', () => {
       },
     ];
 
-    httpClientSpy.get.and.returnValue(of(exampleClassifierLabels));
-
-    const classifierLabels = await firstValueFrom(
+    const classifierLabelsPromise = firstValueFrom(
       classifierLabelService.getAll(undefined),
     );
 
-    expect(classifierLabels).toEqual(exampleClassifierLabels);
+    const req = httpTesting.expectOne({
+      url: '/api/classifierlabels',
+      method: 'GET',
+    });
+    req.flush(exampleClassifierLabels);
+
+    await expectAsync(classifierLabelsPromise).toBeResolvedTo(
+      exampleClassifierLabels,
+    );
   }));
 
   // TODO more tests

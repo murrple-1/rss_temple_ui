@@ -5,19 +5,19 @@ import { ClarityModule } from '@clr/angular';
 
 import { ExposedFeedsModalComponent } from './exposed-feeds-modal.component';
 
-async function setup() {
-  await TestBed.configureTestingModule({
-    imports: [ClarityModule, BrowserAnimationsModule, RouterModule.forRoot([])],
-    declarations: [ExposedFeedsModalComponent],
-  }).compileComponents();
-
-  return {};
-}
-
 describe('ExposedFeedsModalComponent', () => {
-  it('should create the component', waitForAsync(async () => {
-    await setup();
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [
+        ClarityModule,
+        BrowserAnimationsModule,
+        RouterModule.forRoot([]),
+      ],
+      declarations: [ExposedFeedsModalComponent],
+    }).compileComponents();
+  });
 
+  it('should create the component', waitForAsync(async () => {
     const componentFixture = TestBed.createComponent(
       ExposedFeedsModalComponent,
     );

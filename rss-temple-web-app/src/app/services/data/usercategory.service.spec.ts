@@ -1,132 +1,190 @@
-import { HttpClient } from '@angular/common/http';
-import { fakeAsync } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+} from '@angular/common/http/testing';
+import { TestBed, fakeAsync } from '@angular/core/testing';
+import { CookieService } from 'ngx-cookie-service';
 import { firstValueFrom, of } from 'rxjs';
 import { z } from 'zod';
 
 import { ZUserCategory } from '@app/models/usercategory';
-import { MockConfigService } from '@app/test/config.service.mock';
-import { MockCookieService } from '@app/test/cookie.service.mock';
+import { ConfigService } from '@app/services';
+import {
+  MOCK_CONFIG_SERVICE_CONFIG,
+  MockConfigService,
+} from '@app/test/config.service.mock';
+import {
+  MOCK_COOKIE_SERVICE_CONFIG,
+  MockCookieService,
+} from '@app/test/cookie.service.mock';
 
 import { UserCategoryService } from './usercategory.service';
 
-function setup() {
-  const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', [
-    'get',
-    'post',
-    'put',
-    'delete',
-  ]);
-  const mockCookieService = new MockCookieService({});
-  const mockConfigService = new MockConfigService({
-    apiHost: '',
-  });
-
-  const userCategoryService = new UserCategoryService(
-    httpClientSpy,
-    mockCookieService,
-    mockConfigService,
-  );
-
-  return {
-    httpClientSpy,
-    mockCookieService,
-    mockConfigService,
-
-    userCategoryService,
-  };
-}
+const UUID = '123e4567-e89b-12d3-a456-426614174000';
 
 describe('UserCategoryService', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        {
+          provide: MOCK_CONFIG_SERVICE_CONFIG,
+          useValue: {
+            apiHost: '',
+          },
+        },
+        {
+          provide: MOCK_COOKIE_SERVICE_CONFIG,
+          useValue: {},
+        },
+        {
+          provide: CookieService,
+          useClass: MockCookieService,
+        },
+        {
+          provide: ConfigService,
+          useClass: MockConfigService,
+        },
+      ],
+    });
+  });
+
+  afterEach(() => {
+    const httpTesting = TestBed.inject(HttpTestingController);
+    httpTesting.verify();
+  });
+
   it('should get', fakeAsync(async () => {
-    const { httpClientSpy, userCategoryService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const userCategoryService = TestBed.inject(UserCategoryService);
 
-    httpClientSpy.get.and.returnValue(of({}));
+    const userCategoryPromise = firstValueFrom(userCategoryService.get(UUID));
 
-    const userCategory = await firstValueFrom(
-      userCategoryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    const req = httpTesting.expectOne(
+      r =>
+        r.method === 'GET' &&
+        new RegExp(`/api/usercategory/${UUID}`).test(r.url),
     );
+    req.flush({});
+
+    const userCategory = await userCategoryPromise;
+
     expect(ZUserCategory.safeParse(userCategory).success).toBeTrue();
   }));
 
   it('should query', fakeAsync(async () => {
-    const { httpClientSpy, userCategoryService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const userCategoryService = TestBed.inject(UserCategoryService);
 
-    httpClientSpy.post.and.returnValue(
-      of({
-        totalCount: 0,
-        objects: [],
-      }),
+    const objectsPromise = firstValueFrom(userCategoryService.query());
+
+    const req = httpTesting.expectOne(
+      r => r.method === 'POST' && /\/api\/usercategories\/query/.test(r.url),
     );
+    req.flush({
+      totalCount: 0,
+      objects: [],
+    });
 
-    const objects = await firstValueFrom(userCategoryService.query());
+    const objects = await objectsPromise;
+
     expect(objects.objects).toEqual(jasmine.any(Array));
   }));
 
   it('should query', fakeAsync(async () => {
-    const { httpClientSpy, userCategoryService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const userCategoryService = TestBed.inject(UserCategoryService);
 
-    httpClientSpy.post.and.returnValue(
-      of({
+    const objectsPromise = firstValueFrom(userCategoryService.queryAll());
+
+    const reqs = httpTesting.match(
+      r => r.method === 'POST' && /\/api\/usercategories\/query/.test(r.url),
+    );
+    for (const req of reqs) {
+      req.flush({
         totalCount: 0,
         objects: [],
-      }),
-    );
+      });
+    }
 
-    const objects = await firstValueFrom(userCategoryService.queryAll());
+    const objects = await objectsPromise;
     expect(objects.objects).toEqual(jasmine.any(Array));
   }));
 
   it('should create', fakeAsync(async () => {
-    const { httpClientSpy, userCategoryService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const userCategoryService = TestBed.inject(UserCategoryService);
 
-    httpClientSpy.post.and.returnValue(of({}));
-
-    const userCategory = await firstValueFrom(
+    const userCategoryPromise = firstValueFrom(
       userCategoryService.create({
         text: 'Category Name',
       }),
     );
+
+    const req = httpTesting.expectOne(
+      r => r.method === 'POST' && /\/api\/usercategory/.test(r.url),
+    );
+    req.flush({});
+
+    const userCategory = await userCategoryPromise;
+
     expect(ZUserCategory.safeParse(userCategory).success).toBeTrue();
   }));
 
   it('should delete', fakeAsync(async () => {
-    const { httpClientSpy, userCategoryService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const userCategoryService = TestBed.inject(UserCategoryService);
 
-    httpClientSpy.delete.and.returnValue(of());
+    const deletePromise = firstValueFrom(userCategoryService.delete(UUID), {
+      defaultValue: undefined,
+    });
 
-    await expectAsync(
-      firstValueFrom(
-        userCategoryService.delete('123e4567-e89b-12d3-a456-426614174000'),
-        { defaultValue: undefined },
-      ),
-    ).toBeResolved();
+    const req = httpTesting.expectOne(
+      r =>
+        r.method === 'DELETE' &&
+        new RegExp(`/api/usercategory/${UUID}`).test(r.url),
+    );
+    req.flush(null);
+
+    await expectAsync(deletePromise).toBeResolved();
   }));
 
   it('should apply', fakeAsync(async () => {
-    const { httpClientSpy, userCategoryService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const userCategoryService = TestBed.inject(UserCategoryService);
 
-    httpClientSpy.put.and.returnValue(of());
+    const applyPromise = firstValueFrom(
+      userCategoryService.apply({
+        '123e4567-e89b-12d3-a456-426614174000': new Set([
+          '123e4567-e89b-12d3-a456-426614174001',
+        ]),
+      }),
+      { defaultValue: undefined },
+    );
 
-    await expectAsync(
-      firstValueFrom(
-        userCategoryService.apply({
-          '123e4567-e89b-12d3-a456-426614174000': new Set([
-            '123e4567-e89b-12d3-a456-426614174001',
-          ]),
-        }),
-        { defaultValue: undefined },
-      ),
-    ).toBeResolved();
+    const req = httpTesting.expectOne({
+      url: '/api/usercategories/apply',
+      method: 'PUT',
+    });
+    req.flush(null);
+
+    await expectAsync(applyPromise).toBeResolved();
   }));
 
   it('should error JSON not object', fakeAsync(async () => {
-    const { httpClientSpy, userCategoryService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const userCategoryService = TestBed.inject(UserCategoryService);
 
-    httpClientSpy.get.and.returnValue(of([]));
+    const p = firstValueFrom(userCategoryService.get(UUID));
 
-    const p = firstValueFrom(
-      userCategoryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    const req = httpTesting.expectOne(
+      r =>
+        r.method === 'GET' &&
+        new RegExp(`/api/usercategory/${UUID}`).test(r.url),
     );
+    req.flush([]);
 
     await expectAsync(p).toBeRejected();
     await expectAsync(
@@ -135,32 +193,39 @@ describe('UserCategoryService', () => {
   }));
 
   it('should `uuid`', fakeAsync(async () => {
-    const { httpClientSpy, userCategoryService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const userCategoryService = TestBed.inject(UserCategoryService);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        uuid: '123e4567-e89b-12d3-a456-426614174000',
-      }),
-    );
+    const userPromise = firstValueFrom(userCategoryService.get(UUID));
 
-    const user = await firstValueFrom(
-      userCategoryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    const req = httpTesting.expectOne(
+      r =>
+        r.method === 'GET' &&
+        new RegExp(`/api/usercategory/${UUID}`).test(r.url),
     );
+    req.flush({
+      uuid: '123e4567-e89b-12d3-a456-426614174000',
+    });
+
+    const user = await userPromise;
+
     expect(user.uuid).toEqual(jasmine.any(String));
   }));
 
   it('should `uuid` type error', fakeAsync(async () => {
-    const { httpClientSpy, userCategoryService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const userCategoryService = TestBed.inject(UserCategoryService);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        uuid: 0,
-      }),
-    );
+    const p = firstValueFrom(userCategoryService.get(UUID));
 
-    const p = firstValueFrom(
-      userCategoryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    const req = httpTesting.expectOne(
+      r =>
+        r.method === 'GET' &&
+        new RegExp(`/api/usercategory/${UUID}`).test(r.url),
     );
+    req.flush({
+      uuid: 0,
+    });
 
     await expectAsync(p).toBeRejected();
     await expectAsync(
@@ -169,32 +234,41 @@ describe('UserCategoryService', () => {
   }));
 
   it('should `text`', fakeAsync(async () => {
-    const { httpClientSpy, userCategoryService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const userCategoryService = TestBed.inject(UserCategoryService);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        text: 'Category Name',
+    const userPromise = firstValueFrom(userCategoryService.get(UUID));
+
+    const req = httpTesting.expectOne(
+      r =>
+        r.method === 'GET' &&
+        new RegExp(`/api/usercategory/${UUID}`).test(r.url),
+    );
+    req.flush({
+      text: 'Category Name',
+    });
+
+    await expectAsync(userPromise).toBeResolvedTo(
+      jasmine.objectContaining({
+        text: jasmine.any(String),
       }),
     );
-
-    const user = await firstValueFrom(
-      userCategoryService.get('123e4567-e89b-12d3-a456-426614174000'),
-    );
-    expect(user.text).toEqual(jasmine.any(String));
   }));
 
   it('should `text` type error', fakeAsync(async () => {
-    const { httpClientSpy, userCategoryService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const userCategoryService = TestBed.inject(UserCategoryService);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        text: 0,
-      }),
-    );
+    const p = firstValueFrom(userCategoryService.get(UUID));
 
-    const p = firstValueFrom(
-      userCategoryService.get('123e4567-e89b-12d3-a456-426614174000'),
+    const req = httpTesting.expectOne(
+      r =>
+        r.method === 'GET' &&
+        new RegExp(`/api/usercategory/${UUID}`).test(r.url),
     );
+    req.flush({
+      text: 0,
+    });
 
     await expectAsync(p).toBeRejected();
     await expectAsync(

@@ -1,5 +1,12 @@
 ﻿import { HttpErrorResponse } from '@angular/common/http';
-import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -29,6 +36,13 @@ enum State {
   standalone: false,
 })
 export class ResetPasswordComponent implements OnInit, OnDestroy {
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
+  private zone = inject(NgZone);
+  private authService = inject(AuthService);
+  private appAlertsService = inject(AppAlertsService);
+  private httpErrorService = inject(HttpErrorService);
+
   private static readonly redirectTimeoutInterval = 2000;
 
   state = State.NotStarted;
@@ -50,15 +64,6 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   private redirectTimeoutHandle: number | null = null;
 
   private readonly unsubscribe$ = new Subject<void>();
-
-  constructor(
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private zone: NgZone,
-    private authService: AuthService,
-    private appAlertsService: AppAlertsService,
-    private httpErrorService: HttpErrorService,
-  ) {}
 
   ngOnInit() {
     this.token = this.activatedRoute.snapshot.queryParamMap.get('token');
