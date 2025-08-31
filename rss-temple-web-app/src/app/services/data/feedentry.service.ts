@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { parse as parseDate } from 'date-fns';
+import { parseISO as parseDateISO } from 'date-fns';
 import { CookieService } from 'ngx-cookie-service';
 import { map } from 'rxjs/operators';
 import { z } from 'zod';
@@ -175,11 +175,7 @@ export class FeedEntryService {
             // feed entry is archived (ie perma-read)
             return null;
           } else {
-            const readAt = parseDate(
-              response,
-              'yyyy-MM-dd HH:mm:ss',
-              new Date(),
-            );
+            const readAt = parseDateISO(response);
             if (isNaN(readAt.getTime())) {
               throw new Error('JSON body malformed');
             }
@@ -216,7 +212,7 @@ export class FeedEntryService {
     );
 
     return this.http.post<void>(
-      `${this.apiHost}/api/feedentries/read/`,
+      `${this.apiHost}/api/feedentries/read`,
       {
         feedEntryUuids,
         feedUuids,
@@ -236,7 +232,7 @@ export class FeedEntryService {
 
     return this.http.request<void>(
       'DELETE',
-      `${this.apiHost}/api/feedentries/read/`,
+      `${this.apiHost}/api/feedentries/read`,
       {
         headers,
         body: {
@@ -286,7 +282,9 @@ export class FeedEntryService {
 
     return this.http.post<void>(
       `${this.apiHost}/api/feedentries/favorite`,
-      feedEntryUuids,
+      {
+        feedEntryUuids,
+      },
       {
         headers,
         withCredentials: true,

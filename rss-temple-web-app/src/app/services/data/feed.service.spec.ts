@@ -1,128 +1,193 @@
-import { HttpClient } from '@angular/common/http';
-import { fakeAsync } from '@angular/core/testing';
-import { formatISO as formatDateISO, parse as parseDate } from 'date-fns';
-import { firstValueFrom, of } from 'rxjs';
+import { provideHttpClient } from '@angular/common/http';
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+} from '@angular/common/http/testing';
+import { TestBed, fakeAsync } from '@angular/core/testing';
+import { formatISO as formatDateISO, parseISO as parseDateISO } from 'date-fns';
+import { CookieService } from 'ngx-cookie-service';
+import { firstValueFrom } from 'rxjs';
 import { z } from 'zod';
 
 import { ZFeed } from '@app/models/feed';
-import { MockConfigService } from '@app/test/config.service.mock';
-import { MockCookieService } from '@app/test/cookie.service.mock';
+import { ConfigService } from '@app/services';
+import {
+  MOCK_CONFIG_SERVICE_CONFIG,
+  MockConfigService,
+} from '@app/test/config.service.mock';
+import {
+  MOCK_COOKIE_SERVICE_CONFIG,
+  MockCookieService,
+} from '@app/test/cookie.service.mock';
 
 import { FeedService } from './feed.service';
 
-function setup() {
-  const httpClientSpy = jasmine.createSpyObj<HttpClient>('HttpClient', [
-    'get',
-    'post',
-    'delete',
-  ]);
-  const mockCookieService = new MockCookieService({});
-  const mockConfigService = new MockConfigService({
-    apiHost: '',
+describe('FeedService', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        {
+          provide: MOCK_CONFIG_SERVICE_CONFIG,
+          useValue: {
+            apiHost: '',
+          },
+        },
+        {
+          provide: MOCK_COOKIE_SERVICE_CONFIG,
+          useValue: {},
+        },
+        {
+          provide: CookieService,
+          useClass: MockCookieService,
+        },
+        {
+          provide: ConfigService,
+          useClass: MockConfigService,
+        },
+      ],
+    });
   });
 
-  const feedService = new FeedService(
-    httpClientSpy,
-    mockCookieService,
-    mockConfigService,
-  );
+  afterEach(() => {
+    const httpTesting = TestBed.inject(HttpTestingController);
+    httpTesting.verify();
+  });
 
-  return {
-    httpClientSpy,
-    mockCookieService,
-    mockConfigService,
-
-    feedService,
-  };
-}
-
-describe('FeedService', () => {
   it('should get', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
-    httpClientSpy.get.and.returnValue(of({}));
-
-    const feed = await firstValueFrom(
+    const feedPromise = firstValueFrom(
       feedService.get('http://www.fake.com/rss.xml'),
     );
 
+    const req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({});
+
+    const feed = await feedPromise;
     expect(ZFeed.safeParse(feed).success).toBeTrue();
   }));
 
   it('should query', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
-    httpClientSpy.post.and.returnValue(
-      of({
-        totalCount: 0,
-        objects: [],
-      }),
+    const feedsPromise = firstValueFrom(feedService.query());
+
+    const req = httpTesting.expectOne(
+      r => r.method === 'POST' && /\/api\/feeds\/query/.test(r.url),
     );
+    req.flush({
+      totalCount: 0,
+      objects: [],
+    });
 
-    const feeds = await firstValueFrom(feedService.query());
-
+    const feeds = await feedsPromise;
     expect(feeds.objects).toBeDefined();
   }));
 
   it('should queryAll', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
-    httpClientSpy.post.and.returnValue(
-      of({
+    const feedsPromise = firstValueFrom(feedService.queryAll());
+
+    const reqs = httpTesting.match(
+      r => r.method === 'POST' && /\/api\/feeds\/query/.test(r.url),
+    );
+    expect(reqs.length).toBe(1);
+    for (const req of reqs) {
+      req.flush({
         totalCount: 0,
         objects: [],
-      }),
-    );
+      });
+    }
 
-    const feeds = await firstValueFrom(feedService.queryAll());
-
+    const feeds = await feedsPromise;
     expect(feeds.objects).toBeDefined();
   }));
 
   it('should subscribe', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
-    httpClientSpy.post.and.returnValue(of());
+    const subscribePromise = firstValueFrom(
+      feedService.subscribe('http://www.fake.com/rss.xml'),
+      {
+        defaultValue: undefined,
+      },
+    );
 
-    await firstValueFrom(feedService.subscribe('http://www.fake.com/rss.xml'), {
-      defaultValue: undefined,
+    const req = httpTesting.expectOne({
+      url: '/api/feed/subscribe',
+      method: 'POST',
     });
+    expect(req.request.body).toEqual({
+      url: jasmine.any(String),
+      customTitle: undefined,
+    });
+    req.flush(null);
 
-    expect().nothing();
+    await expectAsync(subscribePromise).toBeResolved();
   }));
 
   it('should subscribe with custom title', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
-    httpClientSpy.post.and.returnValue(of());
-
-    await firstValueFrom(
+    const subscribePromise = firstValueFrom(
       feedService.subscribe('http://www.fake.com/rss.xml', 'Custom Title'),
       { defaultValue: undefined },
     );
 
-    expect().nothing();
+    const req = httpTesting.expectOne({
+      url: '/api/feed/subscribe',
+      method: 'POST',
+    });
+    expect(req.request.body).toEqual({
+      url: jasmine.any(String),
+      customTitle: jasmine.any(String),
+    });
+    req.flush(null);
+
+    await expectAsync(subscribePromise).toBeResolved();
   }));
 
   it('should unsubscribe', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
-    httpClientSpy.delete.and.returnValue(of());
-
-    await firstValueFrom(
+    const unsubscribePromise = firstValueFrom(
       feedService.unsubscribe('http://www.fake.com/rss.xml'),
       { defaultValue: undefined },
     );
 
-    expect().nothing();
+    const req = httpTesting.expectOne({
+      url: '/api/feed/subscribe',
+      method: 'DELETE',
+    });
+    expect(req.request.body).toEqual({
+      url: jasmine.any(String),
+    });
+    req.flush(null);
+
+    await expectAsync(unsubscribePromise).toBeResolved();
   }));
 
   it('should fail get when response is not JSON object', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
-
-    httpClientSpy.get.and.returnValue(of(4));
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
     const p = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    const req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush(4);
 
     await expectAsync(p).toBeRejected();
     await expectAsync(
@@ -131,33 +196,38 @@ describe('FeedService', () => {
   }));
 
   it('should `uuid`', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
     const uuid = '123e4567-e89b-12d3-a456-426614174000';
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        uuid,
-      }),
-    );
-
-    const feed = await firstValueFrom(
+    const feedPromise = firstValueFrom(
       feedService.get('http://www.fake.com/rss.xml'),
     );
 
+    const req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({
+      uuid,
+    });
+
+    const feed = await feedPromise;
     expect(feed.uuid).toBe(uuid);
   }));
 
   it('should `uuid` type error', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
-
-    httpClientSpy.get.and.returnValue(
-      of({
-        uuid: 0,
-      }),
-    );
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
     const p = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    const req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({
+      uuid: 0,
+    });
 
     await expectAsync(p).toBeRejected();
     await expectAsync(
@@ -166,33 +236,38 @@ describe('FeedService', () => {
   }));
 
   it('should `title`', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
     const title = 'A Title';
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        title,
-      }),
-    );
-
-    const feed = await firstValueFrom(
+    const feedPromise = firstValueFrom(
       feedService.get('http://www.fake.com/rss.xml'),
     );
 
+    const req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({
+      title,
+    });
+
+    const feed = await feedPromise;
     expect(feed.title).toBe(title);
   }));
 
   it('should `title` type error', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
-
-    httpClientSpy.get.and.returnValue(
-      of({
-        title: 0,
-      }),
-    );
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
     const p = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    const req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({
+      title: 0,
+    });
 
     await expectAsync(p).toBeRejected();
     await expectAsync(
@@ -201,33 +276,38 @@ describe('FeedService', () => {
   }));
 
   it('should `feedUrl`', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
     const feedUrl = 'http://www.fake.com/rss.xml';
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        feedUrl,
-      }),
-    );
-
-    const feed = await firstValueFrom(
+    const feedPromise = firstValueFrom(
       feedService.get('http://www.fake.com/rss.xml'),
     );
 
+    const req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({
+      feedUrl,
+    });
+
+    const feed = await feedPromise;
     expect(feed.feedUrl).toBe(feedUrl);
   }));
 
   it('should `feedUrl` type error', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
-
-    httpClientSpy.get.and.returnValue(
-      of({
-        feedUrl: 0,
-      }),
-    );
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
     const p = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    const req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({
+      feedUrl: 0,
+    });
 
     await expectAsync(p).toBeRejected();
     await expectAsync(
@@ -236,33 +316,38 @@ describe('FeedService', () => {
   }));
 
   it('should `homeUrl`', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
     const homeUrl = 'http://www.fake.com/rss.xml';
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        homeUrl,
-      }),
-    );
-
-    const feed = await firstValueFrom(
+    const feedPromise = firstValueFrom(
       feedService.get('http://www.fake.com/rss.xml'),
     );
 
+    const req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({
+      homeUrl,
+    });
+
+    const feed = await feedPromise;
     expect(feed.homeUrl).toBe(homeUrl);
   }));
 
   it('should `homeUrl` type error', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
-
-    httpClientSpy.get.and.returnValue(
-      of({
-        homeUrl: 0,
-      }),
-    );
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
     const p = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    const req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({
+      homeUrl: 0,
+    });
 
     await expectAsync(p).toBeRejected();
     await expectAsync(
@@ -271,37 +356,38 @@ describe('FeedService', () => {
   }));
 
   it('should `publishedAt`', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
-    const publishedAt = parseDate(
-      '2020-01-01 00:00:00',
-      'yyyy-MM-dd HH:mm:ss',
-      new Date(),
-    );
+    const publishedAt = parseDateISO('2020-01-01T00:00:00');
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        publishedAt: formatDateISO(publishedAt),
-      }),
-    );
-
-    const feed = await firstValueFrom(
+    const feedPromise = firstValueFrom(
       feedService.get('http://www.fake.com/rss.xml'),
     );
 
+    const req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({
+      publishedAt: formatDateISO(publishedAt),
+    });
+
+    const feed = await feedPromise;
     expect(feed.publishedAt).toEqual(publishedAt);
   }));
 
   it('should `publishedAt` type error', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
-
-    httpClientSpy.get.and.returnValue(
-      of({
-        publishedAt: 0,
-      }),
-    );
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
     const p = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    const req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({
+      publishedAt: 0,
+    });
 
     await expectAsync(p).toBeRejected();
     await expectAsync(
@@ -310,15 +396,17 @@ describe('FeedService', () => {
   }));
 
   it('should `publishedAt` malformed', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
-
-    httpClientSpy.get.and.returnValue(
-      of({
-        publishedAt: 'bad datetime',
-      }),
-    );
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
     const p = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    const req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({
+      publishedAt: 'bad datetime',
+    });
 
     await expectAsync(p).toBeRejected();
     await expectAsync(
@@ -327,47 +415,52 @@ describe('FeedService', () => {
   }));
 
   it('should `updatedAt`', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
-    const updatedAt = parseDate(
-      '2020-01-01 00:00:00',
-      'yyyy-MM-dd HH:mm:ss',
-      new Date(),
-    );
+    const updatedAt = parseDateISO('2020-01-01T00:00:00');
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        updatedAt: formatDateISO(updatedAt),
-      }),
-    );
-
-    let feed = await firstValueFrom(
+    let feedPromise = firstValueFrom(
       feedService.get('http://www.fake.com/rss.xml'),
     );
 
+    let req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({
+      updatedAt: formatDateISO(updatedAt),
+    });
+
+    let feed = await feedPromise;
     expect(feed.updatedAt).toEqual(updatedAt);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        updatedAt: null,
-      }),
+    feedPromise = firstValueFrom(
+      feedService.get('http://www.fake.com/rss.xml'),
     );
 
-    feed = await firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+    req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({
+      updatedAt: null,
+    });
 
+    feed = await feedPromise;
     expect(feed.updatedAt).toBeNull();
   }));
 
   it('should `updatedAt` type error', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
-
-    httpClientSpy.get.and.returnValue(
-      of({
-        updatedAt: 0,
-      }),
-    );
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
     const p = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    const req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({
+      updatedAt: 0,
+    });
 
     await expectAsync(p).toBeRejected();
     await expectAsync(
@@ -376,15 +469,17 @@ describe('FeedService', () => {
   }));
 
   it('should `updatedAt` malformed', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
-
-    httpClientSpy.get.and.returnValue(
-      of({
-        updatedAt: 'bad datetime',
-      }),
-    );
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
     const p = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    const req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({
+      updatedAt: 'bad datetime',
+    });
 
     await expectAsync(p).toBeRejected();
     await expectAsync(
@@ -393,33 +488,38 @@ describe('FeedService', () => {
   }));
 
   it('should `isSubscribed`', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
     const isSubscribed = false;
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        isSubscribed,
-      }),
-    );
-
-    const feed = await firstValueFrom(
+    const feedPromise = firstValueFrom(
       feedService.get('http://www.fake.com/rss.xml'),
     );
 
+    const req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({
+      isSubscribed,
+    });
+
+    const feed = await feedPromise;
     expect(feed.isSubscribed).toBe(isSubscribed);
   }));
 
   it('should `isSubscribed` type error', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
-
-    httpClientSpy.get.and.returnValue(
-      of({
-        isSubscribed: 0,
-      }),
-    );
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
     const p = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    const req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({
+      isSubscribed: 0,
+    });
 
     await expectAsync(p).toBeRejected();
     await expectAsync(
@@ -428,43 +528,52 @@ describe('FeedService', () => {
   }));
 
   it('should `customTitle`', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
     const customTitle = 'Custom Title';
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        customTitle,
-      }),
-    );
-
-    let feed = await firstValueFrom(
+    let feedPromise = firstValueFrom(
       feedService.get('http://www.fake.com/rss.xml'),
     );
 
+    let req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({
+      customTitle,
+    });
+
+    let feed = await feedPromise;
     expect(feed.customTitle).toBe(customTitle);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        customTitle: null,
-      }),
+    feedPromise = firstValueFrom(
+      feedService.get('http://www.fake.com/rss.xml'),
     );
 
-    feed = await firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+    req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({
+      customTitle: null,
+    });
 
+    feed = await feedPromise;
     expect(feed.customTitle).toBeNull();
   }));
 
   it('should `customTitle` type error', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
-
-    httpClientSpy.get.and.returnValue(
-      of({
-        customTitle: 0,
-      }),
-    );
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
     const p = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    const req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({
+      customTitle: 0,
+    });
 
     await expectAsync(p).toBeRejected();
     await expectAsync(
@@ -473,33 +582,38 @@ describe('FeedService', () => {
   }));
 
   it('should `calculatedTitle`', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
     const calculatedTitle = 'A Calculated Title';
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        calculatedTitle,
-      }),
-    );
-
-    const feed = await firstValueFrom(
+    const feedPromise = firstValueFrom(
       feedService.get('http://www.fake.com/rss.xml'),
     );
 
+    const req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({
+      calculatedTitle,
+    });
+
+    const feed = await feedPromise;
     expect(feed.calculatedTitle).toBe(calculatedTitle);
   }));
 
   it('should `calculatedTitle` type error', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
-
-    httpClientSpy.get.and.returnValue(
-      of({
-        calculatedTitle: 0,
-      }),
-    );
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
     const p = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+
+    const req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({
+      calculatedTitle: 0,
+    });
 
     await expectAsync(p).toBeRejected();
     await expectAsync(
@@ -508,50 +622,60 @@ describe('FeedService', () => {
   }));
 
   it('should `userCategoryUuids`', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
     const userCategoryUuids = ['123e4567-e89b-12d3-a456-426614174000'];
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        userCategoryUuids,
-      }),
-    );
-
-    const feed = await firstValueFrom(
+    const feedPromise = firstValueFrom(
       feedService.get('http://www.fake.com/rss.xml'),
     );
 
+    const req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({
+      userCategoryUuids,
+    });
+
+    const feed = await feedPromise;
     expect(feed.userCategoryUuids).toEqual(userCategoryUuids);
   }));
 
   it('should `userCategoryUuids` type error', fakeAsync(async () => {
-    const { httpClientSpy, feedService } = setup();
+    const httpTesting = TestBed.inject(HttpTestingController);
+    const feedService = TestBed.inject(FeedService);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        userCategoryUuids: 0,
-      }),
+    let feedPromise = firstValueFrom(
+      feedService.get('http://www.fake.com/rss.xml'),
     );
 
-    const p1 = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+    let req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({
+      userCategoryUuids: 0,
+    });
 
-    await expectAsync(p1).toBeRejected();
+    await expectAsync(feedPromise).toBeRejected();
     await expectAsync(
-      p1.catch(reason => reason.constructor.name),
+      feedPromise.catch(reason => reason.constructor.name),
     ).toBeResolvedTo(z.ZodError.name);
 
-    httpClientSpy.get.and.returnValue(
-      of({
-        userCategoryUuids: [0],
-      }),
+    feedPromise = firstValueFrom(
+      feedService.get('http://www.fake.com/rss.xml'),
     );
 
-    const p2 = firstValueFrom(feedService.get('http://www.fake.com/rss.xml'));
+    req = httpTesting.expectOne(
+      r => r.method === 'GET' && /\/api\/feed/.test(r.url),
+    );
+    req.flush({
+      userCategoryUuids: [0],
+    });
 
-    await expectAsync(p2).toBeRejected();
+    await expectAsync(feedPromise).toBeRejected();
     await expectAsync(
-      p2.catch(reason => reason.constructor.name),
+      feedPromise.catch(reason => reason.constructor.name),
     ).toBeResolvedTo(z.ZodError.name);
   }));
 });

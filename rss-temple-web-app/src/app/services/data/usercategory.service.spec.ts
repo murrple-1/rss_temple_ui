@@ -102,6 +102,7 @@ describe('UserCategoryService', () => {
     const reqs = httpTesting.match(
       r => r.method === 'POST' && /\/api\/usercategories\/query/.test(r.url),
     );
+    expect(reqs.length).toBe(1);
     for (const req of reqs) {
       req.flush({
         totalCount: 0,
@@ -157,8 +158,8 @@ describe('UserCategoryService', () => {
 
     const applyPromise = firstValueFrom(
       userCategoryService.apply({
-        '123e4567-e89b-12d3-a456-426614174000': new Set([
-          '123e4567-e89b-12d3-a456-426614174001',
+        '123e4567-e89b-12d3-a456-426614174020': new Set([
+          '123e4567-e89b-12d3-a456-426614174021',
         ]),
       }),
       { defaultValue: undefined },
@@ -204,7 +205,7 @@ describe('UserCategoryService', () => {
         new RegExp(`/api/usercategory/${UUID}`).test(r.url),
     );
     req.flush({
-      uuid: '123e4567-e89b-12d3-a456-426614174000',
+      uuid: UUID,
     });
 
     const user = await userPromise;
