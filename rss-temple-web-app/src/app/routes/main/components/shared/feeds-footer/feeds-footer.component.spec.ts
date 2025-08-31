@@ -5,7 +5,7 @@ import { FeedsFooterComponent } from './feeds-footer.component';
 describe('FeedsFooterComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FeedsFooterComponent],
+      imports: [FeedsFooterComponent],
     }).compileComponents();
   });
 

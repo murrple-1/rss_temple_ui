@@ -54,8 +54,6 @@ describe('FeedComponent', () => {
         ClarityModule,
         ShareButtonDirective,
         RouterModule.forRoot([]),
-      ],
-      declarations: [
         FeedComponent,
         VerticalNavComponent,
         SubscribeModalComponent,

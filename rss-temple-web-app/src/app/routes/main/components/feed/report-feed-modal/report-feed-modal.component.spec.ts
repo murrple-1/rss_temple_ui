@@ -15,8 +15,12 @@ import { ReportFeedModalComponent } from './report-feed-modal.component';
 describe('ReportFeedModalComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FormsModule, BrowserAnimationsModule, ClarityModule],
-      declarations: [ReportFeedModalComponent],
+      imports: [
+        FormsModule,
+        BrowserAnimationsModule,
+        ClarityModule,
+        ReportFeedModalComponent,
+      ],
       providers: [
         provideHttpClient(),
         {

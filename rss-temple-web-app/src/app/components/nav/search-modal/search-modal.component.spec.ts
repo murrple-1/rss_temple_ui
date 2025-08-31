@@ -8,8 +8,12 @@ import { SearchModalComponent } from './search-modal.component';
 describe('SearchModalComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, FormsModule, ClarityModule],
-      declarations: [SearchModalComponent],
+      imports: [
+        BrowserAnimationsModule,
+        FormsModule,
+        ClarityModule,
+        SearchModalComponent,
+      ],
     }).compileComponents();
   });
 

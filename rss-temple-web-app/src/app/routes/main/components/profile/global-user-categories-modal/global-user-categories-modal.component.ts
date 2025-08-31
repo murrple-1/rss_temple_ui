@@ -1,4 +1,12 @@
 import { Component, NgZone, OnDestroy, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import {
+  ClrDatagridModule,
+  ClrInputModule,
+  ClrModalModule,
+  ClrPopoverHostDirective,
+  ClrStopEscapePropagationDirective,
+} from '@clr/angular';
 import { Observable, Subject, firstValueFrom, forkJoin } from 'rxjs';
 import { map, take, takeUntil } from 'rxjs/operators';
 
@@ -19,7 +27,14 @@ interface CategoryDescriptor {
   selector: 'app-global-user-categories-modal',
   templateUrl: './global-user-categories-modal.component.html',
   styleUrls: ['./global-user-categories-modal.component.scss'],
-  standalone: false,
+  imports: [
+    ClrModalModule,
+    FormsModule,
+    ClrInputModule,
+    ClrDatagridModule,
+    ClrStopEscapePropagationDirective,
+    ClrPopoverHostDirective,
+  ],
 })
 export class GlobalUserCategoriesModalComponent implements OnDestroy {
   private zone = inject(NgZone);

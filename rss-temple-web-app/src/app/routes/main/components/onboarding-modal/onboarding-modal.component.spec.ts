@@ -15,8 +15,12 @@ import { OnboardingModalComponent } from './onboarding-modal.component';
 describe('OnboardingModalComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, ClarityModule],
-      declarations: [OnboardingModalComponent, LocalAlertsComponent],
+      imports: [
+        BrowserAnimationsModule,
+        ClarityModule,
+        OnboardingModalComponent,
+        LocalAlertsComponent,
+      ],
       providers: [
         provideHttpClient(),
         {

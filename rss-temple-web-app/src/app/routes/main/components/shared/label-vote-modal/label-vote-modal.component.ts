@@ -1,4 +1,10 @@
 import { Component, NgZone, OnDestroy, inject } from '@angular/core';
+import {
+  ClrDatagridModule,
+  ClrModalModule,
+  ClrPopoverHostDirective,
+  ClrStopEscapePropagationDirective,
+} from '@clr/angular';
 import { Subject, firstValueFrom } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 
@@ -10,7 +16,12 @@ import { ClassifierLabelService } from '@app/services/data';
   selector: 'app-label-vote-modal',
   templateUrl: './label-vote-modal.component.html',
   styleUrls: ['./label-vote-modal.component.scss'],
-  standalone: false,
+  imports: [
+    ClrModalModule,
+    ClrDatagridModule,
+    ClrStopEscapePropagationDirective,
+    ClrPopoverHostDirective,
+  ],
 })
 export class LabelVoteModalComponent implements OnDestroy {
   private zone = inject(NgZone);

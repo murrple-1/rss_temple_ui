@@ -1,3 +1,4 @@
+import { AsyncPipe } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
@@ -9,7 +10,20 @@ import {
   ViewChildren,
   inject,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import {
+  ClrAccordionModule,
+  ClrCheckboxModule,
+  ClrCommonFormsModule,
+  ClrConditionalModule,
+  ClrDatagridModule,
+  ClrIconModule,
+  ClrInputModule,
+  ClrPopoverHostDirective,
+  ClrStopEscapePropagationDirective,
+  ClrTooltipModule,
+} from '@clr/angular';
 import { Observable, combineLatest, forkJoin, of } from 'rxjs';
 import { map, mergeMap, startWith, takeUntil, tap } from 'rxjs/operators';
 
@@ -35,6 +49,17 @@ import { AppAlertsService } from '@app/services';
 import { FeedService, UserCategoryService } from '@app/services/data';
 import { Sort } from '@app/services/data/sort.interface';
 
+import { InfiniteScrollDirective } from '../../directives/infinite-scroll.directive';
+import { InViewportDirective } from '../../directives/inviewport.directive';
+import { FeedEntryViewComponent as FeedEntryViewComponent_1 } from '../shared/feed-entry-view/feed-entry-view.component';
+import { ReportFeedEntryModalComponent } from '../shared/feed-entry-view/report-feed-entry-modal/report-feed-entry-modal.component';
+import { FeedsFooterComponent } from '../shared/feeds-footer/feeds-footer.component';
+import { LabelVoteModalComponent } from '../shared/label-vote-modal/label-vote-modal.component';
+import { ShareModalComponent } from '../shared/share-modal/share-modal.component';
+import { VerticalNavComponent } from '../shared/vertical-nav/vertical-nav.component';
+import { ReportFeedModalComponent as ReportFeedModalComponent_1 } from './report-feed-modal/report-feed-modal.component';
+import { UserCategoriesModalComponent as UserCategoriesModalComponent_1 } from './user-categories-modal/user-categories-modal.component';
+
 type FeedImpl = BaseFeedImpl &
   Required<
     Pick<
@@ -55,7 +80,30 @@ type UserCategoryImpl = Required<Pick<UserCategory, 'text'>>;
 @Component({
   templateUrl: './feed.component.html',
   styleUrls: ['./feed.component.scss'],
-  standalone: false,
+  imports: [
+    VerticalNavComponent,
+    InfiniteScrollDirective,
+    ClrAccordionModule,
+    ClrDatagridModule,
+    ClrConditionalModule,
+    ClrInputModule,
+    ClrCommonFormsModule,
+    FormsModule,
+    ClrCheckboxModule,
+    ClrIconModule,
+    ClrStopEscapePropagationDirective,
+    ClrPopoverHostDirective,
+    ClrTooltipModule,
+    FeedEntryViewComponent_1,
+    InViewportDirective,
+    FeedsFooterComponent,
+    UserCategoriesModalComponent_1,
+    ShareModalComponent,
+    LabelVoteModalComponent,
+    ReportFeedEntryModalComponent,
+    ReportFeedModalComponent_1,
+    AsyncPipe,
+  ],
 })
 export class FeedComponent extends AbstractFeedsComponent implements OnInit {
   private router = inject(Router);

@@ -1,4 +1,6 @@
 import { Component, NgZone, OnDestroy, OnInit, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { ClrAlertModule, ClrIconModule } from '@clr/angular';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -22,7 +24,7 @@ interface TagEntry {
 @Component({
   templateUrl: './explore.component.html',
   styleUrls: ['./explore.component.scss'],
-  standalone: false,
+  imports: [ClrIconModule, ClrAlertModule, RouterLink],
 })
 export class ExploreComponent implements OnInit, OnDestroy {
   private zone = inject(NgZone);

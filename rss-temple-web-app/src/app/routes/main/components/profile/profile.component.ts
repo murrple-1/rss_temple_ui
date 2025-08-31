@@ -1,3 +1,4 @@
+import { AsyncPipe, DecimalPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   Component,
@@ -7,8 +8,18 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
+import {
+  ClrAccordionModule,
+  ClrAlertModule,
+  ClrCommonFormsModule,
+  ClrConditionalModule,
+  ClrDatagridModule,
+  ClrIconModule,
+  ClrInputModule,
+  ClrSpinnerModule,
+} from '@clr/angular';
 import { saveAs } from 'file-saver';
 import { Observable, Subject, forkJoin } from 'rxjs';
 import { map, skip, takeUntil } from 'rxjs/operators';
@@ -47,6 +58,12 @@ import {
   UserMetaService,
 } from '@app/services/data';
 
+import { PasswordValidatorDirective } from '../../../../directives/password-validator.directive';
+import { PasswordsMatchValidatorDirective } from '../../../../directives/passwords-match-validator.directive';
+import { DeleteUserConfirm1ModalComponent as DeleteUserConfirm1ModalComponent_1 } from './delete-user-confirm1-modal/delete-user-confirm1-modal.component';
+import { DeleteUserConfirm2ModalComponent as DeleteUserConfirm2ModalComponent_1 } from './delete-user-confirm2-modal/delete-user-confirm2-modal.component';
+import { GlobalUserCategoriesModalComponent as GlobalUserCategoriesModalComponent_1 } from './global-user-categories-modal/global-user-categories-modal.component';
+
 enum State {
   IsLoading,
   LoadSuccess,
@@ -59,7 +76,24 @@ enum State {
 @Component({
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ClrCommonFormsModule,
+    PasswordsMatchValidatorDirective,
+    ClrSpinnerModule,
+    ClrInputModule,
+    PasswordValidatorDirective,
+    ClrAccordionModule,
+    ClrDatagridModule,
+    ClrConditionalModule,
+    ClrIconModule,
+    ClrAlertModule,
+    GlobalUserCategoriesModalComponent_1,
+    DeleteUserConfirm1ModalComponent_1,
+    DeleteUserConfirm2ModalComponent_1,
+    AsyncPipe,
+    DecimalPipe,
+  ],
 })
 export class ProfileComponent implements OnInit, OnDestroy {
   private zone = inject(NgZone);

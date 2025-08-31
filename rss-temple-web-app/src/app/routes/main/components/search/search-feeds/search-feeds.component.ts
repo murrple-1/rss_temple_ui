@@ -1,6 +1,17 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { NavigationEnd } from '@angular/router';
-import { ClrLoadingState } from '@clr/angular';
+import { FormsModule } from '@angular/forms';
+import { NavigationEnd, RouterLink } from '@angular/router';
+import {
+  ClrAccordionModule,
+  ClrCommonFormsModule,
+  ClrConditionalModule,
+  ClrDatagridModule,
+  ClrInputModule,
+  ClrLoadingButtonModule,
+  ClrLoadingModule,
+  ClrLoadingState,
+  ClrSpinnerModule,
+} from '@clr/angular';
 import { combineLatest, of } from 'rxjs';
 import { map, startWith, takeUntil } from 'rxjs/operators';
 
@@ -29,7 +40,18 @@ const Count = 10;
 @Component({
   templateUrl: './search-feeds.component.html',
   styleUrls: ['./search-feeds.component.scss'],
-  standalone: false,
+  imports: [
+    ClrAccordionModule,
+    ClrDatagridModule,
+    ClrConditionalModule,
+    FormsModule,
+    ClrCommonFormsModule,
+    ClrInputModule,
+    ClrLoadingButtonModule,
+    ClrLoadingModule,
+    RouterLink,
+    ClrSpinnerModule,
+  ],
 })
 export class SearchFeedsComponent
   extends AbstractSearchComponent

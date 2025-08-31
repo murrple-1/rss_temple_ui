@@ -20,8 +20,6 @@ describe('RequestPasswordResetModalComponent', () => {
         BrowserAnimationsModule,
         ClarityModule,
         RouterModule.forRoot([]),
-      ],
-      declarations: [
         RequestPasswordResetModalComponent,
         EmailValidatorDirective,
       ],

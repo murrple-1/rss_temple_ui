@@ -27,8 +27,6 @@ describe('MainComponent', () => {
         BrowserAnimationsModule,
         ClarityModule,
         RouterModule.forRoot([]),
-      ],
-      declarations: [
         MainComponent,
         OnboardingModalComponent,
         LocalAlertsComponent,
@@ -39,7 +37,6 @@ describe('MainComponent', () => {
           provide: APP_BASE_HREF,
           useValue: '/',
         },
-
         {
           provide: AuthService,
           useValue: mockAuthService,

@@ -1,4 +1,9 @@
 import { Component, inject } from '@angular/core';
+import {
+  ClrAccordionModule,
+  ClrConditionalModule,
+  ClrDatagridModule,
+} from '@clr/angular';
 import { z } from 'zod';
 
 import osLicenses from '@app/os-licenses.json';
@@ -45,7 +50,7 @@ interface DonationBadge {
 @Component({
   templateUrl: './support.component.html',
   styleUrls: ['./support.component.scss'],
-  standalone: false,
+  imports: [ClrAccordionModule, ClrDatagridModule, ClrConditionalModule],
 })
 export class SupportComponent {
   readonly issueTrackerUrl: string;

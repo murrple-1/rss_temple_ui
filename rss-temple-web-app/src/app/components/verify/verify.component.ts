@@ -1,5 +1,7 @@
-﻿import { Component, NgZone, OnDestroy, OnInit, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+﻿import { NgClass } from '@angular/common';
+import { Component, NgZone, OnDestroy, OnInit, inject } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ClrAlertModule, ClrIconModule } from '@clr/angular';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -17,7 +19,7 @@ enum State {
 @Component({
   templateUrl: './verify.component.html',
   styleUrls: ['./verify.component.scss'],
-  standalone: false,
+  imports: [NgClass, ClrIconModule, ClrAlertModule, RouterLink],
 })
 export class VerifyComponent implements OnInit, OnDestroy {
   private zone = inject(NgZone);

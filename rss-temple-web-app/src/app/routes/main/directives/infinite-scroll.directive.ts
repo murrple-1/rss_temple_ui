@@ -13,10 +13,7 @@ import { debounce } from 'rxjs/operators';
 
 const debouncer = interval(100);
 
-@Directive({
-  selector: '[appInfiniteScroll]',
-  standalone: false,
-})
+@Directive({ selector: '[appInfiniteScroll]' })
 export class InfiniteScrollDirective implements OnInit, OnDestroy {
   private elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
 

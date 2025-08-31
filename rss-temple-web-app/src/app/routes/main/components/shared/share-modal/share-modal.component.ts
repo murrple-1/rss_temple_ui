@@ -1,6 +1,8 @@
 import { Component, OnDestroy, ViewChild } from '@angular/core';
+import { ClrIconModule, ClrModalModule } from '@clr/angular';
 import {
   IShareButton,
+  ShareButtonDirective,
   copyParams,
   emailParams,
   facebookParams,
@@ -24,6 +26,9 @@ import {
   MastodonShareModalComponent,
   openModal as openMastodonShareModal,
 } from '@app/routes/main/components/shared/share-modal/mastodon-share-modal/mastodon-share-modal.component';
+
+import { LemmyShareModalComponent as LemmyShareModalComponent_1 } from './lemmy-share-modal/lemmy-share-modal.component';
+import { MastodonShareModalComponent as MastodonShareModalComponent_1 } from './mastodon-share-modal/mastodon-share-modal.component';
 
 interface _ShareButtonDescriptor {
   iconName: string;
@@ -50,7 +55,13 @@ type ShareButtonDescriptor =
   selector: 'app-share-modal',
   templateUrl: './share-modal.component.html',
   styleUrls: ['./share-modal.component.scss'],
-  standalone: false,
+  imports: [
+    ClrModalModule,
+    ClrIconModule,
+    ShareButtonDirective,
+    LemmyShareModalComponent_1,
+    MastodonShareModalComponent_1,
+  ],
 })
 export class ShareModalComponent implements OnDestroy {
   open = false;

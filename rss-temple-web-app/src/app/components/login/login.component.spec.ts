@@ -25,9 +25,7 @@ import { MockGAuthService } from '@app/test/gauth.service.mock';
 
 import { LoginComponent } from './login.component';
 
-@Component({
-  standalone: false,
-})
+@Component({ imports: [FormsModule, ClarityModule] })
 class MockComponent {}
 
 describe('LoginComponent', () => {
@@ -36,9 +34,7 @@ describe('LoginComponent', () => {
       imports: [
         BrowserAnimationsModule,
         FormsModule,
-
         ClarityModule,
-
         RouterModule.forRoot([
           {
             path: 'main',
@@ -49,8 +45,6 @@ describe('LoginComponent', () => {
             component: MockComponent,
           },
         ]),
-      ],
-      declarations: [
         LoginComponent,
         MockComponent,
         RequestPasswordResetModalComponent,

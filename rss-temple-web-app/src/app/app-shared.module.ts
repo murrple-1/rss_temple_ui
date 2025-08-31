@@ -14,17 +14,16 @@ import { SafeHtmlPipe } from '@app/pipes/safe-html.pipe';
 import { TruncatedNumberPipe } from '@app/pipes/truncated-number.pipe';
 
 @NgModule({
-  imports: [CommonModule, ClarityModule],
-  declarations: [
+  imports: [
+    CommonModule,
+    ClarityModule,
     PasswordValidatorDirective,
     PasswordsMatchValidatorDirective,
     EmailValidatorDirective,
     UrlValidatorDirective,
-
     DateFormatPipe,
     SafeHtmlPipe,
     TruncatedNumberPipe,
-
     ConfirmModalComponent,
     InfoModalComponent,
     LocalAlertsComponent,
@@ -34,11 +33,9 @@ import { TruncatedNumberPipe } from '@app/pipes/truncated-number.pipe';
     PasswordsMatchValidatorDirective,
     EmailValidatorDirective,
     UrlValidatorDirective,
-
     DateFormatPipe,
     SafeHtmlPipe,
     TruncatedNumberPipe,
-
     ConfirmModalComponent,
     InfoModalComponent,
     LocalAlertsComponent,

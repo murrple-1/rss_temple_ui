@@ -1,6 +1,14 @@
 import { Component, NgZone, OnDestroy, ViewChild, inject } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { ClrLoadingState } from '@clr/angular';
+import { FormsModule, NgForm } from '@angular/forms';
+import {
+  ClrCommonFormsModule,
+  ClrLoadingButtonModule,
+  ClrLoadingModule,
+  ClrLoadingState,
+  ClrModalModule,
+  ClrRadioModule,
+  ClrTextareaModule,
+} from '@clr/angular';
 import { Subject, firstValueFrom } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 
@@ -16,7 +24,15 @@ import { ReportService } from '@app/services/data';
   selector: 'app-report-feed-entry-modal',
   templateUrl: './report-feed-entry-modal.component.html',
   styleUrls: ['./report-feed-entry-modal.component.scss'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ClrCommonFormsModule,
+    ClrModalModule,
+    ClrRadioModule,
+    ClrTextareaModule,
+    ClrLoadingButtonModule,
+    ClrLoadingModule,
+  ],
 })
 export class ReportFeedEntryModalComponent implements OnDestroy {
   private zone = inject(NgZone);

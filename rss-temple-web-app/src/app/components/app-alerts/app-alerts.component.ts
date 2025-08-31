@@ -1,4 +1,6 @@
+import { NgClass } from '@angular/common';
 import { Component, NgZone, OnDestroy, inject } from '@angular/core';
+import { ClrAlertModule, ClrIconModule } from '@clr/angular';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -9,7 +11,7 @@ import { AppAlertDescriptor } from '@app/services/app-alerts.service';
   selector: 'app-alerts',
   templateUrl: './app-alerts.component.html',
   styleUrls: ['./app-alerts.component.scss'],
-  standalone: false,
+  imports: [NgClass, ClrIconModule, ClrAlertModule],
 })
 export class AppAlertsComponent implements OnDestroy {
   appAlertDescriptors: AppAlertDescriptor[] = [];

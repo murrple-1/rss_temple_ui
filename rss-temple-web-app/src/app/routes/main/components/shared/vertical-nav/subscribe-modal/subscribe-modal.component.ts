@@ -1,7 +1,14 @@
 import { Component, OnDestroy, ViewChild } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
+import {
+  ClrCommonFormsModule,
+  ClrInputModule,
+  ClrModalModule,
+} from '@clr/angular';
 import { Subject, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
+
+import { UrlValidatorDirective } from '../../../../../../directives/url-validator.directive';
 
 export interface SubscriptionDetails {
   feedUrl: string;
@@ -12,7 +19,13 @@ export interface SubscriptionDetails {
   selector: 'app-subscribe-modal',
   templateUrl: './subscribe-modal.component.html',
   styleUrls: ['./subscribe-modal.component.scss'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ClrCommonFormsModule,
+    ClrModalModule,
+    ClrInputModule,
+    UrlValidatorDirective,
+  ],
 })
 export class SubscribeModalComponent implements OnDestroy {
   open = false;

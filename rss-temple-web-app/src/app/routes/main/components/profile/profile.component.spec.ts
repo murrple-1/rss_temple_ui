@@ -37,8 +37,6 @@ describe('ProfileComponent', () => {
         BrowserAnimationsModule,
         ClarityModule,
         RouterModule.forRoot([]),
-      ],
-      declarations: [
         ProfileComponent,
         GlobalUserCategoriesModalComponent,
         DeleteUserConfirm1ModalComponent,

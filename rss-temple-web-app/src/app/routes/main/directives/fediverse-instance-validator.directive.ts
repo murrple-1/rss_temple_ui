@@ -11,7 +11,6 @@ import isValidDomain from 'is-valid-domain';
       multi: true,
     },
   ],
-  standalone: false,
 })
 export class FediverseInstanceValidatorDirective implements Validator {
   validate(control: AbstractControl) {

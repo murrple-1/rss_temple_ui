@@ -1,6 +1,21 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { NavigationEnd } from '@angular/router';
-import { ClrLoadingState } from '@clr/angular';
+import { FormsModule } from '@angular/forms';
+import { NavigationEnd, RouterLink } from '@angular/router';
+import {
+  ClrAccordionModule,
+  ClrComboboxModule,
+  ClrCommonFormsModule,
+  ClrConditionalModule,
+  ClrDatagridModule,
+  ClrDatepickerModule,
+  ClrInputModule,
+  ClrLoadingButtonModule,
+  ClrLoadingModule,
+  ClrLoadingState,
+  ClrPopoverHostDirective,
+  ClrSpinnerModule,
+  ClrStopEscapePropagationDirective,
+} from '@clr/angular';
 import { format as formatDate } from 'date-fns';
 import { where as langsWhere } from 'langs';
 import { Observable, combineLatest, firstValueFrom, of } from 'rxjs';
@@ -8,6 +23,7 @@ import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 import { compare } from '@app/libs/compare.lib';
 import { Feed, FeedEntry } from '@app/models';
+import { DateFormatPipe } from '@app/pipes/dayjs-format.pipe';
 import { HttpErrorService } from '@app/services';
 import { FeedEntryService, FeedService } from '@app/services/data';
 import { Sort } from '@app/services/data/sort.interface';
@@ -68,7 +84,23 @@ function languageSelectCompare(a: LanguageSelect, b: LanguageSelect): number {
 @Component({
   templateUrl: './search-entries.component.html',
   styleUrls: ['./search-entries.component.scss'],
-  standalone: false,
+  imports: [
+    ClrAccordionModule,
+    ClrDatagridModule,
+    ClrConditionalModule,
+    FormsModule,
+    ClrCommonFormsModule,
+    ClrInputModule,
+    ClrStopEscapePropagationDirective,
+    ClrPopoverHostDirective,
+    ClrDatepickerModule,
+    ClrComboboxModule,
+    ClrLoadingButtonModule,
+    ClrLoadingModule,
+    RouterLink,
+    ClrSpinnerModule,
+    DateFormatPipe,
+  ],
 })
 export class SearchEntriesComponent
   extends AbstractSearchComponent

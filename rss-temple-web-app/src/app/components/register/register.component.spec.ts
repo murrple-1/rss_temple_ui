@@ -65,17 +65,13 @@ describe('RegisterComponent', () => {
       imports: [
         FormsModule,
         BrowserAnimationsModule,
-
         ClarityModule,
-
         RouterModule.forRoot([
           {
             path: 'login',
             component: MockComponent,
           },
         ]),
-      ],
-      declarations: [
         RegisterComponent,
         EmailValidatorDirective,
         PasswordValidatorDirective,

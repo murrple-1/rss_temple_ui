@@ -46,27 +46,13 @@ import {
   imports: [
     CommonModule,
     FormsModule,
-
     ClarityModule,
-
     ShareButtonDirective,
-
     AppSharedModule,
-
     RouterModule.forChild(routes),
-  ],
-  providers: [
-    FeedObservableService,
-    SubscribedFeedsFacadeService,
-    UserCategoryObservableService,
-    ReadCounterService,
-    FeedEntryVoteService,
-  ],
-  declarations: [
     InViewportDirective,
     InfiniteScrollDirective,
     FediverseInstanceValidatorDirective,
-
     MainComponent,
     OnboardingModalComponent,
     FeedsComponent,
@@ -91,6 +77,13 @@ import {
     VerticalNavSubscribeModalComponent,
     VerticalNavOPMLModalComponent,
     VerticalNavExposedFeedsModalComponent,
+  ],
+  providers: [
+    FeedObservableService,
+    SubscribedFeedsFacadeService,
+    UserCategoryObservableService,
+    ReadCounterService,
+    FeedEntryVoteService,
   ],
 })
 export class MainModule {}

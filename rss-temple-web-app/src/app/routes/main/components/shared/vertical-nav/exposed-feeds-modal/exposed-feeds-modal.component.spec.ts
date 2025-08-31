@@ -12,8 +12,8 @@ describe('ExposedFeedsModalComponent', () => {
         ClarityModule,
         BrowserAnimationsModule,
         RouterModule.forRoot([]),
+        ExposedFeedsModalComponent,
       ],
-      declarations: [ExposedFeedsModalComponent],
     }).compileComponents();
   });
 

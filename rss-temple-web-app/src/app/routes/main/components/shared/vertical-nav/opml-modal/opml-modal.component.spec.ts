@@ -14,8 +14,8 @@ describe('OPMLModalComponent', () => {
         ClarityModule,
         BrowserAnimationsModule,
         RouterModule.forRoot([]),
+        OPMLModalComponent,
       ],
-      declarations: [OPMLModalComponent],
       providers: [
         {
           provide: OPMLService,

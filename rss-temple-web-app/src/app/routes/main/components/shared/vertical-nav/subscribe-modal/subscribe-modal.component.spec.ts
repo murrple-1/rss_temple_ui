@@ -8,8 +8,12 @@ import { SubscribeModalComponent } from './subscribe-modal.component';
 describe('SubscribeModalComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FormsModule, BrowserAnimationsModule, ClarityModule],
-      declarations: [SubscribeModalComponent],
+      imports: [
+        FormsModule,
+        BrowserAnimationsModule,
+        ClarityModule,
+        SubscribeModalComponent,
+      ],
     }).compileComponents();
   });
 

@@ -1,15 +1,18 @@
 import { Component, OnDestroy, inject } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { ClrModalModule } from '@clr/angular';
 import { Subject, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { ConfigService } from '@app/services';
 
+import { LocalAlertsComponent } from '../../../../components/shared/local-alerts/local-alerts.component';
+
 @Component({
   selector: 'app-onboarding-modal',
   templateUrl: './onboarding-modal.component.html',
   styleUrls: ['./onboarding-modal.component.scss'],
-  standalone: false,
+  imports: [ClrModalModule, LocalAlertsComponent],
 })
 export class OnboardingModalComponent implements OnDestroy {
   open = false;

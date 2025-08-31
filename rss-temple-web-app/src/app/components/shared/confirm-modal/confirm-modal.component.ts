@@ -1,4 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
+import { ClrModalModule } from '@clr/angular';
 import { Subject, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 
@@ -6,7 +7,7 @@ import { take } from 'rxjs/operators';
   selector: 'app-confirm-modal',
   templateUrl: './confirm-modal.component.html',
   styleUrls: ['./confirm-modal.component.scss'],
-  standalone: false,
+  imports: [ClrModalModule],
 })
 export class ConfirmModalComponent implements OnDestroy {
   open = false;

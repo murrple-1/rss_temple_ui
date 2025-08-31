@@ -11,7 +11,6 @@ import { isWebUri } from 'valid-url';
       multi: true,
     },
   ],
-  standalone: false,
 })
 export class UrlValidatorDirective implements Validator {
   validate(control: AbstractControl) {

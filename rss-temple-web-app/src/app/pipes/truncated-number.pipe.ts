@@ -1,10 +1,7 @@
 import { DecimalPipe } from '@angular/common';
 import { LOCALE_ID, Pipe, PipeTransform, inject } from '@angular/core';
 
-@Pipe({
-  name: 'truncateNumber',
-  standalone: false,
-})
+@Pipe({ name: 'truncateNumber' })
 export class TruncatedNumberPipe implements PipeTransform {
   private decimalPipe: DecimalPipe;
 

@@ -17,7 +17,6 @@ import { validatePasswordsMatch } from '@app/libs/password.lib';
       multi: true,
     },
   ],
-  standalone: false,
 })
 export class PasswordsMatchValidatorDirective implements Validator {
   private _validatorEnabled = true;

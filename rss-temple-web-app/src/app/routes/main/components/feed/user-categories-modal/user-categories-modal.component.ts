@@ -1,4 +1,12 @@
 import { Component, Input, NgZone, OnDestroy, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import {
+  ClrDatagridModule,
+  ClrDatalistModule,
+  ClrModalModule,
+  ClrPopoverHostDirective,
+  ClrStopEscapePropagationDirective,
+} from '@clr/angular';
 import { Observable, Subject, firstValueFrom, forkJoin, of } from 'rxjs';
 import { map, mergeMap, take, takeUntil, tap } from 'rxjs/operators';
 
@@ -24,7 +32,14 @@ export interface Result {
   selector: 'app-user-categories-modal',
   templateUrl: './user-categories-modal.component.html',
   styleUrls: ['./user-categories-modal.component.scss'],
-  standalone: false,
+  imports: [
+    ClrModalModule,
+    ClrDatalistModule,
+    FormsModule,
+    ClrDatagridModule,
+    ClrStopEscapePropagationDirective,
+    ClrPopoverHostDirective,
+  ],
 })
 export class UserCategoriesModalComponent implements OnDestroy {
   private zone = inject(NgZone);

@@ -16,8 +16,8 @@ describe('UserCategoriesModalComponent', () => {
         BrowserAnimationsModule,
         ClarityModule,
         RouterModule.forRoot([]),
+        UserCategoriesModalComponent,
       ],
-      declarations: [UserCategoriesModalComponent],
       providers: [
         {
           provide: UserCategoryService,

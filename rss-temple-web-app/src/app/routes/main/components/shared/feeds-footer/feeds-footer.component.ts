@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ClrSpinnerModule } from '@clr/angular';
 
 export enum State {
   Start,
@@ -12,7 +13,7 @@ export enum State {
   selector: 'app-feeds-footer',
   templateUrl: './feeds-footer.component.html',
   styleUrls: ['./feeds-footer.component.scss'],
-  standalone: false,
+  imports: [ClrSpinnerModule],
 })
 export class FeedsFooterComponent {
   @Input()

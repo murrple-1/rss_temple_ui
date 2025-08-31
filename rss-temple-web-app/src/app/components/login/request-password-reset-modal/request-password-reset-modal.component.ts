@@ -1,17 +1,34 @@
 import { Component, NgZone, OnDestroy, ViewChild, inject } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { ClrLoadingState } from '@clr/angular';
+import { FormsModule, NgForm } from '@angular/forms';
+import {
+  ClrCommonFormsModule,
+  ClrInputModule,
+  ClrLoadingButtonModule,
+  ClrLoadingModule,
+  ClrLoadingState,
+  ClrModalModule,
+} from '@clr/angular';
 import { Subject, firstValueFrom } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 
 import { HttpErrorService } from '@app/services';
 import { AuthService } from '@app/services/data';
 
+import { EmailValidatorDirective } from '../../../directives/email-validator.directive';
+
 @Component({
   selector: 'app-request-password-reset-modal',
   templateUrl: './request-password-reset-modal.component.html',
   styleUrls: ['./request-password-reset-modal.component.scss'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ClrCommonFormsModule,
+    ClrModalModule,
+    ClrInputModule,
+    EmailValidatorDirective,
+    ClrLoadingButtonModule,
+    ClrLoadingModule,
+  ],
 })
 export class RequestPasswordResetModalComponent implements OnDestroy {
   private zone = inject(NgZone);

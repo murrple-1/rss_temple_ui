@@ -21,8 +21,8 @@ describe('LemmyShareModalComponent', () => {
         FormsModule,
         ClarityModule,
         ShareButtonDirective,
+        LemmyShareModalComponent,
       ],
-      declarations: [LemmyShareModalComponent],
       providers: [
         provideHttpClient(),
         {

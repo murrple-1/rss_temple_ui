@@ -1,7 +1,15 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, NgZone, OnDestroy, ViewChild, inject } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { ClrLoadingState } from '@clr/angular';
+import { FormsModule, NgForm } from '@angular/forms';
+import {
+  ClrCommonFormsModule,
+  ClrIconModule,
+  ClrLoadingButtonModule,
+  ClrLoadingModule,
+  ClrLoadingState,
+  ClrModalModule,
+  ClrPasswordModule,
+} from '@clr/angular';
 import { Subject, firstValueFrom } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 
@@ -9,11 +17,22 @@ import { AlertEntry } from '@app/components/shared/local-alerts/local-alerts.com
 import { HttpErrorService } from '@app/services';
 import { AuthService } from '@app/services/data';
 
+import { LocalAlertsComponent } from '../../../../../components/shared/local-alerts/local-alerts.component';
+
 @Component({
   selector: 'app-delete-user-confirm2-modal',
   templateUrl: './delete-user-confirm2-modal.component.html',
   styleUrls: ['./delete-user-confirm2-modal.component.scss'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ClrCommonFormsModule,
+    ClrModalModule,
+    ClrIconModule,
+    ClrPasswordModule,
+    LocalAlertsComponent,
+    ClrLoadingButtonModule,
+    ClrLoadingModule,
+  ],
 })
 export class DeleteUserConfirm2ModalComponent implements OnDestroy {
   private zone = inject(NgZone);

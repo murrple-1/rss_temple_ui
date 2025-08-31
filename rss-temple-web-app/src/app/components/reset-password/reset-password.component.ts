@@ -7,8 +7,14 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule, NgForm } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import {
+  ClrAlertModule,
+  ClrCommonFormsModule,
+  ClrIconModule,
+  ClrPasswordModule,
+} from '@clr/angular';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -20,6 +26,9 @@ import {
 } from '@app/libs/password.lib';
 import { AppAlertsService, HttpErrorService } from '@app/services';
 import { AuthService } from '@app/services/data';
+
+import { PasswordValidatorDirective } from '../../directives/password-validator.directive';
+import { PasswordsMatchValidatorDirective } from '../../directives/passwords-match-validator.directive';
 
 enum State {
   NotStarted,
@@ -33,7 +42,16 @@ enum State {
 @Component({
   templateUrl: './reset-password.component.html',
   styleUrls: ['./reset-password.component.scss'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ClrCommonFormsModule,
+    PasswordsMatchValidatorDirective,
+    ClrPasswordModule,
+    PasswordValidatorDirective,
+    ClrIconModule,
+    ClrAlertModule,
+    RouterLink,
+  ],
 })
 export class ResetPasswordComponent implements OnInit, OnDestroy {
   private router = inject(Router);

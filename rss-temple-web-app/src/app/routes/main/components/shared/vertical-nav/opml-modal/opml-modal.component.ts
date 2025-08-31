@@ -1,3 +1,4 @@
+import { DecimalPipe } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -6,6 +7,13 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
+import {
+  ClrAlertModule,
+  ClrCommonFormsModule,
+  ClrIconModule,
+  ClrInputModule,
+  ClrModalModule,
+} from '@clr/angular';
 import { Subject, firstValueFrom } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 
@@ -21,7 +29,14 @@ interface ProgressStatus {
   selector: 'app-opml-modal',
   templateUrl: './opml-modal.component.html',
   styleUrls: ['./opml-modal.component.scss'],
-  standalone: false,
+  imports: [
+    ClrModalModule,
+    ClrInputModule,
+    ClrCommonFormsModule,
+    ClrIconModule,
+    ClrAlertModule,
+    DecimalPipe,
+  ],
 })
 export class OPMLModalComponent implements OnDestroy {
   private zone = inject(NgZone);

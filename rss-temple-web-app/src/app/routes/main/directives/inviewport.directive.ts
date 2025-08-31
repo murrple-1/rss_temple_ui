@@ -74,10 +74,7 @@ function getContainerScrollObservable(scrollParentNativeElement: HTMLElement) {
   return observable;
 }
 
-@Directive({
-  selector: '[appInViewport]',
-  standalone: false,
-})
+@Directive({ selector: '[appInViewport]' })
 export class InViewportDirective implements OnInit, OnDestroy {
   private elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
 

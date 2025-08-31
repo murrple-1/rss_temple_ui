@@ -1,3 +1,4 @@
+import { AsyncPipe, DecimalPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   Component,
@@ -7,7 +8,19 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import {
+  NavigationEnd,
+  Router,
+  RouterLink,
+  RouterLinkActive,
+} from '@angular/router';
+import {
+  ClrCommonFormsModule,
+  ClrIconModule,
+  ClrNavigationModule,
+  ClrStandaloneCdkTrapFocus,
+  ClrVerticalNavModule,
+} from '@clr/angular';
 import { Observable, Subject, forkJoin, of } from 'rxjs';
 import { filter, map, mergeMap, startWith, takeUntil } from 'rxjs/operators';
 
@@ -17,6 +30,7 @@ import {
 } from '@app/components/shared/info-modal/info-modal.component';
 import { compare } from '@app/libs/compare.lib';
 import { Feed, UserCategory } from '@app/models';
+import { TruncatedNumberPipe } from '@app/pipes/truncated-number.pipe';
 import {
   ExposedFeedsModalComponent,
   openModal as openExposedFeedsModal,
@@ -42,6 +56,11 @@ import {
 } from '@app/services';
 import { FeedService, UserCategoryService } from '@app/services/data';
 import { Sort } from '@app/services/data/sort.interface';
+
+import { InfoModalComponent as InfoModalComponent_1 } from '../../../../../components/shared/info-modal/info-modal.component';
+import { ExposedFeedsModalComponent as ExposedFeedsModalComponent_1 } from './exposed-feeds-modal/exposed-feeds-modal.component';
+import { OPMLModalComponent as OPMLModalComponent_1 } from './opml-modal/opml-modal.component';
+import { SubscribeModalComponent as SubscribeModalComponent_1 } from './subscribe-modal/subscribe-modal.component';
 
 type UserCategoryImpl = Required<Pick<UserCategory, 'text' | 'feedUuids'>>;
 type FeedImpl = Required<
@@ -74,7 +93,22 @@ interface CategorizedFeeds {
   selector: 'app-vertical-nav',
   templateUrl: './vertical-nav.component.html',
   styleUrls: ['./vertical-nav.component.scss'],
-  standalone: false,
+  imports: [
+    ClrVerticalNavModule,
+    ClrStandaloneCdkTrapFocus,
+    ClrNavigationModule,
+    RouterLink,
+    ClrIconModule,
+    RouterLinkActive,
+    ClrCommonFormsModule,
+    SubscribeModalComponent_1,
+    OPMLModalComponent_1,
+    ExposedFeedsModalComponent_1,
+    InfoModalComponent_1,
+    AsyncPipe,
+    DecimalPipe,
+    TruncatedNumberPipe,
+  ],
 })
 export class VerticalNavComponent implements OnInit, OnDestroy {
   private zone = inject(NgZone);

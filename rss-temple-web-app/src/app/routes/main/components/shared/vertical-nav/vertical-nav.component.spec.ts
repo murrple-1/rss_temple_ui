@@ -32,8 +32,6 @@ describe('VerticalNavComponent', () => {
         BrowserAnimationsModule,
         ClarityModule,
         RouterModule.forRoot([]),
-      ],
-      declarations: [
         VerticalNavComponent,
         SubscribeModalComponent,
         OPMLModalComponent,

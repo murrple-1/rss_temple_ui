@@ -1,3 +1,4 @@
+import { AsyncPipe, NgClass } from '@angular/common';
 import {
   Component,
   NgZone,
@@ -6,12 +7,20 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import {
   ActivatedRoute,
   ActivatedRouteSnapshot,
   NavigationEnd,
   Router,
+  RouterLink,
 } from '@angular/router';
+import {
+  ClrCommonFormsModule,
+  ClrIconModule,
+  ClrNavigationModule,
+  ClrStandaloneCdkTrapFocus,
+} from '@clr/angular';
 import { Observable, Subject } from 'rxjs';
 import { filter, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { z } from 'zod';
@@ -31,6 +40,9 @@ import {
   ThemeService,
 } from '@app/services';
 import { AuthService } from '@app/services/data';
+
+import { ConfirmModalComponent as ConfirmModalComponent_1 } from '../shared/confirm-modal/confirm-modal.component';
+import { SearchModalComponent as SearchModalComponent_1 } from './search-modal/search-modal.component';
 
 const ZExtraNavLink = z.object({
   title: z.string(),
@@ -65,7 +77,18 @@ interface NavAction {
   selector: 'app-nav',
   templateUrl: './nav.component.html',
   styleUrls: ['./nav.component.scss'],
-  standalone: false,
+  imports: [
+    ClrStandaloneCdkTrapFocus,
+    ClrNavigationModule,
+    RouterLink,
+    NgClass,
+    FormsModule,
+    ClrCommonFormsModule,
+    ClrIconModule,
+    ConfirmModalComponent_1,
+    SearchModalComponent_1,
+    AsyncPipe,
+  ],
 })
 export class NavComponent implements OnInit, OnDestroy {
   private zone = inject(NgZone);

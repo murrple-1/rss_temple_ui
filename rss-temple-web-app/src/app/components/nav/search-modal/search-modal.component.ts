@@ -5,6 +5,12 @@ import {
   OnDestroy,
   Output,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import {
+  ClrCommonFormsModule,
+  ClrInputModule,
+  ClrModalModule,
+} from '@clr/angular';
 import { Subject, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 
@@ -12,7 +18,7 @@ import { take } from 'rxjs/operators';
   selector: 'app-search-modal',
   templateUrl: './search-modal.component.html',
   styleUrls: ['./search-modal.component.scss'],
-  standalone: false,
+  imports: [FormsModule, ClrCommonFormsModule, ClrModalModule, ClrInputModule],
 })
 export class SearchModalComponent implements OnDestroy {
   open = false;

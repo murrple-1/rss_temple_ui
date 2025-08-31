@@ -8,9 +8,20 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { Router } from '@angular/router';
-import { ClrLoadingState } from '@clr/angular';
+import { FormsModule, NgForm } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import {
+  ClrAccordionModule,
+  ClrAlertModule,
+  ClrCommonFormsModule,
+  ClrConditionalModule,
+  ClrDatagridModule,
+  ClrIconModule,
+  ClrInputModule,
+  ClrLoadingButtonModule,
+  ClrLoadingModule,
+  ClrLoadingState,
+} from '@clr/angular';
 import { Subject, forkJoin } from 'rxjs';
 import { mergeMap, takeUntil, tap } from 'rxjs/operators';
 import { z } from 'zod';
@@ -27,12 +38,33 @@ import {
 import { AppAlertsService, ModalOpenService } from '@app/services';
 import { CaptchaService, RegistrationService } from '@app/services/data';
 
+import { EmailValidatorDirective } from '../../directives/email-validator.directive';
+import { PasswordValidatorDirective } from '../../directives/password-validator.directive';
+import { PasswordsMatchValidatorDirective } from '../../directives/passwords-match-validator.directive';
+import { InfoModalComponent as InfoModalComponent_1 } from '../shared/info-modal/info-modal.component';
+
 const Z422Error = z.record(z.string(), z.unknown());
 
 @Component({
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ClrCommonFormsModule,
+    PasswordsMatchValidatorDirective,
+    ClrInputModule,
+    EmailValidatorDirective,
+    PasswordValidatorDirective,
+    ClrAccordionModule,
+    ClrDatagridModule,
+    ClrConditionalModule,
+    ClrIconModule,
+    ClrAlertModule,
+    ClrLoadingButtonModule,
+    ClrLoadingModule,
+    RouterLink,
+    InfoModalComponent_1,
+  ],
 })
 export class RegisterComponent implements OnInit, OnDestroy {
   private router = inject(Router);

@@ -24,8 +24,8 @@ describe('ExploreComponent', () => {
         BrowserAnimationsModule,
         ClarityModule,
         RouterModule.forRoot([]),
+        ExploreComponent,
       ],
-      declarations: [ExploreComponent],
       providers: [
         {
           provide: FeedService,

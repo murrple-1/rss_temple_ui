@@ -10,8 +10,12 @@ import { LabelVoteModalComponent } from './label-vote-modal.component';
 describe('LabelVoteModalComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, ClarityModule, ShareButtonDirective],
-      declarations: [LabelVoteModalComponent],
+      imports: [
+        BrowserAnimationsModule,
+        ClarityModule,
+        ShareButtonDirective,
+        LabelVoteModalComponent,
+      ],
       providers: [
         {
           provide: ClassifierLabelService,

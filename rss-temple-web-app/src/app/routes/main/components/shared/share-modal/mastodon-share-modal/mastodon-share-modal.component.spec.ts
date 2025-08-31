@@ -21,8 +21,8 @@ describe('MastodonShareModalComponent', () => {
         FormsModule,
         ClarityModule,
         ShareButtonDirective,
+        MastodonShareModalComponent,
       ],
-      declarations: [MastodonShareModalComponent],
       providers: [
         provideHttpClient(),
         {

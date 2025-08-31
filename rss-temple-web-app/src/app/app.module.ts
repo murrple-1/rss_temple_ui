@@ -194,8 +194,15 @@ export function configFactory(configService: ConfigService) {
 }
 
 @NgModule({
-  declarations: [
-    AppComponent,
+  declarations: [AppComponent],
+  bootstrap: [AppComponent],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    FormsModule,
+    ClarityModule,
+    AppSharedModule,
+    RouterModule.forRoot(routes, { onSameUrlNavigation: 'reload' }),
     NavComponent,
     SearchModalComponent,
     SubNavComponent,
@@ -207,15 +214,6 @@ export function configFactory(configService: ConfigService) {
     VerifyComponent,
     SupportComponent,
     CookieConsentSnackbarComponent,
-  ],
-  bootstrap: [AppComponent],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    FormsModule,
-    ClarityModule,
-    AppSharedModule,
-    RouterModule.forRoot(routes, { onSameUrlNavigation: 'reload' }),
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),

@@ -1,4 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
+import { ClrIconModule, ClrModalModule } from '@clr/angular';
 import { Subject, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 
@@ -8,7 +9,7 @@ export type InfoType = 'info' | 'success' | 'warning' | 'danger' | 'none';
   selector: 'app-info-modal',
   templateUrl: './info-modal.component.html',
   styleUrls: ['./info-modal.component.scss'],
-  standalone: false,
+  imports: [ClrModalModule, ClrIconModule],
 })
 export class InfoModalComponent implements OnDestroy {
   open = false;

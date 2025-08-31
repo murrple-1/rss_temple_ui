@@ -17,8 +17,9 @@ describe('ResetPasswordComponent', () => {
         BrowserAnimationsModule,
         ClarityModule,
         RouterModule.forRoot([]),
+        ResetPasswordComponent,
+        PasswordsMatchValidatorDirective,
       ],
-      declarations: [ResetPasswordComponent, PasswordsMatchValidatorDirective],
       providers: [
         {
           provide: AuthService,

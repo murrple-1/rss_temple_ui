@@ -10,9 +10,18 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ClrLoadingState } from '@clr/angular';
+import { FormsModule, NgForm } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import {
+  ClrCheckboxModule,
+  ClrCommonFormsModule,
+  ClrIconModule,
+  ClrInputModule,
+  ClrLoadingButtonModule,
+  ClrLoadingModule,
+  ClrLoadingState,
+  ClrPasswordModule,
+} from '@clr/angular';
 import { Subject } from 'rxjs';
 import { skip, takeUntil } from 'rxjs/operators';
 
@@ -31,6 +40,9 @@ import {
 } from '@app/services';
 import { AuthService, SocialService } from '@app/services/data';
 
+import { LocalAlertsComponent } from '../shared/local-alerts/local-alerts.component';
+import { RequestPasswordResetModalComponent as RequestPasswordResetModalComponent_1 } from './request-password-reset-modal/request-password-reset-modal.component';
+
 function getCachedEmail() {
   return localStorage.getItem('login:cachedEmail');
 }
@@ -46,7 +58,19 @@ function removeCachedEmailFromStorage() {
 @Component({
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ClrCommonFormsModule,
+    ClrInputModule,
+    ClrPasswordModule,
+    ClrCheckboxModule,
+    LocalAlertsComponent,
+    ClrLoadingButtonModule,
+    ClrLoadingModule,
+    RouterLink,
+    ClrIconModule,
+    RequestPasswordResetModalComponent_1,
+  ],
 })
 export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
   private zone = inject(NgZone);

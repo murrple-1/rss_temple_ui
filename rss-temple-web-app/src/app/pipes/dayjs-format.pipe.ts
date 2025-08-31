@@ -1,10 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { FormatOptions, format } from 'date-fns';
 
-@Pipe({
-  name: 'dateFormat',
-  standalone: false,
-})
+@Pipe({ name: 'dateFormat' })
 export class DateFormatPipe implements PipeTransform {
   transform(
     value: Date | null | undefined,

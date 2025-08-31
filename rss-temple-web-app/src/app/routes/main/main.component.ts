@@ -6,6 +6,7 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -16,10 +17,12 @@ import {
 import { AuthStateService, ModalOpenService } from '@app/services';
 import { AuthService } from '@app/services/data';
 
+import { OnboardingModalComponent as OnboardingModalComponent_1 } from './components/onboarding-modal/onboarding-modal.component';
+
 @Component({
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss'],
-  standalone: false,
+  imports: [RouterOutlet, OnboardingModalComponent_1],
 })
 export class MainComponent implements OnInit, OnDestroy {
   private zone = inject(NgZone);

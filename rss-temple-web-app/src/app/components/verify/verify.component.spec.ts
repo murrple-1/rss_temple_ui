@@ -8,8 +8,7 @@ import { VerifyComponent } from './verify.component';
 describe('VerifyComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterModule.forRoot([])],
-      declarations: [VerifyComponent],
+      imports: [RouterModule.forRoot([]), VerifyComponent],
       providers: [
         {
           provide: RegistrationService,

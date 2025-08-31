@@ -7,17 +7,30 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
+import {
+  ClrCommonFormsModule,
+  ClrDatalistModule,
+  ClrModalModule,
+} from '@clr/angular';
 import { Subject, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { ConfigService } from '@app/services';
 
+import { FediverseInstanceValidatorDirective } from '../../../../directives/fediverse-instance-validator.directive';
+
 @Component({
   selector: 'app-mastodon-share-modal',
   templateUrl: './mastodon-share-modal.component.html',
   styleUrls: ['./mastodon-share-modal.component.scss'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    ClrCommonFormsModule,
+    ClrModalModule,
+    ClrDatalistModule,
+    FediverseInstanceValidatorDirective,
+  ],
 })
 export class MastodonShareModalComponent implements OnDestroy {
   open = false;

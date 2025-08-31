@@ -17,8 +17,8 @@ describe('SearchComponent', () => {
         BrowserAnimationsModule,
         ClarityModule,
         RouterModule.forRoot([]),
+        SearchFeedsComponent,
       ],
-      declarations: [SearchFeedsComponent],
       providers: [
         {
           provide: FeedService,

@@ -13,7 +13,7 @@ import { FeedEntryViewComponent } from './feed-entry-view.component';
 describe('FeedEntryViewComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FeedEntryViewComponent, DateFormatPipe],
+      imports: [FeedEntryViewComponent, DateFormatPipe],
       providers: [
         {
           provide: Router,

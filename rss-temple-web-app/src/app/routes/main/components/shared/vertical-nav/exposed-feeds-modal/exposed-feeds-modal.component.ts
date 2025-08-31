@@ -1,4 +1,10 @@
 import { Component, OnDestroy } from '@angular/core';
+import {
+  ClrDatagridModule,
+  ClrModalModule,
+  ClrPopoverHostDirective,
+  ClrStopEscapePropagationDirective,
+} from '@clr/angular';
 import { Subject, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 
@@ -11,7 +17,12 @@ interface ExposedFeed {
   selector: 'app-exposed-feeds-modal',
   templateUrl: './exposed-feeds-modal.component.html',
   styleUrls: ['./exposed-feeds-modal.component.scss'],
-  standalone: false,
+  imports: [
+    ClrModalModule,
+    ClrDatagridModule,
+    ClrStopEscapePropagationDirective,
+    ClrPopoverHostDirective,
+  ],
 })
 export class ExposedFeedsModalComponent implements OnDestroy {
   open = false;

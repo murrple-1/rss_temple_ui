@@ -23,8 +23,6 @@ describe('ShareModalComponent', () => {
         FormsModule,
         ClarityModule,
         ShareButtonDirective,
-      ],
-      declarations: [
         LemmyShareModalComponent,
         MastodonShareModalComponent,
         ShareModalComponent,

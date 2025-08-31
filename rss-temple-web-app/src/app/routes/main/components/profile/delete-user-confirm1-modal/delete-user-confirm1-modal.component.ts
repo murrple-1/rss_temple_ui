@@ -1,4 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
+import { ClrIconModule, ClrModalModule } from '@clr/angular';
 import { Subject, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 
@@ -6,7 +7,7 @@ import { take } from 'rxjs/operators';
   selector: 'app-delete-user-confirm1-modal',
   templateUrl: './delete-user-confirm1-modal.component.html',
   styleUrls: ['./delete-user-confirm1-modal.component.scss'],
-  standalone: false,
+  imports: [ClrModalModule, ClrIconModule],
 })
 export class DeleteUserConfirm1ModalComponent implements OnDestroy {
   open = false;

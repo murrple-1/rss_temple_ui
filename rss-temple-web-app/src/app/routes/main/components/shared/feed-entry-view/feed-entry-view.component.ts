@@ -1,3 +1,4 @@
+import { NgClass } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -6,11 +7,15 @@ import {
   OnDestroy,
   inject,
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { ClrAlertModule, ClrIconModule } from '@clr/angular';
 import { Subject, forkJoin } from 'rxjs';
 import { mergeMap, takeUntil } from 'rxjs/operators';
 
 import { compare } from '@app/libs/compare.lib';
 import { ClassifierLabel, Feed } from '@app/models';
+import { DateFormatPipe } from '@app/pipes/dayjs-format.pipe';
+import { SafeHtmlPipe } from '@app/pipes/safe-html.pipe';
 import { FeedEntryImpl } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 import {
   ReportFeedEntryModalComponent,
@@ -41,7 +46,14 @@ type FeedImpl = Required<Pick<Feed, 'calculatedTitle' | 'homeUrl' | 'feedUrl'>>;
   selector: 'app-feed-entry-view',
   templateUrl: './feed-entry-view.component.html',
   styleUrls: ['./feed-entry-view.component.scss'],
-  standalone: false,
+  imports: [
+    NgClass,
+    ClrIconModule,
+    ClrAlertModule,
+    RouterLink,
+    DateFormatPipe,
+    SafeHtmlPipe,
+  ],
 })
 export class FeedEntryViewComponent implements OnDestroy {
   private zone = inject(NgZone);

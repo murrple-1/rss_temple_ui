@@ -14,8 +14,7 @@ import { SupportComponent } from './support.component';
 describe('SupportComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, ClarityModule],
-      declarations: [SupportComponent],
+      imports: [BrowserAnimationsModule, ClarityModule, SupportComponent],
       providers: [
         provideHttpClient(),
         {
