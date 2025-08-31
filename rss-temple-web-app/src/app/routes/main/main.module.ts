@@ -5,7 +5,6 @@ import { RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { ShareButtonDirective } from 'ngx-sharebuttons';
 
-import { AppSharedModule } from '@app/app-shared.module';
 import { ExploreComponent } from '@app/routes/main/components/explore/explore.component';
 import { FeedComponent } from '@app/routes/main/components/feed/feed.component';
 import { ReportFeedModalComponent } from '@app/routes/main/components/feed/report-feed-modal/report-feed-modal.component';
@@ -48,7 +47,6 @@ import {
     FormsModule,
     ClarityModule,
     ShareButtonDirective,
-    AppSharedModule,
     RouterModule.forChild(routes),
     InViewportDirective,
     InfiniteScrollDirective,

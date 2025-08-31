@@ -42,7 +42,6 @@ import { ClarityModule } from '@clr/angular';
 import { CookieService } from 'ngx-cookie-service';
 import { catchError, firstValueFrom, forkJoin, of } from 'rxjs';
 
-import { AppSharedModule } from '@app/app-shared.module';
 import { AppComponent } from '@app/app.component';
 import { routes } from '@app/app.routing';
 import { AppAlertsComponent } from '@app/components/app-alerts/app-alerts.component';
@@ -201,7 +200,6 @@ export function configFactory(configService: ConfigService) {
     BrowserAnimationsModule,
     FormsModule,
     ClarityModule,
-    AppSharedModule,
     RouterModule.forRoot(routes, { onSameUrlNavigation: 'reload' }),
     NavComponent,
     SearchModalComponent,
