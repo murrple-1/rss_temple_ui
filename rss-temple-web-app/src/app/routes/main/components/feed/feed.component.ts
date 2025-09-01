@@ -1,9 +1,7 @@
 import { AsyncPipe } from '@angular/common';
 import {
-  ChangeDetectorRef,
   Component,
   ElementRef,
-  NgZone,
   OnInit,
   QueryList,
   ViewChild,

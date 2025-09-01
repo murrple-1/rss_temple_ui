@@ -5,7 +5,7 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed, fakeAsync } from '@angular/core/testing';
 import { CookieService } from 'ngx-cookie-service';
-import { firstValueFrom, of } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { z } from 'zod';
 
 import { ZUserCategory } from '@app/models/usercategory';

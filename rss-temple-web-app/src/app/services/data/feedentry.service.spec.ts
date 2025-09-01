@@ -6,7 +6,7 @@ import {
 import { TestBed, fakeAsync } from '@angular/core/testing';
 import { formatISO as formatDateISO, parseISO as parseDateISO } from 'date-fns';
 import { CookieService } from 'ngx-cookie-service';
-import { firstValueFrom, of } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { z } from 'zod';
 
 import { ZFeedEntry } from '@app/models/feedentry';
