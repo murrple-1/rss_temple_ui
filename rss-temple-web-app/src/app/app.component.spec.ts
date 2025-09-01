@@ -26,7 +26,6 @@ import { CookieConsentSnackbarComponent } from './components/cookie-consent-snac
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AppComponent],
       imports: [
         FormsModule,
         BrowserAnimationsModule,
@@ -38,6 +37,7 @@ describe('AppComponent', () => {
         ConfirmModalComponent,
         SearchModalComponent,
         CookieConsentSnackbarComponent,
+        AppComponent,
       ],
       providers: [
         {
