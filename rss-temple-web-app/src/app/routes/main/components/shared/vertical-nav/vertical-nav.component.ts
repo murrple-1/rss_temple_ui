@@ -18,6 +18,7 @@ import {
   ClrCommonFormsModule,
   ClrIconModule,
   ClrNavigationModule,
+  ClrSpinnerModule,
   ClrStandaloneCdkTrapFocus,
   ClrVerticalNavModule,
 } from '@clr/angular';
@@ -97,6 +98,7 @@ interface CategorizedFeeds {
     ClrVerticalNavModule,
     ClrStandaloneCdkTrapFocus,
     ClrNavigationModule,
+    ClrSpinnerModule,
     RouterLink,
     ClrIconModule,
     RouterLinkActive,

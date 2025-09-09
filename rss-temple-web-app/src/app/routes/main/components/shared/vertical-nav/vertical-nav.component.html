@@ -95,12 +95,14 @@
         </a>
       }
     }
-  }
-  @if (
-    categorizedFeeds.category.length < 1 &&
-    categorizedFeeds.noCategory.feeds.length < 1
-  ) {
-    <label class="nav-header"> No Feeds </label>
+    @if (
+      categorizedFeeds.category.length < 1 &&
+      categorizedFeeds.noCategory.feeds.length < 1
+    ) {
+      <label class="nav-header"> No Feeds </label>
+    }
+  } @else {
+    <clr-spinner class="app--loading-spinner" clrSmall="true"></clr-spinner>
   }
   <div class="nav-divider"></div>
   <a
