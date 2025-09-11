@@ -61,8 +61,8 @@ export abstract class AbstractSearchComponent implements OnInit, OnDestroy {
   protected static cleanAndEscapeText(t: string) {
     return t
       .trim()
-      .replace('"', '\\"')
-      .replace('\n', '\\n')
-      .replace('\t', '\\t');
+      .replace(/"/g, '\\"')
+      .replace(/\n/g, '\\n')
+      .replace(/\t/g, '\\t');
   }
 }
