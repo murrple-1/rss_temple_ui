@@ -20,7 +20,9 @@
   </div>
 </div>
 
-Go to the [RSS Temple repo](https://github.com/murrple-1/rss_temple) for installation and usage instructions.
+<div align="center">
+  Go to the [RSS Temple repo](https://github.com/murrple-1/rss_temple) for installation and usage instructions.
+</div>
 
 [circleci-badge-img]: https://dl.circleci.com/status-badge/img/gh/murrple-1/rss_temple_ui/tree/master.svg?style=svg
 [circleci-badge]: https://dl.circleci.com/status-badge/redirect/gh/murrple-1/rss_temple_ui/tree/master
