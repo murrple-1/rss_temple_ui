@@ -8,6 +8,7 @@ import {
   importProvidersFrom,
   inject,
   provideAppInitializer,
+  provideZoneChangeDetection,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
@@ -194,6 +195,7 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
+    provideZoneChangeDetection(),
     importProvidersFrom(BrowserModule, FormsModule, ClarityModule),
     provideHttpClient(withInterceptorsFromDi()),
     provideAppInitializer(() => {
