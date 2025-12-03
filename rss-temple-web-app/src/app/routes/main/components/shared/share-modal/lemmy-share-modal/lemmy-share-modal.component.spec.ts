@@ -1,9 +1,10 @@
 import { provideHttpClient } from '@angular/common/http';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser';
 import { ClarityModule } from '@clr/angular';
 import { ShareButtonDirective } from 'ngx-sharebuttons';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { ConfigService } from '@app/services';
 import {
@@ -17,7 +18,7 @@ describe('LemmyShareModalComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        BrowserAnimationsModule,
+        BrowserModule,
         FormsModule,
         ClarityModule,
         ShareButtonDirective,
@@ -37,11 +38,11 @@ describe('LemmyShareModalComponent', () => {
     }).compileComponents();
   });
 
-  it('should create the component', waitForAsync(async () => {
+  it('should create the component', async () => {
     const componentFixture = TestBed.createComponent(LemmyShareModalComponent);
     const component = componentFixture.componentInstance;
     expect(component).toBeTruthy();
     componentFixture.detectChanges();
     await componentFixture.whenStable();
-  }));
+  });
 });

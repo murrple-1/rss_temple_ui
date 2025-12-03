@@ -1,13 +1,13 @@
 import { Type } from '@angular/core';
-import { waitForAsync } from '@angular/core/testing';
 import { Route } from '@angular/router';
+import { describe, expect, it } from 'vitest';
 
 import { routes } from './main.routing';
 
 describe('main.routing', () => {
-  it('should load lazy children', waitForAsync(async () => {
+  it('should load lazy children', async () => {
     async function recurseRoutes(route: Route) {
-      expect(route.path).toEqual(jasmine.any(String));
+      expect(route.path).toEqual(expect.any(String));
 
       if (route.children !== undefined) {
         for (const innerRoute of route.children) {
@@ -21,10 +21,10 @@ describe('main.routing', () => {
             const module = new moduleClass();
             expect(module).toBeTruthy();
           } else {
-            fail('not supported');
+            throw new Error('not supported');
           }
         } else {
-          fail('not supported');
+          throw new Error('not supported');
         }
       }
     }
@@ -32,5 +32,5 @@ describe('main.routing', () => {
     for (const route of routes) {
       await recurseRoutes(route);
     }
-  }));
+  });
 });

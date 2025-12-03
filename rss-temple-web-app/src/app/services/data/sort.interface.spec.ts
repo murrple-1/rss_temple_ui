@@ -1,3 +1,5 @@
+import { describe, expect, it, vi } from 'vitest';
+
 import { Sort } from './sort.interface';
 
 type SortField = 'sort1' | 'sort2';
@@ -46,8 +48,8 @@ describe('sort.interface', () => {
 
   it('should has', () => {
     const sort = new Sort<SortField>([['sort1', 'ASC']]);
-    expect(sort.has('sort1')).toBeTrue();
-    expect(sort.has('sort2')).toBeFalse();
+    expect(sort.has('sort1')).toBe(true);
+    expect(sort.has('sort2')).toBe(false);
   });
 
   it('should set', () => {
@@ -108,7 +110,7 @@ describe('sort.interface', () => {
       ['sort1', 'ASC'],
       ['sort2', 'DESC'],
     ]);
-    const fn = jasmine.createSpy('forEach fn');
+    const fn = vi.fn();
     sort.forEach(fn);
     expect(fn).toHaveBeenCalledTimes(2);
     expect(fn).toHaveBeenCalledWith('ASC', 'sort1', sort);
@@ -136,7 +138,7 @@ describe('sort.interface', () => {
       ['sort1', 'ASC'],
       ['sort2', 'DESC'],
     ]);
-    const fn = jasmine.createSpy('iterator fn');
+    const fn = vi.fn();
     for (const entry of sort) {
       fn(entry);
     }
@@ -149,6 +151,6 @@ describe('sort.interface', () => {
       ['sort2', 'DESC'],
     ]);
     const str = String(sort);
-    expect(str).toEqual(jasmine.stringMatching(/Sort/));
+    expect(str).toEqual(expect.stringMatching(/Sort/));
   });
 });

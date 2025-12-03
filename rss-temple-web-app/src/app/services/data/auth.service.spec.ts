@@ -3,9 +3,10 @@ import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
-import { TestBed, fakeAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { CookieService } from 'ngx-cookie-service';
 import { firstValueFrom } from 'rxjs';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { ZUser } from '@app/models/user';
 import { ConfigService } from '@app/services';
@@ -53,7 +54,7 @@ describe('AuthService', () => {
     httpTesting.verify();
   });
 
-  it('should login', fakeAsync(async () => {
+  it('should login', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const authService = TestBed.inject(AuthService);
 
@@ -66,23 +67,23 @@ describe('AuthService', () => {
       method: 'POST',
     });
     expect(req.request.body).toEqual(
-      jasmine.objectContaining({
-        email: jasmine.any(String),
-        password: jasmine.any(String),
+      expect.objectContaining({
+        email: expect.any(String),
+        password: expect.any(String),
       }),
     );
     req.flush({
       key: '',
     });
 
-    await expectAsync(responsePromise).toBeResolvedTo(
-      jasmine.objectContaining({
-        key: jasmine.any(String),
+    await expect(responsePromise).resolves.toEqual(
+      expect.objectContaining({
+        key: expect.any(String),
       }),
     );
-  }));
+  });
 
-  it('should logout', fakeAsync(async () => {
+  it('should logout', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const mockCookieService = TestBed.inject(
       CookieService,
@@ -101,13 +102,13 @@ describe('AuthService', () => {
       url: '/api/auth/logout',
       method: 'POST',
     });
-    expect(req.request.headers.has('X-CSRFToken')).toBeTrue();
+    expect(req.request.headers.has('X-CSRFToken')).toBe(true);
     req.flush(null);
 
-    await expectAsync(logoutPromise).toBeResolved();
-  }));
+    await expect(logoutPromise).resolves.not.toThrow();
+  });
 
-  it('should request', fakeAsync(async () => {
+  it('should request', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const authService = TestBed.inject(AuthService);
 
@@ -123,10 +124,10 @@ describe('AuthService', () => {
     });
     req.flush(null);
 
-    await expectAsync(requestPasswordResetPromise).toBeResolved();
-  }));
+    await expect(requestPasswordResetPromise).resolves.not.toThrow();
+  });
 
-  it('should reset', fakeAsync(async () => {
+  it('should reset', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const authService = TestBed.inject(AuthService);
 
@@ -141,10 +142,10 @@ describe('AuthService', () => {
     });
     req.flush(null);
 
-    await expectAsync(resetPasswordPromise).toBeResolved();
-  }));
+    await expect(resetPasswordPromise).resolves.not.toThrow();
+  });
 
-  it('should get user', fakeAsync(async () => {
+  it('should get user', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const authService = TestBed.inject(AuthService);
 
@@ -162,10 +163,10 @@ describe('AuthService', () => {
     });
 
     const user = await userPromise;
-    expect(ZUser.safeParse(user).success).toBeTrue();
-  }));
+    expect(ZUser.safeParse(user).success).toBe(true);
+  });
 
-  it('should update user attributes', fakeAsync(async () => {
+  it('should update user attributes', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const authService = TestBed.inject(AuthService);
 
@@ -182,6 +183,6 @@ describe('AuthService', () => {
     });
     req.flush(null);
 
-    await expectAsync(updateAttributesPromise).toBeResolved();
-  }));
+    await expect(updateAttributesPromise).resolves.not.toThrow();
+  });
 });

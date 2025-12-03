@@ -3,9 +3,10 @@ import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
-import { TestBed, fakeAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { CookieService } from 'ngx-cookie-service';
 import { firstValueFrom } from 'rxjs';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { z } from 'zod';
 
 import { ConfigService } from '@app/services';
@@ -55,7 +56,7 @@ describe('ProgressService', () => {
     httpTesting.verify();
   });
 
-  it('should check progress', fakeAsync(async () => {
+  it('should check progress', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const progressService = TestBed.inject(ProgressService);
 
@@ -71,11 +72,11 @@ describe('ProgressService', () => {
       finishedCount: 0,
     });
 
-    await expectAsync(progressPromise).toBeResolvedTo(
-      jasmine.objectContaining({
-        state: jasmine.stringMatching(/^(?:notstarted|started|finished)$/),
-        totalCount: jasmine.any(Number),
-        finishedCount: jasmine.any(Number),
+    await expect(progressPromise).resolves.toEqual(
+      expect.objectContaining({
+        state: expect.stringMatching(/^(?:notstarted|started|finished)$/),
+        totalCount: expect.any(Number),
+        finishedCount: expect.any(Number),
       }),
     );
 
@@ -91,11 +92,11 @@ describe('ProgressService', () => {
       finishedCount: 4,
     });
 
-    await expectAsync(progressPromise).toBeResolvedTo(
-      jasmine.objectContaining({
-        state: jasmine.stringMatching(/^(?:notstarted|started|finished)$/),
-        totalCount: jasmine.any(Number),
-        finishedCount: jasmine.any(Number),
+    await expect(progressPromise).resolves.toEqual(
+      expect.objectContaining({
+        state: expect.stringMatching(/^(?:notstarted|started|finished)$/),
+        totalCount: expect.any(Number),
+        finishedCount: expect.any(Number),
       }),
     );
 
@@ -111,16 +112,16 @@ describe('ProgressService', () => {
       finishedCount: 10,
     });
 
-    await expectAsync(progressPromise).toBeResolvedTo(
-      jasmine.objectContaining({
-        state: jasmine.stringMatching(/^(?:notstarted|started|finished)$/),
-        totalCount: jasmine.any(Number),
-        finishedCount: jasmine.any(Number),
+    await expect(progressPromise).resolves.toEqual(
+      expect.objectContaining({
+        state: expect.stringMatching(/^(?:notstarted|started|finished)$/),
+        totalCount: expect.any(Number),
+        finishedCount: expect.any(Number),
       }),
     );
-  }));
+  });
 
-  it('should fail when JSON is not object', fakeAsync(async () => {
+  it('should fail when JSON is not object', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const progressService = TestBed.inject(ProgressService);
 
@@ -132,13 +133,13 @@ describe('ProgressService', () => {
     });
     req.flush([1]);
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should fail `state` missing', fakeAsync(async () => {
+  it('should fail `state` missing', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const progressService = TestBed.inject(ProgressService);
 
@@ -153,13 +154,13 @@ describe('ProgressService', () => {
       finishedCount: 10,
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should fail `state` type error', fakeAsync(async () => {
+  it('should fail `state` type error', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const progressService = TestBed.inject(ProgressService);
 
@@ -175,13 +176,13 @@ describe('ProgressService', () => {
       finishedCount: 10,
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should fail `state` malformed', fakeAsync(async () => {
+  it('should fail `state` malformed', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const progressService = TestBed.inject(ProgressService);
 
@@ -197,13 +198,13 @@ describe('ProgressService', () => {
       finishedCount: 10,
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should fail `totalCount` missing', fakeAsync(async () => {
+  it('should fail `totalCount` missing', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const progressService = TestBed.inject(ProgressService);
 
@@ -218,13 +219,13 @@ describe('ProgressService', () => {
       finishedCount: 4,
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should fail `totalCount` type error', fakeAsync(async () => {
+  it('should fail `totalCount` type error', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const progressService = TestBed.inject(ProgressService);
 
@@ -240,13 +241,13 @@ describe('ProgressService', () => {
       finishedCount: 4,
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should fail `finishedCount` missing', fakeAsync(async () => {
+  it('should fail `finishedCount` missing', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const progressService = TestBed.inject(ProgressService);
 
@@ -261,13 +262,13 @@ describe('ProgressService', () => {
       totalCount: 10,
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should fail `finishedCount` type error', fakeAsync(async () => {
+  it('should fail `finishedCount` type error', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const progressService = TestBed.inject(ProgressService);
 
@@ -283,9 +284,9 @@ describe('ProgressService', () => {
       finishedCount: 'finishedCount',
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 });

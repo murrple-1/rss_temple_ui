@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { hexToUuid } from './hex-to-uuid.lib';
 
 describe('hex-to-uuid.lib', () => {

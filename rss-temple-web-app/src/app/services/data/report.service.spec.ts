@@ -3,9 +3,10 @@ import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
-import { TestBed, fakeAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { CookieService } from 'ngx-cookie-service';
 import { firstValueFrom } from 'rxjs';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { ConfigService } from '@app/services';
 import {
@@ -52,7 +53,7 @@ describe('ReportService', () => {
     httpTesting.verify();
   });
 
-  it('should report feeds', fakeAsync(async () => {
+  it('should report feeds', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const reportService = TestBed.inject(ReportService);
 
@@ -72,10 +73,10 @@ describe('ReportService', () => {
     });
     req.flush(null);
 
-    await expectAsync(reportPromise).toBeResolved();
-  }));
+    await expect(reportPromise).resolves.not.toThrow();
+  });
 
-  it('should report feed entries', fakeAsync(async () => {
+  it('should report feed entries', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const reportService = TestBed.inject(ReportService);
 
@@ -95,6 +96,6 @@ describe('ReportService', () => {
     });
     req.flush(null);
 
-    await expectAsync(reportPromise).toBeResolved();
-  }));
+    await expect(reportPromise).resolves.not.toThrow();
+  });
 });

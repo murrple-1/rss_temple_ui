@@ -1,6 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
-import { TestBed, fakeAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { skip } from 'rxjs/operators';
+import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { ConfigService } from '@app/services';
 import {
@@ -36,46 +37,50 @@ describe('FBAuthService', () => {
   it('should load', () => {
     const scriptElement = document.createElement('script');
 
-    spyOn(document, 'createElement').and.callFake(() => scriptElement);
-    spyOn(document, 'getElementById').and.callFake(() => null);
-    spyOn(document.head, 'appendChild').and.callFake(() => undefined as any);
+    vi.spyOn(document, 'createElement').mockImplementation(() => scriptElement);
+    vi.spyOn(document, 'getElementById').mockImplementation(() => null);
+    vi.spyOn(document.head, 'appendChild').mockImplementation(
+      () => undefined as any,
+    );
     const fbAuthService = TestBed.inject(FBAuthService);
 
     fbAuthService.load();
 
-    expect(fbAuthService.isLoaded).toBeFalse();
+    expect(fbAuthService.isLoaded).toBe(false);
 
     expect(document.createElement).toHaveBeenCalled();
     expect(scriptElement.id).toBe('fb-jssdk');
     expect(scriptElement.src).toEqual(
-      jasmine.stringMatching(/\/\/connect.facebook.net\/.+?sdk\.js$/),
+      expect.stringMatching(/\/\/connect.facebook.net\/.+?sdk\.js$/),
     );
 
     (window as any).FB = {
-      init: jasmine.createSpy('FB.init'),
+      init: vi.fn(),
       AppEvents: {
-        logPageView: jasmine.createSpy('FB.AppEvents.logPageView'),
+        logPageView: vi.fn(),
       },
     };
 
     (window as any).fbAsyncInit();
 
     expect(FB.init).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        appId: jasmine.any(String),
-        version: jasmine.any(String),
+      expect.objectContaining({
+        appId: expect.any(String),
+        version: expect.any(String),
       }),
     );
     expect(FB.AppEvents.logPageView).toHaveBeenCalled();
-    expect(fbAuthService.isLoaded).toBeTrue();
+    expect(fbAuthService.isLoaded).toBe(true);
   });
 
   it('should fail to load if script element already present', () => {
     const scriptElement = document.createElement('script');
 
-    spyOn(document, 'createElement');
-    spyOn(document, 'getElementById').and.callFake(() => scriptElement);
-    spyOn(document.head, 'appendChild');
+    vi.spyOn(document, 'createElement');
+    vi.spyOn(document, 'getElementById').mockImplementation(
+      () => scriptElement,
+    );
+    vi.spyOn(document.head, 'appendChild');
 
     const fbAuthService = TestBed.inject(FBAuthService);
 
@@ -86,11 +91,11 @@ describe('FBAuthService', () => {
     expect(document.head.appendChild).not.toHaveBeenCalled();
   });
 
-  it('should be possible to sign in and succeed', fakeAsync(async () => {
+  it('should be possible to sign in and succeed', async () => {
     (window as any).FB = {
-      login: jasmine
-        .createSpy('FB.login')
-        .and.callFake(
+      login: vi
+        .fn()
+        .mockImplementation(
           (callback: (response: facebook.StatusResponse) => void) => {
             callback({
               status: 'connected',
@@ -108,17 +113,17 @@ describe('FBAuthService', () => {
 
     const fbAuthService = TestBed.inject(FBAuthService);
 
-    await expectAsync(fbAuthService.signIn()).toBeResolved();
+    await expect(fbAuthService.signIn()).resolves.not.toThrow();
     expect(fbAuthService.user).not.toBeNull();
 
     expect(FB.login).toHaveBeenCalled();
-  }));
+  });
 
-  it('should be possible to sign in and fail', fakeAsync(async () => {
+  it('should be possible to sign in and fail', async () => {
     (window as any).FB = {
-      login: jasmine
-        .createSpy('FB.login')
-        .and.callFake(
+      login: vi
+        .fn()
+        .mockImplementation(
           (callback: (response: facebook.StatusResponse) => void) => {
             callback({
               status: 'unknown',
@@ -136,40 +141,40 @@ describe('FBAuthService', () => {
 
     const fbAuthService = TestBed.inject(FBAuthService);
 
-    await expectAsync(fbAuthService.signIn()).toBeRejected();
+    await expect(fbAuthService.signIn()).rejects.toThrow();
     expect(fbAuthService.user).toBeNull();
 
     expect(FB.login).toHaveBeenCalled();
-  }));
+  });
 
-  it('should be possible to sign out', fakeAsync(async () => {
+  it('should be possible to sign out', async () => {
     const fbAuthService = TestBed.inject(FBAuthService);
-    const userFn = jasmine.createSpy();
+    const userFn = vi.fn();
     const userSubscription = fbAuthService.user$.pipe(skip(1)).subscribe({
       next: userFn,
     });
     try {
       (window as any).FB = {
-        getLoginStatus: jasmine
-          .createSpy('FB.getLoginStatus')
-          .and.callFake((callback: (response: { status: string }) => void) => {
-            callback({
-              status: 'connected',
-            });
-          }),
-        logout: jasmine
-          .createSpy('FB.logout')
-          .and.callFake((callback: () => void) => {
-            callback();
-          }),
+        getLoginStatus: vi
+          .fn()
+          .mockImplementation(
+            (callback: (response: { status: string }) => void) => {
+              callback({
+                status: 'connected',
+              });
+            },
+          ),
+        logout: vi.fn().mockImplementation((callback: () => void) => {
+          callback();
+        }),
       };
 
-      await expectAsync(fbAuthService.signOut()).toBeResolved();
+      await expect(fbAuthService.signOut()).resolves.not.toThrow();
     } finally {
       userSubscription.unsubscribe();
     }
 
     expect(userFn).toHaveBeenCalledTimes(1);
     expect(userFn).toHaveBeenCalledWith(null);
-  }));
+  });
 });

@@ -3,8 +3,9 @@ import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
-import { TestBed, fakeAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { firstValueFrom } from 'rxjs';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { ConfigService } from '@app/services';
 import {
@@ -39,7 +40,7 @@ describe('CaptchaService', () => {
     httpTesting.verify();
   });
 
-  it('should get new key', fakeAsync(async () => {
+  it('should get new key', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const captchaService = TestBed.inject(CaptchaService);
 
@@ -51,8 +52,8 @@ describe('CaptchaService', () => {
     });
     req.flush('newkey');
 
-    await expectAsync(keyPromise).toBeResolved();
-  }));
+    await expect(keyPromise).resolves.not.toThrow();
+  });
 
   // TODO more tests
 });

@@ -3,9 +3,10 @@ import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
-import { TestBed, fakeAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { CookieService } from 'ngx-cookie-service';
 import { firstValueFrom } from 'rxjs';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { ConfigService } from '@app/services';
 import {
@@ -52,7 +53,7 @@ describe('ExploreService', () => {
     httpTesting.verify();
   });
 
-  it('should explore', fakeAsync(async () => {
+  it('should explore', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const exploreService = TestBed.inject(ExploreService);
 
@@ -67,5 +68,5 @@ describe('ExploreService', () => {
     const tagDescriptors = await tagDescriptorsPromise;
 
     expect(tagDescriptors.length).toBeGreaterThanOrEqual(0);
-  }));
+  });
 });

@@ -1,5 +1,4 @@
 .angular/
 coverage/
 dist/
-src/test.ts
 .firefox_profile/

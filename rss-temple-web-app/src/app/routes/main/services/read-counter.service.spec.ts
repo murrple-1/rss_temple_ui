@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { of } from 'rxjs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { AuthStateService } from '@app/services';
 import { FeedEntryService, FeedService } from '@app/services/data';
@@ -14,10 +15,10 @@ import { ReadCounterService } from './read-counter.service';
 
 describe('ReadCounterService', () => {
   beforeEach(() => {
-    const mockFeedService = jasmine.createSpyObj<FeedService>('FeedService', [
-      'queryAll',
-    ]);
-    mockFeedService.queryAll.and.returnValue(
+    const mockFeedService = {
+      queryAll: vi.fn().mockName('FeedService.queryAll'),
+    };
+    mockFeedService.queryAll.mockReturnValue(
       of({
         objects: [],
         totalCount: 0,
@@ -28,7 +29,9 @@ describe('ReadCounterService', () => {
       providers: [
         {
           provide: Router,
-          useValue: jasmine.createSpyObj<Router>('Router', ['navigate']),
+          useValue: {
+            navigate: vi.fn().mockName('Router.navigate'),
+          },
         },
         {
           provide: MOCK_COOKIE_SERVICE_CONFIG,
@@ -44,9 +47,9 @@ describe('ReadCounterService', () => {
         },
         {
           provide: FeedEntryService,
-          useValue: jasmine.createSpyObj<FeedEntryService>('FeedEntryService', [
-            'query',
-          ]),
+          useValue: {
+            query: vi.fn().mockName('FeedEntryService.query'),
+          },
         },
         ReadCounterService,
       ],

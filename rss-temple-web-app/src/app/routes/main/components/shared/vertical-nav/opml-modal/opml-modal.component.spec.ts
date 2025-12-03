@@ -1,7 +1,8 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TestBed } from '@angular/core/testing';
+import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { OPMLService, ProgressService } from '@app/services/data';
 
@@ -12,34 +13,34 @@ describe('OPMLModalComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         ClarityModule,
-        BrowserAnimationsModule,
+        BrowserModule,
         RouterModule.forRoot([]),
         OPMLModalComponent,
       ],
       providers: [
         {
           provide: OPMLService,
-          useValue: jasmine.createSpyObj<OPMLService>('OPMLService', [
-            'upload',
-          ]),
+          useValue: {
+            upload: vi.fn().mockName('OPMLService.upload'),
+          },
         },
         {
           provide: ProgressService,
-          useValue: jasmine.createSpyObj<ProgressService>('ProgressService', [
-            'checkProgress',
-          ]),
+          useValue: {
+            checkProgress: vi.fn().mockName('ProgressService.checkProgress'),
+          },
         },
       ],
     }).compileComponents();
   });
 
-  it('should create the component', waitForAsync(async () => {
+  it('should create the component', async () => {
     const componentFixture = TestBed.createComponent(OPMLModalComponent);
     const component = componentFixture.componentInstance;
     expect(component).toBeTruthy();
     componentFixture.detectChanges();
     await componentFixture.whenStable();
-  }));
+  });
 
   // TODO more tests
 });

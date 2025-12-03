@@ -1,13 +1,22 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { of, throwError } from 'rxjs';
 import { take } from 'rxjs/operators';
+import {
+  type MockedObject,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 
 import { InfoModalComponent } from '@app/components/shared/info-modal/info-modal.component';
 import { EmailValidatorDirective } from '@app/directives/email-validator.directive';
@@ -20,7 +29,7 @@ import { MockActivatedRoute } from '@app/test/activatedroute.mock';
 
 import { RegisterComponent } from './register.component';
 
-@Component({})
+@Component({ template: '' })
 class MockComponent {}
 
 describe('RegisterComponent', () => {
@@ -51,18 +60,19 @@ describe('RegisterComponent', () => {
       throw new Error('Audio blob not loaded');
     }
 
-    const mockCaptchService = jasmine.createSpyObj<CaptchaService>(
-      'CaptchaService',
-      ['getKey', 'getImage', 'getAudio'],
-    );
-    mockCaptchService.getKey.and.returnValue(of('key'));
-    mockCaptchService.getImage.and.returnValue(of(imageBlob));
-    mockCaptchService.getAudio.and.returnValue(of(audioBlob));
+    const mockCaptchService = {
+      getKey: vi.fn().mockName('CaptchaService.getKey'),
+      getImage: vi.fn().mockName('CaptchaService.getImage'),
+      getAudio: vi.fn().mockName('CaptchaService.getAudio'),
+    };
+    mockCaptchService.getKey.mockReturnValue(of('key'));
+    mockCaptchService.getImage.mockReturnValue(of(imageBlob));
+    mockCaptchService.getAudio.mockReturnValue(of(audioBlob));
 
     await TestBed.configureTestingModule({
       imports: [
         FormsModule,
-        BrowserAnimationsModule,
+        BrowserModule,
         ClarityModule,
         RouterModule.forRoot([
           {
@@ -87,24 +97,23 @@ describe('RegisterComponent', () => {
         },
         {
           provide: RegistrationService,
-          useValue: jasmine.createSpyObj<RegistrationService>(
-            'RegistrationService',
-            ['register'],
-          ),
+          useValue: {
+            register: vi.fn().mockName('RegistrationService.register'),
+          },
         },
       ],
     }).compileComponents();
   });
 
-  it('should create the component', waitForAsync(async () => {
+  it('should create the component', async () => {
     const componentFixture = TestBed.createComponent(RegisterComponent);
     const component = componentFixture.componentInstance;
     expect(component).toBeTruthy();
     componentFixture.detectChanges();
     await componentFixture.whenStable();
-  }));
+  });
 
-  it('should handle missing email', waitForAsync(async () => {
+  it('should handle missing email', async () => {
     const componentFixture = TestBed.createComponent(RegisterComponent);
     const component = componentFixture.componentInstance;
     const debugElement = componentFixture.debugElement;
@@ -140,13 +149,13 @@ describe('RegisterComponent', () => {
     await componentFixture.whenStable();
 
     expect(component.registerForm?.controls['email']?.errors ?? {}).toEqual(
-      jasmine.objectContaining({
-        required: jasmine.anything(),
+      expect.objectContaining({
+        required: expect.anything(),
       }),
     );
-  }));
+  });
 
-  it('should handle malformed email', waitForAsync(async () => {
+  it('should handle malformed email', async () => {
     const componentFixture = TestBed.createComponent(RegisterComponent);
     const component = componentFixture.componentInstance;
     const debugElement = componentFixture.debugElement;
@@ -184,13 +193,13 @@ describe('RegisterComponent', () => {
     await componentFixture.whenStable();
 
     expect(component.registerForm?.controls['email']?.errors).toEqual(
-      jasmine.objectContaining({
-        invalidemail: jasmine.anything(),
+      expect.objectContaining({
+        invalidemail: expect.anything(),
       }),
     );
-  }));
+  });
 
-  it('should handle mismatched passwords', waitForAsync(async () => {
+  it('should handle mismatched passwords', async () => {
     const componentFixture = TestBed.createComponent(RegisterComponent);
     const component = componentFixture.componentInstance;
     const debugElement = componentFixture.debugElement;
@@ -227,13 +236,13 @@ describe('RegisterComponent', () => {
     await componentFixture.whenStable();
 
     expect(component.registerForm?.errors ?? {}).toEqual(
-      jasmine.objectContaining({
-        passwordsdonotmatch: jasmine.anything(),
+      expect.objectContaining({
+        passwordsdonotmatch: expect.anything(),
       }),
     );
-  }));
+  });
 
-  it('should handle missing password', waitForAsync(async () => {
+  it('should handle missing password', async () => {
     const componentFixture = TestBed.createComponent(RegisterComponent);
     const component = componentFixture.componentInstance;
     const debugElement = componentFixture.debugElement;
@@ -270,20 +279,20 @@ describe('RegisterComponent', () => {
     await componentFixture.whenStable();
 
     expect(component.registerForm?.controls['password']?.errors ?? {}).toEqual(
-      jasmine.objectContaining({
-        required: jasmine.anything(),
+      expect.objectContaining({
+        required: expect.anything(),
       }),
     );
     expect(
       component.registerForm?.controls['passwordCheck']?.errors ?? {},
     ).toEqual(
-      jasmine.objectContaining({
-        required: jasmine.anything(),
+      expect.objectContaining({
+        required: expect.anything(),
       }),
     );
-  }));
+  });
 
-  it('should handle malformed password', waitForAsync(async () => {
+  it('should handle malformed password', async () => {
     const componentFixture = TestBed.createComponent(RegisterComponent);
     const component = componentFixture.componentInstance;
     const debugElement = componentFixture.debugElement;
@@ -327,8 +336,8 @@ describe('RegisterComponent', () => {
       expect(
         component.registerForm?.controls['password']?.errors ?? {},
       ).toEqual(
-        jasmine.objectContaining({
-          [errorKey]: jasmine.anything(),
+        expect.objectContaining({
+          [errorKey]: expect.anything(),
         }),
       );
     };
@@ -338,13 +347,13 @@ describe('RegisterComponent', () => {
     await runMalformedPasswordTest('password1!', 'nouppercase');
     await runMalformedPasswordTest('Password!', 'nodigit');
     await runMalformedPasswordTest('Password1', 'nospecialcharacter');
-  }));
+  });
 
-  it('should register', waitForAsync(async () => {
+  it('should register', async () => {
     const mockRegistrationService = TestBed.inject(
       RegistrationService,
-    ) as jasmine.SpyObj<RegistrationService>;
-    mockRegistrationService.register.and.returnValue(of(undefined));
+    ) as MockedObject<RegistrationService>;
+    mockRegistrationService.register.mockReturnValue(of(undefined));
 
     const componentFixture = TestBed.createComponent(RegisterComponent);
     const component = componentFixture.componentInstance;
@@ -389,14 +398,14 @@ describe('RegisterComponent', () => {
     componentFixture.detectChanges();
     await componentFixture.whenStable();
 
-    expect(componentFixture.componentInstance.infoModal?.open).toBeTrue();
-  }));
+    expect(componentFixture.componentInstance.infoModal?.open).toBe(true);
+  });
 
-  it('should handle registration errors: cannot connect', waitForAsync(async () => {
+  it('should handle registration errors: cannot connect', async () => {
     const mockRegistrationService = TestBed.inject(
       RegistrationService,
-    ) as jasmine.SpyObj<RegistrationService>;
-    mockRegistrationService.register.and.returnValue(
+    ) as MockedObject<RegistrationService>;
+    mockRegistrationService.register.mockReturnValue(
       throwError(
         () =>
           new HttpErrorResponse({
@@ -404,7 +413,7 @@ describe('RegisterComponent', () => {
           }),
       ),
     );
-    spyOn(console, 'error');
+    vi.spyOn(console, 'error');
     const appAlertService = TestBed.inject(AppAlertsService);
     const appAlertEmitPromise = new Promise<AppAlertDescriptor>(resolve => {
       appAlertService.appAlertDescriptor$.pipe(take(1)).subscribe({
@@ -448,18 +457,18 @@ describe('RegisterComponent', () => {
     componentFixture.detectChanges();
     await componentFixture.whenStable();
 
-    await expectAsync(appAlertEmitPromise).toBeResolvedTo(
-      jasmine.objectContaining({
-        text: jasmine.stringMatching(/Unable to connect to server/),
+    await expect(appAlertEmitPromise).resolves.toEqual(
+      expect.objectContaining({
+        text: expect.stringMatching(/Unable to connect to server/),
       }),
     );
-  }));
+  });
 
-  it('should handle registration errors: email already in use', waitForAsync(async () => {
+  it('should handle registration errors: email already in use', async () => {
     const mockRegistrationService = TestBed.inject(
       RegistrationService,
-    ) as jasmine.SpyObj<RegistrationService>;
-    mockRegistrationService.register.and.returnValue(
+    ) as MockedObject<RegistrationService>;
+    mockRegistrationService.register.mockReturnValue(
       throwError(
         () =>
           new HttpErrorResponse({
@@ -510,10 +519,10 @@ describe('RegisterComponent', () => {
     componentFixture.detectChanges();
     await componentFixture.whenStable();
 
-    await expectAsync(appAlertEmitPromise).toBeResolvedTo(
-      jasmine.objectContaining({
-        text: jasmine.stringMatching(/Email already in use/),
+    await expect(appAlertEmitPromise).resolves.toEqual(
+      expect.objectContaining({
+        text: expect.stringMatching(/Email already in use/),
       }),
     );
-  }));
+  });
 });

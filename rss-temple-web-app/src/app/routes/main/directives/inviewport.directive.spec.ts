@@ -1,6 +1,14 @@
 import { ElementRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { take } from 'rxjs/operators';
+import {
+  type MockedObject,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 
 import { InViewportDirective, InViewportEvent } from './inviewport.directive';
 
@@ -10,15 +18,13 @@ describe('InViewportDirective', () => {
       providers: [
         {
           provide: ElementRef,
-          useValue: jasmine.createSpyObj<ElementRef<HTMLElement>>(
-            'ElementRef',
-            [],
-            {
-              nativeElement: jasmine.createSpyObj<HTMLElement>('HTMLElement', [
-                'getBoundingClientRect',
-              ]),
+          useValue: {
+            nativeElement: {
+              getBoundingClientRect: vi
+                .fn()
+                .mockName('HTMLElement.getBoundingClientRect'),
             },
-          ),
+          },
         },
         InViewportDirective,
       ],
@@ -30,24 +36,25 @@ describe('InViewportDirective', () => {
 
     inViewportDirective.ngOnInit();
     inViewportDirective.ngOnDestroy();
-    expect().nothing();
+    // TODO: vitest-migration: expect().nothing() has been removed because it is redundant in Vitest. Tests without assertions pass by default.
+    // expect().nothing();
   });
 
   it('should destroy', () => {
     const inViewportDirective = TestBed.inject(InViewportDirective);
 
     inViewportDirective.ngOnDestroy();
-    expect().nothing();
+    // TODO: vitest-migration: expect().nothing() has been removed because it is redundant in Vitest. Tests without assertions pass by default.
+    // expect().nothing();
   });
 
   it('should check inside', async () => {
-    const elementRefSpy = TestBed.inject(ElementRef) as jasmine.SpyObj<
+    const elementRefSpy = TestBed.inject(ElementRef) as MockedObject<
       ElementRef<HTMLElement>
     >;
     const inViewportDirective = TestBed.inject(InViewportDirective);
 
-    const elementSpy =
-      elementRefSpy.nativeElement as jasmine.SpyObj<HTMLElement>;
+    const elementSpy = elementRefSpy.nativeElement as MockedObject<HTMLElement>;
 
     inViewportDirective.ngOnInit();
 
@@ -58,7 +65,7 @@ describe('InViewportDirective', () => {
 
     const scollParentRect = scrollParentNativeElement.getBoundingClientRect();
 
-    elementSpy.getBoundingClientRect.and.returnValue(scollParentRect);
+    elementSpy.getBoundingClientRect.mockReturnValue(scollParentRect);
 
     const emitPromise = new Promise<InViewportEvent>(resolve => {
       inViewportDirective.watch.pipe(take(1)).subscribe({
@@ -70,21 +77,20 @@ describe('InViewportDirective', () => {
 
     scrollParentNativeElement.dispatchEvent(new Event('scroll'));
 
-    await expectAsync(emitPromise).toBeResolvedTo(
-      jasmine.objectContaining({
+    await expect(emitPromise).resolves.toEqual(
+      expect.objectContaining({
         isInViewport: true,
       }),
     );
   });
 
   it('should check outside', async () => {
-    const elementRefSpy = TestBed.inject(ElementRef) as jasmine.SpyObj<
+    const elementRefSpy = TestBed.inject(ElementRef) as MockedObject<
       ElementRef<HTMLElement>
     >;
     const inViewportDirective = TestBed.inject(InViewportDirective);
 
-    const elementSpy =
-      elementRefSpy.nativeElement as jasmine.SpyObj<HTMLElement>;
+    const elementSpy = elementRefSpy.nativeElement as MockedObject<HTMLElement>;
 
     inViewportDirective.ngOnInit();
 
@@ -107,7 +113,7 @@ describe('InViewportDirective', () => {
       toJSON: () => {},
     };
 
-    elementSpy.getBoundingClientRect.and.returnValue(myRect);
+    elementSpy.getBoundingClientRect.mockReturnValue(myRect);
 
     const emitPromise = new Promise<InViewportEvent>(resolve => {
       inViewportDirective.watch.pipe(take(1)).subscribe({
@@ -119,8 +125,8 @@ describe('InViewportDirective', () => {
 
     scrollParentNativeElement.dispatchEvent(new Event('scroll'));
 
-    await expectAsync(emitPromise).toBeResolvedTo(
-      jasmine.objectContaining({
+    await expect(emitPromise).resolves.toEqual(
+      expect.objectContaining({
         isInViewport: false,
       }),
     );

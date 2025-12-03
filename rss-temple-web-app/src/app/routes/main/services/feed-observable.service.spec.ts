@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { FeedImpl, FeedObservableService } from './feed-observable.service';
 
@@ -12,7 +13,7 @@ describe('FeedObservableService', () => {
   it('should fire feedAdded', () => {
     const feedObservableService = TestBed.inject(FeedObservableService);
 
-    const fn = jasmine.createSpy();
+    const fn = vi.fn();
 
     const subscription = feedObservableService.feedAdded.subscribe({
       next: fn,
@@ -30,7 +31,7 @@ describe('FeedObservableService', () => {
   it('should fire feedRemoved', () => {
     const feedObservableService = TestBed.inject(FeedObservableService);
 
-    const fn = jasmine.createSpy();
+    const fn = vi.fn();
 
     const subscription = feedObservableService.feedRemoved.subscribe({
       next: fn,
@@ -48,7 +49,7 @@ describe('FeedObservableService', () => {
   it('should fire feedsChanged', () => {
     const feedObservableService = TestBed.inject(FeedObservableService);
 
-    const fn = jasmine.createSpy();
+    const fn = vi.fn();
 
     const subscription = feedObservableService.feedsChanged.subscribe({
       next: fn,

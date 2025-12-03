@@ -12,10 +12,6 @@ export const MOCK_COOKIE_SERVICE_CONFIG = new InjectionToken<
 export class MockCookieService extends CookieService {
   mockConfig = inject(MOCK_COOKIE_SERVICE_CONFIG);
 
-  constructor() {
-    super(document, {});
-  }
-
   check(name: string) {
     return this.mockConfig[name] !== undefined;
   }

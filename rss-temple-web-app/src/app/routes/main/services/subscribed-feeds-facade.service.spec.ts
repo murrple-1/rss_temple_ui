@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { FeedService } from '@app/services/data';
 
@@ -12,17 +13,15 @@ describe('SubscribedFeedFacadeService', () => {
       providers: [
         {
           provide: Router,
-          useValue: jasmine.createSpyObj<Router>(
-            'Router',
-            {},
-            {
-              'events': of(),
-            },
-          ),
+          useValue: {
+            'events': of(),
+          },
         },
         {
           provide: FeedService,
-          useValue: jasmine.createSpyObj<FeedService>('FeedService', ['query']),
+          useValue: {
+            query: vi.fn().mockName('FeedService.query'),
+          },
         },
         SubscribedFeedsFacadeService,
       ],

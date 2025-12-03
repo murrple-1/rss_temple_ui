@@ -3,9 +3,10 @@ import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
-import { TestBed, fakeAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { CookieService } from 'ngx-cookie-service';
 import { firstValueFrom } from 'rxjs';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { z } from 'zod';
 
 import { ZUserCategory } from '@app/models/usercategory';
@@ -56,7 +57,7 @@ describe('UserCategoryService', () => {
     httpTesting.verify();
   });
 
-  it('should get', fakeAsync(async () => {
+  it('should get', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const userCategoryService = TestBed.inject(UserCategoryService);
 
@@ -71,10 +72,10 @@ describe('UserCategoryService', () => {
 
     const userCategory = await userCategoryPromise;
 
-    expect(ZUserCategory.safeParse(userCategory).success).toBeTrue();
-  }));
+    expect(ZUserCategory.safeParse(userCategory).success).toBe(true);
+  });
 
-  it('should query', fakeAsync(async () => {
+  it('should query', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const userCategoryService = TestBed.inject(UserCategoryService);
 
@@ -90,10 +91,10 @@ describe('UserCategoryService', () => {
 
     const objects = await objectsPromise;
 
-    expect(objects.objects).toEqual(jasmine.any(Array));
-  }));
+    expect(objects.objects).toEqual(expect.any(Array));
+  });
 
-  it('should query', fakeAsync(async () => {
+  it('should query', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const userCategoryService = TestBed.inject(UserCategoryService);
 
@@ -111,10 +112,10 @@ describe('UserCategoryService', () => {
     }
 
     const objects = await objectsPromise;
-    expect(objects.objects).toEqual(jasmine.any(Array));
-  }));
+    expect(objects.objects).toEqual(expect.any(Array));
+  });
 
-  it('should create', fakeAsync(async () => {
+  it('should create', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const userCategoryService = TestBed.inject(UserCategoryService);
 
@@ -131,10 +132,10 @@ describe('UserCategoryService', () => {
 
     const userCategory = await userCategoryPromise;
 
-    expect(ZUserCategory.safeParse(userCategory).success).toBeTrue();
-  }));
+    expect(ZUserCategory.safeParse(userCategory).success).toBe(true);
+  });
 
-  it('should delete', fakeAsync(async () => {
+  it('should delete', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const userCategoryService = TestBed.inject(UserCategoryService);
 
@@ -149,10 +150,10 @@ describe('UserCategoryService', () => {
     );
     req.flush(null);
 
-    await expectAsync(deletePromise).toBeResolved();
-  }));
+    await expect(deletePromise).resolves.not.toThrow();
+  });
 
-  it('should apply', fakeAsync(async () => {
+  it('should apply', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const userCategoryService = TestBed.inject(UserCategoryService);
 
@@ -171,10 +172,10 @@ describe('UserCategoryService', () => {
     });
     req.flush(null);
 
-    await expectAsync(applyPromise).toBeResolved();
-  }));
+    await expect(applyPromise).resolves.not.toThrow();
+  });
 
-  it('should error JSON not object', fakeAsync(async () => {
+  it('should error JSON not object', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const userCategoryService = TestBed.inject(UserCategoryService);
 
@@ -187,13 +188,13 @@ describe('UserCategoryService', () => {
     );
     req.flush([]);
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should `uuid`', fakeAsync(async () => {
+  it('should `uuid`', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const userCategoryService = TestBed.inject(UserCategoryService);
 
@@ -210,10 +211,10 @@ describe('UserCategoryService', () => {
 
     const user = await userPromise;
 
-    expect(user.uuid).toEqual(jasmine.any(String));
-  }));
+    expect(user.uuid).toEqual(expect.any(String));
+  });
 
-  it('should `uuid` type error', fakeAsync(async () => {
+  it('should `uuid` type error', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const userCategoryService = TestBed.inject(UserCategoryService);
 
@@ -228,13 +229,13 @@ describe('UserCategoryService', () => {
       uuid: 0,
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should `text`', fakeAsync(async () => {
+  it('should `text`', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const userCategoryService = TestBed.inject(UserCategoryService);
 
@@ -249,14 +250,14 @@ describe('UserCategoryService', () => {
       text: 'Category Name',
     });
 
-    await expectAsync(userPromise).toBeResolvedTo(
-      jasmine.objectContaining({
-        text: jasmine.any(String),
+    await expect(userPromise).resolves.toEqual(
+      expect.objectContaining({
+        text: expect.any(String),
       }),
     );
-  }));
+  });
 
-  it('should `text` type error', fakeAsync(async () => {
+  it('should `text` type error', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const userCategoryService = TestBed.inject(UserCategoryService);
 
@@ -271,9 +272,9 @@ describe('UserCategoryService', () => {
       text: 0,
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 });

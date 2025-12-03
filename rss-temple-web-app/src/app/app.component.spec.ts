@@ -3,11 +3,12 @@ import {
   provideHttpClient,
   withInterceptorsFromDi,
 } from '@angular/common/http';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { AppAlertsComponent } from '@app/components/app-alerts/app-alerts.component';
 import { NavComponent } from '@app/components/nav/nav.component';
@@ -28,7 +29,7 @@ describe('AppComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         FormsModule,
-        BrowserAnimationsModule,
+        BrowserModule,
         ClarityModule,
         RouterModule.forRoot([]),
         AppAlertsComponent,
@@ -59,11 +60,11 @@ describe('AppComponent', () => {
     }).compileComponents();
   });
 
-  it('should create the app', waitForAsync(async () => {
+  it('should create the app', async () => {
     const componentFixture = TestBed.createComponent(AppComponent);
     const component = componentFixture.componentInstance;
     expect(component).toBeTruthy();
     componentFixture.detectChanges();
     await componentFixture.whenStable();
-  }));
+  });
 });

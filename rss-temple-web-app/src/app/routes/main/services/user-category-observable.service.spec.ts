@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { UserCategoryObservableService } from './user-category-observable.service';
 
@@ -14,7 +15,7 @@ describe('UserCategoryObservableService', () => {
       UserCategoryObservableService,
     );
 
-    const fn = jasmine.createSpy();
+    const fn = vi.fn();
 
     const subscription =
       userCategoryObservableService.userCategoriesChanged$.subscribe({

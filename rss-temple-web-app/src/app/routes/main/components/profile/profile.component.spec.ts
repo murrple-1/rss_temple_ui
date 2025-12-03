@@ -1,10 +1,18 @@
 import { provideHttpClient } from '@angular/common/http';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { of } from 'rxjs';
+import {
+  type MockedObject,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 
 import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-match-validator.directive';
 import { DeleteUserConfirm1ModalComponent } from '@app/routes/main/components/profile/delete-user-confirm1-modal/delete-user-confirm1-modal.component';
@@ -34,7 +42,7 @@ describe('ProfileComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         FormsModule,
-        BrowserAnimationsModule,
+        BrowserModule,
         ClarityModule,
         RouterModule.forRoot([]),
         ProfileComponent,
@@ -47,53 +55,55 @@ describe('ProfileComponent', () => {
         provideHttpClient(),
         {
           provide: AuthService,
-          useValue: jasmine.createSpyObj<AuthService>('AuthService', [
-            'resetPassword',
-            'getUser',
-          ]),
+          useValue: {
+            resetPassword: vi.fn().mockName('AuthService.resetPassword'),
+            getUser: vi.fn().mockName('AuthService.getUser'),
+          },
         },
         {
           provide: ReadCounterService,
-          useValue: jasmine.createSpyObj<ReadCounterService>(
-            'ReadCounterService',
-            ['readAll'],
-            {
-              feedCounts$: of({}),
-            },
-          ),
+          useValue: {
+            readAll: vi.fn().mockName('ReadCounterService.readAll'),
+            feedCounts$: of({}),
+          },
         },
         {
           provide: UserCategoryService,
-          useValue: jasmine.createSpyObj<UserCategoryService>(
-            'UserCategoryService',
-            ['queryAll'],
-          ),
+          useValue: {
+            queryAll: vi.fn().mockName('UserCategoryService.queryAll'),
+          },
         },
         {
           provide: OPMLService,
-          useValue: jasmine.createSpyObj<OPMLService>('OPMLService', [
-            'download',
-          ]),
+          useValue: {
+            download: vi.fn().mockName('OPMLService.download'),
+          },
         },
         {
           provide: SocialService,
-          useValue: jasmine.createSpyObj<SocialService>('SocialService', [
-            'socialList',
-            'googleConnect',
-            'googleDisconnect',
-            'facebookConnect',
-            'facebookDisconnect',
-          ]),
+          useValue: {
+            socialList: vi.fn().mockName('SocialService.socialList'),
+            googleConnect: vi.fn().mockName('SocialService.googleConnect'),
+            googleDisconnect: vi
+              .fn()
+              .mockName('SocialService.googleDisconnect'),
+            facebookConnect: vi.fn().mockName('SocialService.facebookConnect'),
+            facebookDisconnect: vi
+              .fn()
+              .mockName('SocialService.facebookDisconnect'),
+          },
         },
         {
           provide: FeedService,
-          useValue: jasmine.createSpyObj<FeedService>('FeedService', ['query']),
+          useValue: {
+            query: vi.fn().mockName('FeedService.query'),
+          },
         },
         {
           provide: UserMetaService,
-          useValue: jasmine.createSpyObj<UserMetaService>('UserMetaService', [
-            'getReadCount',
-          ]),
+          useValue: {
+            getReadCount: vi.fn().mockName('UserMetaService.getReadCount'),
+          },
         },
         {
           provide: GAuthService,
@@ -119,11 +129,11 @@ describe('ProfileComponent', () => {
     }).compileComponents();
   });
 
-  it('should create the component', waitForAsync(async () => {
+  it('should create the component', async () => {
     const mockAuthService = TestBed.inject(
       AuthService,
-    ) as jasmine.SpyObj<AuthService>;
-    mockAuthService.getUser.and.returnValue(
+    ) as MockedObject<AuthService>;
+    mockAuthService.getUser.mockReturnValue(
       of({
         uuid: '772893c2-c78f-42d8-82a7-5d56a1837a28',
         email: 'test@test.com',
@@ -133,12 +143,12 @@ describe('ProfileComponent', () => {
     );
     const mockSocialService = TestBed.inject(
       SocialService,
-    ) as jasmine.SpyObj<SocialService>;
-    mockSocialService.socialList.and.returnValue(of([]));
+    ) as MockedObject<SocialService>;
+    mockSocialService.socialList.mockReturnValue(of([]));
     const mockFeedService = TestBed.inject(
       FeedService,
-    ) as jasmine.SpyObj<FeedService>;
-    mockFeedService.query.and.returnValue(
+    ) as MockedObject<FeedService>;
+    mockFeedService.query.mockReturnValue(
       of({
         objects: [],
         totalCount: 0,
@@ -146,15 +156,15 @@ describe('ProfileComponent', () => {
     );
     const mockUserMetaService = TestBed.inject(
       UserMetaService,
-    ) as jasmine.SpyObj<UserMetaService>;
-    mockUserMetaService.getReadCount.and.returnValue(of(200));
+    ) as MockedObject<UserMetaService>;
+    mockUserMetaService.getReadCount.mockReturnValue(of(200));
 
     const componentFixture = TestBed.createComponent(ProfileComponent);
     const component = componentFixture.componentInstance;
     expect(component).toBeTruthy();
     componentFixture.detectChanges();
     await componentFixture.whenStable();
-  }));
+  });
 
   // TODO more tests
 });

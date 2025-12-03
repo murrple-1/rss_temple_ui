@@ -1,11 +1,19 @@
 import { provideHttpClient } from '@angular/common/http';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { ShareButtonDirective } from 'ngx-sharebuttons';
 import { of } from 'rxjs';
+import {
+  type MockedObject,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 
 import { InfoModalComponent } from '@app/components/shared/info-modal/info-modal.component';
 import { ReportFeedModalComponent } from '@app/routes/main/components/feed/report-feed-modal/report-feed-modal.component';
@@ -50,7 +58,7 @@ describe('FeedsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         FormsModule,
-        BrowserAnimationsModule,
+        BrowserModule,
         ClarityModule,
         ShareButtonDirective,
         RouterModule.forRoot([]),
@@ -90,82 +98,78 @@ describe('FeedsComponent', () => {
         },
         {
           provide: UserCategoryService,
-          useValue: jasmine.createSpyObj<UserCategoryService>(
-            'UserCategoryService',
-            ['queryAll'],
-          ),
+          useValue: {
+            queryAll: vi.fn().mockName('UserCategoryService.queryAll'),
+          },
         },
         {
           provide: ReportService,
-          useValue: jasmine.createSpyObj<ReportService>('ReportService', [
-            'reportFeed',
-            'reportFeedEntry',
-          ]),
+          useValue: {
+            reportFeed: vi.fn().mockName('ReportService.reportFeed'),
+            reportFeedEntry: vi.fn().mockName('ReportService.reportFeedEntry'),
+          },
         },
         {
           provide: SubscribedFeedsFacadeService,
-          useValue: jasmine.createSpyObj<SubscribedFeedsFacadeService>(
-            'SubscribedFeedsFacadeService',
-            {},
-            { feeds$: of([]) },
-          ),
+          useValue: {
+            feeds$: of([]),
+          },
         },
         {
           provide: FeedEntryVoteService,
-          useValue: jasmine.createSpyObj<FeedEntryVoteService>(
-            'FeedEntryVoteService',
-            ['shouldForceLabelVote'],
-          ),
+          useValue: {
+            shouldForceLabelVote: vi
+              .fn()
+              .mockName('FeedEntryVoteService.shouldForceLabelVote'),
+          },
         },
         {
           provide: ClassifierLabelService,
-          useValue: jasmine.createSpyObj<ClassifierLabelService>(
-            'ClassifierLabelService',
-            ['getAll'],
-          ),
+          useValue: {
+            getAll: vi.fn().mockName('ClassifierLabelService.getAll'),
+          },
         },
         {
           provide: ProgressService,
-          useValue: jasmine.createSpyObj<ProgressService>('ProgressService', [
-            'checkProgress',
-          ]),
+          useValue: {
+            checkProgress: vi.fn().mockName('ProgressService.checkProgress'),
+          },
         },
         {
           provide: OPMLService,
-          useValue: jasmine.createSpyObj<OPMLService>('OPMLService', [
-            'upload',
-          ]),
+          useValue: {
+            upload: vi.fn().mockName('OPMLService.upload'),
+          },
         },
         {
           provide: FeedService,
-          useValue: jasmine.createSpyObj<FeedService>('FeedService', [
-            'queryAll',
-          ]),
+          useValue: {
+            queryAll: vi.fn().mockName('FeedService.queryAll'),
+          },
         },
         {
           provide: FeedEntryService,
-          useValue: jasmine.createSpyObj<FeedEntryService>('FeedEntryService', [
-            'query',
-            'readSome',
-            'unreadSome',
-          ]),
+          useValue: {
+            query: vi.fn().mockName('FeedEntryService.query'),
+            readSome: vi.fn().mockName('FeedEntryService.readSome'),
+            unreadSome: vi.fn().mockName('FeedEntryService.unreadSome'),
+          },
         },
         {
           provide: ReadCounterService,
-          useValue: jasmine.createSpyObj<ReadCounterService>(
-            'ReadCounterService',
-            ['readAll'],
-          ),
+          useValue: {
+            readAll: vi.fn().mockName('ReadCounterService.readAll'),
+          },
         },
       ],
     }).compileComponents();
   });
 
-  it('should create the component', waitForAsync(async () => {
+  it('should create the component', async () => {
     const mockUserCategoryService = TestBed.inject(
       UserCategoryService,
-    ) as jasmine.SpyObj<UserCategoryService>;
-    mockUserCategoryService.queryAll.and.returnValue(
+    ) as MockedObject<UserCategoryService>;
+    mockUserCategoryService.queryAll.mockReturnValue(
       of({
         objects: [],
         totalCount: 0,
@@ -177,7 +181,7 @@ describe('FeedsComponent', () => {
     expect(component).toBeTruthy();
     componentFixture.detectChanges();
     await componentFixture.whenStable();
-  }));
+  });
 
   // TODO more tests
 });

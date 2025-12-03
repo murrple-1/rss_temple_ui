@@ -3,9 +3,10 @@ import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
-import { TestBed, fakeAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { CookieService } from 'ngx-cookie-service';
 import { firstValueFrom } from 'rxjs';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { ConfigService } from '@app/services';
 import {
@@ -52,7 +53,7 @@ describe('OPMLService', () => {
     httpTesting.verify();
   });
 
-  it('should download', fakeAsync(async () => {
+  it('should download', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const opmlService = TestBed.inject(OPMLService);
 
@@ -66,10 +67,10 @@ describe('OPMLService', () => {
     });
     req.flush(downloadText);
 
-    await expectAsync(xmlTextPromise).toBeResolvedTo(downloadText);
-  }));
+    await expect(xmlTextPromise).resolves.toEqual(downloadText);
+  });
 
-  it('should upload text', fakeAsync(async () => {
+  it('should upload text', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const opmlService = TestBed.inject(OPMLService);
 
@@ -87,9 +88,9 @@ describe('OPMLService', () => {
     const upload = await uploadPromise;
 
     expect(upload.status).toBe(200);
-  }));
+  });
 
-  it('should upload buffer', fakeAsync(async () => {
+  it('should upload buffer', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const opmlService = TestBed.inject(OPMLService);
 
@@ -109,5 +110,5 @@ describe('OPMLService', () => {
     const upload = await uploadPromise;
 
     expect(upload.status).toBe(200);
-  }));
+  });
 });

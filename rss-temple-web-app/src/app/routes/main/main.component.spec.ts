@@ -1,9 +1,10 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { LocalAlertsComponent } from '@app/components/shared/local-alerts/local-alerts.component';
 import { OnboardingModalComponent } from '@app/routes/main/components/onboarding-modal/onboarding-modal.component';
@@ -18,13 +19,13 @@ import { MainComponent } from './main.component';
 
 describe('MainComponent', () => {
   beforeEach(async () => {
-    const mockAuthService = jasmine.createSpyObj<AuthService>('AuthService', [
-      'getUser',
-    ]);
+    const mockAuthService = {
+      getUser: vi.fn().mockName('AuthService.getUser'),
+    };
 
     await TestBed.configureTestingModule({
       imports: [
-        BrowserAnimationsModule,
+        BrowserModule,
         ClarityModule,
         RouterModule.forRoot([]),
         MainComponent,

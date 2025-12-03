@@ -1,5 +1,6 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { DateFormatPipe } from '@app/pipes/dayjs-format.pipe';
 import {
@@ -17,48 +18,49 @@ describe('FeedEntryViewComponent', () => {
       providers: [
         {
           provide: Router,
-          useValue: jasmine.createSpyObj<Router>('Router', ['navigate']),
+          useValue: {
+            navigate: vi.fn().mockName('Router.navigate'),
+          },
         },
         {
           provide: FeedEntryService,
-          useValue: jasmine.createSpyObj<FeedEntryService>('FeedEntryService', [
-            'query',
-            'readSome',
-            'unreadSome',
-          ]),
+          useValue: {
+            query: vi.fn().mockName('FeedEntryService.query'),
+            readSome: vi.fn().mockName('FeedEntryService.readSome'),
+            unreadSome: vi.fn().mockName('FeedEntryService.unreadSome'),
+          },
         },
         {
           provide: ClassifierLabelService,
-          useValue: jasmine.createSpyObj<ClassifierLabelService>(
-            'ClassifierLabelService',
-            ['getAll'],
-          ),
+          useValue: {
+            getAll: vi.fn().mockName('ClassifierLabelService.getAll'),
+          },
         },
         {
           provide: ReadCounterService,
-          useValue: jasmine.createSpyObj<ReadCounterService>(
-            'ReadCounterService',
-            ['readAll'],
-          ),
+          useValue: {
+            readAll: vi.fn().mockName('ReadCounterService.readAll'),
+          },
         },
         {
           provide: FeedEntryVoteService,
-          useValue: jasmine.createSpyObj<FeedEntryVoteService>(
-            'FeedEntryVoteService',
-            ['shouldForceLabelVote'],
-          ),
+          useValue: {
+            shouldForceLabelVote: vi
+              .fn()
+              .mockName('FeedEntryVoteService.shouldForceLabelVote'),
+          },
         },
       ],
     }).compileComponents();
   });
 
-  it('should create the component', waitForAsync(async () => {
+  it('should create the component', async () => {
     const componentFixture = TestBed.createComponent(FeedEntryViewComponent);
     const component = componentFixture.componentInstance;
     expect(component).toBeTruthy();
     componentFixture.detectChanges();
     await componentFixture.whenStable();
-  }));
+  });
 
   // TODO more tests
 });

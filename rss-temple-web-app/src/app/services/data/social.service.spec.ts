@@ -3,8 +3,9 @@ import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
-import { TestBed, fakeAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { CookieService } from 'ngx-cookie-service';
+import { afterEach, beforeEach, describe, it } from 'vitest';
 
 import { ConfigService } from '@app/services';
 import {
@@ -51,31 +52,31 @@ describe('SocialService', () => {
     httpTesting.verify();
   });
 
-  it('should create "google" login', fakeAsync(async () => {
+  it('should create "google" login', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const socialService = TestBed.inject(SocialService);
 
     // TODO implement
-  }));
+  });
 
-  it('should create "facebook" login', fakeAsync(async () => {
+  it('should create "facebook" login', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const socialService = TestBed.inject(SocialService);
 
     // TODO implement
-  }));
+  });
 
-  it('should create "google" session', fakeAsync(async () => {
+  it('should create "google" session', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const socialService = TestBed.inject(SocialService);
 
     // TODO implement
-  }));
+  });
 
-  it('should create "google" session', fakeAsync(async () => {
+  it('should create "google" session', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const socialService = TestBed.inject(SocialService);
 
     // TODO implement
-  }));
+  });
 });

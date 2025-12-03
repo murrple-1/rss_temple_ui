@@ -1,11 +1,19 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { ClarityModule, ClrLoadingState } from '@clr/angular';
 import { of, throwError } from 'rxjs';
+import {
+  type MockedObject,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 
 import { EmailValidatorDirective } from '@app/directives/email-validator.directive';
 import { AuthService } from '@app/services/data';
@@ -17,7 +25,7 @@ describe('RequestPasswordResetModalComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         FormsModule,
-        BrowserAnimationsModule,
+        BrowserModule,
         ClarityModule,
         RouterModule.forRoot([]),
         RequestPasswordResetModalComponent,
@@ -26,15 +34,17 @@ describe('RequestPasswordResetModalComponent', () => {
       providers: [
         {
           provide: AuthService,
-          useValue: jasmine.createSpyObj<AuthService>('AuthService', [
-            'requestPasswordReset',
-          ]),
+          useValue: {
+            requestPasswordReset: vi
+              .fn()
+              .mockName('AuthService.requestPasswordReset'),
+          },
         },
       ],
     }).compileComponents();
   });
 
-  it('should create the component', waitForAsync(async () => {
+  it('should create the component', async () => {
     const componentFixture = TestBed.createComponent(
       RequestPasswordResetModalComponent,
     );
@@ -42,9 +52,9 @@ describe('RequestPasswordResetModalComponent', () => {
     expect(component).toBeTruthy();
     componentFixture.detectChanges();
     await componentFixture.whenStable();
-  }));
+  });
 
-  it('should handle missing email', waitForAsync(async () => {
+  it('should handle missing email', async () => {
     const componentFixture = TestBed.createComponent(
       RequestPasswordResetModalComponent,
     );
@@ -70,13 +80,13 @@ describe('RequestPasswordResetModalComponent', () => {
     expect(
       component._passwordResetRequestForm?.controls['email']?.errors ?? {},
     ).toEqual(
-      jasmine.objectContaining({
-        required: jasmine.anything(),
+      expect.objectContaining({
+        required: expect.anything(),
       }),
     );
-  }));
+  });
 
-  it('should handle malformed email', waitForAsync(async () => {
+  it('should handle malformed email', async () => {
     const componentFixture = TestBed.createComponent(
       RequestPasswordResetModalComponent,
     );
@@ -103,17 +113,17 @@ describe('RequestPasswordResetModalComponent', () => {
     expect(
       component._passwordResetRequestForm?.controls['email']?.errors ?? {},
     ).toEqual(
-      jasmine.objectContaining({
-        invalidemail: jasmine.anything(),
+      expect.objectContaining({
+        invalidemail: expect.anything(),
       }),
     );
-  }));
+  });
 
-  it('should request a password reset', waitForAsync(async () => {
+  it('should request a password reset', async () => {
     const mockAuthService = TestBed.inject(
       AuthService,
-    ) as jasmine.SpyObj<AuthService>;
-    mockAuthService.requestPasswordReset.and.returnValue(of(undefined));
+    ) as MockedObject<AuthService>;
+    mockAuthService.requestPasswordReset.mockReturnValue(of(undefined));
 
     const componentFixture = TestBed.createComponent(
       RequestPasswordResetModalComponent,
@@ -142,13 +152,13 @@ describe('RequestPasswordResetModalComponent', () => {
     expect(mockAuthService.requestPasswordReset).toHaveBeenCalledWith(
       'test@test.com',
     );
-  }));
+  });
 
-  it('should handle failed requests', waitForAsync(async () => {
+  it('should handle failed requests', async () => {
     const mockAuthService = TestBed.inject(
       AuthService,
-    ) as jasmine.SpyObj<AuthService>;
-    mockAuthService.requestPasswordReset.and.returnValue(
+    ) as MockedObject<AuthService>;
+    mockAuthService.requestPasswordReset.mockReturnValue(
       throwError(
         () =>
           new HttpErrorResponse({
@@ -156,7 +166,7 @@ describe('RequestPasswordResetModalComponent', () => {
           }),
       ),
     );
-    spyOn(console, 'error');
+    vi.spyOn(console, 'error');
 
     const componentFixture = TestBed.createComponent(
       RequestPasswordResetModalComponent,
@@ -185,5 +195,5 @@ describe('RequestPasswordResetModalComponent', () => {
     expect(mockAuthService.requestPasswordReset).toHaveBeenCalledWith(
       'test@test.com',
     );
-  }));
+  });
 });

@@ -3,6 +3,14 @@ import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { take } from 'rxjs/operators';
+import {
+  type MockedObject,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 
 import {
   AppAlertDescriptor,
@@ -18,13 +26,15 @@ import { HttpErrorService } from './httperror.service';
 
 describe('HttpErrorService', () => {
   beforeEach(() => {
-    spyOn(console, 'error');
+    vi.spyOn(console, 'error');
 
     TestBed.configureTestingModule({
       providers: [
         {
           provide: Router,
-          useValue: jasmine.createSpyObj('Router', ['navigate']),
+          useValue: {
+            navigate: vi.fn().mockName('Router.navigate'),
+          },
         },
         {
           provide: MOCK_COOKIE_SERVICE_CONFIG,
@@ -62,9 +72,9 @@ describe('HttpErrorService', () => {
     });
     httpErrorService.handleError(response);
 
-    await expectAsync(emitPromise).toBeResolvedTo(
-      jasmine.objectContaining({
-        text: jasmine.any(String),
+    await expect(emitPromise).resolves.toEqual(
+      expect.objectContaining({
+        text: expect.any(String),
         type: 'danger',
         canClose: true,
         autoCloseInterval: 5000,
@@ -89,7 +99,7 @@ describe('HttpErrorService', () => {
     });
 
     httpErrorService.handleError(response);
-    await expectAsync(emitPromise).toBeResolvedTo({
+    await expect(emitPromise).resolves.toEqual({
       autoCloseInterval: 5000,
       canClose: true,
       text: 'Unable to connect to server',
@@ -101,7 +111,7 @@ describe('HttpErrorService', () => {
   it('should handle "session expired" HttpErrorResponses', async () => {
     const httpErrorService = TestBed.inject(HttpErrorService);
     const appAlertService = TestBed.inject(AppAlertsService);
-    const routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    const routerSpy = TestBed.inject(Router) as MockedObject<Router>;
 
     const response = new HttpErrorResponse({
       status: 401,
@@ -117,7 +127,7 @@ describe('HttpErrorService', () => {
 
     httpErrorService.handleError(response);
 
-    await expectAsync(emitPromise).toBeResolvedTo({
+    await expect(emitPromise).resolves.toEqual({
       autoCloseInterval: 5000,
       canClose: true,
       text: 'Session expired',
@@ -141,9 +151,9 @@ describe('HttpErrorService', () => {
 
     httpErrorService.handleError('something');
 
-    await expectAsync(emitPromise).toBeResolvedTo(
-      jasmine.objectContaining({
-        text: jasmine.any(String),
+    await expect(emitPromise).resolves.toEqual(
+      expect.objectContaining({
+        text: expect.any(String),
         type: 'danger',
         canClose: true,
         autoCloseInterval: 5000,

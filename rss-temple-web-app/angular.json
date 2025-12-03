@@ -101,21 +101,11 @@
           }
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "main": "src/test.ts",
-            "polyfills": ["src/polyfills.ts"],
             "tsConfig": "src/tsconfig.spec.json",
-            "karmaConfig": "karma.conf.js",
-            "assets": ["src/favicon.ico", "src/assets", "src/test_files"],
-            "styles": ["src/styles.scss"],
-            "scripts": [],
-            "codeCoverageExclude": [
-              "src/test.ts",
-              "src/polyfill.ts",
-              "src/app/test/**"
-            ],
-            "progress": false
+            "buildTarget": "rss-temple-web-app:build",
+            "setupFiles": ["src/setup-test.ts"]
           }
         },
         "collect-vars": {

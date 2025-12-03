@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { CookieService } from 'ngx-cookie-service';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import {
   MOCK_COOKIE_SERVICE_CONFIG,

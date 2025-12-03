@@ -3,8 +3,9 @@ import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
-import { TestBed, fakeAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { firstValueFrom } from 'rxjs';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { ConfigService } from '@app/services';
 import {
@@ -39,7 +40,7 @@ describe('RegistrationService', () => {
     httpTesting.verify();
   });
 
-  it('should register', fakeAsync(async () => {
+  it('should register', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const registrationService = TestBed.inject(RegistrationService);
 
@@ -58,13 +59,13 @@ describe('RegistrationService', () => {
       method: 'POST',
     });
     expect(req.request.body).toEqual(
-      jasmine.objectContaining({
-        email: jasmine.any(String),
-        password: jasmine.any(String),
+      expect.objectContaining({
+        email: expect.any(String),
+        password: expect.any(String),
       }),
     );
     req.flush(null);
 
-    await expectAsync(registerPromise).toBeResolved();
-  }));
+    await expect(registerPromise).resolves.not.toThrow();
+  });
 });

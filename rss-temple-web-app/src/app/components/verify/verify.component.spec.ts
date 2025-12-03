@@ -1,5 +1,6 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { RegistrationService } from '@app/services/data';
 
@@ -12,22 +13,21 @@ describe('VerifyComponent', () => {
       providers: [
         {
           provide: RegistrationService,
-          useValue: jasmine.createSpyObj<RegistrationService>(
-            'RegistrationService',
-            ['verifyEmail'],
-          ),
+          useValue: {
+            verifyEmail: vi.fn().mockName('RegistrationService.verifyEmail'),
+          },
         },
       ],
     }).compileComponents();
   });
 
-  it('should create the component', waitForAsync(async () => {
+  it('should create the component', async () => {
     const componentFixture = TestBed.createComponent(VerifyComponent);
     const component = componentFixture.componentInstance;
     expect(component).toBeTruthy();
     componentFixture.detectChanges();
     await componentFixture.whenStable();
-  }));
+  });
 
   // TODO more tests
 });

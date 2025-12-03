@@ -9,6 +9,14 @@ import {
   UrlTree,
 } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
+import {
+  type MockedObject,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 
 import { AuthStateService } from '@app/services';
 import {
@@ -24,7 +32,9 @@ describe('AuthGuard', () => {
       providers: [
         {
           provide: Router,
-          useValue: jasmine.createSpyObj<Router>('Router', ['createUrlTree']),
+          useValue: {
+            createUrlTree: vi.fn().mockName('Router.createUrlTree'),
+          },
         },
         {
           provide: MOCK_COOKIE_SERVICE_CONFIG,
@@ -47,7 +57,7 @@ describe('AuthGuard', () => {
   });
 
   it('can activate', () => {
-    const routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    const routerSpy = TestBed.inject(Router) as MockedObject<Router>;
     const authStateService = TestBed.inject(AuthStateService);
     const authGuard = TestBed.inject(AuthGuard);
 
@@ -58,12 +68,12 @@ describe('AuthGuard', () => {
       url: 'http://example.com',
     } as RouterStateSnapshot;
 
-    expect(authGuard.canActivate(activatedRouteSnapshot, state)).toBeTrue();
+    expect(authGuard.canActivate(activatedRouteSnapshot, state)).toBe(true);
     expect(routerSpy.createUrlTree).toHaveBeenCalledTimes(0);
   });
 
   it('can not activate', () => {
-    const routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    const routerSpy = TestBed.inject(Router) as MockedObject<Router>;
     const authGuard = TestBed.inject(AuthGuard);
 
     const fakeUrlTree = {
@@ -77,7 +87,7 @@ describe('AuthGuard', () => {
         },
       } as UrlSegmentGroup,
     } as UrlTree;
-    routerSpy.createUrlTree.and.returnValue(fakeUrlTree);
+    routerSpy.createUrlTree.mockReturnValue(fakeUrlTree);
 
     const activatedRouteSnapshot = {
       url: [''] as unknown as UrlSegment[],
@@ -93,7 +103,7 @@ describe('AuthGuard', () => {
   });
 
   it('will not renavigate to the same place', () => {
-    const routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    const routerSpy = TestBed.inject(Router) as MockedObject<Router>;
     const authGuard = TestBed.inject(AuthGuard);
 
     const fakeUrlTree = {
@@ -107,7 +117,7 @@ describe('AuthGuard', () => {
         },
       } as UrlSegmentGroup,
     } as UrlTree;
-    routerSpy.createUrlTree.and.returnValue(fakeUrlTree);
+    routerSpy.createUrlTree.mockReturnValue(fakeUrlTree);
 
     const activatedRouteSnapshot = {
       url: ['test'] as unknown as UrlSegment[],
@@ -116,7 +126,7 @@ describe('AuthGuard', () => {
       url: 'http://example.com',
     } as RouterStateSnapshot;
 
-    expect(authGuard.canActivate(activatedRouteSnapshot, state)).toBeTrue();
+    expect(authGuard.canActivate(activatedRouteSnapshot, state)).toBe(true);
     expect(routerSpy.createUrlTree).toHaveBeenCalledTimes(1);
   });
 });
@@ -127,7 +137,9 @@ describe('NoAuthGuard', () => {
       providers: [
         {
           provide: Router,
-          useValue: jasmine.createSpyObj<Router>('Router', ['createUrlTree']),
+          useValue: {
+            createUrlTree: vi.fn().mockName('Router.createUrlTree'),
+          },
         },
         {
           provide: MOCK_COOKIE_SERVICE_CONFIG,
@@ -150,7 +162,7 @@ describe('NoAuthGuard', () => {
   });
 
   it('can activate', () => {
-    const routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    const routerSpy = TestBed.inject(Router) as MockedObject<Router>;
     const noAuthGuard = TestBed.inject(NoAuthGuard);
 
     const activatedRouteSnapshot = {} as ActivatedRouteSnapshot;
@@ -158,12 +170,12 @@ describe('NoAuthGuard', () => {
       url: 'http://example.com',
     } as RouterStateSnapshot;
 
-    expect(noAuthGuard.canActivate(activatedRouteSnapshot, state)).toBeTrue();
+    expect(noAuthGuard.canActivate(activatedRouteSnapshot, state)).toBe(true);
     expect(routerSpy.createUrlTree).toHaveBeenCalledTimes(0);
   });
 
   it('can not activate', () => {
-    const routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    const routerSpy = TestBed.inject(Router) as MockedObject<Router>;
     const authStateService = TestBed.inject(AuthStateService);
     const noAuthGuard = TestBed.inject(NoAuthGuard);
 
@@ -178,7 +190,7 @@ describe('NoAuthGuard', () => {
         },
       } as UrlSegmentGroup,
     } as UrlTree;
-    routerSpy.createUrlTree.and.returnValue(fakeUrlTree);
+    routerSpy.createUrlTree.mockReturnValue(fakeUrlTree);
 
     authStateService.isLoggedIn$.next(true);
 
@@ -196,7 +208,7 @@ describe('NoAuthGuard', () => {
   });
 
   it('will not renavigate to the same place', () => {
-    const routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    const routerSpy = TestBed.inject(Router) as MockedObject<Router>;
     const authStateService = TestBed.inject(AuthStateService);
     const noAuthGuard = TestBed.inject(NoAuthGuard);
 
@@ -211,7 +223,7 @@ describe('NoAuthGuard', () => {
         },
       } as UrlSegmentGroup,
     } as UrlTree;
-    routerSpy.createUrlTree.and.returnValue(fakeUrlTree);
+    routerSpy.createUrlTree.mockReturnValue(fakeUrlTree);
 
     authStateService.isLoggedIn$.next(true);
 
@@ -222,7 +234,7 @@ describe('NoAuthGuard', () => {
       url: 'http://example.com',
     } as RouterStateSnapshot;
 
-    expect(noAuthGuard.canActivate(activatedRouteSnapshot, state)).toBeTrue();
+    expect(noAuthGuard.canActivate(activatedRouteSnapshot, state)).toBe(true);
     expect(routerSpy.createUrlTree).toHaveBeenCalledTimes(1);
   });
 });

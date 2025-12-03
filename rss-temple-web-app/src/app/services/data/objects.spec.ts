@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 
 import { toObjects } from './objects';
@@ -19,19 +20,17 @@ describe('objects', () => {
         .object({ totalCount: z.number(), objects: z.array(z.string()) })
         .strict()
         .safeParse(objects).success,
-    ).toBeTrue();
+    ).toBe(true);
   });
 
   it('should parse empty', () => {
     const objects = toObjects({}, ZType);
 
-    expect(z.object({}).strict().safeParse(objects).success).toBeTrue();
+    expect(z.object({}).strict().safeParse(objects).success).toBe(true);
   });
 
   it('should error malformed', () => {
-    expect(() => toObjects([], ZType)).toThrowMatching(
-      err => err instanceof z.ZodError,
-    );
+    expect(() => toObjects([], ZType)).toThrow(z.ZodError);
   });
 
   it('should error `totalCount` type error', () => {
@@ -42,7 +41,7 @@ describe('objects', () => {
         },
         ZType,
       ),
-    ).toThrowMatching(err => err instanceof z.ZodError);
+    ).toThrow(z.ZodError);
   });
 
   it('should error `objects` type error', () => {
@@ -53,6 +52,6 @@ describe('objects', () => {
         },
         ZType,
       ),
-    ).toThrowMatching(err => err instanceof z.ZodError);
+    ).toThrow(z.ZodError);
   });
 });

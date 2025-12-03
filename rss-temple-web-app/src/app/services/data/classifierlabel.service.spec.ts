@@ -3,9 +3,10 @@ import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
-import { TestBed, fakeAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { CookieService } from 'ngx-cookie-service';
 import { firstValueFrom } from 'rxjs';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { ConfigService } from '@app/services';
 import {
@@ -53,7 +54,7 @@ describe('ClassifierLabelService', () => {
     httpTesting.verify();
   });
 
-  it('should getAll without feed entry', fakeAsync(async () => {
+  it('should getAll without feed entry', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const classifierLabelService = TestBed.inject(ClassifierLabelService);
 
@@ -78,10 +79,10 @@ describe('ClassifierLabelService', () => {
     });
     req.flush(exampleClassifierLabels);
 
-    await expectAsync(classifierLabelsPromise).toBeResolvedTo(
+    await expect(classifierLabelsPromise).resolves.toEqual(
       exampleClassifierLabels,
     );
-  }));
+  });
 
   // TODO more tests
 });

@@ -3,9 +3,10 @@ import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
-import { TestBed, fakeAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { CookieService } from 'ngx-cookie-service';
 import { firstValueFrom } from 'rxjs';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { ConfigService } from '@app/services';
 import {
@@ -52,7 +53,7 @@ describe('UserMetaService', () => {
     httpTesting.verify();
   });
 
-  it('should get read count', fakeAsync(async () => {
+  it('should get read count', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const userMetaService = TestBed.inject(UserMetaService);
 
@@ -64,6 +65,6 @@ describe('UserMetaService', () => {
     });
     req.flush(1000);
 
-    await expectAsync(readCountPromise).toBeResolvedTo(1000);
-  }));
+    await expect(readCountPromise).resolves.toEqual(1000);
+  });
 });

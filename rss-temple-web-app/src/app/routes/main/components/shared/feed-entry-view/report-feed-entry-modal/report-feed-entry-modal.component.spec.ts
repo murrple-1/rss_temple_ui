@@ -1,8 +1,9 @@
 import { provideHttpClient } from '@angular/common/http';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser';
 import { ClarityModule } from '@clr/angular';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { ReportService } from '@app/services/data';
 
@@ -13,7 +14,7 @@ describe('ReportFeedEntryModalComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         FormsModule,
-        BrowserAnimationsModule,
+        BrowserModule,
         ClarityModule,
         ReportFeedEntryModalComponent,
       ],
@@ -21,15 +22,15 @@ describe('ReportFeedEntryModalComponent', () => {
         provideHttpClient(),
         {
           provide: ReportService,
-          useValue: jasmine.createSpyObj<ReportService>('ReportService', [
-            'reportFeedEntry',
-          ]),
+          useValue: {
+            reportFeedEntry: vi.fn().mockName('ReportService.reportFeedEntry'),
+          },
         },
       ],
     }).compileComponents();
   });
 
-  it('should create the component', waitForAsync(async () => {
+  it('should create the component', async () => {
     const componentFixture = TestBed.createComponent(
       ReportFeedEntryModalComponent,
     );
@@ -37,5 +38,5 @@ describe('ReportFeedEntryModalComponent', () => {
     expect(component).toBeTruthy();
     componentFixture.detectChanges();
     await componentFixture.whenStable();
-  }));
+  });
 });

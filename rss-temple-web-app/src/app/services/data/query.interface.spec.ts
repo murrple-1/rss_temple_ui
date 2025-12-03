@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { Sort } from '@app/services/data/sort.interface';
 
 import { toBody, toHeaders, toParams } from './query.interface';

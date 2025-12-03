@@ -3,10 +3,11 @@ import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
-import { TestBed, fakeAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { formatISO as formatDateISO, parseISO as parseDateISO } from 'date-fns';
 import { CookieService } from 'ngx-cookie-service';
 import { firstValueFrom } from 'rxjs';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { z } from 'zod';
 
 import { ZFeedEntry } from '@app/models/feedentry';
@@ -57,7 +58,7 @@ describe('FeedEntryService', () => {
     httpTesting.verify();
   });
 
-  it('should get', fakeAsync(async () => {
+  it('should get', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -70,10 +71,10 @@ describe('FeedEntryService', () => {
     req.flush({});
 
     const feed = await feedPromise;
-    expect(ZFeedEntry.safeParse(feed).success).toBeTrue();
-  }));
+    expect(ZFeedEntry.safeParse(feed).success).toBe(true);
+  });
 
-  it('should query', fakeAsync(async () => {
+  it('should query', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -89,9 +90,9 @@ describe('FeedEntryService', () => {
 
     const feedEntries = await feedEntriesPromise;
     expect(feedEntries.objects).toBeDefined();
-  }));
+  });
 
-  it('should queryAll', fakeAsync(async () => {
+  it('should queryAll', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -110,9 +111,9 @@ describe('FeedEntryService', () => {
 
     const feedEntries = await feedEntriesPromise;
     expect(feedEntries.objects).toBeDefined();
-  }));
+  });
 
-  it('should read', fakeAsync(async () => {
+  it('should read', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -126,10 +127,10 @@ describe('FeedEntryService', () => {
     });
     req.flush(formatDateISO(new Date()));
 
-    await expectAsync(readPromise).toBeResolved();
-  }));
+    await expect(readPromise).resolves.not.toThrow();
+  });
 
-  it('should unread', fakeAsync(async () => {
+  it('should unread', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -143,10 +144,10 @@ describe('FeedEntryService', () => {
     });
     req.flush(null);
 
-    await expectAsync(unreadPromise).toBeResolved();
-  }));
+    await expect(unreadPromise).resolves.not.toThrow();
+  });
 
-  it('should readSome', fakeAsync(async () => {
+  it('should readSome', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -169,17 +170,17 @@ describe('FeedEntryService', () => {
       method: 'POST',
     });
     expect(req.request.body).toEqual(
-      jasmine.objectContaining({
-        feedEntryUuids: jasmine.arrayContaining([jasmine.any(String)]),
+      expect.objectContaining({
+        feedEntryUuids: expect.arrayContaining([expect.any(String)]),
       }),
     );
     expect(req.request.body.feedEntryUuids.length).toBe(2);
     req.flush(null);
 
-    await expectAsync(readPromise).toBeResolved();
-  }));
+    await expect(readPromise).resolves.not.toThrow();
+  });
 
-  it('should unreadSome', fakeAsync(async () => {
+  it('should unreadSome', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -196,17 +197,17 @@ describe('FeedEntryService', () => {
       method: 'DELETE',
     });
     expect(req.request.body).toEqual(
-      jasmine.objectContaining({
-        feedEntryUuids: jasmine.arrayContaining([jasmine.any(String)]),
+      expect.objectContaining({
+        feedEntryUuids: expect.arrayContaining([expect.any(String)]),
       }),
     );
     expect(req.request.body.feedEntryUuids.length).toBe(2);
     req.flush(null);
 
-    await expectAsync(unreadPromise).toBeResolved();
-  }));
+    await expect(unreadPromise).resolves.not.toThrow();
+  });
 
-  it('should favorite', fakeAsync(async () => {
+  it('should favorite', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -220,10 +221,10 @@ describe('FeedEntryService', () => {
     });
     req.flush(null);
 
-    await expectAsync(favoritePromise).toBeResolved();
-  }));
+    await expect(favoritePromise).resolves.not.toThrow();
+  });
 
-  it('should unfavorite', fakeAsync(async () => {
+  it('should unfavorite', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -238,10 +239,10 @@ describe('FeedEntryService', () => {
     });
     req.flush(null);
 
-    await expectAsync(unfavoritePromise).toBeResolved();
-  }));
+    await expect(unfavoritePromise).resolves.not.toThrow();
+  });
 
-  it('should favoriteSome', fakeAsync(async () => {
+  it('should favoriteSome', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -258,17 +259,17 @@ describe('FeedEntryService', () => {
       method: 'POST',
     });
     expect(req.request.body).toEqual(
-      jasmine.objectContaining({
-        feedEntryUuids: jasmine.arrayContaining([jasmine.any(String)]),
+      expect.objectContaining({
+        feedEntryUuids: expect.arrayContaining([expect.any(String)]),
       }),
     );
     expect(req.request.body.feedEntryUuids.length).toBe(2);
     req.flush(null);
 
-    await expectAsync(favoritePromise).toBeResolved();
-  }));
+    await expect(favoritePromise).resolves.not.toThrow();
+  });
 
-  it('should unfavoriteSome', fakeAsync(async () => {
+  it('should unfavoriteSome', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -285,17 +286,17 @@ describe('FeedEntryService', () => {
       method: 'DELETE',
     });
     expect(req.request.body).toEqual(
-      jasmine.objectContaining({
-        feedEntryUuids: jasmine.arrayContaining([jasmine.any(String)]),
+      expect.objectContaining({
+        feedEntryUuids: expect.arrayContaining([expect.any(String)]),
       }),
     );
     expect(req.request.body.feedEntryUuids.length).toBe(2);
     req.flush(null);
 
-    await expectAsync(unfavoritePromise).toBeResolved();
-  }));
+    await expect(unfavoritePromise).resolves.not.toThrow();
+  });
 
-  it('should fail get when response is not JSON object', fakeAsync(async () => {
+  it('should fail get when response is not JSON object', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -307,13 +308,13 @@ describe('FeedEntryService', () => {
     );
     req.flush(4);
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should `uuid`', fakeAsync(async () => {
+  it('should `uuid`', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -331,9 +332,9 @@ describe('FeedEntryService', () => {
 
     const feedEntry = await feedEntryPromise;
     expect(feedEntry.uuid).toBe(uuid);
-  }));
+  });
 
-  it('should `uuid` type error', fakeAsync(async () => {
+  it('should `uuid` type error', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -347,13 +348,13 @@ describe('FeedEntryService', () => {
       uuid: 0,
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should `id`', fakeAsync(async () => {
+  it('should `id`', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -384,9 +385,9 @@ describe('FeedEntryService', () => {
 
     feedEntry = await feedEntryPromise;
     expect(feedEntry.id).toBeNull();
-  }));
+  });
 
-  it('should `id` type error', fakeAsync(async () => {
+  it('should `id` type error', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -400,13 +401,13 @@ describe('FeedEntryService', () => {
       id: 0,
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should `createdAt`', fakeAsync(async () => {
+  it('should `createdAt`', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -437,9 +438,9 @@ describe('FeedEntryService', () => {
 
     feedEntry = await feedEntryPromise;
     expect(feedEntry.createdAt).toBeNull();
-  }));
+  });
 
-  it('should `createdAt` type error', fakeAsync(async () => {
+  it('should `createdAt` type error', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -453,13 +454,13 @@ describe('FeedEntryService', () => {
       createdAt: 0,
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should `createdAt` malformed', fakeAsync(async () => {
+  it('should `createdAt` malformed', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -473,13 +474,13 @@ describe('FeedEntryService', () => {
       createdAt: 'bad datetime',
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should `publishedAt`', fakeAsync(async () => {
+  it('should `publishedAt`', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -497,9 +498,9 @@ describe('FeedEntryService', () => {
 
     const feedEntry = await feedEntryPromise;
     expect(feedEntry.publishedAt).toEqual(publishedAt);
-  }));
+  });
 
-  it('should `publishedAt` type error', fakeAsync(async () => {
+  it('should `publishedAt` type error', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -513,13 +514,13 @@ describe('FeedEntryService', () => {
       publishedAt: 0,
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should `publishedAt` malformed', fakeAsync(async () => {
+  it('should `publishedAt` malformed', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -533,13 +534,13 @@ describe('FeedEntryService', () => {
       publishedAt: 'bad datetime',
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should `updatedAt`', fakeAsync(async () => {
+  it('should `updatedAt`', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -570,9 +571,9 @@ describe('FeedEntryService', () => {
 
     feedEntry = await feedEntryPromise;
     expect(feedEntry.updatedAt).toBeNull();
-  }));
+  });
 
-  it('should `updatedAt` type error', fakeAsync(async () => {
+  it('should `updatedAt` type error', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -586,13 +587,13 @@ describe('FeedEntryService', () => {
       updatedAt: 0,
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should `updatedAt` malformed', fakeAsync(async () => {
+  it('should `updatedAt` malformed', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -606,13 +607,13 @@ describe('FeedEntryService', () => {
       updatedAt: 'bad datetime',
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should `title`', fakeAsync(async () => {
+  it('should `title`', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -630,9 +631,9 @@ describe('FeedEntryService', () => {
 
     const feedEntry = await feedEntryPromise;
     expect(feedEntry.title).toBe(title);
-  }));
+  });
 
-  it('should `title` type error', fakeAsync(async () => {
+  it('should `title` type error', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -646,13 +647,13 @@ describe('FeedEntryService', () => {
       title: 0,
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should `url`', fakeAsync(async () => {
+  it('should `url`', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -670,9 +671,9 @@ describe('FeedEntryService', () => {
 
     const feedEntry = await feedEntryPromise;
     expect(feedEntry.url).toBe(url);
-  }));
+  });
 
-  it('should `url` type error', fakeAsync(async () => {
+  it('should `url` type error', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -686,13 +687,13 @@ describe('FeedEntryService', () => {
       url: 0,
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should `content`', fakeAsync(async () => {
+  it('should `content`', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -710,9 +711,9 @@ describe('FeedEntryService', () => {
 
     const feedEntry = await feedEntryPromise;
     expect(feedEntry.content).toBe(content);
-  }));
+  });
 
-  it('should `content` type error', fakeAsync(async () => {
+  it('should `content` type error', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -726,10 +727,10 @@ describe('FeedEntryService', () => {
       content: 0,
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
 
     p = firstValueFrom(feedEntryService.get(UUID));
 
@@ -741,13 +742,13 @@ describe('FeedEntryService', () => {
       content: null,
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should `authorName`', fakeAsync(async () => {
+  it('should `authorName`', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -778,9 +779,9 @@ describe('FeedEntryService', () => {
 
     feedEntry = await feedEntryPromise;
     expect(feedEntry.authorName).toBeNull();
-  }));
+  });
 
-  it('should `authorName` type error', fakeAsync(async () => {
+  it('should `authorName` type error', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -794,13 +795,13 @@ describe('FeedEntryService', () => {
       authorName: 0,
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should `isFromSubscription`', fakeAsync(async () => {
+  it('should `isFromSubscription`', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -818,9 +819,9 @@ describe('FeedEntryService', () => {
 
     const feedEntry = await feedEntryPromise;
     expect(feedEntry.isFromSubscription).toBe(isFromSubscription);
-  }));
+  });
 
-  it('should `isFromSubscription` type error', fakeAsync(async () => {
+  it('should `isFromSubscription` type error', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -834,13 +835,13 @@ describe('FeedEntryService', () => {
       isFromSubscription: 0,
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should `isRead`', fakeAsync(async () => {
+  it('should `isRead`', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -858,9 +859,9 @@ describe('FeedEntryService', () => {
 
     const feedEntry = await feedEntryPromise;
     expect(feedEntry.isRead).toBe(isRead);
-  }));
+  });
 
-  it('should `isRead` type error', fakeAsync(async () => {
+  it('should `isRead` type error', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -874,13 +875,13 @@ describe('FeedEntryService', () => {
       isRead: 0,
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should `isFavorite`', fakeAsync(async () => {
+  it('should `isFavorite`', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -898,9 +899,9 @@ describe('FeedEntryService', () => {
 
     const feedEntry = await feedEntryPromise;
     expect(feedEntry.isFavorite).toBe(isFavorite);
-  }));
+  });
 
-  it('should `isFavorite` type error', fakeAsync(async () => {
+  it('should `isFavorite` type error', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -914,13 +915,13 @@ describe('FeedEntryService', () => {
       isFavorite: 0,
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should `feedUuid`', fakeAsync(async () => {
+  it('should `feedUuid`', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -938,9 +939,9 @@ describe('FeedEntryService', () => {
 
     const feedEntry = await feedEntryPromise;
     expect(feedEntry.feedUuid).toBe(feedUuid);
-  }));
+  });
 
-  it('should `feedUuid` type error', fakeAsync(async () => {
+  it('should `feedUuid` type error', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -954,13 +955,13 @@ describe('FeedEntryService', () => {
       feedUuid: 0,
     });
 
-    await expectAsync(p).toBeRejected();
-    await expectAsync(
-      p.catch(reason => reason.constructor.name),
-    ).toBeResolvedTo(z.ZodError.name);
-  }));
+    await expect(p).rejects.toThrow();
+    await expect(p.catch(reason => reason.constructor.name)).resolves.toEqual(
+      z.ZodError.name,
+    );
+  });
 
-  it('should get languages', fakeAsync(async () => {
+  it('should get languages', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -977,9 +978,9 @@ describe('FeedEntryService', () => {
 
     const languages = await languagesPromise;
     expect(languages).toEqual(languagesExpect);
-  }));
+  });
 
-  it('should get languages of ISO636-3 kind', fakeAsync(async () => {
+  it('should get languages of ISO636-3 kind', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -998,9 +999,9 @@ describe('FeedEntryService', () => {
 
     const languages = await languagesPromise;
     expect(languages).toEqual(languagesExpect);
-  }));
+  });
 
-  it('should get languages of ISO636-1 kind', fakeAsync(async () => {
+  it('should get languages of ISO636-1 kind', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -1019,9 +1020,9 @@ describe('FeedEntryService', () => {
 
     const languages = await languagesPromise;
     expect(languages).toEqual(languagesExpect);
-  }));
+  });
 
-  it('should get languages of name kind', fakeAsync(async () => {
+  it('should get languages of name kind', async () => {
     const httpTesting = TestBed.inject(HttpTestingController);
     const feedEntryService = TestBed.inject(FeedEntryService);
 
@@ -1040,5 +1041,5 @@ describe('FeedEntryService', () => {
 
     const languages = await languagesPromise;
     expect(languages).toEqual(languagesExpect);
-  }));
+  });
 });

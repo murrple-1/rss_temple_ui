@@ -1,8 +1,9 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-match-validator.directive';
 import { AuthService } from '@app/services/data';
@@ -14,7 +15,7 @@ describe('ResetPasswordComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         FormsModule,
-        BrowserAnimationsModule,
+        BrowserModule,
         ClarityModule,
         RouterModule.forRoot([]),
         ResetPasswordComponent,
@@ -23,21 +24,21 @@ describe('ResetPasswordComponent', () => {
       providers: [
         {
           provide: AuthService,
-          useValue: jasmine.createSpyObj<AuthService>('AuthService', [
-            'resetPassword',
-          ]),
+          useValue: {
+            resetPassword: vi.fn().mockName('AuthService.resetPassword'),
+          },
         },
       ],
     }).compileComponents();
   });
 
-  it('should create the component', waitForAsync(async () => {
+  it('should create the component', async () => {
     const componentFixture = TestBed.createComponent(ResetPasswordComponent);
     const component = componentFixture.componentInstance;
     expect(component).toBeTruthy();
     componentFixture.detectChanges();
     await componentFixture.whenStable();
-  }));
+  });
 
   // TODO more tests
 });
