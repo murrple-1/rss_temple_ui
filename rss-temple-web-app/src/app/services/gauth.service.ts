@@ -60,29 +60,37 @@ export class GAuthService {
   }
 
   load() {
-    return new Promise<void>((resolve, _reject) => {
-      gapi.load('auth2', () => {
-        gapi.auth2
-          .init({
-            client_id: this.clientId,
-            fetch_basic_profile: true,
-          })
-          .then(auth => {
-            this.auth2 = auth;
+    return new Promise<void>((resolve, reject) => {
+      gapi.load('auth2', {
+        callback: () => {
+          gapi.auth2
+            .init({
+              client_id: this.clientId,
+              fetch_basic_profile: true,
+            })
+            .then(auth => {
+              this.auth2 = auth;
 
-            this.auth2.currentUser.listen(user => {
-              this._user$.next(user);
+              this.auth2.currentUser.listen(user => {
+                this._user$.next(user);
+              });
+
+              this.auth2.isSignedIn.listen(signedIn => {
+                if (!signedIn) {
+                  this._user$.next(null);
+                }
+              });
+
+              this._isLoaded$.next(true);
+              resolve();
             });
-
-            this.auth2.isSignedIn.listen(signedIn => {
-              if (!signedIn) {
-                this._user$.next(null);
-              }
-            });
-
-            this._isLoaded$.next(true);
-            resolve();
-          });
+        },
+        onerror: () => {
+          reject('gapi.auth2 failed to load');
+        },
+        ontimeout: () => {
+          reject('gapi.auth2 load timeout');
+        },
       });
     });
   }

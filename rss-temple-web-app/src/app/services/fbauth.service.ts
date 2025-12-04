@@ -72,7 +72,7 @@ export class FBAuthService {
   }
 
   load(id = 'fb-jssdk', language = 'en_US') {
-    return new Promise<void>((resolve, _reject) => {
+    return new Promise<void>((resolve, reject) => {
       (window as any).fbAsyncInit = () => {
         FB.init({
           appId: this.appId,
@@ -86,6 +86,7 @@ export class FBAuthService {
       };
 
       if (document.getElementById(id) !== null) {
+        reject('FB SDK already loaded');
         return;
       }
 

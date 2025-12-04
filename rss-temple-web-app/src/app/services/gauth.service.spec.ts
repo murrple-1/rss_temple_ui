@@ -37,9 +37,15 @@ describe('GAuthService', () => {
     (window as any).gapi = {
       load: vi
         .fn()
-        .mockImplementation((_apiName: string, callback: gapi.LoadCallback) => {
-          callback();
-        }),
+        .mockImplementation(
+          (_apiName: string, callback: gapi.CallbackOrConfig) => {
+            if (typeof callback === 'function') {
+              callback();
+            } else if (callback && typeof callback.callback === 'function') {
+              callback.callback();
+            }
+          },
+        ),
       auth2: {
         init: vi.fn().mockImplementation(
           () =>
@@ -75,9 +81,15 @@ describe('GAuthService', () => {
     (window as any).gapi = {
       load: vi
         .fn()
-        .mockImplementation((_apiName: string, callback: gapi.LoadCallback) => {
-          callback();
-        }),
+        .mockImplementation(
+          (_apiName: string, callback: gapi.CallbackOrConfig) => {
+            if (typeof callback === 'function') {
+              callback();
+            } else if (callback && typeof callback.callback === 'function') {
+              callback.callback();
+            }
+          },
+        ),
       auth2: {
         init: vi.fn().mockImplementation(
           () =>
@@ -127,9 +139,15 @@ describe('GAuthService', () => {
     (window as any).gapi = {
       load: vi
         .fn()
-        .mockImplementation((_apiName: string, callback: gapi.LoadCallback) => {
-          callback();
-        }),
+        .mockImplementation(
+          (_apiName: string, callback: gapi.CallbackOrConfig) => {
+            if (typeof callback === 'function') {
+              callback();
+            } else if (callback && typeof callback.callback === 'function') {
+              callback.callback();
+            }
+          },
+        ),
       auth2: {
         init: vi.fn().mockImplementation(
           () =>

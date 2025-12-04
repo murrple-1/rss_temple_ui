@@ -73,7 +73,7 @@ describe('FBAuthService', () => {
     expect(fbAuthService.isLoaded).toBe(true);
   });
 
-  it('should fail to load if script element already present', () => {
+  it('should fail to load if script element already present', async () => {
     const scriptElement = document.createElement('script');
 
     vi.spyOn(document, 'createElement');
@@ -84,11 +84,7 @@ describe('FBAuthService', () => {
 
     const fbAuthService = TestBed.inject(FBAuthService);
 
-    fbAuthService.load();
-
-    expect(document.getElementById).toHaveBeenCalled();
-    expect(document.createElement).not.toHaveBeenCalled();
-    expect(document.head.appendChild).not.toHaveBeenCalled();
+    await expect(fbAuthService.load()).rejects.toThrow();
   });
 
   it('should be possible to sign in and succeed', async () => {
