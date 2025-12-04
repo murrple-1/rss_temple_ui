@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -15,7 +15,8 @@ describe('ResetPasswordComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         FormsModule,
-        BrowserModule,
+        // TODO should be replacable when Clarity v18\+ is released/used
+        BrowserAnimationsModule,
         ClarityModule,
         RouterModule.forRoot([]),
         ResetPasswordComponent,

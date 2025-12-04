@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { of, throwError } from 'rxjs';
@@ -74,7 +74,8 @@ describe('RegisterComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         FormsModule,
-        BrowserModule,
+        // TODO should be replacable when Clarity v18\+ is released/used
+        BrowserAnimationsModule,
         ClarityModule,
         RouterModule.forRoot([
           {

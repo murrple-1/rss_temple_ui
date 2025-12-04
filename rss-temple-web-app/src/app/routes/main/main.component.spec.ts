@@ -1,7 +1,7 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -25,7 +25,8 @@ describe('MainComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [
-        BrowserModule,
+        // TODO should be replacable when Clarity v18\+ is released/used
+        BrowserAnimationsModule,
         ClarityModule,
         RouterModule.forRoot([]),
         MainComponent,

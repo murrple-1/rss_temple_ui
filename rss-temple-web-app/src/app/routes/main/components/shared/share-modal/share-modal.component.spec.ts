@@ -1,7 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClarityModule } from '@clr/angular';
 import { ShareButtonDirective } from 'ngx-sharebuttons';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -20,7 +20,8 @@ describe('ShareModalComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        BrowserModule,
+        // TODO should be replacable when Clarity v18\+ is released/used
+        BrowserAnimationsModule,
         FormsModule,
         ClarityModule,
         ShareButtonDirective,
