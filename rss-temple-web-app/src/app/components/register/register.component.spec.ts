@@ -454,6 +454,14 @@ describe('RegisterComponent', () => {
     componentFixture.detectChanges();
     await componentFixture.whenStable();
 
+    const captchaSecretPhraseInput = debugElement.query(
+      By.css('input[name="captchaSecretPhrase"]'),
+    ).nativeElement as HTMLInputElement;
+    captchaSecretPhraseInput.value = '123456';
+    captchaSecretPhraseInput.dispatchEvent(new Event('input'));
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+
     const loginButton = debugElement.query(By.css('button[type="submit"]'))
       .nativeElement as HTMLButtonElement;
     loginButton.click();
@@ -513,6 +521,14 @@ describe('RegisterComponent', () => {
     ).nativeElement as HTMLInputElement;
     passwordCheckInput.value = 'Password1!';
     passwordCheckInput.dispatchEvent(new Event('input'));
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+
+    const captchaSecretPhraseInput = debugElement.query(
+      By.css('input[name="captchaSecretPhrase"]'),
+    ).nativeElement as HTMLInputElement;
+    captchaSecretPhraseInput.value = '123456';
+    captchaSecretPhraseInput.dispatchEvent(new Event('input'));
     componentFixture.detectChanges();
     await componentFixture.whenStable();
 

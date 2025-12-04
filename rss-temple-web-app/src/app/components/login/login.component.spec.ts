@@ -502,9 +502,9 @@ describe('LoginComponent', () => {
     componentFixture.detectChanges();
     await componentFixture.whenStable();
 
-    const alertElement = debugElement.query(By.css('.alert-text'))
+    const alertElement = debugElement.query(By.css('span.alert-text'))
       .nativeElement as HTMLSpanElement;
-    expect(alertElement.innerText).toEqual(
+    expect(alertElement.textContent).toEqual(
       expect.stringMatching(/(?:email.*?password|password.*?email).*?wrong/i),
     );
   });
