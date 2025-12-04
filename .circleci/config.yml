@@ -141,10 +141,10 @@ jobs:
           working_directory: rss-temple-web-app/
       - run:
           name: ng test
-          command: yarn ng test --no-watch --no-progress --reporters junit --output-file test-report.junit.xml --coverage --coverage-reporters lcovonly
+          command: yarn ng test --no-watch --no-progress --reporters junit --output-file test-results/junit.xml --coverage --coverage-reporters lcovonly
           working_directory: rss-temple-web-app/
       - store_test_results:
-          path: rss-temple-web-app/coverage/rss-temple-web-app
+          path: rss-temple-web-app/test-results/
       - store_artifacts:
           path: rss-temple-web-app/test-results/
       - codecov/upload
