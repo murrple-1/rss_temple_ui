@@ -5,5 +5,4 @@ docker-compose*.yml
 .editorconfig
 .prettierignore
 .browserslistrc
-.firefox_profile/
 .angular/
