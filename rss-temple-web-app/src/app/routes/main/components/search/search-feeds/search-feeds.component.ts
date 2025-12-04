@@ -16,10 +16,9 @@ import { combineLatest, of } from 'rxjs';
 import { map, startWith, takeUntil } from 'rxjs/operators';
 
 import { Feed } from '@app/models';
+import { AbstractSearchComponent } from '@app/routes/main/components/search/abstract-search.component';
 import { HttpErrorService } from '@app/services';
 import { FeedService } from '@app/services/data';
-
-import { AbstractSearchComponent } from '../abstract-search.component';
 
 type FeedImpl = Required<Pick<Feed, 'title' | 'feedUrl' | 'homeUrl'>>;
 

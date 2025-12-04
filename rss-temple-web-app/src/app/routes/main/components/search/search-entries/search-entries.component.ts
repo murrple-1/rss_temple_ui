@@ -24,11 +24,10 @@ import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { compare } from '@app/libs/compare.lib';
 import { Feed, FeedEntry } from '@app/models';
 import { DateFormatPipe } from '@app/pipes/dayjs-format.pipe';
+import { AbstractSearchComponent } from '@app/routes/main/components/search/abstract-search.component';
 import { HttpErrorService } from '@app/services';
 import { FeedEntryService, FeedService } from '@app/services/data';
 import { Sort } from '@app/services/data/sort.interface';
-
-import { AbstractSearchComponent } from '../abstract-search.component';
 
 type FeedImpl = Required<Pick<Feed, 'uuid' | 'title' | 'feedUrl' | 'homeUrl'>>;
 type FeedEntryImpl = Required<

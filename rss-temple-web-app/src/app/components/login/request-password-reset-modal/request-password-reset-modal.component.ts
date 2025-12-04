@@ -11,10 +11,9 @@ import {
 import { Subject, firstValueFrom } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 
+import { EmailValidatorDirective } from '@app/directives/email-validator.directive';
 import { HttpErrorService } from '@app/services';
 import { AuthService } from '@app/services/data';
-
-import { EmailValidatorDirective } from '../../../directives/email-validator.directive';
 
 @Component({
   selector: 'app-request-password-reset-modal',

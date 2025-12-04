@@ -29,19 +29,17 @@ import {
   NoLoadError,
 } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
+import { ReportFeedEntryModalComponent } from '@app/routes/main/components/shared/feed-entry-view/report-feed-entry-modal/report-feed-entry-modal.component';
+import { FeedsFooterComponent } from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
+import { LabelVoteModalComponent } from '@app/routes/main/components/shared/label-vote-modal/label-vote-modal.component';
+import { ShareModalComponent } from '@app/routes/main/components/shared/share-modal/share-modal.component';
+import { VerticalNavComponent } from '@app/routes/main/components/shared/vertical-nav/vertical-nav.component';
+import { InfiniteScrollDirective } from '@app/routes/main/directives/infinite-scroll.directive';
+import { InViewportDirective } from '@app/routes/main/directives/inviewport.directive';
 import {
   FeedObservableService,
   SubscribedFeedsFacadeService,
 } from '@app/routes/main/services';
-
-import { InfiniteScrollDirective } from '../../directives/infinite-scroll.directive';
-import { InViewportDirective } from '../../directives/inviewport.directive';
-import { FeedEntryViewComponent as FeedEntryViewComponent_1 } from '../shared/feed-entry-view/feed-entry-view.component';
-import { ReportFeedEntryModalComponent } from '../shared/feed-entry-view/report-feed-entry-modal/report-feed-entry-modal.component';
-import { FeedsFooterComponent } from '../shared/feeds-footer/feeds-footer.component';
-import { LabelVoteModalComponent } from '../shared/label-vote-modal/label-vote-modal.component';
-import { ShareModalComponent } from '../shared/share-modal/share-modal.component';
-import { VerticalNavComponent } from '../shared/vertical-nav/vertical-nav.component';
 
 type FeedImpl = BaseFeedImpl &
   Required<Pick<Feed, 'homeUrl' | 'calculatedTitle' | 'feedUrl'>>;
@@ -59,7 +57,7 @@ type FeedEntryImpl = BaseFeedEntryImpl;
     ClrCheckboxModule,
     FormsModule,
     ClrCommonFormsModule,
-    FeedEntryViewComponent_1,
+    FeedEntryViewComponent,
     InViewportDirective,
     FeedsFooterComponent,
     ShareModalComponent,

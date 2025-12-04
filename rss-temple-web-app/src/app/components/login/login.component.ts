@@ -30,6 +30,7 @@ import {
   openModal as openRequestPasswordResetModal,
 } from '@app/components/login/request-password-reset-modal/request-password-reset-modal.component';
 import { AlertEntry } from '@app/components/shared/local-alerts/local-alerts.component';
+import { LocalAlertsComponent } from '@app/components/shared/local-alerts/local-alerts.component';
 import { passwordContainerOverride } from '@app/libs/password-container-override';
 import {
   AppAlertsService,
@@ -39,9 +40,6 @@ import {
   ModalOpenService,
 } from '@app/services';
 import { AuthService, SocialService } from '@app/services/data';
-
-import { LocalAlertsComponent } from '../shared/local-alerts/local-alerts.component';
-import { RequestPasswordResetModalComponent as RequestPasswordResetModalComponent_1 } from './request-password-reset-modal/request-password-reset-modal.component';
 
 function getCachedEmail() {
   return localStorage.getItem('login:cachedEmail');
@@ -69,7 +67,7 @@ function removeCachedEmailFromStorage() {
     ClrLoadingModule,
     RouterLink,
     ClrIconModule,
-    RequestPasswordResetModalComponent_1,
+    RequestPasswordResetModalComponent,
   ],
 })
 export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {

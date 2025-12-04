@@ -24,6 +24,8 @@ import { saveAs } from 'file-saver';
 import { Observable, Subject, forkJoin } from 'rxjs';
 import { map, skip, takeUntil } from 'rxjs/operators';
 
+import { PasswordValidatorDirective } from '@app/directives/password-validator.directive';
+import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-match-validator.directive';
 import {
   MinLength as PasswordMinLength,
   SpecialCharacters as PasswordSpecialCharacters,
@@ -58,12 +60,6 @@ import {
   UserMetaService,
 } from '@app/services/data';
 
-import { PasswordValidatorDirective } from '../../../../directives/password-validator.directive';
-import { PasswordsMatchValidatorDirective } from '../../../../directives/passwords-match-validator.directive';
-import { DeleteUserConfirm1ModalComponent as DeleteUserConfirm1ModalComponent_1 } from './delete-user-confirm1-modal/delete-user-confirm1-modal.component';
-import { DeleteUserConfirm2ModalComponent as DeleteUserConfirm2ModalComponent_1 } from './delete-user-confirm2-modal/delete-user-confirm2-modal.component';
-import { GlobalUserCategoriesModalComponent as GlobalUserCategoriesModalComponent_1 } from './global-user-categories-modal/global-user-categories-modal.component';
-
 enum State {
   IsLoading,
   LoadSuccess,
@@ -88,9 +84,9 @@ enum State {
     ClrConditionalModule,
     ClrIconModule,
     ClrAlertModule,
-    GlobalUserCategoriesModalComponent_1,
-    DeleteUserConfirm1ModalComponent_1,
-    DeleteUserConfirm2ModalComponent_1,
+    GlobalUserCategoriesModalComponent,
+    DeleteUserConfirm1ModalComponent,
+    DeleteUserConfirm2ModalComponent,
     AsyncPipe,
     DecimalPipe,
   ],

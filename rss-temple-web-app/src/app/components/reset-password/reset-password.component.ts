@@ -18,6 +18,8 @@ import {
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+import { PasswordValidatorDirective } from '@app/directives/password-validator.directive';
+import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-match-validator.directive';
 import { hexToUuid } from '@app/libs/hex-to-uuid.lib';
 import {
   MinLength as PasswordMinLength,
@@ -26,9 +28,6 @@ import {
 } from '@app/libs/password.lib';
 import { AppAlertsService, HttpErrorService } from '@app/services';
 import { AuthService } from '@app/services/data';
-
-import { PasswordValidatorDirective } from '../../directives/password-validator.directive';
-import { PasswordsMatchValidatorDirective } from '../../directives/passwords-match-validator.directive';
 
 enum State {
   NotStarted,

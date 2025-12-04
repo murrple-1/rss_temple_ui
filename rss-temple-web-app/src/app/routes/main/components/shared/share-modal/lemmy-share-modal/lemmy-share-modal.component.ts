@@ -16,9 +16,8 @@ import {
 import { Subject, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 
+import { FediverseInstanceValidatorDirective } from '@app/routes/main/directives/fediverse-instance-validator.directive';
 import { ConfigService } from '@app/services';
-
-import { FediverseInstanceValidatorDirective } from '../../../../directives/fediverse-instance-validator.directive';
 
 @Component({
   selector: 'app-lemmy-share-modal',

@@ -42,21 +42,17 @@ import {
   NoLoadError,
 } from '@app/routes/main/components/shared/abstract-feeds/abstract-feeds.component';
 import { FeedEntryViewComponent } from '@app/routes/main/components/shared/feed-entry-view/feed-entry-view.component';
+import { ReportFeedEntryModalComponent } from '@app/routes/main/components/shared/feed-entry-view/report-feed-entry-modal/report-feed-entry-modal.component';
+import { FeedsFooterComponent } from '@app/routes/main/components/shared/feeds-footer/feeds-footer.component';
+import { LabelVoteModalComponent } from '@app/routes/main/components/shared/label-vote-modal/label-vote-modal.component';
+import { ShareModalComponent } from '@app/routes/main/components/shared/share-modal/share-modal.component';
+import { VerticalNavComponent } from '@app/routes/main/components/shared/vertical-nav/vertical-nav.component';
+import { InfiniteScrollDirective } from '@app/routes/main/directives/infinite-scroll.directive';
+import { InViewportDirective } from '@app/routes/main/directives/inviewport.directive';
 import { UserCategoryObservableService } from '@app/routes/main/services';
 import { AppAlertsService } from '@app/services';
 import { FeedService, UserCategoryService } from '@app/services/data';
 import { Sort } from '@app/services/data/sort.interface';
-
-import { InfiniteScrollDirective } from '../../directives/infinite-scroll.directive';
-import { InViewportDirective } from '../../directives/inviewport.directive';
-import { FeedEntryViewComponent as FeedEntryViewComponent_1 } from '../shared/feed-entry-view/feed-entry-view.component';
-import { ReportFeedEntryModalComponent } from '../shared/feed-entry-view/report-feed-entry-modal/report-feed-entry-modal.component';
-import { FeedsFooterComponent } from '../shared/feeds-footer/feeds-footer.component';
-import { LabelVoteModalComponent } from '../shared/label-vote-modal/label-vote-modal.component';
-import { ShareModalComponent } from '../shared/share-modal/share-modal.component';
-import { VerticalNavComponent } from '../shared/vertical-nav/vertical-nav.component';
-import { ReportFeedModalComponent as ReportFeedModalComponent_1 } from './report-feed-modal/report-feed-modal.component';
-import { UserCategoriesModalComponent as UserCategoriesModalComponent_1 } from './user-categories-modal/user-categories-modal.component';
 
 type FeedImpl = BaseFeedImpl &
   Required<
@@ -92,14 +88,14 @@ type UserCategoryImpl = Required<Pick<UserCategory, 'text'>>;
     ClrStopEscapePropagationDirective,
     ClrPopoverHostDirective,
     ClrTooltipModule,
-    FeedEntryViewComponent_1,
+    FeedEntryViewComponent,
     InViewportDirective,
     FeedsFooterComponent,
-    UserCategoriesModalComponent_1,
+    UserCategoriesModalComponent,
     ShareModalComponent,
     LabelVoteModalComponent,
     ReportFeedEntryModalComponent,
-    ReportFeedModalComponent_1,
+    ReportFeedModalComponent,
     AsyncPipe,
   ],
 })

@@ -4,9 +4,8 @@ import { ClrModalModule } from '@clr/angular';
 import { Subject, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 
+import { LocalAlertsComponent } from '@app/components/shared/local-alerts/local-alerts.component';
 import { ConfigService } from '@app/services';
-
-import { LocalAlertsComponent } from '../../../../components/shared/local-alerts/local-alerts.component';
 
 @Component({
   selector: 'app-onboarding-modal',

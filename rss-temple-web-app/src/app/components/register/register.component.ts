@@ -30,6 +30,9 @@ import {
   InfoModalComponent,
   openModal as openInfoModal,
 } from '@app/components/shared/info-modal/info-modal.component';
+import { EmailValidatorDirective } from '@app/directives/email-validator.directive';
+import { PasswordValidatorDirective } from '@app/directives/password-validator.directive';
+import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-match-validator.directive';
 import {
   MinLength as PasswordMinLength,
   SpecialCharacters as PasswordSpecialCharacters,
@@ -37,11 +40,6 @@ import {
 } from '@app/libs/password.lib';
 import { AppAlertsService, ModalOpenService } from '@app/services';
 import { CaptchaService, RegistrationService } from '@app/services/data';
-
-import { EmailValidatorDirective } from '../../directives/email-validator.directive';
-import { PasswordValidatorDirective } from '../../directives/password-validator.directive';
-import { PasswordsMatchValidatorDirective } from '../../directives/passwords-match-validator.directive';
-import { InfoModalComponent as InfoModalComponent_1 } from '../shared/info-modal/info-modal.component';
 
 const Z422Error = z.record(z.string(), z.unknown());
 
@@ -63,7 +61,7 @@ const Z422Error = z.record(z.string(), z.unknown());
     ClrLoadingButtonModule,
     ClrLoadingModule,
     RouterLink,
-    InfoModalComponent_1,
+    InfoModalComponent,
   ],
 })
 export class RegisterComponent implements OnInit, OnDestroy {

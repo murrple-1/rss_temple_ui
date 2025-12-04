@@ -8,7 +8,7 @@ import {
 import { Subject, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { UrlValidatorDirective } from '../../../../../../directives/url-validator.directive';
+import { UrlValidatorDirective } from '@app/directives/url-validator.directive';
 
 export interface SubscriptionDetails {
   feedUrl: string;

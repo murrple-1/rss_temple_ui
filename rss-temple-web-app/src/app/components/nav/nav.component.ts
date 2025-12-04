@@ -41,9 +41,6 @@ import {
 } from '@app/services';
 import { AuthService } from '@app/services/data';
 
-import { ConfirmModalComponent as ConfirmModalComponent_1 } from '../shared/confirm-modal/confirm-modal.component';
-import { SearchModalComponent as SearchModalComponent_1 } from './search-modal/search-modal.component';
-
 const ZExtraNavLink = z.object({
   title: z.string(),
   href: z.url(),
@@ -85,8 +82,8 @@ interface NavAction {
     FormsModule,
     ClrCommonFormsModule,
     ClrIconModule,
-    ConfirmModalComponent_1,
-    SearchModalComponent_1,
+    ConfirmModalComponent,
+    SearchModalComponent,
     AsyncPipe,
   ],
 })

@@ -14,10 +14,9 @@ import { Subject, firstValueFrom } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 
 import { AlertEntry } from '@app/components/shared/local-alerts/local-alerts.component';
+import { LocalAlertsComponent } from '@app/components/shared/local-alerts/local-alerts.component';
 import { HttpErrorService } from '@app/services';
 import { AuthService } from '@app/services/data';
-
-import { LocalAlertsComponent } from '../../../../../components/shared/local-alerts/local-alerts.component';
 
 @Component({
   selector: 'app-delete-user-confirm2-modal',

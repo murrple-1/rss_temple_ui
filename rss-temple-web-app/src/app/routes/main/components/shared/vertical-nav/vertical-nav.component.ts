@@ -58,11 +58,6 @@ import {
 import { FeedService, UserCategoryService } from '@app/services/data';
 import { Sort } from '@app/services/data/sort.interface';
 
-import { InfoModalComponent as InfoModalComponent_1 } from '../../../../../components/shared/info-modal/info-modal.component';
-import { ExposedFeedsModalComponent as ExposedFeedsModalComponent_1 } from './exposed-feeds-modal/exposed-feeds-modal.component';
-import { OPMLModalComponent as OPMLModalComponent_1 } from './opml-modal/opml-modal.component';
-import { SubscribeModalComponent as SubscribeModalComponent_1 } from './subscribe-modal/subscribe-modal.component';
-
 type UserCategoryImpl = Required<Pick<UserCategory, 'text' | 'feedUuids'>>;
 type FeedImpl = Required<
   Pick<Feed, 'uuid' | 'calculatedTitle' | 'feedUrl' | 'homeUrl'>
@@ -103,10 +98,10 @@ interface CategorizedFeeds {
     ClrIconModule,
     RouterLinkActive,
     ClrCommonFormsModule,
-    SubscribeModalComponent_1,
-    OPMLModalComponent_1,
-    ExposedFeedsModalComponent_1,
-    InfoModalComponent_1,
+    SubscribeModalComponent,
+    OPMLModalComponent,
+    ExposedFeedsModalComponent,
+    InfoModalComponent,
     AsyncPipe,
     DecimalPipe,
     TruncatedNumberPipe,
