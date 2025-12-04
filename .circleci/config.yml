@@ -31,7 +31,6 @@ workflows:
       - lint
 
 orbs:
-  browser-tools: circleci/browser-tools@1.5.2
   codecov: codecov/codecov@5.4.3
 
 jobs:
@@ -121,9 +120,8 @@ jobs:
 
   test_web_app:
     docker:
-      - image: cimg/node:22.14-browsers
+      - image: cimg/node:22.14
     steps:
-      - browser-tools/install-browser-tools
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "rss-temple-web-app/yarn.lock" }}
@@ -143,10 +141,10 @@ jobs:
           working_directory: rss-temple-web-app/
       - run:
           name: ng test
-          command: yarn cross-env TEST_TYPE=xml ng test --code-coverage --no-watch --no-progress
+          command: yarn ng test --no-watch --no-progress --reporters junit --output-file test-report.junit.xml --coverage --coverage-reporters lcovonly
           working_directory: rss-temple-web-app/
       - store_test_results:
-          path: rss-temple-web-app/test-results/
+          path: rss-temple-web-app/coverage/rss-temple-web-app
       - store_artifacts:
           path: rss-temple-web-app/test-results/
       - codecov/upload
