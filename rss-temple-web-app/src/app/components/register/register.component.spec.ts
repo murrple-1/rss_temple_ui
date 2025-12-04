@@ -8,6 +8,8 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { of, throwError } from 'rxjs';
 import { take } from 'rxjs/operators';
+import pngBase64 from 'test_files/sample.png.base64.json';
+import wavBase64 from 'test_files/sample.wav.base64.json';
 import {
   type MockedObject,
   beforeAll,
@@ -38,8 +40,8 @@ describe('RegisterComponent', () => {
 
   beforeAll(async () => {
     const [imageResponse, audioResponse] = await Promise.all([
-      fetch('/test_files/sample.png'),
-      fetch('/test_files/sample.wav'),
+      fetch(`data:image/png;base64,${pngBase64 as string}`),
+      fetch(`data:audio/wav;base64,${wavBase64 as string}`),
     ]);
     if (!imageResponse.ok) {
       throw new Error(`imageResponse: ${imageResponse.statusText}`);
