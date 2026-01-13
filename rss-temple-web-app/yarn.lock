@@ -754,16 +754,16 @@
   dependencies:
     tslib "^2.4.0"
 
-"@es-joy/jsdoccomment@~0.76.0":
-  version "0.76.0"
-  resolved "https://registry.yarnpkg.com/@es-joy/jsdoccomment/-/jsdoccomment-0.76.0.tgz#7785b915035f6010a0f59535202a1ff916faaa72"
-  integrity sha512-g+RihtzFgGTx2WYCuTHbdOXJeAlGnROws0TeALx9ow/ZmOROOZkVg5wp/B44n0WJgI4SQFP1eWM2iRPlU2Y14w==
+"@es-joy/jsdoccomment@~0.79.0":
+  version "0.79.0"
+  resolved "https://registry.yarnpkg.com/@es-joy/jsdoccomment/-/jsdoccomment-0.79.0.tgz#e057088f3d14177331863b326d5160b7203d5140"
+  integrity sha512-q/Nc241VsVRC5b1dgbsOI0fnWfrb1S9sdceFewpDHto4+4r2o6SSCpcY+Z+EdLdMPN6Nsj/PjlPcKag6WbU6XQ==
   dependencies:
     "@types/estree" "^1.0.8"
-    "@typescript-eslint/types" "^8.46.0"
+    "@typescript-eslint/types" "^8.52.0"
     comment-parser "1.4.1"
-    esquery "^1.6.0"
-    jsdoc-type-pratt-parser "~6.10.0"
+    esquery "^1.7.0"
+    jsdoc-type-pratt-parser "~7.0.0"
 
 "@es-joy/resolve.exports@1.2.0":
   version "1.2.0"
@@ -2304,10 +2304,10 @@
   resolved "https://registry.yarnpkg.com/@types/langs/-/langs-2.0.5.tgz#2b97268760239b00e31c64bb063aed0f7e152647"
   integrity sha512-DIUKT4mkbTBxSrX6lmnQR888ObeFVVo1uNEqBH5/ddQHpnG4CA24DibpK7aO8QAcJEZUTcIx0F96TWuzVT9Z4g==
 
-"@types/node@^24.3.0":
-  version "24.10.7"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-24.10.7.tgz#516502e408f6d00afd230f291bfe3ad38105a73e"
-  integrity sha512-+054pVMzVTmRQV8BhpGv3UyfZ2Llgl8rdpDTon+cUH9+na0ncBVXj3wTUKh14+Kiz18ziM3b4ikpP5/Pc0rQEQ==
+"@types/node@^25.0.7":
+  version "25.0.7"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-25.0.7.tgz#afd2f0d34358631a287c6726dabe0c845abc2bae"
+  integrity sha512-C/er7DlIZgRJO7WtTdYovjIFzGsz0I95UlMyR9anTb4aCpBSRWe5Jc1/RvLKUfzmOxHPGjSE5+63HgLtndxU4w==
   dependencies:
     undici-types "~7.16.0"
 
@@ -2386,15 +2386,10 @@
     debug "^4.4.3"
     ts-api-utils "^2.4.0"
 
-"@typescript-eslint/types@8.53.0", "@typescript-eslint/types@^8.53.0":
+"@typescript-eslint/types@8.53.0", "@typescript-eslint/types@^8.52.0", "@typescript-eslint/types@^8.53.0":
   version "8.53.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/types/-/types-8.53.0.tgz#1adcad3fa32bc2c4cbf3785ba07a5e3151819efb"
   integrity sha512-Bmh9KX31Vlxa13+PqPvt4RzKRN1XORYSLlAE+sO1i28NkisGbTtSLFVB3l7PWdHtR3E0mVMuC7JilWJ99m2HxQ==
-
-"@typescript-eslint/types@^8.46.0":
-  version "8.48.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/types/-/types-8.48.0.tgz#f0dc5cf27217346e9b0d90556911e01d90d0f2a5"
-  integrity sha512-cQMcGQQH7kwKoVswD1xdOytxQR60MWKM1di26xSUtxehaDs/32Zpqsu5WJlXTtTTqyAVK8R7hvsUnIXRS+bjvA==
 
 "@typescript-eslint/typescript-estree@8.53.0":
   version "8.53.0"
@@ -3664,19 +3659,19 @@ eslint-plugin-import@2.32.0:
     string.prototype.trimend "^1.0.9"
     tsconfig-paths "^3.15.0"
 
-eslint-plugin-jsdoc@61.4.1:
-  version "61.4.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-jsdoc/-/eslint-plugin-jsdoc-61.4.1.tgz#3a0b2f72ee67083677dce1a248217336786d1da4"
-  integrity sha512-3c1QW/bV25sJ1MsIvsvW+EtLtN6yZMduw7LVQNVt72y2/5BbV5Pg5b//TE5T48LRUxoEQGaZJejCmcj3wCxBzw==
+eslint-plugin-jsdoc@62.0.0:
+  version "62.0.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-jsdoc/-/eslint-plugin-jsdoc-62.0.0.tgz#301c8fb338df81cd84628139a4f0e50e9635dc49"
+  integrity sha512-sNdIGLAvjFK3pB0SYFW74iXODZ4ifF8Ax13Wgq8jKepKnrCFzGo7+jRZfLf70h81SD7lPYnTE7MR2nhYSvaLTA==
   dependencies:
-    "@es-joy/jsdoccomment" "~0.76.0"
+    "@es-joy/jsdoccomment" "~0.79.0"
     "@es-joy/resolve.exports" "1.2.0"
     are-docs-informative "^0.0.2"
     comment-parser "1.4.1"
     debug "^4.4.3"
     escape-string-regexp "^4.0.0"
-    espree "^10.4.0"
-    esquery "^1.6.0"
+    espree "^11.0.0"
+    esquery "^1.7.0"
     html-entities "^2.6.0"
     object-deep-merge "^2.0.0"
     parse-imports-exports "^0.2.4"
@@ -3714,6 +3709,11 @@ eslint-visitor-keys@^4.2.1:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-4.2.1.tgz#4cfea60fe7dd0ad8e816e1ed026c1d5251b512c1"
   integrity sha512-Uhdk5sfqcee/9H/rCOJikYz67o0a2Tw2hGRPOG2Y1R2dg7brRe1uG0yaNQDHu+TO/uQPF/5eCapvYSmHUjt7JQ==
+
+eslint-visitor-keys@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-5.0.0.tgz#b9aa1a74aa48c44b3ae46c1597ce7171246a94a9"
+  integrity sha512-A0XeIi7CXU7nPlfHS9loMYEKxUaONu/hTEzHTGba9Huu94Cq1hPivf+DE5erJozZOky0LfvXAyrV/tcswpLI0Q==
 
 eslint@^9.28.0:
   version "9.39.2"
@@ -3764,17 +3764,19 @@ espree@^10.0.1, espree@^10.4.0:
     acorn-jsx "^5.3.2"
     eslint-visitor-keys "^4.2.1"
 
-esquery@^1.5.0:
+espree@^11.0.0:
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/espree/-/espree-11.0.0.tgz#2fa56e7b9d3091a618526307f8cab8f5624debbf"
+  integrity sha512-+gMeWRrIh/NsG+3NaLeWHuyeyk70p2tbvZIWBYcqQ4/7Xvars6GYTZNhF1sIeLcc6Wb11He5ffz3hsHyXFrw5A==
+  dependencies:
+    acorn "^8.15.0"
+    acorn-jsx "^5.3.2"
+    eslint-visitor-keys "^5.0.0"
+
+esquery@^1.5.0, esquery@^1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/esquery/-/esquery-1.7.0.tgz#08d048f261f0ddedb5bae95f46809463d9c9496d"
   integrity sha512-Ap6G0WQwcU/LHsvLwON1fAQX9Zp0A2Y6Y/cJBl9r/JbW90Zyg4/zbG6zzKa2OTALELarYHmKu0GhpM5EO+7T0g==
-  dependencies:
-    estraverse "^5.1.0"
-
-esquery@^1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/esquery/-/esquery-1.6.0.tgz#91419234f804d852a82dceec3e16cdc22cf9dae7"
-  integrity sha512-ca9pw9fomFcKPvFLXhBKUK90ZvGibiGOvRJNbjljY7s7uq/5YO4BOzcYtJqExdx99rF6aAcnRxHmcUHcz6sQsg==
   dependencies:
     estraverse "^5.1.0"
 
@@ -4662,10 +4664,10 @@ js-yaml@^4.1.1:
   dependencies:
     argparse "^2.0.1"
 
-jsdoc-type-pratt-parser@~6.10.0:
-  version "6.10.0"
-  resolved "https://registry.yarnpkg.com/jsdoc-type-pratt-parser/-/jsdoc-type-pratt-parser-6.10.0.tgz#0846ab682d937eb7272b0e42f49d7f22039059a2"
-  integrity sha512-+LexoTRyYui5iOhJGn13N9ZazL23nAHGkXsa1p/C8yeq79WRfLBag6ZZ0FQG2aRoc9yfo59JT9EYCQonOkHKkQ==
+jsdoc-type-pratt-parser@~7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/jsdoc-type-pratt-parser/-/jsdoc-type-pratt-parser-7.0.0.tgz#b0381514e79aa6326185078059ca5915bb8ede3b"
+  integrity sha512-c7YbokssPOSHmqTbSAmTtnVgAVa/7lumWNYqomgd5KOMyPrRve2anx6lonfOsXEQacqF9FKVUj7bLg4vRSvdYA==
 
 jsdom@^27.2.0:
   version "27.4.0"
