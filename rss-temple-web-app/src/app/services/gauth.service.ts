@@ -3,6 +3,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 
 import { ConfigService } from './config.service';
 
+const TIMEOUT = 5000;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -88,6 +90,7 @@ export class GAuthService {
         onerror: () => {
           reject('gapi.auth2 failed to load');
         },
+        timeout: TIMEOUT,
         ontimeout: () => {
           reject('gapi.auth2 load timeout');
         },
