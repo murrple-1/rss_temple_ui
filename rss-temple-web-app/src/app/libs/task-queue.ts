@@ -6,10 +6,11 @@ interface QueueEntry {
   task: () => Promise<void>;
 }
 
+const queueEntryComparator = (a: QueueEntry, b: QueueEntry) =>
+  a.priority < b.priority ? 1 : a.priority > b.priority ? -1 : 0;
+
 export class AsyncTaskQueue {
-  private taskQueue = new TinyQueue<QueueEntry>([], (a, b) =>
-    a.priority < b.priority ? 1 : a.priority > b.priority ? -1 : 0,
-  );
+  private taskQueue = new TinyQueue<QueueEntry>([], queueEntryComparator);
   private taskTimeoutId: number | null | false = false;
 
   get queueEntries() {
@@ -17,7 +18,11 @@ export class AsyncTaskQueue {
   }
 
   set queueEntries(value: QueueEntry[]) {
-    this.taskQueue.data = value;
+    // Rebuild the queue rather than assigning `taskQueue.data` directly:
+    // TinyQueue tracks its size in a separate `length` field that push/pop
+    // rely on, and overwriting `data` alone leaves `length` stale, which
+    // corrupts subsequent push/pop (indexing into undefined heap slots).
+    this.taskQueue = new TinyQueue<QueueEntry>(value, queueEntryComparator);
   }
 
   constructor(private timeoutInterval = 0) {}
