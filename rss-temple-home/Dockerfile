@@ -4,7 +4,7 @@ ENV WEB_APP_URL="" \
   TWITTER_X_URL="" \
   FB_URL="" \
   INSTA_URL="" \
-  HEAD_CUSTOM_DIR="" \
+  CUSTOM_HTML_DIR="" \
   GENERATE_SOURCE_MAPS="false"
 
 WORKDIR /build/
