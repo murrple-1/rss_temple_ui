@@ -42,12 +42,25 @@ const containerScrollObservables = new Map<
   string,
   Observable<[CheckEventType, DOMRect]>
 >();
-function getContainerScrollObservable(scrollParentNativeElement: HTMLElement) {
+// Tracks how many directive instances are subscribed per container so the
+// cached observable — which closes over the container element — can be evicted
+// once the last subscriber detaches. Without eviction the Map grows unbounded
+// and pins destroyed DOM nodes in memory across navigations.
+const containerScrollSubscriberCounts = new Map<string, number>();
+
+function containerHash(scrollParentNativeElement: HTMLElement) {
   let hash = scrollParentNativeElement.dataset['appInViewportHash'];
   if (hash === undefined) {
     hash = scrollParentNativeElement.dataset['appInViewportHash'] =
       `id-${appInViewportHashStepper++}`;
   }
+  return hash;
+}
+
+function acquireContainerScrollObservable(
+  scrollParentNativeElement: HTMLElement,
+): [string, Observable<[CheckEventType, DOMRect]>] {
+  const hash = containerHash(scrollParentNativeElement);
 
   let observable = containerScrollObservables.get(hash);
   if (observable === undefined) {
@@ -71,7 +84,22 @@ function getContainerScrollObservable(scrollParentNativeElement: HTMLElement) {
     containerScrollObservables.set(hash, observable);
   }
 
-  return observable;
+  containerScrollSubscriberCounts.set(
+    hash,
+    (containerScrollSubscriberCounts.get(hash) ?? 0) + 1,
+  );
+
+  return [hash, observable];
+}
+
+function releaseContainerScrollObservable(hash: string) {
+  const count = (containerScrollSubscriberCounts.get(hash) ?? 0) - 1;
+  if (count > 0) {
+    containerScrollSubscriberCounts.set(hash, count);
+  } else {
+    containerScrollSubscriberCounts.delete(hash);
+    containerScrollObservables.delete(hash);
+  }
 }
 
 @Directive({ selector: '[appInViewport]' })
@@ -88,10 +116,9 @@ export class InViewportDirective implements OnInit, OnDestroy {
   set disabled(value: boolean) {
     this._disabled = value;
 
-    if (this._disabled && this.subscription !== null) {
-      this.subscription.unsubscribe();
-      this.subscription = null;
-    } else if (!this._disabled && this.subscription === null) {
+    if (this._disabled) {
+      this.teardownSubscription();
+    } else if (this.subscription === null) {
       this.initEventListeners();
     }
   }
@@ -104,9 +131,7 @@ export class InViewportDirective implements OnInit, OnDestroy {
   }
 
   set scrollParent(value: ElementRef<HTMLElement> | HTMLElement) {
-    if (this.subscription !== null) {
-      this.subscription.unsubscribe();
-    }
+    this.teardownSubscription();
 
     this._scrollParent = value;
 
@@ -125,6 +150,7 @@ export class InViewportDirective implements OnInit, OnDestroy {
   watch = new EventEmitter<InViewportEvent>();
 
   private subscription: Subscription | null = null;
+  private currentHash: string | null = null;
 
   private static rectIntersects(r1: Rect, r2: Rect) {
     return !(
@@ -142,19 +168,36 @@ export class InViewportDirective implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.teardownSubscription();
+  }
+
+  private teardownSubscription() {
     if (this.subscription !== null) {
       this.subscription.unsubscribe();
+      this.subscription = null;
+    }
+    if (this.currentHash !== null) {
+      releaseContainerScrollObservable(this.currentHash);
+      this.currentHash = null;
     }
   }
 
   initEventListeners() {
+    // Idempotent: release any existing subscription (and its container
+    // ref-count) before creating a new one, so repeated calls can neither
+    // double-subscribe nor leak a ref-count.
+    this.teardownSubscription();
+
     const scrollParentNativeElement =
       this.scrollParent instanceof ElementRef
         ? this.scrollParent.nativeElement
         : this.scrollParent;
-    this.subscription = getContainerScrollObservable(
+
+    const [hash, observable] = acquireContainerScrollObservable(
       scrollParentNativeElement,
-    ).subscribe({
+    );
+    this.currentHash = hash;
+    this.subscription = observable.subscribe({
       next: ([checkEventType, scrollParentBoundingRect]) => {
         this.check(checkEventType, scrollParentBoundingRect);
       },
