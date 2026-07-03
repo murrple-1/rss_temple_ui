@@ -36,7 +36,7 @@ orbs:
 jobs:
   build_web_app_latest:
     docker:
-      - image: docker:20
+      - image: docker:29
     steps:
       - checkout
       - setup_remote_docker
@@ -51,13 +51,13 @@ jobs:
       - run:
           name: Docker Upload
           command: |
-            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
             docker tag rss_temple_web_app:latest $DOCKER_USERNAME/rss_temple_web_app:latest
             docker push $DOCKER_USERNAME/rss_temple_web_app:latest
 
   build_web_app_tag:
     docker:
-      - image: docker:20
+      - image: docker:29
     steps:
       - checkout
       - setup_remote_docker
@@ -72,13 +72,13 @@ jobs:
       - run:
           name: Docker Upload
           command: |
-            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
             docker tag rss_temple_web_app:latest $DOCKER_USERNAME/rss_temple_web_app:$CIRCLE_TAG
             docker push $DOCKER_USERNAME/rss_temple_web_app:$CIRCLE_TAG
 
   build_home_latest:
     docker:
-      - image: docker:20
+      - image: docker:29
     steps:
       - checkout
       - setup_remote_docker
@@ -93,13 +93,13 @@ jobs:
       - run:
           name: Docker Upload
           command: |
-            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
             docker tag rss_temple_home:latest $DOCKER_USERNAME/rss_temple_home:latest
             docker push $DOCKER_USERNAME/rss_temple_home:latest
 
   build_home_tag:
     docker:
-      - image: docker:20
+      - image: docker:29
     steps:
       - checkout
       - setup_remote_docker
@@ -114,7 +114,7 @@ jobs:
       - run:
           name: Docker Upload
           command: |
-            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
             docker tag rss_temple_home:latest $DOCKER_USERNAME/rss_temple_home:$CIRCLE_TAG
             docker push $DOCKER_USERNAME/rss_temple_home:$CIRCLE_TAG
 
