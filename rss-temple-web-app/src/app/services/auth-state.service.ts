@@ -31,6 +31,9 @@ export class AuthStateService {
 
   setLoggedInFlagInCookieStorage() {
     this.cookieService.set('auth-state-service--isLoggedIn', 'true', {
+      // `SameSite=None` is only accepted by browsers when the cookie is also
+      // marked `Secure`; without it the cookie is silently rejected.
+      secure: true,
       sameSite: 'None',
       path: '/',
     });
@@ -41,7 +44,7 @@ export class AuthStateService {
       'auth-state-service--isLoggedIn',
       '/',
       undefined,
-      undefined,
+      true,
       'None',
     );
   }
