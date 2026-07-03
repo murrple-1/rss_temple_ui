@@ -155,10 +155,18 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "yarn.lock" }}
+          key: dependency-cache-{{ checksum "yarn.lock" }}-{{ checksum "rss-temple-web-app/yarn.lock" }}-{{ checksum "rss-temple-home/yarn.lock" }}
       - run:
-          name: Install dependencies
+          name: Install dependencies (root)
           command: yarn install --frozen-lockfile
+        - run:
+          name: Install dependencies (web-app)
+          command: yarn install --frozen-lockfile
+          working_directory: rss-temple-web-app/
+      - run:
+          name: Install dependencies (home)
+          command: yarn install --frozen-lockfile
+          working_directory: rss-temple-home/
       - save_cache:
           key: dependency-cache-{{ checksum "yarn.lock" }}
           paths:
@@ -169,3 +177,7 @@ jobs:
       - run:
           name: prettier home
           command: yarn prettier --config rss-temple-home/.prettierrc --ignore-path rss-temple-home/.prettierignore --check rss-temple-home/
+      - run:
+          name: eslint home
+          command: yarn lint
+          working_directory: rss-temple-home/
