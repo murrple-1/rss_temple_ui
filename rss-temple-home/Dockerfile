@@ -18,3 +18,8 @@ ARG NODE_ENV=production
 ENV NODE_ENV=$NODE_ENV
 
 COPY . .
+
+# Run as the image's built-in non-root `node` user. The build (run at container
+# start) writes its output under /build, so hand ownership to that user.
+RUN chown -R node:node /build
+USER node
