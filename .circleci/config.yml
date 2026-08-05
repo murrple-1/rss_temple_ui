@@ -159,7 +159,7 @@ jobs:
       - run:
           name: Install dependencies (root)
           command: yarn install --frozen-lockfile
-        - run:
+      - run:
           name: Install dependencies (web-app)
           command: yarn install --frozen-lockfile
           working_directory: rss-temple-web-app/
