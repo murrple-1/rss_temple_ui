@@ -1,11 +1,14 @@
-<header class="app--masthead text-white text-center">
-  <div class="container">
-    <div class="row">
-      <div class="col-xl-9 mx-auto">
-        <h1 class="mb-5">Terms of Service</h1>
-      </div>
+<header class="app--garden app--page-head" data-garden="page">
+  <canvas aria-hidden="true"></canvas>
+  <div class="app--wrap">
+    {% render "nav", env: env %}
+    <div class="app--garden-copy">
+      <h1>Terms of Service</h1>
     </div>
   </div>
 </header>
-
-{{ 'tos.html' | customHtml: default_content }}
+<main class="app--legal-page">
+  <div class="app--wrap">
+    {{ 'tos.html' | customHtml: default_content }}
+  </div>
+</main>

@@ -1,141 +1,415 @@
-@import "bootstrap/scss/bootstrap.scss";
 $fa-font-path: "/media/fonts";
 @import "@fortawesome/fontawesome-free/scss/fontawesome.scss";
-@import "@fortawesome/fontawesome-free/scss/solid.scss";
 @import "@fortawesome/fontawesome-free/scss/brands.scss";
 
-body {
-  --bs-primary-rgb: 222, 136, 0;
-  --bs-link-color-rgb: 222, 136, 0;
-  --bs-link-hover-color-rgb: 233, 144, 0;
+// Brand colours, from media/icon.svg
+$charcoal: #333333;
+$ember: #ef7b0b;
+$sun: #f69537;
 
-  font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+:root {
+  --sand: #e7e4de;
+  --sand-raised: #f3f1ed;
+  --sand-line: rgba(60, 55, 50, 0.28);
+  --ink: #2e2c2a;
+  --ink-soft: #6f6a63;
+  --rule: #cfcac2;
+  --night: #2e2c2a;
+  --night-ink: #edeae4;
+  --night-soft: #9c968e;
+  --night-rule: #45423f;
+  --stone-light: #6a6560;
+  --stone-dark: #{$charcoal};
+  --sun: #{$sun};
+  --ember: #{$ember};
+  --sun-highlight: #f9a855;
+  --link: #b25a08;
 
-  .btn-primary {
-    --bs-btn-color: #fff;
-    --bs-btn-bg: #de8800;
-    --bs-btn-border-color: #de8800;
-    --bs-btn-hover-color: #fff;
-    --bs-btn-hover-bg: #e99000;
-    --bs-btn-hover-border-color: #c77b00;
-    --bs-btn-focus-shadow-rgb: 49, 132, 253;
-    --bs-btn-active-color: #fff;
-    --bs-btn-active-bg: #c77b00;
-    --bs-btn-active-border-color: #d6880a;
-    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-    --bs-btn-disabled-color: #fff;
-    --bs-btn-disabled-bg: #de8800;
-    --bs-btn-disabled-border-color: #de8800;
+  --display: "Shippori Mincho", "Hiragino Mincho ProN", Georgia, serif;
+  --body:
+    "Zen Kaku Gothic New", "Hiragino Sans", "Segoe UI", system-ui, sans-serif;
+
+  --gutter: max(20px, 5vw);
+  --gutter-max: 64px;
+
+  color-scheme: light;
+}
+
+@mixin dark-tokens {
+  --sand: #1f1e1c;
+  --sand-raised: #262422;
+  --sand-line: rgba(220, 210, 195, 0.13);
+  --ink: #ebe7e1;
+  --ink-soft: #a29c94;
+  --rule: #3a3734;
+  --night: #161514;
+  --night-rule: #34312e;
+  --stone-light: #57524d;
+  --stone-dark: #2a2826;
+  --link: #{$sun};
+
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    @include dark-tokens;
   }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--sand);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 1rem;
+  line-height: 1.65;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+// Keep the footer at the bottom of short pages.
+.app--footer {
+  margin-top: auto;
+}
+
+a {
+  color: var(--link);
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--ember);
+  outline-offset: 3px;
 }
 
 h1,
 h2,
-h3,
-h4,
-h5,
-h6 {
-  font-weight: 700;
+h3 {
+  text-wrap: balance;
 }
 
-.navbar {
-  .navbar-brand {
+.app--wrap {
+  padding-inline: max(var(--gutter), env(safe-area-inset-left, 0px));
+  max-width: calc(1200px + 2 * var(--gutter-max));
+  margin-inline: auto;
+}
+
+// ---- Navigation ----
+
+.app--nav {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-block: 22px;
+
+  .app--brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+
     svg {
-      width: 36px;
-      height: 36px;
+      width: 32px;
+      height: 32px;
+      flex: none;
+    }
+  }
+
+  .app--nav-links {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    font-size: 0.92rem;
+
+    a {
+      color: var(--ink);
+      text-decoration: none;
     }
 
-    span {
-      margin-left: 4px;
+    a:hover {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+  }
+
+  @media (max-width: 559px) {
+    .app--nav-optional {
+      display: none;
     }
   }
 }
 
-header.app--masthead {
+// ---- Buttons ----
+
+.app--btn {
+  display: inline-block;
+  background: var(--ink);
+  color: var(--sand);
+  text-decoration: none;
+  padding: 13px 26px;
+  border-radius: 3px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background: color-mix(in srgb, var(--ink) 85%, var(--ember));
+  }
+
+  &.app--btn-sun {
+    background: $sun;
+    color: $charcoal;
+
+    &:hover {
+      background: $ember;
+    }
+  }
+}
+
+// ---- Garden (canvas backdrop) ----
+
+.app--garden {
   position: relative;
-  background-color: #343a40;
-  background: url("/media/bg-masthead1.jpg") no-repeat center center;
-  background-size: cover;
-  padding-top: 8rem;
-  padding-bottom: 8rem;
+  overflow: hidden;
+
+  canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .app--garden-copy {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+// Home hero. Below the wide breakpoint the stones sit beneath the copy, so
+// the hero reserves room for them.
+.app--hero {
+  padding-bottom: 240px;
+
+  .app--garden-copy {
+    padding-block: clamp(24px, 6vw, 80px);
+    max-width: 640px;
+  }
 
   h1 {
-    font-size: 2rem;
-    text-shadow:
-      -1px -1px 0 #000000,
-      1px -1px 0 #000000,
-      -1px 1px 0 #000000,
-      1px 1px 0 #000000;
-    filter: drop-shadow(10px 15px 7px #555555);
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(2.6rem, 7vw, 5.2rem);
+    line-height: 1;
+    letter-spacing: -0.015em;
+    margin: 0 0 22px;
+
+    span {
+      display: block;
+      font-weight: 400;
+      color: var(--ink-soft);
+      font-size: 0.62em;
+      line-height: 1.15;
+      margin-top: 10px;
+    }
   }
 
-  @media (min-width: 768px) {
-    padding-top: 12rem;
-    padding-bottom: 12rem;
+  p {
+    font-size: 1.1rem;
+    max-width: 34ch;
+    margin: 0 0 30px;
+  }
 
-    h1 {
-      font-size: 3rem;
-    }
+  @media (min-width: 960px) {
+    padding-bottom: 0;
+    min-height: 600px;
   }
 }
 
-.app--features-icons {
-  padding-top: 7rem;
-  padding-bottom: 7rem;
+// Inner pages: a short band of sand with the page title.
+.app--page-head {
+  padding-bottom: 0;
 
-  .app--features-icons-item {
-    max-width: 20rem;
+  .app--garden-copy {
+    padding-block: clamp(36px, 7vw, 80px);
+  }
 
-    .app--features-icons-icon {
-      height: 7rem;
-
-      i {
-        font-size: 4.5rem;
-      }
-    }
-    &:hover {
-      .app--features-icons-icon {
-        i {
-          font-size: 5rem;
-        }
-      }
-    }
+  h1 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(2.1rem, 5vw, 3.4rem);
+    line-height: 1.05;
+    margin: 0;
   }
 }
 
-.app--showcase {
-  .app--showcase-text {
-    padding: 3rem;
-  }
-  .app--showcase-img {
-    min-height: 30rem;
-    background-size: cover;
-  }
-  @media (min-width: 768px) {
-    .app--showcase-text {
-      padding: 7rem;
-    }
-  }
-}
+// ---- The three steps ----
 
-.app--call-to-action {
-  position: relative;
-  background-color: #343a40;
-  background: url("/media/bg-masthead2.jpg") no-repeat center center;
-  background-size: cover;
-  padding-top: 7rem;
-  padding-bottom: 7rem;
+.app--path {
+  background: var(--sand-raised);
+  padding-block: clamp(48px, 8vw, 96px);
 
   h2 {
-    text-shadow:
-      -1px -1px 0 #000000,
-      1px -1px 0 #000000,
-      -1px 1px 0 #000000,
-      1px 1px 0 #000000;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(1.5rem, 3.4vw, 2.2rem);
+    margin: 0 0 30px;
+  }
+
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+
+    @media (min-width: 760px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  li {
+    padding-block: 22px;
+    border-top: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 6px 18px;
+    align-content: start;
+
+    @media (min-width: 760px) {
+      padding: 26px 28px 0 0;
+    }
+  }
+
+  .app--step {
+    grid-row: span 2;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--ink);
+    display: grid;
+    place-items: center;
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+
+    // Zen Kaku Gothic's ascent is much taller than its descent, which drops
+    // digits ~1px below centre. Trim the digit's box to its ink so the grid
+    // centres the glyph itself.
+    span {
+      display: block;
+      text-box: trim-both cap alphabetic;
+    }
+
+    @supports not (text-box: trim-both cap alphabetic) {
+      padding-bottom: 2px;
+    }
+  }
+
+  li:last-child .app--step {
+    background: var(--ember);
+    border-color: var(--ember);
+    color: #fff;
+  }
+
+  h3 {
+    margin: 4px 0 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+
+  li p {
+    margin: 0;
+    color: var(--ink-soft);
+    max-width: 34ch;
   }
 }
 
-footer.app--footer {
-  padding-top: 4rem;
-  padding-bottom: 4rem;
+// ---- Closing ----
+
+.app--closing {
+  background: var(--night);
+  color: var(--night-ink);
+  padding-block: clamp(48px, 8vw, 88px);
+
+  .app--wrap {
+    display: grid;
+    gap: 26px;
+    justify-items: start;
+  }
+
+  blockquote {
+    margin: 0;
+    font-family: var(--display);
+    font-size: clamp(1.5rem, 3.6vw, 2.4rem);
+    line-height: 1.3;
+    max-width: 24ch;
+  }
+}
+
+// ---- Footer ----
+
+.app--footer {
+  background: var(--night);
+  color: var(--night-soft);
+  font-size: 0.85rem;
+  border-top: 1px solid var(--night-rule);
+  padding-block: 22px calc(22px + env(safe-area-inset-bottom, 0px));
+
+  .app--wrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: var(--night-ink);
+  }
+
+  .app--social {
+    font-size: 1.25rem;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app--btn {
+    transition: none;
+  }
 }
