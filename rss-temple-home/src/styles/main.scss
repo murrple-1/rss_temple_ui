@@ -1,6 +1,8 @@
-$fa-font-path: "/media/fonts";
-@import "@fortawesome/fontawesome-free/scss/fontawesome.scss";
-@import "@fortawesome/fontawesome-free/scss/brands.scss";
+@use "@fortawesome/fontawesome-free/scss/variables" with (
+  $font-path: "/media/fonts"
+);
+@use "@fortawesome/fontawesome-free/scss/fontawesome";
+@use "@fortawesome/fontawesome-free/scss/brands";
 
 // Brand colours, from media/icon.svg
 $charcoal: #333333;
