@@ -48,7 +48,7 @@
     "tslib": "^2.0.0",
     "uuid": "^14.0.0",
     "valid-url": "^1.0.9",
-    "zod": "^4.0.17",
+    "zod": "^4.6.6",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
