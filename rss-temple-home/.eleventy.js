@@ -53,8 +53,6 @@ export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("media/");
   eleventyConfig.addPassthroughCopy({ "src/robots.txt": "/robots.txt" });
   eleventyConfig.addPassthroughCopy({
-    "node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-*":
-      "media/fonts/",
     "node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-*":
       "media/fonts/"
   });

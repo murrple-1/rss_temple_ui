@@ -1,56 +1,39 @@
 ---
 layout: base.liquid
 ---
-<nav class="navbar navbar-light bg-light static-top">
-  <div class="container">
-    <a class="navbar-brand" href="/"
-      >{{  "media/icon.svg" | include }}<span>RSS Temple</span></a
-    >
-    <a class="btn btn-primary" href="{{ env.web_app_url }}">Go To App</a>
-  </div>
-</nav>
+<svg width="0" height="0" style="position: absolute" aria-hidden="true">
+  <defs>
+    <symbol id="app--logo" viewBox="0 0 48 48">
+      {{ "media/icon.svg" | include | replace: '<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">', "" | replace: "</svg>", "" }}
+    </symbol>
+  </defs>
+</svg>
 {{ content }}
-<footer class="app--footer bg-light">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-6 h-100 text-center text-lg-left my-auto">
-        <ul class="list-inline mb-2">
-          <li class="list-inline-item">
-            <a href="/contact">Contact</a>
-          </li>
-          <li class="list-inline-item">&sdot;</li>
-          <li class="list-inline-item">
-            <a href="/tos">Terms of Service</a>
-          </li>
-          <li class="list-inline-item">&sdot;</li>
-          <li class="list-inline-item">
-            <a href="/privacy">Privacy Policy</a>
-          </li>
-        </ul>
-        <p class="text-muted small mb-4 mb-lg-0">
-          &copy; RSS Temple 2024. All Rights Reserved.
-        </p>
-      </div>
-      <div class="col-lg-6 h-100 text-center text-lg-right my-auto">
-        <ul class="list-inline mb-0">
-          <li class="list-inline-item mr-3">
-            <a href="{{ env.fb_url }}">
-              <i class="fa-brands fa-facebook fa-2x fa-fw"></i>
-            </a>
-          </li>
-          <li class="list-inline-item mr-3">
-            <a href="{{ env.twitter_x_url }}">
-              <i class="fa-brands fa-square-x-twitter fa-2x fa-fw"></i>
-            </a>
-          </li>
-          <li class="list-inline-item">
-            <a href="{{ env.insta_url }}">
-              <i class="fa-brands fa-instagram fa-2x fa-fw"></i>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
+<footer class="app--footer">
+  <div class="app--wrap">
+    <ul>
+      <li><a href="/contact">Contact</a></li>
+      <li><a href="/tos">Terms of Service</a></li>
+      <li><a href="/privacy">Privacy Policy</a></li>
+    </ul>
+    <ul class="app--social">
+      {% if env.fb_url %}
+        <li>
+          <a href="{{ env.fb_url }}" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+        </li>
+      {% endif %}
+      {% if env.twitter_x_url %}
+        <li>
+          <a href="{{ env.twitter_x_url }}" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
+        </li>
+      {% endif %}
+      {% if env.insta_url %}
+        <li>
+          <a href="{{ env.insta_url }}" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        </li>
+      {% endif %}
+    </ul>
+    <p>&copy; RSS Temple {{ "now" | date: "%Y" }}. All Rights Reserved.</p>
   </div>
 </footer>
-<script src="/scripts/main.min.js"></script>
+<script type="module" src="/scripts/main.min.js"></script>

@@ -1,5 +1,31 @@
+.app--legal-page {
+  flex: 1;
+  background: var(--sand-raised);
+  padding-block: clamp(40px, 7vw, 80px);
+}
+
 .app--legal {
-  margin-left: 32px;
+  max-width: 70ch;
+
+  h2 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.4rem;
+    margin: 2em 0 0.4em;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  h3 {
+    font-size: 1.05rem;
+    margin: 1.6em 0 0.3em;
+  }
+
+  p {
+    margin: 0 0 1em;
+  }
 
   ol {
     list-style-type: none;
@@ -16,6 +42,8 @@
         content: counters(item, ".") ". ";
         display: table-cell;
         padding-right: 0.6em;
+        color: var(--ink-soft);
+        font-variant-numeric: tabular-nums;
       }
     }
   }
