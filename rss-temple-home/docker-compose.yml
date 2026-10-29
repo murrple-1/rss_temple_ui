@@ -1,4 +1,10 @@
 services:
+  init-rss_temple_home:
+    image: alpine:3
+    volumes:
+      - caddy_srv:/srv/
+    command: chown -R 1000:1000 /srv/
+    network_mode: none
   caddy-rss_temple_home:
     image: caddy:2-alpine
     ports:
@@ -26,6 +32,9 @@ services:
       - caddy_srv:/srv/
     networks:
       - rss_temple_home_net
+    depends_on:
+      init-rss_temple_home:
+        condition: service_completed_successfully
 volumes:
   caddy_data:
   caddy_config:
