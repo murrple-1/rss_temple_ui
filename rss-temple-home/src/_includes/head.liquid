@@ -28,4 +28,15 @@
 <link href="{{ additional_link.href }}" rel="{{ additional_link.rel }}" type="{{ additional_link.type }}" />
 {% endfor %}
 
+{% if json_ld_website and env.site_url %}
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "RSS Temple",
+    "url": "{{ env.site_url }}/"
+  }
+</script>
+{% endif %}
+
 {{ head_custom_filename | customHtml }}
