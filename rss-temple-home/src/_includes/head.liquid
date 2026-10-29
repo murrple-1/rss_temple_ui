@@ -7,6 +7,8 @@
 {% endif %}
 {% if robots %}
 <meta name="robots" content="{{ robots }}" />
+{% elsif env.site_url %}
+<link rel="canonical" href="{{ env.site_url }}{{ page.url }}" />
 {% endif %}
 <meta name="twitter:card" content="summary_large_image" />
 
