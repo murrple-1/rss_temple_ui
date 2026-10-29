@@ -7,7 +7,9 @@ fs.closeSync(f);
 export default function () {
   return {
     layout: "standard.liquid",
-    page_name: "Privacy Policy",
+    title: "Privacy Policy · RSS Temple",
+    description:
+      "How RSS Temple, the ad-free RSS feed reader, collects, uses and shares information about you.",
     head_custom_filename: "privacy.head.html",
     default_content: defaultContent,
     additional_links: [

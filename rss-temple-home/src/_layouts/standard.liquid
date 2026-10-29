@@ -12,24 +12,24 @@ layout: base.liquid
 <footer class="app--footer">
   <div class="app--wrap">
     <ul>
-      <li><a href="/contact">Contact</a></li>
-      <li><a href="/tos">Terms of Service</a></li>
-      <li><a href="/privacy">Privacy Policy</a></li>
+      <li><a href="/contact/">Contact</a></li>
+      <li><a href="/tos/">Terms of Service</a></li>
+      <li><a href="/privacy/">Privacy Policy</a></li>
     </ul>
     <ul class="app--social">
       {% if env.fb_url %}
         <li>
-          <a href="{{ env.fb_url }}" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+          <a href="{{ env.fb_url }}" rel="me" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
         </li>
       {% endif %}
       {% if env.twitter_x_url %}
         <li>
-          <a href="{{ env.twitter_x_url }}" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="{{ env.twitter_x_url }}" rel="me" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
         </li>
       {% endif %}
       {% if env.insta_url %}
         <li>
-          <a href="{{ env.insta_url }}" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="{{ env.insta_url }}" rel="me" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
         </li>
       {% endif %}
     </ul>

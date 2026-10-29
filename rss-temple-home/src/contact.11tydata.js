@@ -7,7 +7,9 @@ fs.closeSync(f);
 export default function () {
   return {
     layout: "standard.liquid",
-    page_name: "Contact",
+    title: "Contact · RSS Temple",
+    description:
+      "Get in touch with RSS Temple, the calm, ad-free RSS feed reader.",
     head_custom_filename: "contact.head.html",
     default_content: defaultContent,
     additional_links: [

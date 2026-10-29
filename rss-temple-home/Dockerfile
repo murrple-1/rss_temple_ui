@@ -1,6 +1,7 @@
 FROM node:22-alpine
 
-ENV WEB_APP_URL="" \
+ENV SITE_URL="" \
+  WEB_APP_URL="" \
   TWITTER_X_URL="" \
   FB_URL="" \
   INSTA_URL="" \

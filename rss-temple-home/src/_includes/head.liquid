@@ -1,9 +1,19 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<title>RSS Temple - {{ page_name }}</title>
+<title>{{ title }}</title>
+{% if description %}
+<meta name="description" content="{{ description | escape }}" />
+{% endif %}
+{% if robots %}
+<meta name="robots" content="{{ robots }}" />
+{% elsif env.site_url %}
+<link rel="canonical" href="{{ env.site_url }}{{ page.url }}" />
+{% endif %}
+<meta name="twitter:card" content="summary_large_image" />
 
 <link href="/media/favicon.ico" rel="icon" type="image/x-icon" />
+<link href="/media/icon.svg" rel="icon" type="image/svg+xml" />
 <meta name="theme-color" content="#e7e4de" media="(prefers-color-scheme: light)" />
 <meta name="theme-color" content="#1f1e1c" media="(prefers-color-scheme: dark)" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -17,5 +27,16 @@
 {% for additional_link in additional_links %}
 <link href="{{ additional_link.href }}" rel="{{ additional_link.rel }}" type="{{ additional_link.type }}" />
 {% endfor %}
+
+{% if json_ld_website and env.site_url %}
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "RSS Temple",
+    "url": "{{ env.site_url }}/"
+  }
+</script>
+{% endif %}
 
 {{ head_custom_filename | customHtml }}
