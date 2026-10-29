@@ -78,7 +78,8 @@ export default function (eleventyConfig) {
   eleventyConfig.addFilter("customHtml", (file, default_, encoding) => {
     encoding = encoding || "utf8";
 
-    if (customHtmlDir) {
+    // Pages without custom HTML (such as the 404 page) pass no file name.
+    if (customHtmlDir && file) {
       let f = null;
       try {
         f = fs.openSync(path.join(`${customHtmlDir}/`, file), "r");
