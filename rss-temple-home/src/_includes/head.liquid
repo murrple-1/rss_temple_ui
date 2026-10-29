@@ -1,7 +1,10 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<title>RSS Temple - {{ page_name }}</title>
+<title>{{ title }}</title>
+{% if description %}
+<meta name="description" content="{{ description | escape }}" />
+{% endif %}
 
 <link href="/media/favicon.ico" rel="icon" type="image/x-icon" />
 <meta name="theme-color" content="#e7e4de" media="(prefers-color-scheme: light)" />

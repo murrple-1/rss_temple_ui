@@ -7,7 +7,9 @@ fs.closeSync(f);
 export default function () {
   return {
     layout: "standard.liquid",
-    page_name: "Terms of Service",
+    title: "Terms of Service · RSS Temple",
+    description:
+      "The terms that apply when you use RSS Temple, the ad-free RSS feed reader.",
     head_custom_filename: "tos.head.html",
     default_content: defaultContent,
     additional_links: [
