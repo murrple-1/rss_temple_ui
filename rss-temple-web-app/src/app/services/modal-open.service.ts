@@ -1,46 +1,41 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, Subject, skip, takeUntil, zip } from 'rxjs';
+import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ModalOpenService implements OnDestroy {
-  private modalQueue$ = new BehaviorSubject<(() => Promise<unknown>)[]>([]);
-  private stepper$ = new Subject<void>();
+export class ModalOpenService {
+  private modalQueue: (() => Promise<unknown>)[] = [];
+  private isDraining = false;
   private _isModalOpen = false;
-
-  private unsubscribe$ = new Subject<void>();
 
   get isModalOpen() {
     return this._isModalOpen;
   }
 
-  constructor() {
-    zip(this.modalQueue$.pipe(skip(1)), this.stepper$)
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe({
-        next: async ([modalQueue]) => {
-          if (modalQueue.length === 0) {
-            this._isModalOpen = false;
-          } else {
-            this._isModalOpen = true;
-            const first = modalQueue[0] as () => Promise<unknown>;
-            await first();
-            this.modalQueue$.next(modalQueue.slice(1));
-          }
-          this.stepper$.next();
-        },
-      });
-
-    this.stepper$.next();
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
-  }
-
   openModal(openModalPromiseFn: () => Promise<unknown>) {
-    this.modalQueue$.next([...this.modalQueue$.getValue(), openModalPromiseFn]);
+    this.modalQueue.push(openModalPromiseFn);
+    void this.drainQueue();
+  }
+
+  private async drainQueue() {
+    if (this.isDraining) {
+      return;
+    }
+    this.isDraining = true;
+    try {
+      let openModalPromiseFn: (() => Promise<unknown>) | undefined;
+      while ((openModalPromiseFn = this.modalQueue.shift()) !== undefined) {
+        this._isModalOpen = true;
+        try {
+          await openModalPromiseFn();
+        } catch (error: unknown) {
+          // a failed modal must not stall the queue for every later modal
+          console.error('modal open function failed', error);
+        }
+      }
+    } finally {
+      this._isModalOpen = false;
+      this.isDraining = false;
+    }
   }
 }
