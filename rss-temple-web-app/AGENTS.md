@@ -2,7 +2,6 @@
 
 The RSS Temple reader SPA. Angular 21, TypeScript, Clarity UI, zod. Read `../AGENTS.md` first for the repo
 overview, conventions and the sibling repos. From this directory, the sibling repos are at `../../<repo>`.
-(This app's `README.md` is stale Angular CLI boilerplate; ignore it.)
 
 ## Commands
 
