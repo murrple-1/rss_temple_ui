@@ -60,7 +60,12 @@
     </clr-datagrid>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary" (click)="finish()" [disabled]="isLoading">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="finish()"
+      [disabled]="isLoading"
+    >
       Finish
     </button>
   </div>

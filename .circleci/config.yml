@@ -29,6 +29,7 @@ workflows:
               only: /.*/
       - test_web_app
       - lint
+      - djlint_web_app
 
 orbs:
   codecov: codecov/codecov@6.0.0
@@ -148,6 +149,20 @@ jobs:
       - store_artifacts:
           path: rss-temple-web-app/test-results/
       - codecov/upload
+
+  djlint_web_app:
+    docker:
+      - image: cimg/python:3.13
+    steps:
+      - checkout
+      - run:
+          name: Install djLint
+          command: pip install -r requirements-dev.txt
+          working_directory: rss-temple-web-app/
+      - run:
+          name: djlint web app
+          command: djlint src --lint
+          working_directory: rss-temple-web-app/
 
   lint:
     docker:

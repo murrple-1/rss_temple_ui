@@ -1,0 +1,6 @@
+{
+  "profile": "angular",
+  "extension": "html",
+  "exclude": ".angular,coverage,dist,node_modules",
+  "ignore": "H019,H030"
+}
