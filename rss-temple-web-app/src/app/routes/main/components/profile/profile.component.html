@@ -211,6 +211,7 @@
         <div class="card-header">Tools</div>
         <div class="card-block">
           <button
+            type="button"
             class="btn btn-primary"
             (click)="downloadOPML()"
             [disabled]="isDownloadOPMLButtonDisabled"
@@ -219,17 +220,25 @@
           </button>
         </div>
         <div class="card-block">
-          <button class="btn btn-primary" (click)="editUserCategories()">
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="editUserCategories()"
+          >
             Edit Categories…
           </button>
         </div>
         <div class="card-block">
-          <button class="btn btn-primary" (click)="resetOnboarding()">
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="resetOnboarding()"
+          >
             Reset Tutorial
           </button>
         </div>
         <div class="card-block">
-          <button class="btn btn-danger" (click)="deleteUser()">
+          <button type="button" class="btn btn-danger" (click)="deleteUser()">
             Delete Your Data
           </button>
         </div>

@@ -46,12 +46,19 @@
               </div>
               <div class="alert-actions">
                 <button
+                  type="button"
                   class="btn alert-action app--yes-action"
                   (click)="voteYes()"
                 >
                   Yes
                 </button>
-                <button class="btn alert-action" (click)="voteNo()">No</button>
+                <button
+                  type="button"
+                  class="btn alert-action"
+                  (click)="voteNo()"
+                >
+                  No
+                </button>
               </div>
             </div>
           </div>
@@ -74,6 +81,7 @@
     <div class="card-footer app--footer">
       @if (feedEntry.isRead) {
         <button
+          type="button"
           class="btn btn-primary btn-icon btn-sm"
           (click)="unread()"
           title="Unread"
@@ -83,6 +91,7 @@
         </button>
       } @else {
         <button
+          type="button"
           class="btn btn-primary btn-icon btn-sm"
           (click)="read()"
           title="Read"
@@ -93,6 +102,7 @@
       }
       @if (feedEntry.isFavorite) {
         <button
+          type="button"
           class="btn btn-success btn-icon btn-sm"
           (click)="unfavorite()"
           title="Unfavorite"
@@ -102,6 +112,7 @@
         </button>
       } @else {
         <button
+          type="button"
           class="btn btn-success btn-icon btn-sm"
           (click)="favorite()"
           title="Favorite"
@@ -110,11 +121,17 @@
           ><span class="app--button-label">Favorite</span>
         </button>
       }
-      <button class="btn btn-icon btn-sm" (click)="share()" title="Share">
+      <button
+        type="button"
+        class="btn btn-icon btn-sm"
+        (click)="share()"
+        title="Share"
+      >
         <cds-icon shape="share"></cds-icon
         ><span class="app--button-label">Share</span>
       </button>
       <button
+        type="button"
         class="btn btn-icon btn-sm"
         (click)="voteLabels()"
         title="ML Labeling"
@@ -122,7 +139,12 @@
         <cds-icon shape="flask"></cds-icon
         ><span class="app--button-label">ML Labeling</span>
       </button>
-      <button class="btn btn-icon btn-sm" (click)="report()" title="Report…">
+      <button
+        type="button"
+        class="btn btn-icon btn-sm"
+        (click)="report()"
+        title="Report…"
+      >
         <cds-icon shape="warning-standard"></cds-icon
         ><span class="app--button-label">Report…</span>
       </button>

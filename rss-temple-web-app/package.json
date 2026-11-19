@@ -11,6 +11,7 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
+    "lint:templates": "djlint src --lint",
     "generate-licenses-file": "license-checker --production --direct --json --out src/app/os-licenses.json",
     "collect-envvars": "ng run rss-temple-web-app:collect-vars"
   },

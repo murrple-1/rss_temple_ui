@@ -1,6 +1,8 @@
 @switch (state) {
   @case (State.IsNotLoading) {
-    <button class="btn btn-sm" (click)="onLoadMoreClick()">Load More</button>
+    <button type="button" class="btn btn-sm" (click)="onLoadMoreClick()">
+      Load More
+    </button>
   }
   @case (State.IsLoading) {
     <clr-spinner [clrInline]="true"></clr-spinner
@@ -16,6 +18,8 @@
     </div>
   }
   @case (State.HasNoMoreToLoad) {
-    <button class="btn btn-sm" (click)="onReloadClick()">Reload</button>
+    <button type="button" class="btn btn-sm" (click)="onReloadClick()">
+      Reload
+    </button>
   }
 }

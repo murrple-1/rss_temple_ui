@@ -61,6 +61,7 @@
         </div>
       </form>
       <button
+        type="button"
         id="forgotten-password"
         class="btn btn-link btn-sm app--forgot-password"
         (click)="onForgottenPassword()"
@@ -68,6 +69,7 @@
         Forgot Password?
       </button>
       <button
+        type="button"
         id="google-login"
         [disabled]="
           !gLoaded ||
@@ -82,6 +84,7 @@
         <span>Login with Google</span>
       </button>
       <button
+        type="button"
         id="facebook-login"
         [disabled]="
           !fbLoaded ||
