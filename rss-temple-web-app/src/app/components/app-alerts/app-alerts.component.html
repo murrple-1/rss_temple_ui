@@ -19,7 +19,11 @@
       </div>
     </div>
     @if (appAlertDescriptor.canClose) {
-      <button class="close" (click)="removeDescriptor(appAlertDescriptor)">
+      <button
+        type="button"
+        class="close"
+        (click)="removeDescriptor(appAlertDescriptor)"
+      >
         <cds-icon shape="window-close"></cds-icon>
       </button>
     }

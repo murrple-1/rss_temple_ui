@@ -3,6 +3,7 @@
   <div class="modal-body">
     @if (isWebShareAPIAvailable) {
       <button
+        type="button"
         class="btn btn-success-outline app--share-button"
         (click)="webShare()"
       >
@@ -15,6 +16,7 @@
         @case ('ngx-sharebuttons') {
           @if (shareButtonDescriptor.shareButton.type !== undefined) {
             <button
+              type="button"
               class="btn btn-outline app--share-button"
               [shareButton]="shareButtonDescriptor.shareButton.type"
               [url]="url"
@@ -31,6 +33,7 @@
         }
         @case ('custom') {
           <button
+            type="button"
             class="btn btn-outline app--share-button"
             (click)="shareButtonDescriptor.customShareButton.onClick()"
           >

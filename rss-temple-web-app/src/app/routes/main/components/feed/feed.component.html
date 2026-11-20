@@ -17,6 +17,7 @@
             <div class="clr-col-12">
               @if (feed.isSubscribed) {
                 <button
+                  type="button"
                   class="btn btn-warning btn-sm"
                   (click)="onUnsubscribe()"
                 >
@@ -32,6 +33,7 @@
                   />
                 </clr-input-container>
                 <button
+                  type="button"
                   class="btn btn-secondary btn-sm"
                   (click)="onFeedRename()"
                   [disabled]="isRenaming"
@@ -39,7 +41,11 @@
                   Rename Feed
                 </button>
               } @else {
-                <button class="btn btn-primary btn-sm" (click)="onSubscribe()">
+                <button
+                  type="button"
+                  class="btn btn-primary btn-sm"
+                  (click)="onSubscribe()"
+                >
                   Subscribe
                 </button>
               }
@@ -62,6 +68,7 @@
               }
               <li>
                 <button
+                  type="button"
                   class="btn btn-primary btn-sm"
                   (click)="onEditUserCategories()"
                 >
@@ -87,14 +94,18 @@
         </div>
         <div class="clr-row">
           <div class="clr-col-12">
-            <button class="btn btn-primary btn-sm" (click)="readAll()">
+            <button
+              type="button"
+              class="btn btn-primary btn-sm"
+              (click)="readAll()"
+            >
               Read All
             </button>
           </div>
         </div>
         <div class="clr-row">
           <div class="clr-col-12">
-            <button class="btn btn-sm" (click)="report()">
+            <button type="button" class="btn btn-sm" (click)="report()">
               <cds-icon shape="warning-standard"></cds-icon><span>Report…</span>
             </button>
           </div>
