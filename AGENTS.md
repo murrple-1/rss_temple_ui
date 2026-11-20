@@ -14,7 +14,8 @@ and its own `AGENTS.md` with app-specific detail. The two apps share no code.
 - Root `package.json` — only husky, lint-staged and prettier, for the pre-commit hook. Run `yarn install` at the
   root once to install the hook. It runs `prettier --write` on staged files with each app's own `.prettierrc`.
 
-CI is CircleCI only (`.circleci/config.yml`): web-app tests, `prettier --check` on both apps, eslint on home.
+CI is CircleCI only (`.circleci/config.yml`): web-app tests, djLint on the web-app templates, `prettier --check` on
+both apps, eslint on home.
 On `master` it pushes `murraychristopherson/rss_temple_web_app:latest` and `rss_temple_home:latest`; on tags it
 pushes `:<tag>`.
 

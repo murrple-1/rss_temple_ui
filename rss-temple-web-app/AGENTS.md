@@ -15,8 +15,12 @@ yarn start                         # ng serve on :4200
 yarn test --no-watch               # vitest through @angular/build:unit-test
 yarn build
 yarn lint                          # not run in CI, but keep it clean
+yarn lint:templates                # djLint on the HTML templates; needs djlint on PATH (see below)
 npx prettier --check .
 ```
+
+djLint is a Python tool, not a node package. Install the pinned version from `requirements-dev.txt`, for
+example in a virtualenv: `pip install -r requirements-dev.txt`.
 
 ## How the app is put together
 
@@ -39,6 +43,10 @@ npx prettier --check .
 ## Style
 
 - Prettier: single quotes, trailing commas, `arrowParens: avoid`. The pre-commit hook applies it.
+- HTML templates are linted (not formatted) by djLint with its Angular profile. Config is in `.djlintrc`.
+  Prettier still owns template formatting, so do not run `djlint --reformat`.
+  H019 (`href="javascript:;"`, used by Clarity nav
+  links) and H030 (meta description) are ignored on purpose.
 - Imports are sorted in groups: `@app/*`, then `@environments/*`, then relative. Use the `@app/` and
   `@environments/` path aliases instead of long relative paths.
 
@@ -52,7 +60,7 @@ npx prettier --check .
 ## Definition of done
 
 1. `yarn test --no-watch` passes.
-2. `yarn lint` and `npx prettier --check .` pass.
+2. `yarn lint`, `yarn lint:templates` and `npx prettier --check .` pass.
 3. `yarn build` succeeds if you changed config, routing, dependencies or build settings.
 4. If you added a `config.json` key: the dev `src/assets/config.json` has it, and the Ansible template has it
    too (see `../AGENTS.md`).
