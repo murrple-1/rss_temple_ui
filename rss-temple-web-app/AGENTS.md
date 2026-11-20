@@ -44,9 +44,8 @@ example in a virtualenv: `pip install -r requirements-dev.txt`.
 
 - Prettier: single quotes, trailing commas, `arrowParens: avoid`. The pre-commit hook applies it.
 - HTML templates are linted (not formatted) by djLint with its Angular profile. Config is in `.djlintrc`.
-  Prettier still owns template formatting, so do not run `djlint --reformat`.
-  H019 (`href="javascript:;"`, used by Clarity nav
-  links) and H030 (meta description) are ignored on purpose.
+  Prettier still owns template formatting, so do not run `djlint --reformat`. H019 (`href="javascript:;"`, used
+  by Clarity nav links) and H030 (meta description) are ignored on purpose.
 - Imports are sorted in groups: `@app/*`, then `@environments/*`, then relative. Use the `@app/` and
   `@environments/` path aliases instead of long relative paths.
 
