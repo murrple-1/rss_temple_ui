@@ -184,6 +184,29 @@ describe('FeedsComponent', () => {
     await componentFixture.whenStable();
   });
 
+  it('should render the jump spacer last in the scroll container', async () => {
+    const mockUserCategoryService = TestBed.inject(
+      UserCategoryService,
+    ) as MockedObject<UserCategoryService>;
+    mockUserCategoryService.queryAll.mockReturnValue(
+      of({
+        objects: [],
+        totalCount: 0,
+      }),
+    );
+
+    const componentFixture = TestBed.createComponent(FeedsComponent);
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+
+    const contentArea = (
+      componentFixture.nativeElement as HTMLElement
+    ).querySelector('.content-area');
+    expect(
+      contentArea?.lastElementChild?.classList.contains('app--jump-spacer'),
+    ).toBe(true);
+  });
+
   function setup(entryTops: number[]) {
     const mockUserCategoryService = TestBed.inject(
       UserCategoryService,

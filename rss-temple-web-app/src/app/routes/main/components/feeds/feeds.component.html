@@ -5,7 +5,7 @@
   [appInfiniteScroll]="
     [LoadingState.IsLoading, LoadingState.NoMoreToLoad].includes(loadingState)
   "
-  [appInfiniteScrollOffset]="1024"
+  [appInfiniteScrollOffset]="1024 + scrollContainer.clientHeight"
   (appInfiniteScrollApproachingBottom)="onApproachingBottom()"
 >
   @if (!favoritesOnly) {
@@ -69,6 +69,12 @@
       ></app-feeds-footer>
     </div>
   </div>
+  <!-- room below the list, so a keyboard jump can bring the last entries to the top -->
+  <div
+    class="app--jump-spacer"
+    aria-hidden="true"
+    [style.height.px]="scrollContainer.clientHeight"
+  ></div>
 </div>
 
 <app-share-modal #shareModalComponent></app-share-modal>
