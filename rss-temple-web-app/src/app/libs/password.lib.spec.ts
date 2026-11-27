@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  passwordRejectedText,
   passwordRequirementsText,
   validatePassword,
   validatePasswordsMatch,
@@ -48,5 +49,36 @@ describe('password.lib', () => {
     ).toEqual({
       passwordsdonotmatch: true,
     });
+  });
+
+  it('should show the backend messages for a rejected password', () => {
+    expect(
+      passwordRejectedText({ password: ['This password is too common.'] }),
+    ).toBe('This password is too common. Please try a different password');
+
+    expect(
+      passwordRejectedText({
+        password: [
+          'This password is too common.',
+          'This password must contain at least 1 digit.',
+        ],
+      }),
+    ).toBe(
+      'This password is too common. This password must contain at least 1 digit. Please try a different password',
+    );
+
+    expect(
+      passwordRejectedText({ password: 'This password is too common.' }),
+    ).toBe('This password is too common. Please try a different password');
+  });
+
+  it('should show a general message for an unreadable rejection', () => {
+    const text = 'Password was not accepted. Please try a different password';
+
+    expect(passwordRejectedText(null)).toBe(text);
+    expect(passwordRejectedText('error')).toBe(text);
+    expect(passwordRejectedText({})).toBe(text);
+    expect(passwordRejectedText({ password: [] })).toBe(text);
+    expect(passwordRejectedText({ password: { password: ['x'] } })).toBe(text);
   });
 });

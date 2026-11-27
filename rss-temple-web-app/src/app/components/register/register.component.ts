@@ -36,6 +36,7 @@ import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-matc
 import {
   MinLength as PasswordMinLength,
   SpecialCharacters as PasswordSpecialCharacters,
+  passwordRejectedText,
   passwordRequirementsTextHtml,
 } from '@app/libs/password.lib';
 import { AppAlertsService, ModalOpenService } from '@app/services';
@@ -256,8 +257,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
                 this.captchaSecretPhrase = '';
               });
             } else if (keys.includes('password')) {
-              errorMessage =
-                'Password was determined to be too easy to guess based on internal analysis. Please try a different password';
+              errorMessage = passwordRejectedText(error.error);
               key = null;
             }
           }

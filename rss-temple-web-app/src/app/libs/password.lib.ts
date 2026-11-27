@@ -1,8 +1,27 @@
+import { z } from 'zod';
+
 export type ValidationErrors = Record<string, unknown>;
 
 export const MinLength = 6;
 
 export const SpecialCharacters = ['!', '@', '#', '$', '%', '^', '&', '?'];
+
+// the backend's 422 body when it rejects a password: `{"password": ["<message>", ...]}`.
+// Releases up to 0.10.0 sent one string instead of a list.
+const ZPasswordRejectedError = z.object({
+  password: z.union([z.string().min(1), z.array(z.string().min(1)).min(1)]),
+});
+
+export function passwordRejectedText(errorBody: unknown) {
+  const result = ZPasswordRejectedError.safeParse(errorBody);
+  if (!result.success) {
+    return 'Password was not accepted. Please try a different password';
+  }
+
+  const password = result.data.password;
+  const messages = typeof password === 'string' ? [password] : password;
+  return `${messages.join(' ')} Please try a different password`;
+}
 
 export function validatePassword(password: string) {
   let validationErrors: ValidationErrors | null = null;

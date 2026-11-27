@@ -544,4 +544,75 @@ describe('RegisterComponent', () => {
       }),
     );
   });
+
+  it('should handle registration errors: rejected password', async () => {
+    const mockRegistrationService = TestBed.inject(
+      RegistrationService,
+    ) as MockedObject<RegistrationService>;
+    mockRegistrationService.register.mockReturnValue(
+      throwError(
+        () =>
+          new HttpErrorResponse({
+            status: 422,
+            error: { password: ['This password is too common.'] },
+          }),
+      ),
+    );
+    const appAlertService = TestBed.inject(AppAlertsService);
+    const appAlertEmitPromise = new Promise<AppAlertDescriptor>(resolve => {
+      appAlertService.appAlertDescriptor$.pipe(take(1)).subscribe({
+        next: event => {
+          resolve(event);
+        },
+      });
+    });
+
+    const componentFixture = TestBed.createComponent(RegisterComponent);
+    const debugElement = componentFixture.debugElement;
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+
+    const emailInput = debugElement.query(By.css('input[type="email"]'))
+      .nativeElement as HTMLInputElement;
+    emailInput.value = 'test@test.com';
+    emailInput.dispatchEvent(new Event('input'));
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+
+    const passwordInput = debugElement.query(
+      By.css('input[type="password"][name="password"]'),
+    ).nativeElement as HTMLInputElement;
+    passwordInput.value = 'Password1!';
+    passwordInput.dispatchEvent(new Event('input'));
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+
+    const passwordCheckInput = debugElement.query(
+      By.css('input[type="password"][name="passwordCheck"]'),
+    ).nativeElement as HTMLInputElement;
+    passwordCheckInput.value = 'Password1!';
+    passwordCheckInput.dispatchEvent(new Event('input'));
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+
+    const captchaSecretPhraseInput = debugElement.query(
+      By.css('input[name="captchaSecretPhrase"]'),
+    ).nativeElement as HTMLInputElement;
+    captchaSecretPhraseInput.value = '123456';
+    captchaSecretPhraseInput.dispatchEvent(new Event('input'));
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+
+    const loginButton = debugElement.query(By.css('button[type="submit"]'))
+      .nativeElement as HTMLButtonElement;
+    loginButton.click();
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+
+    await expect(appAlertEmitPromise).resolves.toEqual(
+      expect.objectContaining({
+        text: expect.stringMatching(/This password is too common\./),
+      }),
+    );
+  });
 });

@@ -24,6 +24,7 @@ import { hexToUuid } from '@app/libs/hex-to-uuid.lib';
 import {
   MinLength as PasswordMinLength,
   SpecialCharacters as PasswordSpecialCharacters,
+  passwordRejectedText,
   passwordRequirementsText,
 } from '@app/libs/password.lib';
 import { AppAlertsService, HttpErrorService } from '@app/services';
@@ -156,7 +157,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
                 this.appAlertsService.appAlertDescriptor$.next({
                   autoCloseInterval: 5000,
                   canClose: true,
-                  text: 'Password was determined to be too easy to guess based on internal analysis. Please try a different password',
+                  text: passwordRejectedText(error.error),
                   type: 'danger',
                   key: null,
                 });
