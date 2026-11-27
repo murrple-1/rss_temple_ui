@@ -66,16 +66,30 @@
   }
 }
 
+// Same blue as the click flash below, in a stronger shade so the ring shows
+// against both the light and dark backgrounds. Mixed with transparency to
+// soften it.
 .app--has-focus {
-  box-shadow: 0 0 1px 3px rgb(255, 255, 216);
+  box-shadow: 0 0 1px 3px
+    color-mix(
+      in srgb,
+      var(
+          --cds-alias-object-interaction-background-highlight,
+          hsl(198, 100%, 34%)
+        )
+        55%,
+      transparent
+    );
 }
 
+// A soft tint that fades out, rather than a hard blink. The colour is Clarity's
+// "selected" background, which follows the light and dark themes.
 @keyframes flash {
   0% {
-    background-color: transparent;
-  }
-  50% {
-    background-color: rgb(255, 255, 0);
+    background-color: var(
+      --cds-alias-object-interaction-background-selected,
+      hsl(198, 100%, 94%)
+    );
   }
   100% {
     background-color: transparent;
@@ -84,9 +98,13 @@
 
 .app--flash {
   animation-name: flash;
-  animation-duration: 200ms;
+  animation-duration: 400ms;
   animation-iteration-count: 1;
-  animation-timing-function: linear;
+  animation-timing-function: ease-out;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 }
 
 .alert-action.app--yes-action {
