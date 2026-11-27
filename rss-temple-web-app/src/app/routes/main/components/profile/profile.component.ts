@@ -29,6 +29,7 @@ import { PasswordsMatchValidatorDirective } from '@app/directives/passwords-matc
 import {
   MinLength as PasswordMinLength,
   SpecialCharacters as PasswordSpecialCharacters,
+  passwordRejectedText,
   passwordRequirementsTextHtml,
 } from '@app/libs/password.lib';
 import {
@@ -512,7 +513,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
                 this.appAlertsService.appAlertDescriptor$.next({
                   autoCloseInterval: 5000,
                   canClose: true,
-                  text: 'Password was determined to be too easy to guess based on internal analysis. Please try a different password',
+                  text: passwordRejectedText(error.error),
                   type: 'danger',
                   key: null,
                 });
