@@ -84,6 +84,11 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
 
   protected stableQueryToken: string | null = null;
 
+  // the scroll position that the last keyboard jump left the container at.
+  // While the container is still there, entries that the jump brought into
+  // view must not be marked read or take the focus
+  private jumpScrollTop: number | null = null;
+
   abstract get feeds(): FeedImpl[];
 
   protected abstract get feedEntryViews():
@@ -296,6 +301,19 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
     event: InViewportEvent,
     feedEntryView: FeedEntryViewComponent,
   ) {
+    if (this.jumpScrollTop !== null) {
+      const scrollTop =
+        this.feedEntryViewsScollContainer?.nativeElement.scrollTop;
+      if (
+        scrollTop !== undefined &&
+        Math.abs(scrollTop - this.jumpScrollTop) < 1
+      ) {
+        return;
+      }
+
+      this.jumpScrollTop = null;
+    }
+
     if (event.isInViewport) {
       this.focusedFeedEntryView = feedEntryView;
 
@@ -312,17 +330,13 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
   protected reload() {
     this.loadingState = LoadingState.IsNotLoading;
     this.focusedFeedEntryView = null;
+    this.jumpScrollTop = null;
     this.stableQueryToken = null;
     this.feedEntries = [];
   }
 
   private moveFocus(
     indexFn: (currentIndex: number, listLength: number) => number,
-    scrollToTopFn: (
-      entryBoundingClientRect: DOMRect,
-      scrollContainerBoundingClientRect: DOMRect,
-      scrollContainerScrollTop: number,
-    ) => number,
   ) {
     if (this.feedEntryViews === undefined) {
       throw new Error('feedEntryViews undefined');
@@ -349,65 +363,22 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
     if (this.focusedFeedEntryView !== null) {
       this.focusedFeedEntryView.autoRead();
 
-      const containerBoundingRect =
-        this.feedEntryViewsScollContainer.nativeElement.getBoundingClientRect();
-      const entryBoundingRect =
-        this.focusedFeedEntryView.elementRef.nativeElement.getBoundingClientRect();
-      if (
-        !AbstractFeedsComponent.rectContainsRect(
-          containerBoundingRect,
-          entryBoundingRect,
-        )
-      ) {
-        const top = scrollToTopFn(
-          entryBoundingRect,
-          containerBoundingRect,
-          this.feedEntryViewsScollContainer.nativeElement.scrollTop,
-        );
-        if (top >= 0) {
-          this.feedEntryViewsScollContainer.nativeElement.scrollTo({
-            top,
-          });
-        }
-      }
+      const scrollContainer = this.feedEntryViewsScollContainer.nativeElement;
+      scrollContainer.scrollTo({
+        top: Math.max(
+          0,
+          AbstractFeedsComponent.topAlignTop(
+            this.focusedFeedEntryView.elementRef.nativeElement.getBoundingClientRect(),
+            scrollContainer.getBoundingClientRect(),
+            scrollContainer.scrollTop,
+          ),
+        ),
+      });
+      this.jumpScrollTop = scrollContainer.scrollTop;
 
       if (feedEntryViews.length - 1 <= newIndex) {
         this.onApproachingBottom();
       }
-    }
-  }
-
-  private static scrollToTopUp(
-    entryBoundingClientRect: DOMRect,
-    scrollContainerBoundingClientRect: DOMRect,
-    scrollContainerScrollTop: number,
-  ) {
-    return AbstractFeedsComponent.topAlignTop(
-      entryBoundingClientRect,
-      scrollContainerBoundingClientRect,
-      scrollContainerScrollTop,
-    );
-  }
-
-  private static scrollToTopDown(
-    entryBoundingClientRect: DOMRect,
-    scrollContainerBoundingClientRect: DOMRect,
-    scrollContainerScrollTop: number,
-  ) {
-    if (
-      entryBoundingClientRect.height <= scrollContainerBoundingClientRect.height
-    ) {
-      return AbstractFeedsComponent.bottomAlignTop(
-        entryBoundingClientRect,
-        scrollContainerBoundingClientRect,
-        scrollContainerScrollTop,
-      );
-    } else {
-      return AbstractFeedsComponent.topAlignTop(
-        entryBoundingClientRect,
-        scrollContainerBoundingClientRect,
-        scrollContainerScrollTop,
-      );
     }
   }
 
@@ -421,30 +392,6 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
       scrollContainerScrollTop -
       scrollContainerBoundingClientRect.top -
       8
-    );
-  }
-
-  private static bottomAlignTop(
-    entryBoundingClientRect: DOMRect,
-    scrollContainerBoundingClientRect: DOMRect,
-    scrollContainerScrollTop: number,
-  ) {
-    return (
-      entryBoundingClientRect.top +
-      scrollContainerScrollTop -
-      (scrollContainerBoundingClientRect.top +
-        scrollContainerBoundingClientRect.height) +
-      entryBoundingClientRect.height +
-      8
-    );
-  }
-
-  private static rectContainsRect(outerRect: DOMRect, innerRect: DOMRect) {
-    return (
-      outerRect.top <= innerRect.top &&
-      outerRect.bottom >= innerRect.bottom &&
-      outerRect.left <= innerRect.left &&
-      outerRect.right >= innerRect.right
     );
   }
 
@@ -488,7 +435,7 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
             newIndex = currentIndex;
           }
           return newIndex;
-        }, AbstractFeedsComponent.scrollToTopDown);
+        });
         break;
       }
       case 'k': {
@@ -498,7 +445,7 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
             newIndex = 0;
           }
           return newIndex;
-        }, AbstractFeedsComponent.scrollToTopUp);
+        });
         break;
       }
       case 'n': {
