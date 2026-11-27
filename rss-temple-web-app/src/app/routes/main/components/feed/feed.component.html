@@ -2,10 +2,12 @@
 <div
   class="content-area"
   #scrollContainer
+  appClientHeight
+  #scrollContainerHeight="appClientHeight"
   [appInfiniteScroll]="
     [LoadingState.IsLoading, LoadingState.NoMoreToLoad].includes(loadingState)
   "
-  [appInfiniteScrollOffset]="1024 + scrollContainer.clientHeight"
+  [appInfiniteScrollOffset]="1024 + scrollContainerHeight.height()"
   (appInfiniteScrollApproachingBottom)="onApproachingBottom()"
 >
   <clr-accordion>
@@ -208,7 +210,7 @@
   <div
     class="app--jump-spacer"
     aria-hidden="true"
-    [style.height.px]="scrollContainer.clientHeight"
+    [style.height.px]="scrollContainerHeight.height()"
   ></div>
 </div>
 

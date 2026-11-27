@@ -220,6 +220,8 @@ describe('FeedComponent', () => {
     expect(
       contentArea?.lastElementChild?.classList.contains('app--jump-spacer'),
     ).toBe(true);
+    // it follows the scroll container's height, not a one-time reading
+    expect(contentArea?.hasAttribute('appClientHeight')).toBe(true);
   });
 
   // TODO more tests
