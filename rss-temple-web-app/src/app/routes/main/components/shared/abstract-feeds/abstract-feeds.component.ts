@@ -84,10 +84,16 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
 
   protected stableQueryToken: string | null = null;
 
-  // the scroll position that the last keyboard jump left the container at.
-  // While the container is still there, entries that the jump brought into
-  // view must not be marked read or take the focus
-  private jumpScrollTop: number | null = null;
+  // the entry that the last keyboard jump went to, and how far below the top
+  // of the scroll container the jump left it. While it is still there, the
+  // reader has not scrolled, so entries that the jump brought into view must
+  // not be marked read or take the focus. The entry's position is compared
+  // (not the container's `scrollTop`), because the browser changes `scrollTop`
+  // by itself when content above the viewport changes height
+  private jumpAnchor: {
+    feedEntryView: FeedEntryViewComponent;
+    offset: number;
+  } | null = null;
 
   abstract get feeds(): FeedImpl[];
 
@@ -301,17 +307,15 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
     event: InViewportEvent,
     feedEntryView: FeedEntryViewComponent,
   ) {
-    if (this.jumpScrollTop !== null) {
-      const scrollTop =
-        this.feedEntryViewsScollContainer?.nativeElement.scrollTop;
-      if (
-        scrollTop !== undefined &&
-        Math.abs(scrollTop - this.jumpScrollTop) < 1
-      ) {
+    if (this.jumpAnchor !== null) {
+      const offset = this.offsetInScrollContainer(
+        this.jumpAnchor.feedEntryView,
+      );
+      if (offset !== null && Math.abs(offset - this.jumpAnchor.offset) < 1) {
         return;
       }
 
-      this.jumpScrollTop = null;
+      this.jumpAnchor = null;
     }
 
     if (event.isInViewport) {
@@ -330,9 +334,27 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
   protected reload() {
     this.loadingState = LoadingState.IsNotLoading;
     this.focusedFeedEntryView = null;
-    this.jumpScrollTop = null;
+    this.jumpAnchor = null;
     this.stableQueryToken = null;
     this.feedEntries = [];
+
+    // the room below the list keeps the container scrollable when the list
+    // is empty, so the browser does not go back to the top by itself
+    if (this.feedEntryViewsScollContainer !== undefined) {
+      this.feedEntryViewsScollContainer.nativeElement.scrollTop = 0;
+    }
+  }
+
+  private offsetInScrollContainer(feedEntryView: FeedEntryViewComponent) {
+    if (this.feedEntryViewsScollContainer === undefined) {
+      return null;
+    }
+
+    return (
+      feedEntryView.elementRef.nativeElement.getBoundingClientRect().top -
+      this.feedEntryViewsScollContainer.nativeElement.getBoundingClientRect()
+        .top
+    );
   }
 
   private moveFocus(
@@ -374,7 +396,11 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
           ),
         ),
       });
-      this.jumpScrollTop = scrollContainer.scrollTop;
+      const offset = this.offsetInScrollContainer(this.focusedFeedEntryView);
+      this.jumpAnchor =
+        offset !== null
+          ? { feedEntryView: this.focusedFeedEntryView, offset }
+          : null;
 
       if (feedEntryViews.length - 1 <= newIndex) {
         this.onApproachingBottom();
