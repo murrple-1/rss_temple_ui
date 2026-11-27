@@ -184,5 +184,182 @@ describe('FeedsComponent', () => {
     await componentFixture.whenStable();
   });
 
-  // TODO more tests
+  it('should render the jump spacer last in the scroll container', async () => {
+    const mockUserCategoryService = TestBed.inject(
+      UserCategoryService,
+    ) as MockedObject<UserCategoryService>;
+    mockUserCategoryService.queryAll.mockReturnValue(
+      of({
+        objects: [],
+        totalCount: 0,
+      }),
+    );
+
+    const componentFixture = TestBed.createComponent(FeedsComponent);
+    componentFixture.detectChanges();
+    await componentFixture.whenStable();
+
+    const contentArea = (
+      componentFixture.nativeElement as HTMLElement
+    ).querySelector('.content-area');
+    expect(
+      contentArea?.lastElementChild?.classList.contains('app--jump-spacer'),
+    ).toBe(true);
+    // it follows the scroll container's height, not a one-time reading
+    expect(contentArea?.hasAttribute('appClientHeight')).toBe(true);
+  });
+
+  function setup(entryTops: number[]) {
+    const mockUserCategoryService = TestBed.inject(
+      UserCategoryService,
+    ) as MockedObject<UserCategoryService>;
+    mockUserCategoryService.queryAll.mockReturnValue(
+      of({
+        objects: [],
+        totalCount: 0,
+      }),
+    );
+
+    const componentFixture = TestBed.createComponent(FeedsComponent);
+    const component = componentFixture.componentInstance;
+    componentFixture.detectChanges();
+
+    const container = (
+      component as unknown as {
+        feedEntryViewsScollContainer: { nativeElement: HTMLElement };
+      }
+    ).feedEntryViewsScollContainer.nativeElement;
+    // container: top 100, height 600
+    vi.spyOn(container, 'getBoundingClientRect').mockReturnValue(
+      new DOMRect(0, 100, 800, 600),
+    );
+    container.scrollTo = vi.fn((options: ScrollToOptions) => {
+      container.scrollTop = options.top ?? 0;
+    }) as unknown as typeof container.scrollTo;
+
+    // entry positions in the content, as viewport tops when scrollTop is 0
+    const contentTops = [...entryTops];
+    const views = contentTops.map((_, index) => ({
+      autoRead: vi.fn(),
+      feedEntry: undefined,
+      elementRef: {
+        nativeElement: {
+          getBoundingClientRect: () =>
+            new DOMRect(
+              0,
+              (contentTops[index] ?? 0) - container.scrollTop,
+              800,
+              50,
+            ),
+        },
+      },
+    }));
+    // what the browser's scroll anchoring does when content above the
+    // viewport grows: everything moves down, and scrollTop follows
+    const growContentAbove = (height: number) => {
+      contentTops.forEach((top, index) => {
+        contentTops[index] = top + height;
+      });
+      container.scrollTop += height;
+    };
+    (component as unknown as { feedEntryViews: unknown }).feedEntryViews = {
+      toArray: () => views,
+    };
+
+    const press = (key: string) =>
+      component.handleKeyPress(new KeyboardEvent('keypress', { key }));
+
+    return { component, container, views, press, growContentAbove };
+  }
+
+  it('should top-align on "j" even when the entry is fully visible', () => {
+    const { component, container, views, press } = setup([300, 360, 420]);
+    component.focusedFeedEntryView = views[0] as never;
+    press('j');
+    expect(component.focusedFeedEntryView).toBe(views[1]);
+    expect(views[1]?.autoRead).toHaveBeenCalled();
+    // 360 + 0 - 100 - 8
+    expect(container.scrollTo).toHaveBeenCalledWith({ top: 252 });
+  });
+
+  it('should top-align on "k"', () => {
+    const { component, container, views, press } = setup([300, 360, 420]);
+    component.focusedFeedEntryView = views[2] as never;
+    press('k');
+    expect(component.focusedFeedEntryView).toBe(views[1]);
+    expect(container.scrollTo).toHaveBeenCalledWith({ top: 252 });
+  });
+
+  it('should not scroll to a negative position', () => {
+    const { container, press } = setup([104, 164]);
+    press('j'); // no focus yet -> index 0; 104 + 0 - 100 - 8 = -4
+    expect(container.scrollTo).toHaveBeenCalledWith({ top: 0 });
+  });
+
+  it('should ignore viewport events at the jump position', () => {
+    const { component, views, press } = setup([300, 360, 420]);
+    component.focusedFeedEntryView = views[0] as never;
+    press('j');
+    component.onEntryEnteredViewport(
+      { isInViewport: true } as never,
+      views[2] as never,
+    );
+    expect(component.focusedFeedEntryView).toBe(views[1]);
+    expect(views[2]?.autoRead).not.toHaveBeenCalled();
+  });
+
+  it('should ignore viewport events when content above the entry grows', () => {
+    const { component, views, press, growContentAbove } = setup([
+      300, 360, 420,
+    ]);
+    component.focusedFeedEntryView = views[0] as never;
+    press('j');
+    growContentAbove(100);
+    component.onEntryEnteredViewport(
+      { isInViewport: true } as never,
+      views[2] as never,
+    );
+    expect(component.focusedFeedEntryView).toBe(views[1]);
+    expect(views[2]?.autoRead).not.toHaveBeenCalled();
+  });
+
+  it('should scroll back to the top on reload', () => {
+    const { container, press } = setup([300, 360, 420]);
+    press('j'); // no focus yet -> index 0; 300 + 0 - 100 - 8
+    expect(container.scrollTop).toBe(192);
+    press('r');
+    expect(container.scrollTop).toBe(0);
+  });
+
+  it('should honour viewport events after a manual scroll', () => {
+    const { component, container, views, press } = setup([300, 360, 420]);
+    component.focusedFeedEntryView = views[0] as never;
+    press('j');
+    container.scrollTop += 40;
+    component.onEntryEnteredViewport(
+      { isInViewport: true } as never,
+      views[2] as never,
+    );
+    expect(component.focusedFeedEntryView).toBe(views[2]);
+    expect(views[2]?.autoRead).toHaveBeenCalled();
+    // and it stays honoured if the reader scrolls back to the jump position
+    container.scrollTop -= 40;
+    component.onEntryEnteredViewport(
+      { isInViewport: true } as never,
+      views[0] as never,
+    );
+    expect(component.focusedFeedEntryView).toBe(views[0]);
+  });
+
+  it('should honour viewport events after a reload', () => {
+    const { component, views, press } = setup([300, 360, 420]);
+    component.focusedFeedEntryView = views[0] as never;
+    press('j');
+    press('r');
+    component.onEntryEnteredViewport(
+      { isInViewport: true } as never,
+      views[2] as never,
+    );
+    expect(component.focusedFeedEntryView).toBe(views[2]);
+  });
 });

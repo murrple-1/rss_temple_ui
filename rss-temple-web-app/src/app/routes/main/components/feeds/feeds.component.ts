@@ -34,6 +34,7 @@ import { FeedsFooterComponent } from '@app/routes/main/components/shared/feeds-f
 import { LabelVoteModalComponent } from '@app/routes/main/components/shared/label-vote-modal/label-vote-modal.component';
 import { ShareModalComponent } from '@app/routes/main/components/shared/share-modal/share-modal.component';
 import { VerticalNavComponent } from '@app/routes/main/components/shared/vertical-nav/vertical-nav.component';
+import { ClientHeightDirective } from '@app/routes/main/directives/client-height.directive';
 import { InfiniteScrollDirective } from '@app/routes/main/directives/infinite-scroll.directive';
 import { InViewportDirective } from '@app/routes/main/directives/inviewport.directive';
 import {
@@ -50,6 +51,7 @@ type FeedEntryImpl = BaseFeedEntryImpl;
   styleUrls: ['./feeds.component.scss'],
   imports: [
     VerticalNavComponent,
+    ClientHeightDirective,
     InfiniteScrollDirective,
     ClrAccordionModule,
     ClrDatagridModule,

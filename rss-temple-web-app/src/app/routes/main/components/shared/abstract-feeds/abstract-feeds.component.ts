@@ -84,6 +84,17 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
 
   protected stableQueryToken: string | null = null;
 
+  // the entry that the last keyboard jump went to, and how far below the top
+  // of the scroll container the jump left it. While it is still there, the
+  // reader has not scrolled, so entries that the jump brought into view must
+  // not be marked read or take the focus. The entry's position is compared
+  // (not the container's `scrollTop`), because the browser changes `scrollTop`
+  // by itself when content above the viewport changes height
+  private jumpAnchor: {
+    feedEntryView: FeedEntryViewComponent;
+    offset: number;
+  } | null = null;
+
   abstract get feeds(): FeedImpl[];
 
   protected abstract get feedEntryViews():
@@ -296,6 +307,17 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
     event: InViewportEvent,
     feedEntryView: FeedEntryViewComponent,
   ) {
+    if (this.jumpAnchor !== null) {
+      const offset = this.offsetInScrollContainer(
+        this.jumpAnchor.feedEntryView,
+      );
+      if (offset !== null && Math.abs(offset - this.jumpAnchor.offset) < 1) {
+        return;
+      }
+
+      this.jumpAnchor = null;
+    }
+
     if (event.isInViewport) {
       this.focusedFeedEntryView = feedEntryView;
 
@@ -312,17 +334,31 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
   protected reload() {
     this.loadingState = LoadingState.IsNotLoading;
     this.focusedFeedEntryView = null;
+    this.jumpAnchor = null;
     this.stableQueryToken = null;
     this.feedEntries = [];
+
+    // the room below the list keeps the container scrollable when the list
+    // is empty, so the browser does not go back to the top by itself
+    if (this.feedEntryViewsScollContainer !== undefined) {
+      this.feedEntryViewsScollContainer.nativeElement.scrollTop = 0;
+    }
+  }
+
+  private offsetInScrollContainer(feedEntryView: FeedEntryViewComponent) {
+    if (this.feedEntryViewsScollContainer === undefined) {
+      return null;
+    }
+
+    return (
+      feedEntryView.elementRef.nativeElement.getBoundingClientRect().top -
+      this.feedEntryViewsScollContainer.nativeElement.getBoundingClientRect()
+        .top
+    );
   }
 
   private moveFocus(
     indexFn: (currentIndex: number, listLength: number) => number,
-    scrollToTopFn: (
-      entryBoundingClientRect: DOMRect,
-      scrollContainerBoundingClientRect: DOMRect,
-      scrollContainerScrollTop: number,
-    ) => number,
   ) {
     if (this.feedEntryViews === undefined) {
       throw new Error('feedEntryViews undefined');
@@ -349,65 +385,26 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
     if (this.focusedFeedEntryView !== null) {
       this.focusedFeedEntryView.autoRead();
 
-      const containerBoundingRect =
-        this.feedEntryViewsScollContainer.nativeElement.getBoundingClientRect();
-      const entryBoundingRect =
-        this.focusedFeedEntryView.elementRef.nativeElement.getBoundingClientRect();
-      if (
-        !AbstractFeedsComponent.rectContainsRect(
-          containerBoundingRect,
-          entryBoundingRect,
-        )
-      ) {
-        const top = scrollToTopFn(
-          entryBoundingRect,
-          containerBoundingRect,
-          this.feedEntryViewsScollContainer.nativeElement.scrollTop,
-        );
-        if (top >= 0) {
-          this.feedEntryViewsScollContainer.nativeElement.scrollTo({
-            top,
-          });
-        }
-      }
+      const scrollContainer = this.feedEntryViewsScollContainer.nativeElement;
+      scrollContainer.scrollTo({
+        top: Math.max(
+          0,
+          AbstractFeedsComponent.topAlignTop(
+            this.focusedFeedEntryView.elementRef.nativeElement.getBoundingClientRect(),
+            scrollContainer.getBoundingClientRect(),
+            scrollContainer.scrollTop,
+          ),
+        ),
+      });
+      const offset = this.offsetInScrollContainer(this.focusedFeedEntryView);
+      this.jumpAnchor =
+        offset !== null
+          ? { feedEntryView: this.focusedFeedEntryView, offset }
+          : null;
 
       if (feedEntryViews.length - 1 <= newIndex) {
         this.onApproachingBottom();
       }
-    }
-  }
-
-  private static scrollToTopUp(
-    entryBoundingClientRect: DOMRect,
-    scrollContainerBoundingClientRect: DOMRect,
-    scrollContainerScrollTop: number,
-  ) {
-    return AbstractFeedsComponent.topAlignTop(
-      entryBoundingClientRect,
-      scrollContainerBoundingClientRect,
-      scrollContainerScrollTop,
-    );
-  }
-
-  private static scrollToTopDown(
-    entryBoundingClientRect: DOMRect,
-    scrollContainerBoundingClientRect: DOMRect,
-    scrollContainerScrollTop: number,
-  ) {
-    if (
-      entryBoundingClientRect.height <= scrollContainerBoundingClientRect.height
-    ) {
-      return AbstractFeedsComponent.bottomAlignTop(
-        entryBoundingClientRect,
-        scrollContainerBoundingClientRect,
-        scrollContainerScrollTop,
-      );
-    } else {
-      return AbstractFeedsComponent.topAlignTop(
-        entryBoundingClientRect,
-        scrollContainerBoundingClientRect,
-        scrollContainerScrollTop,
-      );
     }
   }
 
@@ -421,30 +418,6 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
       scrollContainerScrollTop -
       scrollContainerBoundingClientRect.top -
       8
-    );
-  }
-
-  private static bottomAlignTop(
-    entryBoundingClientRect: DOMRect,
-    scrollContainerBoundingClientRect: DOMRect,
-    scrollContainerScrollTop: number,
-  ) {
-    return (
-      entryBoundingClientRect.top +
-      scrollContainerScrollTop -
-      (scrollContainerBoundingClientRect.top +
-        scrollContainerBoundingClientRect.height) +
-      entryBoundingClientRect.height +
-      8
-    );
-  }
-
-  private static rectContainsRect(outerRect: DOMRect, innerRect: DOMRect) {
-    return (
-      outerRect.top <= innerRect.top &&
-      outerRect.bottom >= innerRect.bottom &&
-      outerRect.left <= innerRect.left &&
-      outerRect.right >= innerRect.right
     );
   }
 
@@ -488,7 +461,7 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
             newIndex = currentIndex;
           }
           return newIndex;
-        }, AbstractFeedsComponent.scrollToTopDown);
+        });
         break;
       }
       case 'k': {
@@ -498,7 +471,7 @@ export abstract class AbstractFeedsComponent implements OnDestroy {
             newIndex = 0;
           }
           return newIndex;
-        }, AbstractFeedsComponent.scrollToTopUp);
+        });
         break;
       }
       case 'n': {
