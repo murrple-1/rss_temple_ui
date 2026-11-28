@@ -20,11 +20,15 @@ RUN cp /build/src/environments/environment.production.ts /build/src/environments
 
 FROM caddy:2-alpine AS production
 
-COPY --from=builder /build/dist/browser/ /srv/
+# Run as a non-root user. Caddy listens on :4200 (a non-privileged port), and
+# needs write access to its state dirs (/data, /config). /srv is also owned by
+# the user, because deployments customize /srv/index.html at start-up with
+# `sed -i`, which writes a temp file next to it. /srv exists in the base image,
+# so `COPY --chown` alone doesn't change the directory's owner.
+RUN addgroup -S caddy && adduser -S -G caddy caddy \
+  && chown -R caddy:caddy /data /config /srv
+
+COPY --from=builder --chown=caddy:caddy /build/dist/browser/ /srv/
 COPY ./Caddyfile /etc/caddy/Caddyfile
 
-# Run as a non-root user. Caddy listens on :4200 (a non-privileged port), and
-# only needs write access to its state dirs (/data, /config).
-RUN addgroup -S caddy && adduser -S -G caddy caddy \
-  && chown -R caddy:caddy /data /config
 USER caddy
